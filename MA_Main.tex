@@ -1,0 +1,78 @@
+\documentclass[ a4paper,
+                oneside,
+                toc=bibliography,
+                toc=listof
+                ]{scrbook}
+
+\input{settings}
+
+% Path to .bib file for BibLatex
+\addbibresource{bibliography.bib}
+% \addbibresource{someOtherBibFile}
+
+\author{Frederik Omlor}
+\placeOfBirth{Backnang}
+\address{Karl-Krische-Straße 40, 71522 Backnang, Germany}
+\major{Computer Science and Media}
+\title{Optimizing Voxel Rendering using a Mesh Shaded Rendering Pipeline}
+\titleTranslated{Optimierung von Voxel Rendering durch eine Mesh Shading Render Pipeline}
+\matrnr{45044}
+\date{\today}
+\supervisor{Wilhem Lorin Atzberger}
+\professor{Prof. Dr. Stefan R. Radicke \& Dr. Andreas Stiegler}
+
+\begin{document} 
+    \frontmatter
+    \makeISWtitle
+
+	\cleardoublepage
+	\setcounter{page}{1} % start at page (i) after title page
+    \declarationOfOriginality
+
+    % Kurzfassung/Abstract
+    \input{chapters/Abstract}
+    
+    \cleardoublepage
+    \currentpdfbookmark{\contentsname}{Inhalt}
+    \tableofcontents
+       
+
+    \mainmatter
+    % ********************************************************************
+    % Write your own contents here:
+    % ********************************************************************
+    
+    % TODO: remove this \nocite{*} command. This is only to demonstrate the bibliography
+    \nocite{*}
+
+
+    \input{chapters/Introduction}
+    \input{chapters/Examples}
+    \input{chapters/Tooling}
+    
+    \chapter{Conclusions}
+
+    % ********************************************************************
+    % End of contents
+    % ********************************************************************
+    
+    \cleardoublepage
+    \printbibliography
+    
+     \cleardoublepage
+    \input{chapters/Acronyms}
+    
+    \cleardoublepage
+    \listoffigures
+    
+    \cleardoublepage
+    \listoftables
+    
+    \input{chapters/Symbols}
+    
+    % Appendix, if needed:
+    \appendix
+    \chapter{Example appendix chapter}
+
+
+\end{document}
