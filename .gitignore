@@ -1,0 +1,13 @@
+Thesis/*.aux
+Thesis/*.bbl
+Thesis/*.bfc
+Thesis/*.fdb_latexmk
+Thesis/*.fls
+Thesis/*.lof
+Thesis/*.log
+Thesis/*.lot
+Thesis/*.out
+Thesis/*.pdf
+Thesis/*.xml
+Thesis/*.gz
+Thesis/*.toc
