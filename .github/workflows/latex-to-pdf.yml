@@ -15,4 +15,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: PDF
-          path: Thesis_Frederik_Omlor.pdf
+          path: MA_Main.pdf
