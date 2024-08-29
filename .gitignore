@@ -11,3 +11,7 @@ Thesis/MA_Main.pdf
 Thesis/MA_Main.run.xml
 Thesis/MA_Main.synctex.gz
 Thesis/MA_Main.toc
+
+# Images
+
+Thesis/images/*.pdf

@@ -14,8 +14,8 @@
 \placeOfBirth{Backnang}
 \address{Karl-Krische-Straße 40, 71522 Backnang, Germany}
 \major{Computer Science and Media}
-\title{Optimizing Voxel Rendering using a Mesh Shaded Rendering Pipeline}
-\titleTranslated{Optimierung von Voxel Rendering durch eine Mesh Shading Render Pipeline}
+\title{Mesh Shading Optimization in Voxel-Based Volumetric Rendering}
+\titleTranslated{Mesh Shading Optimierung in Voxel-Based Volumetric Rendering}
 \matrnr{45044}
 \date{\today}
 \supervisor{Wilhem Lorin Atzberger}
@@ -23,14 +23,14 @@
 
 \begin{document} 
     \frontmatter
-    %\makeISWtitle
+    \makeISWtitle
 
 	\cleardoublepage
 	\setcounter{page}{1} % start at page (i) after title page
     \declarationOfOriginality
 
     % Kurzfassung/Abstract
-    \input{chapters/Abstract}
+    \input{chapters/00_Abstract}
     
     \cleardoublepage
     \currentpdfbookmark{\contentsname}{Inhalt}
@@ -46,9 +46,11 @@
     \nocite{*}
 
 
-    \input{chapters/Introduction}
-    \input{chapters/Examples}
-    \input{chapters/Tooling}
+    \input{chapters/02_Introduction.tex}
+    \input{chapters/03_VoxelRendering.tex}
+    \input{chapters/04_RelatedWork.tex}
+    \input{chapters/05_MeshShading.tex}
+    \input{chapters/06_CaseStudy.tex}
     
     \chapter{Conclusions}
 
