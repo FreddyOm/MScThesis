@@ -4,7 +4,7 @@
 
 Mesh Shaders were were first introduced to nVidia Touring GPUs in 2018 as a part of
 "a new programmable geometric shading pipeline" and build upon the compute programming 
-pipeline \cite[Chritoph Kubisch]{Kubisch2018}. Therefore, they aim to optimize work by 
+pipeline \cite[Christoph Kubisch]{Kubisch2018}. Therefore, they aim to optimize work by 
 using the available hardware more efficiently. This section will break down the differences 
 of the Mesh Shading Pipeline compared to the traditional Vertex Shading Pipeline. In order 
 to evaluate these differences effectively, we will start by having a closer look at the 
@@ -20,7 +20,6 @@ The \emph{Pixel Shader} (also referred to as \emph{Fragment Shader}) operates on
 of the output frame buffer. Usually, the color values are calculated here, based on factors 
 like light direction, camera position et cetera. \\
 
-
 \includegraphics[width=\linewidth]{images/graphics/traditional-rendering-pipeline.png} % @TODO: Abbildungsverzeichnis
 
 \noindent
@@ -30,28 +29,31 @@ what the rendering pipeline has been for years up to this point. It is still use
 real time applications to this day, and even the mentioned Mesh Shading Pipeline relies on some of 
 the central steps of this pipeline. 
 
-% @TODO:Explain every step of the pipeline ? 
+% @TODO: Explain every step of the pipeline ? 
 
-% @TODO:Show input and output data of the Vertex Shader
+% @TODO: Show input and output data of the Vertex Shader
 
-% @TODO:What do I wanna say here?
+% @TODO: What do I wanna say here?
 
 % Good or even better to show evolution of rendering? -> Vertex Shaded Immediate Rendering -> 
 % Vertex Shaded Deferred Rendering -> Mesh Shaded Deferred Rendering ? 
 
 \section{The Mesh Shading Pipeline}
 
-% @TODO:Mesh Shading Rendering Pipeline
+% @TODO: Mesh Shading Rendering Pipeline
 
 \includegraphics[width=\linewidth]{images/graphics/mesh-rendering-pipeline.png} % @TODO: Abbildungsverzeichnis
 
-% @TODO:What are Mesh Shaders?
+% @TODO: What are Mesh Shaders?
 
 
-% @TODO:What are they good for?
-% @TODO:How does the pipeline differ from the Vertex Shader Pipeline?
+% @TODO: What are they good for?
+% @TODO: How does the pipeline differ from the Vertex Shader Pipeline?
 
+% @TODO: Meshlet Culling algorithm here or in 06_CaseStudy.tex?
 
 \section{Differences and Comparison}
 
 - Differences and performance benefits
+
+% @TODO: Meshlet Creation
