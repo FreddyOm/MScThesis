@@ -1,4 +1,9 @@
 \chapter{Discussion}
 
 
+- Pro: 
+    - No meshlet precomputation, since meshlets are created on the GPU
+    - Meshlet voxels are inherently AABBs which is quite helpful for intense intersection computations % @TODO: Check if there are even any intersection comps to be done
 
+- Con:
+    - Depending on the voxel size, there might be a need for chunking the data effectively % @TODO: Check if this is still necessary with Meshlet Occlusion Culling enabled
