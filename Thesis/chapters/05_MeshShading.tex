@@ -5,9 +5,9 @@
 Mesh Shaders were were first introduced to nVidia Touring \ac{GPU}s in 2018 as a part of
 "a new programmable geometric shading pipeline" and build upon the compute programming 
 pipeline \cite[Christoph Kubisch]{Kubisch2018}. Therefore, they aim to optimize work by 
-using the available hardware more efficiently. This section will break down the differences 
+using the available hardware more efficiently. This section breaks down the differences 
 of the Mesh Shading Pipeline compared to the traditional Vertex Shading Pipeline. In order 
-to evaluate these differences effectively, we will start by having a closer look at the 
+to evaluate these differences effectively, we start by having a closer look at the 
 Vertex Shading Pipeline.
 
 \section{The Vertex Shading Pipeline}
@@ -32,14 +32,14 @@ and passed to the \ac{GPU} for processing. For the purpose of this case study we
 on the two main shader programs, as mentioned above. \\
 
 % @TODO: Explain vertex data layout (indexed vertexlist) before! This is important for meshlets later!
+
 \noindent
 The \emph{Vertex Shader} takes the vertices of the given meshes in the scene as an input, aswell as 
 some global and vertex specific data. The per-vertex data can include arbitrary data like color values, 
 texture coordinates, transformations or the associated normal vector. The global data, which can be shared
-by all the pipelines programs, can include data like a progressing time value, the position of the camera 
-or any other value. The vertex shader is called by the \emph{Input Assembler Stage} 
-(called \emph{Vertex Attribute Fetch} in Figure 5.1) which implicitly invokes the vertex shader for each 
-vertex of the mesh. 
+by all the pipelines programs, can include data like a progressing time value or the position of the camera.
+The vertex shader is called by the \emph{Input Assembler Stage} (called \emph{Vertex Attribute Fetch} in 
+Figure 5.1) which implicitly invokes the vertex shader for each vertex of the mesh. 
 
 
 % @TODO: Explain every step of the pipeline ? 
