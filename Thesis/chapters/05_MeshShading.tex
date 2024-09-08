@@ -111,6 +111,30 @@ buffers resolution. \\
 - Differences and performance benefits
 - Maybe explain overdraw, pixel discard and other optimization techniques like culling, early z-testing, ...
 
-\subsection{Meshlet Occlusion Culling} \label{subsec-meshlet-occ-culling}
+\subsection{Task/Amplification Shader} \label{subsec-task-shader}
+
+- Task shader and mesh shader invocation % @TODO: Check how this compares to vertex transformation subsection
+
+\subsection{Vertex Transformation} \label{subsec-vertex-transformation}
+
+- Vertex Shader vs. Mesh Shader in geometry creation, vertex transformation and early exit
+- Allows for denser geometry 
+- New data input layout + compute and groupshared memory
+
+\subsection{Culling} \label{subsec-culling}
+
+- What is culling and why is it important?
+
+\subsubsection{View Frustum Culling} \label{subsubsec-view-frustum-culling}
+
+- View frustum culling
+
+\subsubsection{Occlusion Culling} \label{subsubsec-occ-culling}
+
+- Occlusion Culling and approaches
+
+\subsubsection{Meshlet Occlusion Culling} \label{subsubsec-meshlet-occ-culling}
+
+- Meshlet Occlusion culling, benefits and effect on data and invocations
 
 % @TODO: Meshlet Creation
