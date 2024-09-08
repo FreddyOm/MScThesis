@@ -98,6 +98,22 @@ buffers resolution. \\
     \label{fig:mesh-rendering-pipeline}
 \end{figure}
 
+The \emph{Mesh Shading Rendering Pipeline} is a new rendering pipeline, optimized for high geometrical 
+density. It shares the Rasterizer and the Pixel Shader stages with the "Traditional Rendering Pipeline" but 
+introduces two new stages which aim to replace the Vertex Shader, Geometry Shader and Tesselation stage.
+The new stages are called \emph{Task Shader} (or \emph{Amplification Shader}) and \emph{Mesh Shader}. Both 
+are fully programmable and are based on the Compute Shader architecture. Therefore they are inherently different 
+from the traditional Vertex Shader stage, even though they both can be used for vertex transformations.
+Figure \ref{fig:mesh-rendering-pipeline} shows the piepline stages and the order they are executed in. \\
+
+\noindent
+The \emph{Task Shader} serves as a precomputational stage which is optional and invokes the \emph{Mesh Shader}.
+The Task Shader can take any arbitrary data as input and operates on the data to produce output data which in 
+turn is scheduled for execution on the Mesh Shader. Since both shaders are based on Compute Shaders, a thread 
+group size can be specified and groupshared memory can be allocated. This allows for highly parallelized execution 
+and optimized memory usage. 
+
+
 % @TODO: What are Mesh Shaders?
 
 
