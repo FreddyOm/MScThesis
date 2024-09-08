@@ -14,6 +14,7 @@ The thesis LaTeX project for the master's thesis "Optimizing Voxel Rendering usi
 - [ ] Meshlet Culling algorithm in chapter 5 or 6? 
 - [ ] Only Rasterization Pipeline possible. How to differentiate from Raytraced Pipeline etc.
 - [ ] "Related Work" before or after "Voxel Rendering"?
+- [ ] What knowledge is expected?
 
 ## Problems
 
