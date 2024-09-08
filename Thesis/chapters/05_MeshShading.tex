@@ -2,7 +2,7 @@
 
 % @TODO: Mention that this is rasterization pipeline!
 
-Mesh Shaders were were first introduced to nVidia Touring \ac{GPU}s in 2018 as a part of
+Mesh Shaders were first introduced to nVidia Touring \ac{GPU}s in 2018 as a part of
 "a new programmable geometric shading pipeline" and build upon the compute programming 
 pipeline \cite[Christoph Kubisch]{Kubisch2018}. Therefore, they aim to optimize work by 
 using the available hardware more efficiently. This section breaks down the differences 
@@ -58,7 +58,26 @@ For instance, the Tesselation Stage can increase geometric resolution or triangu
 applying tesselation functions. \\
 
 \noindent
-The \emph{Geometry Shader} is another optional pipeline stage. It is capable of creating primitives on the GPU 
+The \emph{Geometry Shader} is another optional pipeline stage. It is capable of generating additional primitives 
+on the GPU. However, it is commonly said to be not very efficient and is treated as deprecated since the Introduction 
+of the more general purpose and faster \emph{Compute Shaders}. \\ % @TODO: Check if this is correct and find sources
+
+\noindent
+The three-dimensional scene is then processed by the \emph{Rasterizer} which breaks down the scene description into 
+a discrete, two-dimensional "image". This final image, also called \emph{Frame Buffer}, contains the two-dimensional 
+projection of the scene from the cameras point of view. This rasterization process also implies creating discrete 
+samples from continuous lines and faces. \\
+
+\noindent
+Finally, the final frame buffer is colored correctly by the \emph{Pixel Shader}. This stage takes all given parameters 
+like light position, light color, light intensity, camera position, vertex colors, textures and many more into account 
+and creates a final image. The pixel shader can implement different functions (\ac{BRDF}) for calculation of the final pixel color 
+and is called once per pixel. This means, that the computational cost increases with the amount of pixel, i.e. the frame 
+buffers resolution. \\
+
+
+
+
 
 
 
@@ -94,6 +113,7 @@ The \emph{Geometry Shader} is another optional pipeline stage. It is capable of 
 \section{Differences and Comparison} \label{sec-differences-and-comparison}
 
 - Differences and performance benefits
+- Maybe explain overdraw, pixel discard and other optimization techniques like culling, early z-testing, ...
 
 \subsection{Meshlet Occlusion Culling} \label{subsec-meshlet-occ-culling}
 
