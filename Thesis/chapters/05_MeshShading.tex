@@ -111,7 +111,18 @@ The \emph{Task Shader} serves as a precomputational stage which is optional and 
 The Task Shader can take any arbitrary data as input and operates on the data to produce output data which in 
 turn is scheduled for execution on the Mesh Shader. Since both shaders are based on Compute Shaders, a thread 
 group size can be specified and groupshared memory can be allocated. This allows for highly parallelized execution 
-and optimized memory usage. 
+and optimized memory usage. The Mesh Shader output can be defined individually but usually creates a small patch 
+consisting of a small number of triangles, called \emph{Meshlet}. This new approach to operating on vertices 
+allows for a new interpretation of mesh data. Therefore, it is necessary to take a look at the data structure of 
+meshes and how they translate to the Mesh Shading Pipeline. 
+
+\subsection{Mesh Datastructure} \label{subsec-mesh-datastructure}
+
+
+
+% @TODO: Discuss mesh data structure
+
+
 
 
 % @TODO: What are Mesh Shaders?
