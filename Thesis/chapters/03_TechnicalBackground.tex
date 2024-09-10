@@ -1,4 +1,21 @@
-\chapter{Mesh Shading} \label{cpt-mesh-shading}
+\chapter{Technical Background} \label{cpt-technical-background}
+
+\section{Voxel Rendering} \label{sec-voxel-rendering}
+
+- Definition
+- What is Voxel Rendering?
+    - Where is it used? 
+    - How can it be differentiated? (Ray Traced ("real") voxel rendering vs. triangulated voxels)
+    - Rendering Pipeline for Voxel Rendering
+    - How is it done?
+    - Acceleration techniques
+    - Culling techniques
+    - Chunks
+    - Streaming
+    - ...
+    - ...
+    
+\section{Mesh Shading} \label{sec-mesh-shading}
 
 % @TODO: Mention that this is rasterization pipeline!
 
@@ -122,9 +139,6 @@ meshes and how they translate to the Mesh Shading Pipeline.
 
 % @TODO: Discuss mesh data structure
 
-
-
-
 % @TODO: What are Mesh Shaders?
 
 
@@ -133,35 +147,36 @@ meshes and how they translate to the Mesh Shading Pipeline.
 
 % @TODO: Meshlet Culling algorithm here or in 06_CaseStudy.tex?
 
-\section{Differences and Comparison} \label{sec-differences-and-comparison}
+\subsection{Differences and Comparison} \label{sec-differences-and-comparison}
 
 - Differences and performance benefits
 - Maybe explain overdraw, pixel discard and other optimization techniques like culling, early z-testing, ...
 
-\subsection{Task/Amplification Shader} \label{subsec-task-shader}
+\subsubsection{Task/Amplification Shader} \label{subsec-task-shader}
 
 - Task shader and mesh shader invocation % @TODO: Check how this compares to vertex transformation subsection
 
-\subsection{Vertex Transformation} \label{subsec-vertex-transformation}
+\subsubsection{Vertex Transformation} \label{subsec-vertex-transformation}
 
 - Vertex Shader vs. Mesh Shader in geometry creation, vertex transformation and early exit
 - Allows for denser geometry 
 - New data input layout + compute and groupshared memory
 
-\subsection{Culling} \label{subsec-culling}
+\section{Culling} \label{subsec-culling}
 
 - What is culling and why is it important?
 
-\subsubsection{View Frustum Culling} \label{subsubsec-view-frustum-culling}
+\subsection{View Frustum Culling} \label{subsubsec-view-frustum-culling}
 
 - View frustum culling
 
-\subsubsection{Occlusion Culling} \label{subsubsec-occ-culling}
+\subsection{Occlusion Culling} \label{subsubsec-occ-culling}
 
 - Occlusion Culling and approaches
 
-\subsubsection{Meshlet Occlusion Culling} \label{subsubsec-meshlet-occ-culling}
+\subsection{Meshlet Occlusion Culling} \label{subsubsec-meshlet-occ-culling}
 
 - Meshlet Occlusion culling, benefits and effect on data and invocations
 
 % @TODO: Meshlet Creation
+
