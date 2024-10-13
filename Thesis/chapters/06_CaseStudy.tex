@@ -14,3 +14,35 @@ The framework used is the \emph{Diligen Engine} which already implements state o
 platform and multi-API rendering. \\
 
 \noindent
+
+
+
+// --------------------------------------------------------------------------------- //
+Motivation:
+Use Meshlet Culling in voxel rendering to optimize GPU Driven Voxel Rendering
+
+
+Implementation Considerations:
+
+- Meshlet Culling at first, then problem, because meshlet culling algorithm depends on different algos
+    - Meshlet Backface Culling -> Not possible because Meshlets are voxels in this case
+    - Meshlet Occlusion Culling -> Using 2 Pass Depth Occlusion Culling sounds good!
+    - 2PDOC relies on drawing best occluders which are usually hand picked by artists (buildings)
+        -> We can dynamically pick best occluders by selecting full octree nodes as best occluders!
+
+- Optimize octree by using High Res SVOs (https://www.cse.chalmers.se/~uffe/HighResolutionSparseVoxelDAGs.pdf).
+    - As shown in the paper, here we also only need to encode if a node is filled or not. This way we can 
+    optimize memory and proccessing speed! (Not done here because of limitation in loading and voxelizing models.)
+
+
+- Align octree bounds with outer most voxel bounds, so no misalignment happens!
+    
+- Limitations: 
+    - Using Mesh Shading, we occlude meshlets against other meshlets, instead of instances against other
+    instances. This might be a limiting factor!
+
+- Worse performance on slopes? -> Check and measure!
+
+- Larger nodes which are not being split can be "full" without being full!
+
+// --------------------------------------------------------------------------------- //
