@@ -16,3 +16,7 @@ Thesis/MA_Main.toc
 # Images
 
 Thesis/images/*.pdf
+
+# Error files
+
+*ERROR
