@@ -81,10 +81,10 @@ voxel rendering.
 
 The basic approach to rendering voxels is using the traditional Rasterized Rendering Pipeline.
 One of the most popular games of all time, Minecraft [@TODO: reference] uses this approach to 
-render thounds of cube shaped voxels on screen. Minecraft also makes use of different rendering 
+render thousands of cube shaped voxels on screen. Minecraft also makes use of different rendering 
 optimizations to optimize frame times. This approach is straight forward in concept and can be 
 implemented for existing APIs, making use of hardware acceleration, i.e. the \ac{GPU}.
-The voxel representation allows easy computations since geometry is laid out in a regular grid.
+The voxel representation allows for easy computations since geometry is laid out in a regular grid.
 Lighting calculations, as well as phyisics operations, can be further optimized to be even more 
 efficient. The most significant advantage is the ability to dynamically enable or disable voxels 
 within the grid. Or, in general, to update voxels and their corresponding data efficiently.\\
@@ -102,7 +102,7 @@ sent over the PCI Express port.
 A rather common approach to visualization of voxels in 3D space is \emph{Ray Tracing}. When using 
 Ray Tracing, it is essential to consider different acceleration strategies. The regular 
 and memory efficient encoding of voxels allows for efficient tracing against the geometry. 
-Another acceleration technique is to use \ac{BSP} Trees or similar spacial algorithms which store 
+Another acceleration technique is to use \ac{BSP} Trees or similar spatial algorithms which store 
 information about the layout of geometry in space. This can help discard parts of a scene which are 
 not of interest for the computational process or (e.g. using an \emph{Octree} data structure) store 
 more detailed data in one part of a scene and keep the data resolution low in parts, where (almost) 
@@ -118,7 +118,15 @@ according to the use case. [@TODO: check that these informations are not meant f
 
 \subsection{Voxel based physics}
 
-[@TODO: ref to Teardown] uses ray traced lighting which is affordable due to the voxel scene representation.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{images/graphics/teardown.jpg}
+    \caption{The voxel based sandbox Teardown (2022) by Tuxedo Labs.}
+    \label{fig:teardown}
+\end{figure}
+
+Tuxedo Labs \emph{Teardown} (figure \ref{fig:teardown}) uses ray traced lighting which is affordable due 
+to the voxel scene representation. [@TODO: Check Teardown ray tracing]
 Additionally, it makes use of highly dynamic physics operation which are relatively efficient using the voxel 
 representation. In their base layout, cubical voxels are \ac{AABB}es which allows for trivial collision tests.
 When rotated around any axis, they are still oriented bounding boxes, making collision tests more expensive,
