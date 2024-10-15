@@ -144,10 +144,20 @@ When considering highly populated scenes, there might be cases of meshes occludi
 the final projection, which means that multiple color values will be calculated for the same pixel before the final color is determined. 
 In general, overdraw should be avoided where possible. Having a lot overdraw within the rendering process means that visibility determination 
 of instances is deferred to the last possible point in rendering pipeline. Often, it is better to pre-determine visibility and sample only 
-visible instances. To achieve this, 
+visible instances. To achieve this, algorithms can be used to select and ommit occluded instances. \\
 
-Different occlusion culling algorithms can be applied depending on the use case.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{images/graphics/bounding-volume-quality.png}
+    \caption{Different bounding volumes provide different advantages and disadvantages (\cite{Six2021}).}
+    \label{fig:bounding-volumes}
+\end{figure}
 
+\noindent
+Different occlusion culling algorithms can be applied depending on scene layout, object characteristics and other factors.
+As it is the case with culling algorithms in general, occlusion culling algorithms usually rely on bounding volumes to approximate object 
+positions and scale in space. Figure \ref{fig:bounding-volumes} shows how different bounding volumes can be used to support faster computation 
+or more accurate volume approximation. 
 
 \subsection{Hierarchical Z-Buffering} \label{subsec-hierarchical-z-buffering}
 
@@ -157,7 +167,7 @@ Different occlusion culling algorithms can be applied depending on the use case.
 
 \section{Mesh Shading}  \label{sec-mesh-shading}
 
-Mesh Shaders were first introduced to NVidia Touring \ac{GPU}s in 2018 as a part of
+Mesh Shaders were first introduced to NVIDIA Touring \ac{GPU}s in 2018 as a part of
 "a new programmable geometric shading pipeline" and build upon the compute programming 
 pipeline (\cite{Kubisch2018}). Therefore, they aim to optimize work by 
 using the available hardware more efficiently. Compared to the traditional vertex shading 
@@ -176,7 +186,7 @@ stage operates on some input data and in some cases produces output data for the
 \begin{figure}[h]
     \centering
     \includegraphics[width=\linewidth]{images/graphics/traditional-rendering-pipeline.png}
-    \caption{The traditional rendering pipeline as presented by nVidia in \cite{Kubisch2018}.}
+    \caption{The traditional rendering pipeline as presented by NVIDIA in \cite{Kubisch2018}.}
     \label{fig:traditional-rendering-pipeline}
 \end{figure}
 
@@ -205,7 +215,7 @@ i.e. the frame buffers resolution.
 \begin{figure}[h]
     \centering
     \includegraphics[width=\linewidth]{images/graphics/mesh-rendering-pipeline.png}
-    \caption{The mesh shading pipeline as presented by nVidia in \cite[Christoph Kubisch]{Kubisch2018}.}
+    \caption{The mesh shading pipeline as presented by NVIDIA in \cite[Christoph Kubisch]{Kubisch2018}.}
     \label{fig:mesh-rendering-pipeline}
 \end{figure}
 
