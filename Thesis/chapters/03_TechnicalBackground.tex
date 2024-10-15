@@ -144,11 +144,16 @@ When considering highly populated scenes, there might be cases of meshes occludi
 the final projection, which means that multiple color values will be calculated for the same pixel before the final color is determined. 
 In general, overdraw should be avoided where possible. Having a lot overdraw within the rendering process means that visibility determination 
 of instances is deferred to the last possible point in rendering pipeline. Often, it is better to pre-determine visibility and sample only 
-visible instances. Different occlusion culling algorithms can be applied depending on the use case 
+visible instances. To achieve this, 
+
+Different occlusion culling algorithms can be applied depending on the use case.
+
 
 \subsection{Hierarchical Z-Buffering} \label{subsec-hierarchical-z-buffering}
 
+
 \subsection{Two-Pass Occlusion Culling} \label{subsec-two-pass-occlusion-culling}
+
 
 \section{Mesh Shading}  \label{sec-mesh-shading}
 
