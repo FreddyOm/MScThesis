@@ -53,15 +53,15 @@ on which the next approach expand on.
 
 \subsection{High Resolution Sparse Voxel Directed Acyclic Graphs} \label{subsec-highres-svo-dags}
 
-\cite{Assarsson2013} use data redundancy to further generalize and optimize high resolution \ac{SVO}s. In their 
-implementation the octree data structure relies on bitmasks, to encode the existance of child nodes. This way, 
-empty nodes are ignored and the information can be easily stored within one byte. This child node mask uniquely 
-identifies the layout of the nodes below and can also be used to store the voxel occupation of the leaf nodes.
-Next, they make use of the fact, that an octree nodes position is uniquely identifed by the path along the 
-nodes from root to leaf node. Since voxels can be encoded as either being present or not, and non-present 
+Assarsson et al. (\cite{Assarsson2013}) use data redundancy to further generalize and optimize high resolution 
+\ac{SVO}s. In their implementation the octree data structure relies on bitmasks, to encode the existance of child 
+nodes. This way, empty nodes are ignored and the information can be easily stored within one byte. This child node 
+mask uniquely identifies the layout of the nodes below and can also be used to store the voxel occupation of the 
+leaf nodes. Next, they make use of the fact, that an octree nodes position is uniquely identifed by the path along 
+the nodes from root to leaf node. Since voxels can be encoded as either being present or not, and non-present 
 voxels can be ignored, the data can be significantly reduced in size. Furthermore, equal child node masks 
-can simply be shared between different parent nodes instead of being duplicated. \cite{Assarsson2013} suggest 
-a buttom-up approach to remove redundant nodes and replace whole sub-trees of the octree by pointing to one 
+can simply be shared between different parent nodes instead of being duplicated. Assarsson et al. (\cite{Assarsson2013}) 
+suggest a buttom-up approach to remove redundant nodes and replace whole sub-trees of the octree by pointing to one 
 instance of the same pattern within the tree, which is shown in figure \ref{fig:sparse-voxel-dag-creation}. 
 This optimization can be recursively done to each layer in the tree hierarchy, resulting in an optimized version 
 of the data structure. The resulting structure is a more general hierarchical data structure, namely a \ac{DAG}.
@@ -80,9 +80,9 @@ with our use case and is highly recommended by us.
 \section{Culling Techniques} \label{sec-culling-techniques}
 
 \emph{Culling} refers to the technique to discard parts of a scene "that are not considered to contribute to the final 
-image" \cite{AkenineMöller2018}. This allows for a highly populated scenes to be rendered, since most parts of a scene 
+image" \cite{AkenineMoeller2018}. This allows for a highly populated scenes to be rendered, since most parts of a scene 
 will probably not be visible by the camera at the same time. Ignoring culled objects or triangles is therefore a common 
-process in realtime rendering. "The fastest triangle to render is the one never sent to the \ac{GPU}" \cite{AkenineMöller2018}.
+process in realtime rendering. "The fastest triangle to render is the one never sent to the \ac{GPU}" \cite{AkenineMoeller2018}.
 In this section, the most common culling techniques are presented and the ones considered by our approach are specifically 
 highlighted and analyzed. 
 
@@ -94,27 +94,67 @@ facing away from the camera. These triangles will not be seen by the camera anyw
 rendering process. To compute the facing direction of a triangle, which when normalized is equivilent to the triangles 
 \emph{Surface Normal}, the vertex winding order of the given rendering backend is considered.\\
 
-When describing a triangle in a mathematical sense, the vertex positions are considered, which perfectly define the edges of 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=200px]{images/graphics/winding-order-triangle.png}
+    \caption{Two possible winding orders of triangles (\cite{Michel2016}).}
+    \label{fig:triangle-winding-order}
+\end{figure}
+
+\noindent
+When describing a triangle mathematically, the vertex positions are considered, which perfectly define the edges of 
 said triangle. The surface can then be interpreted as facing towards the viewer or away from them. 
 When trying to compute the triangle, its vertex positions can be recorded in an arbitrary order, but to encode which direction 
 the surface is facing, the vertex position order is specified up front. Microsoft's rendering \ac{API}s D3D11 and D3D12 for 
-example encode a counterclock-wise \emph{winding order} to be interpreted as facing towards the viewer. 
+example encode a counterclock-wise \emph{winding order} to be interpreted as facing towards the viewer (\cite{D3DTopology2020}).
+With this standard in place, all triangles can be uniquely define their orientation relative to the camera.
+When enabling backface culling within the renderin backend, triangles which are not facing the camera, are automatically omitted 
+immediatly after screenmapping (\cite{AkenineMoeller2018}). Depending on the type of geometry, backface culling can remove up to 
+half of the triangles about to be rendered, proving very valuable to highly populated scenes and high geometric density.\\
+
+\noindent 
+[@TODO: Add image]
+Backface culling algorithms can also be applied to clusters of triangles. As \cite{Shirmun1993} propose, multiple triangles can 
+be culled at once considering a common normal cone. "Shirmun and Abi-Ezzi \cite{Shirmun1993} prove that if the viewer is located 
+in [a] frontfacing cone" constructed by the normals of all the triangles within the cluster, "then all faces in the cone are 
+frontfacing, and similarly for the backfacing cone" (\cite{AkenineMoeller2018}). As will be mentioned in chapter 
+\ref{subsubsec-meshlet-backface-culling}, this approach can be used for more parallelized backface culling using an updated 
+rendering pipeline in current graphics \ac{API}s.
 
 \subsection{View Frustum Culling} \label{subsec-view-frustum-culling}
 
-In combination with octree -> cull octree nodes 
+[@TODO: Add pictures]
 
-\subsection{Point Based Occlusion Culling} \label{subsec-point-based-occlusion-culling}
+\emph{View Frustum Culling} is a technique which aims to remove instances, i.e. meshes, which are outside of the camera view frustum.
+This leads to a descard of all instances which are completely invisible due to their location relative to the camera. Said 
+instances can thus be safely ignored and discarded early in order to keep the memory computations by \ac{CPU} and \ac{GPU} low.
+To cull potantial instances, bounding boxes are calculated and checked against the camera view frustum, which in turn is specified by 
+the \emph{near plane} and \emph{far plane}, as well as the \emph{fov}. For instance, if a bounding sphere is partially or completely 
+inside the view frustum can then be tested by computing a simple \boldmath{dot product} between the frustum plane and the bounding volume 
+center and comparing it against the radius of the bounding sphere. \\
+
+\noindent
+In combination with acceleration structures like an octree, view frustum culling can be computed in for the bounding volumes of the 
+acceleration structure which can further optimize the computation. This technique is also applied in our approach, using spheres as 
+approximations for the cubical octree bounding volumes.
+
+\subsection{Occlusion Culling} \label{subsec-point-based-occlusion-culling}
+
+When considering highly populated scenes, there might be cases of meshes occluding other meshes. This produces overdraw when rasterizing 
+the final projection, which means that multiple color values will be calculated for the same pixel before the final color is determined. 
+In general, overdraw should be avoided where possible. Having a lot overdraw within the rendering process means that visibility determination 
+of instances is deferred to the last possible point in rendering pipeline. Often, it is better to pre-determine visibility and sample only 
+visible instances. Different occlusion culling algorithms can be applied depending on the use case 
 
 \subsection{Hierarchical Z-Buffering} \label{subsec-hierarchical-z-buffering}
 
 \subsection{Two-Pass Occlusion Culling} \label{subsec-two-pass-occlusion-culling}
 
-\section{Mesh Shading}
+\section{Mesh Shading}  \label{sec-mesh-shading}
 
 Mesh Shaders were first introduced to NVidia Touring \ac{GPU}s in 2018 as a part of
 "a new programmable geometric shading pipeline" and build upon the compute programming 
-pipeline \cite[Christoph Kubisch]{Kubisch2018}. Therefore, they aim to optimize work by 
+pipeline (\cite{Kubisch2018}). Therefore, they aim to optimize work by 
 using the available hardware more efficiently. Compared to the traditional vertex shading 
 pipeline, mesh shading introduces a more holistic and parallel processing of geometry data.
 It is incorporated into the rasterized rendering pipeline and has since been used in modern 
@@ -144,7 +184,7 @@ This stage is responsible for operating on vertex transformations, moving, rotat
 vertices according to the given transformation matrices. After that, the \emph{Tesselation Control Shader} can 
 optionally increase geometric resolution or triangulate polygonal geometry by applying tesselation functions.
 The next stage is the optional \emph{Geometry Shader}, which is capable of generating additional primitives 
-on the GPU. However, it is commonly said to be not very efficient and is treated as deprecated since the introduction 
+on the \ac{GPU}. However, it is commonly said to be not very efficient and is treated as deprecated since the introduction 
 of the more general purpose and faster \emph{Compute Shaders} [@TODO: source]. 
 The three-dimensional scene is then processed by the \emph{Rasterizer} which breaks down the scene description into 
 a discrete, two-dimensional "image". This final image, also called \emph{Frame Buffer}, contains the two-dimensional 
@@ -204,11 +244,11 @@ ommiting whole instances depending on their position in space or their visibilit
 
 \noindent
 But although the Mesh Shading Pipeline was first introduced in 2018, the idea of triangle clusters goes back even further.
-One example of this GPU Driven Rendering technique is the 2014 title \emph{Assassin's Creed Unity} \cite{Ubisoft2014}.
+One example of this \ac{GPU} Driven Rendering technique is the 2014 title \emph{Assassin's Creed Unity} (\cite{Ubisoft2014}).
 \cite{Aaltonen2015} provides an overview over multiple cluster related optimization techniques, implementing a highly 
 parallelized rendering pipeline before Mesh Shading became part of the official Rendering \ac{API}s.
-For their GPU culling algorithms they refer to the prior work of \cite{Hill11} and \cite{Greene93} which provides the 
-basis for some of the implementation in our case study.
+For their \ac{GPU} culling algorithms they refer to the prior work of Hill (\cite{Hill11}) and Greene (\cite{Greene93}) which 
+provides the basis for some of the implementation in our case study.
 
 
 \subsubsection{Meshlet Backface Culling} \label{subsubsec-meshlet-backface-culling}

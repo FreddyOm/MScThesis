@@ -1,7 +1,6 @@
 \chapter{Motivation} \label{cpt-motivation}
 
 
-
 Ever since the early days of computer graphics, both hard- and software have rapidly evolved
 alongside the creative and challenging use cases provided by developers, scientists and others.
 Many technical increments relied on innovation, especially the advent of new capable hardware.
@@ -9,14 +8,14 @@ One example is the \ac{GPU} itself, which is now considered the heart of modern 
 processing and is widely used in fields like science, artificial intelligence, games, and pretty 
 much all graphics related applications. Before 1995, there already had been a lot of iterations 
 on specialized graphics hardware, often focused on video formatting or color output operations
-\cite{Singer2023}.
+(\cite{Singer2023}).
 
 The first graphics cards were specialized chips either used for video encoding and decoding
 or expensive hardware targeted for large companies, which arised during the early stages 
-of "3D consumer graphics" \cite{Singer2023}. Dedicated and affordable \ac{GPU}s for consumer 
+of "3D consumer graphics" (\cite{Singer2023}). Dedicated and affordable \ac{GPU}s for consumer 
 \ac{PC}s had their large breakthrough during the 1990's. In 1999, NVidia introduced their 
 first consumer graphics chip, the \emph{NVIDIA GeForce 256}, which was used for efficient 
-transformations and lighting \cite{Fenno2024}. Back then, this new hardware created a multitude 
+transformations and lighting (\cite{Fenno2024}). Back then, this new hardware created a multitude 
 of new possibilities. 
 Although it was mostly used for graphics processing - hence the name - nowadays, \ac{GPU}s
 are used in a much more general way than in [@TODO: insert year of GPU advent]. Both the 
@@ -37,7 +36,7 @@ especially the last years.
 \section{The Rise Of The GPU}
 
 Before the integration of specialized hardware, games like Wolfenstein 3D or the original Doom made use of 
-CPU Rasterization, with all rendering operations executed sequentially by the CPU [@TODO: check games and facts].
+\ac{CPU} Rasterization, with all rendering operations executed sequentially by the \ac{CPU} [@TODO: check games and facts].
 [@TODO: Check if rendering ops were ALL on CPU]
 Therefore, a higher poly count usually led to lower framerates.
 
@@ -48,7 +47,7 @@ detail into their 3D environment. The heavily parallelized transformations allow
 more triangles in games and the hardware accelerated lighting computations which made for 
 even more realistic lighting throughout the rendered scene. Having a dedicated hardware for 
 highly demanding tasks started a new era of computer graphics. One significant advantage: 
-The \ac{GPU} could operate on a large amount of data while not stalling the CPU \cite{Fenno2024}.\\
+The \ac{GPU} could operate on a large amount of data while not stalling the \ac{CPU} (\cite{Fenno2024}).\\
 
 \noindent 
 This new approach of "outsourcing" specific operations quickly became the standard procedure and 
@@ -66,7 +65,7 @@ lead to a standardized rendering pipeline.
 \section{Hier kommt meine Motivation und Überleitung zur Forschungsfrage}
 
 The latest innovations in computer graphics have been developing in different directions,
-one of them being GPU Driven Rendering. Minimizing dependencies between \ac{CPU} and \ac{GPU} 
+one of them being \ac{GPU} Driven Rendering. Minimizing dependencies between \ac{CPU} and \ac{GPU} 
 has been an effort for the last decade. Many of the novel approaches which have been developed 
 over the years are visible in the latest technology. But there are still plenty of use cases 
 which are not yet living up to there full potential, considering modern hard- and software solutions.\\
@@ -83,7 +82,7 @@ The basic approach to rendering voxels is using the traditional Rasterized Rende
 One of the most popular games of all time, Minecraft [@TODO: reference] uses this approach to 
 render thousands of cube shaped voxels on screen. Minecraft also makes use of different rendering 
 optimizations to optimize frame times. This approach is straight forward in concept and can be 
-implemented for existing APIs, making use of hardware acceleration, i.e. the \ac{GPU}.
+implemented for existing \ac{API}s, making use of hardware acceleration, i.e. the \ac{GPU}.
 The voxel representation allows for easy computations since geometry is laid out in a regular grid.
 Lighting calculations, as well as phyisics operations, can be further optimized to be even more 
 efficient. The most significant advantage is the ability to dynamically enable or disable voxels 
