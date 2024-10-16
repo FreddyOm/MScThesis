@@ -191,7 +191,7 @@ consider visibility of different instances.
 \end{figure}
 
 \noindent
-\ac{HiZ} Buffering is computed in image space and relies on two main components. An octree scene representation and a 
+\ac{HZB} is computed in image space and relies on two main components. An octree scene representation and a 
 \emph{Z-Buffer} pyramid. [@TODO: Check if z-buffer or mip map needs to explained] 
 The octree contains all instances present in the scene. The \emph{z-pyramid} is a set of z-buffer mip-maps, with every 
 map reducing in size relative to the previous mip map. The reduction is computed by aggregating values from 4 texels 
@@ -229,13 +229,74 @@ for being tested against during the computation of the following octree nodes. A
 algorithm evolved from the work of Greene et al. \cite{Greene93} and are widely adopted in modern real-time computer 
 graphics. As will be shown in chapter \ref{subsec-two-pass-occlusion-culling}, the concept of an octree representation 
 used for hierarchical culling and a z-pyramid used as an occlusion representation (\cite{AkenineMoeller2018}) can be 
-elegantly leveraged on the GPU side for efficient occlusion culling.
+elegantly leveraged on the \ac{GPU} side for efficient occlusion culling.
 
 
 \subsection{Two-Pass Occlusion Culling} \label{subsec-two-pass-occlusion-culling}
 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=200px]{images/graphics/depth-buffer-ac-unity.png}
+    \includegraphics[width=200px]{images/graphics/final-frame-ac-unity.png}
+    \caption{The depth buffer (left) and the final back buffer (right) of \emph{Assassin's Creed Unity} (Ubisoft, 2014 \cite{Ubisoft2014}). 
+    The hand-picked \emph{best occluders} were already drawn to the depth buffer in a depth pre-pass.
+    While rendering all the geometry to the back buffer, each instance can be checked against the z-pyramid \cite{Kruskonja2022}.}
+    \label{fig:depth-buffer-ac-unity}
+\end{figure}
+
+\noindent
+\emph{Two-Pass Occlusion Culling} is an adaptation of the \ac{HZB} algorithm, introduced in chapter 
+\ref{subsec-hierarchical-z-buffering}. One of the most reknown examples of this algorithm is present in the 2014 
+title \emph{Assassin's Creed Unity} by Ubisoft \cite{Ubisoft2014}. One year later, Ulrich Haar and Sebastian Aaltonen 
+presented their approach on SIGGRAPH 2015 \cite{Aaltonen2015}. Their implementation inspired other developers like 
+\emph{Epic Games} for \emph{Unreal Engine 5} to adopt similar techniques \cite{Karis2021}. This is the algorithm we 
+use in our implementation. It shares its basic principle with \ac{HZB} but focuses on a more \ac{GPU}-Driven 
+configuration and using a given set of best occluders to cull instances effectively. \\
+
+\noindent
+Some use cases are especially well suited for \ac{TPOC}, \emph{Assassin's Creed Unity} for example has a large open 
+world in a city with many large buildings. A rather large amount of instances can therefore be expected to be occluded 
+by some of the buildings at any given moment. \ac{TPOC} thus uses artist-picked \emph{best occluders} for \ac{HZB} 
+computation. The best occluders are identified during runtime, drawn to depth buffer during a depth pre-pass, and 
+then used as described in chapter \ref{subsec-hierarchical-z-buffering}. The output of the depth buffer pre-pass is 
+shown in figure \ref{fig:depth-buffer-ac-unity}.Depth passes can be done quite efficiently, especially if they 
+only contain a handful of instances to draw. Additionally, because of the advances in \ac{GPU}-Driven Renderin, the 
+\ac{HiZ} pyramid can be computed by a \emph{compute shader}, which leverages the highly parallel computation 
+capabilities of the \ac{GPU}. \\
+
+\noindent
+In contrast to the basic \ac{HZB}, this approach relies on the heavy use of \ac{GPU} computation and the pre-
+determination of best occluders. This way, the scene doesn't have to be reversed in a front to back order and 
+not necessarily needs to incorporate an octree, as long as object bounds can be computed efficiently enough.
+In SIGGRAPH 2015 presentation, Aaltonen et al. mention the addition of another acceleration technique, which 
+is compatible with \ac{TPOC}, \emph{Depth Reprojection}. 
+
 
 \subsection{Depth Reprojection} \label{subsec-depth-reprojection}
+
+\emph{Depth Reprojection} makes use of the temporal coherence of the z-buffer. The assumption is made, that 
+between two consecutive frames most of the visible content remains the same. It is obvious that this will 
+hold true for the most part when the cameras rotation and position isn't changed inbetween frames. In this case, 
+the last frames depth, color and visibilty information would remain nearly identical. The only differences would 
+be introduced by animation or physics simulation, which could move instances independently from the camera movement.
+But even with the camera moving over frames, a large part of the scene - static parts like buildings or terrain in 
+particular - would retain a lot of its information. This means, that there will be a significant coherence in 
+visibility between frames, which Depth Reprojection makes use of.\\
+
+\noindent
+The algorithm stores the last frames depth information and "reprojects" it onto the new frame. In the best case, 
+most instances which were previously visible remain visible in this new frame, and instances which were invisible 
+in the previous frame remain invisible in the new frame, as well. The new camera transformations and a 
+\emph{Velocity Vector Buffer} are used to calculate the delta relative to the previous frame and create an 
+approximation of the new depth buffer. Because the reprojected depth buffer is only an approximation, visibility 
+and depth calculations can be inprecise, because the result is non-conservative. This means that the reprojection 
+process sometimes fails to compute the correct depth values for objects, especially if they move relative to the 
+camera. Another problem occurs in use cases, where the camera moves very fast relative to the environment. In such 
+a case, the camera might cover a too large distance, so that none of the visible instances in a given frame were 
+visible during the previous frame. \cite{Kruskonja2022} 
+
+- non conservative
+- precision errors
 
 \section{Mesh Shading}  \label{sec-mesh-shading}
 
