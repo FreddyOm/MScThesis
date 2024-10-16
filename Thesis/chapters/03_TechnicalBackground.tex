@@ -177,18 +177,64 @@ consider visibility of different instances.
 
 \subsection{Hierarchical Z-Buffering} \label{subsec-hierarchical-z-buffering}
 
-\emph{\ac{HiZ} Buffering} is a technique first introduced for \ac{CPU} computation by Ned Greene et al. \cite{Greene93,Greene95}. 
-Since then, it "has had significant influence on occlusion culling research" \cite{AkenineMoeller2018}. 
-It is a fundamental basis on which our approach relies on which will be discussed in more detail.\\
+\emph{\ac{HiZ} Buffering} is a technique first introduced for \ac{CPU} computation by Ned Greene et al. 
+\cite{Greene93,Greene95}. Since then, it "has had significant influence on occlusion culling research" 
+\cite{AkenineMoeller2018}. It is a fundamental basis on which our approach relies on which will be discussed in more detail.\\
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=200px]{images/graphics/hiz-buf-values.png}
+    \caption{The calculation of a \ac{HiZ} buffer computes the farthest value of each texel window, 
+    resulting in a new texel value for adjacent mip levels \cite{AkenineMoeller2018}.}
+    \label{fig:hiz-value-computation}
+\end{figure}
 
 \noindent
 \ac{HiZ} Buffering is computed in image space and relies on two main components. An octree scene representation and a 
-\emph{Z-Buffer} pyramid. [@TODO: Check if z-buffer or mip map needs to explained] The octree contains all instances and 
-the z-pyramid is a set of z-buffer mip-maps, the first level mip-map being full resolution, and the following levels 
-each being reduced in resolution by the factor four. 
+\emph{Z-Buffer} pyramid. [@TODO: Check if z-buffer or mip map needs to explained] 
+The octree contains all instances present in the scene. The \emph{z-pyramid} is a set of z-buffer mip-maps, with every 
+map reducing in size relative to the previous mip map. The reduction is computed by aggregating values from 4 texels 
+within the previous mip-map and writing the output value into one texel of the new mip-map level. This way, both axis 
+(u and v) are scaled to be half the length of the previous level. The resulting z-pyramid then has the full resolution 
+z-buffer as the finest granularity in the z-pyramid and a very low resolution and small texture on the other end. 
+An exemplary z-pyramid is shown in figure \ref{fig:hiz-mip-chain}.\\
+
+\noindent
+The computation of new values is another crucial step. "[...] [E]ach z-value is the farthest z in the corresponding 
+2 \begin{math}\times\end{math} 2 window of the adjacent finer level" \cite{AkenineMoeller2018}. This process is shown 
+in figure \ref{fig:hiz-value-computation}, showing how the farthest value of each texel window is inserted into adjacent 
+levels.\\
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{images/graphics/hiz-mip-chain.png}
+    \caption{A mip chain of a scenes z-buffer. Every buffer in this chain is has quater of the resolution of its 
+    predecessor buffer \cite{Schachtschabel2017}.}
+    \label{fig:hiz-mip-chain}
+\end{figure}
+
+\noindent
+A visibility test against this z-pyramid is computed as follows. The octree is traversed in a front to back order 
+and each octree node is transformed into image-space, essentially projecting the bounding volume of the node onto 
+the view plane. Now, the projected bounding volume overlaps a specific region of the view plane, which is then 
+tested against the coarsted z-pyramid cell, containing this volume projection. The nearest z value of the bounding 
+volume is compared to the z-pyramids farthest value entries. If the bounding volumes z happens to be farther than the 
+\ac{HiZ} value, it is consequently occluded. If the comparison yields the opposite result, the test "is continued 
+recursively down the z-pyramid until the [bounding volume] is found to be occluded, or until the bottom level of the 
+z-pyramid is reached, at which point the box is known to be visible" \cite{AkenineMoeller2018}. Visibile octree nodes 
+are then drawn to the depth buffer, meaning all the geometry contained within the node is drawn to the depth buffer 
+for being tested against during the computation of the following octree nodes. As Akenine-Möller et al. 
+\cite{AkenineMoeller2018} point out, this algorithm is not used in its original form. Modern variations of this 
+algorithm evolved from the work of Greene et al. \cite{Greene93} and are widely adopted in modern real-time computer 
+graphics. As will be shown in chapter \ref{subsec-two-pass-occlusion-culling}, the concept of an octree representation 
+used for hierarchical culling and a z-pyramid used as an occlusion representation (\cite{AkenineMoeller2018}) can be 
+elegantly leveraged on the GPU side for efficient occlusion culling.
+
 
 \subsection{Two-Pass Occlusion Culling} \label{subsec-two-pass-occlusion-culling}
 
+
+\subsection{Depth Reprojection} \label{subsec-depth-reprojection}
 
 \section{Mesh Shading}  \label{sec-mesh-shading}
 

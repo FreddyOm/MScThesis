@@ -17,6 +17,7 @@ Thesis/MA_Main.toc
 
 Thesis/images/*.pdf
 
-# Error files
+# Temp files
 
 *ERROR
+*(busy)
