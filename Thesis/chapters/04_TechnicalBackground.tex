@@ -16,7 +16,7 @@ voxels are actually drawn to the screen.\\
 [@TODO: Additional option of drawing bitwise]
 A basic approach for a scene representation is a three dimensional voxel grid. This 
 approach relies on a fixed size grid where each grid cell represents one voxel.
-To draw the voxels, a seperate buffer can hold additional voxel information, which 
+To draw the voxels, a separate buffer can hold additional voxel information, which 
 can be accessed by a given grid cell index. The voxel data can store information about 
 whether a voxel is present in that particular grid cell or not, which color the voxel 
 should have, the normals for lighting calculation and any other data necessary.
@@ -50,27 +50,27 @@ hierarchy where more data is present and a shallow hierarchy where almost no or 
 Octrees like this can vary in their specific implementation, especially in how they maintain the 
 payload. Some might store it right next to the octree node description, others might want to separate 
 octree and payload data. Octree nodes could also be appended to a dedicated buffer and therefore be stored 
-seperately to the tree hierarchy description. Such an approach would maintain chache coherency during an 
+separately from the tree hierarchy description. Such an approach would maintain cache coherency during an 
 unordered traversal of all octree nodes. [@TODO: find appropriate sources]
 
 When using hierarchical data structures, dedicated vertex positions can be omitted and instead 
-the voxel position in space can be implicitly calculated from the hierarcy and the root nodes bounds. 
+the voxel position in space can be implicitly calculated from the hierarchy and the root node's bounds. 
 This allows for improvement of memory occupation, which is vital for loading and storing high 
-resolution voxel scenes. A voxels state can be encoded into either visible (1) or empty (0).
-A bitwise representation of voxels can significantly decrease the memory footprint which is a concept 
-on which the next approach expand on.
+resolution voxel scenes. A voxel's state can be encoded into either visible (1) or empty (0).
+A bitwise representation of voxels can significantly decrease the memory footprint, that the next 
+approach expand on.
 
 \subsection{High Resolution Sparse Voxel Directed Acyclic Graphs} \label{subsec-highres-svo-dags}
 
 Assarsson et al. \cite{Assarsson2013} use data redundancy to further generalize and optimize high resolution 
-\ac{SVO}s. In their implementation the octree data structure relies on bitmasks, to encode the existance of child 
+\ac{SVO}s. In their implementation, the octree data structure relies on bitmasks, to encode the existence of child 
 nodes. This way, empty nodes are ignored and the information can be easily stored within one byte. This child node 
 mask uniquely identifies the layout of the nodes below and can also be used to store the voxel occupation of the 
-leaf nodes. Next, they make use of the fact, that an octree nodes position is uniquely identifed by the path along 
+leaf nodes. Next, they make use of the fact that an octree node's position is uniquely identifed by the path along 
 the nodes from root to leaf node. Since voxels can be encoded as either being present or not, and non-present 
 voxels can be ignored, the data can be significantly reduced in size. Furthermore, equal child node masks 
 can simply be shared between different parent nodes instead of being duplicated. Assarsson et al. \cite{Assarsson2013} 
-suggest a buttom-up approach to remove redundant nodes and replace whole sub-trees of the octree by pointing to one 
+suggest a bottom-up approach to remove redundant nodes and replace whole sub-trees of the octree by pointing to one 
 instance of the same pattern within the tree, which is shown in figure \ref{fig:sparse-voxel-dag-creation}. 
 This optimization can be recursively done to each layer in the tree hierarchy, resulting in an optimized version 
 of the data structure. The resulting structure is a more general hierarchical data structure, namely a \ac{DAG}.
@@ -90,19 +90,19 @@ with our use case and is highly recommended by us.
 \section{Culling Techniques} \label{sec-culling-techniques}
 
 \emph{Culling} refers to the technique to discard parts of a scene "that are not considered to contribute to the final 
-image" \cite{AkenineMoeller2018}. This allows for a highly populated scenes to be rendered, since most parts of a scene 
+image" \cite{AkenineMoeller2018}. This allows for highly populated scenes to be rendered, since most parts of a scene 
 will probably not be visible by the camera at the same time. Ignoring culled objects or triangles is therefore a common 
-process in realtime rendering. "The fastest triangle to render is the one never sent to the \ac{GPU}" 
+process in real-time rendering. "The fastest triangle to render is the one never sent to the \ac{GPU}" 
 \cite{AkenineMoeller2018}. In this section, the most common culling techniques are presented and the ones considered by 
 our approach are specifically highlighted and analyzed. 
 
 
 \subsection{Backface Culling} \label{subsec-backface-culling}
 
-Backface culling is probably the most commonly used culling algorithm. It is concerned with discarding triangles which 
+Backface culling is probably the most commonly used culling algorithm. It is concerned with discarding triangles that 
 are facing away from the camera. These triangles will not be seen by the camera anyway and thus can be safely ignored 
-in the rendering process. To compute the facing direction of a triangle, which when normalized is equivilent to the 
-triangles \emph{Surface Normal}, the vertex winding order of the given rendering backend is considered.\\
+in the rendering process. To compute the facing direction of a triangle, which when normalized is equivalent to the 
+triangle's \emph{Surface Normal}, the vertex \emph{winding order} of the given rendering backend is considered.\\
 
 \begin{figure}[h]
     \centering
@@ -116,10 +116,10 @@ When describing a triangle mathematically, the vertex positions are considered, 
 said triangle. The surface can then be interpreted as facing towards the viewer or away from them. 
 When trying to compute the triangle, its vertex positions can be recorded in an arbitrary order, but to encode which 
 direction the surface is facing, the vertex position order is specified up front. Microsoft's rendering \ac{API}s D3D11 
-and D3D12 for example encode a counterclock-wise \emph{winding order} to be interpreted as facing towards the viewer 
-\cite{D3DTopology2020}. With this standard in place, all triangles can be uniquely define their orientation relative 
-to the camera. When enabling backface culling within the renderin backend, triangles which are not facing the camera, 
-are automatically omitted immediatly after screenmapping \cite{AkenineMoeller2018}. Depending on the type of geometry, 
+and D3D12 for example encode a counterclockwise winding order to be interpreted as facing towards the viewer 
+\cite{D3DTopology2020}. With this standard in place, all triangles can uniquely define their orientation relative to 
+the camera. When enabling backface culling within the rendering backend, triangles which are not facing the camera 
+are automatically omitted immediately after screenmapping \cite{AkenineMoeller2018}. Depending on the type of geometry, 
 backface culling can remove up to half of the triangles about to be rendered, proving very valuable to highly populated 
 scenes and high geometric density.\\
 
@@ -136,15 +136,30 @@ parallelized backface culling using an updated rendering pipeline in current gra
 
 [@TODO: Add pictures]
 
-\emph{View Frustum Culling} is a technique which aims to remove instances, i.e. meshes, which are outside of the camera 
-view frustum. This leads to a discard of all instances which are completely invisible due to their location relative to 
-the camera. Said instances can thus be safely ignored and discarded early in order to keep the memory computations by 
-\ac{CPU} and \ac{GPU} low. To cull potantial instances, bounding boxes are calculated and checked against the camera 
-view frustum, which in turn is specified by the \emph{near plane} and \emph{far plane}, as well as the \emph{fov}. For 
-instance, if a bounding sphere is partially or completely inside the view frustum can then be tested by computing a 
-simple \boldmath{dot product} between the frustum plane and the bounding volume center and comparing it against the 
-radius of the bounding sphere. \\
+\emph{View Frustum Culling} is a technique that aims to remove instances, i.e. meshes, which are outside of the camera 
+view frustum. This leads to the skipping of all instances that are completely invisible due to their location relative to 
+the camera. Said instances can thus be safely ignored and discarded early in order to keep the memory occupation low. 
+To cull potantial instances, bounding boxes are calculated and checked against the camera view frustum, which in turn 
+is specified by the \emph{near plane} and \emph{far plane}, as well as the \emph{fov}, encoded in a \emph{dot-normal}
+representation. For instance, testing if a bounding sphere is partially or completely inside the view frustum can be 
+computed with the following algorithm: \\
 
+\begin{algorithmic}[1]
+    \State $radius \gets \text{GetBoundingSphereRadius()}$ 
+    \State $center \gets \text{GetBoundingSphereCenter()}$ 
+    \State $planeIndex \gets 0$
+    \While{$planeIndex < 6$}
+        \State $planeIndex \gets planeIndex + 1$
+        \State $frustum \gets \text{frustumPlanes}[planeIndex]$ 
+        \State $distance \gets \text{dot}(frustum, center)$
+        \If{$distance < -radius$}
+            \State \Return \textbf{FALSE}
+        \EndIf
+    \EndWhile
+    \State \Return \textbf{TRUE}
+\end{algorithmic}
+
+\vspace{0.5cm}
 \noindent
 In combination with acceleration structures like an octree, view frustum culling can be computed for the bounding 
 volumes of the given structure which can further optimize the culling operations due to spatial grouping of multiple 
@@ -173,7 +188,7 @@ As it is the case with culling algorithms in general, occlusion culling algorith
 approximate object positions and scale in space. Figure \ref{fig:bounding-volumes} shows how different bounding volumes 
 can be used to support faster computation or more accurate volume approximation. Algorithms have been proposed which 
 operate in \emph{image space}, \emph{object space} or \emph{ray space}, with image space occlusion culling being most 
-widely adopted in realtime rendering \cite{AkenineMoeller2018}. These algorithms operate on a projected 2D image to 
+widely adopted in real-time rendering \cite{AkenineMoeller2018}. These algorithms operate on a projected 2D image to 
 consider visibility of different instances.  
 
 \subsection{Hierarchical Z-Buffering} \label{subsec-hierarchical-z-buffering}
