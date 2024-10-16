@@ -125,11 +125,11 @@ scenes and high geometric density.\\
 
 \noindent 
 [@TODO: Add image]
-Backface culling algorithms can also be applied to clusters of triangles. As \cite{Shirmun1993} propose, multiple 
-triangles can be culled at once considering a common normal cone. "Shirmun and Abi-Ezzi \cite{Shirmun1993} prove that 
-if the viewer is located in [a] frontfacing cone" constructed by the normals of all the triangles within the cluster, 
-"then all faces in the cone are frontfacing, and similarly for the backfacing cone" \cite{AkenineMoeller2018}. As 
-will be mentioned later in chapter \ref{subsubsec-meshlet-backface-culling}, this approach can be used for more 
+Backface culling algorithms can also be applied to clusters of triangles. As Shirmun et al. \cite{Shirmun1993} propose, 
+multiple triangles can be culled at once considering a common normal cone. "Shirmun and Abi-Ezzi \cite{Shirmun1993} 
+prove that if the viewer is located in [a] frontfacing cone" constructed by the normals of all the triangles within the 
+cluster, "then all faces in the cone are frontfacing, and similarly for the backfacing cone" \cite{AkenineMoeller2018}. 
+As will be mentioned later in chapter \ref{subsubsec-meshlet-backface-culling}, this approach can be used for more 
 parallelized backface culling using an updated rendering pipeline in current graphics \ac{API}s.
 
 \subsection{View Frustum Culling} \label{subsec-view-frustum-culling}
@@ -301,21 +301,20 @@ Depth Reprojection could in general be used as well, but is not within the scope
 
 \section{Mesh Shading}  \label{sec-mesh-shading}
 
-Mesh Shaders were first introduced to NVIDIA Touring \ac{GPU}s in 2018 as a part of
-"a new programmable geometric shading pipeline" and build upon the compute programming 
-pipeline \cite{Kubisch2018}. Therefore, they aim to optimize work by 
-using the available hardware more efficiently. Compared to the traditional vertex shading 
-pipeline, mesh shading introduces a more holistic and parallel processing of geometry data.
-It is incorporated into the rasterized rendering pipeline and has since been used in modern 
-gaming. It gained a lot of attention when it was used as the foundation of Epic Games 
-Unreal Engine 5 feature \emph{Nanite} [@TODO: source].\\
+Mesh Shaders were first introduced to NVIDIA Touring \ac{GPU}s in 2018 as a part of "a new programmable 
+geometric shading pipeline" and build upon the compute programming pipeline \cite{Kubisch2018}. 
+Therefore, they aim to optimize work by using the available hardware more efficiently. Compared to the 
+traditional vertex shading pipeline, mesh shading introduces a more holistic and parallel processing of 
+geometry data. It is incorporated into the rasterized rendering pipeline and has since been used in modern 
+gaming. It gained a lot of attention when it was used as the foundation of Epic Games \emph{Unreal Engine 5} 
+feature \emph{Nanite} \cite{Karis2021}.\\
 
 \subsection{The Mesh Shading Pipeline} \label{subsec-the-mesh-shading-pipeline}
 
 In contrast to the \emph{Mesh Shading Rendering Pipeline}, the "traditional" \emph{Vertex Shading Pipeline} 
-has more specialized stages. Figure \ref{fig:traditional-rendering-pipeline} shows all the stages available 
-to developers. This pipeline is composed of fixed, programmable and optional stages, where each 
-stage operates on some input data and in some cases produces output data for the next stage to consume.\\
+has more specialized stages, which are listed in figure \ref{fig:traditional-rendering-pipeline}. This pipeline 
+is composed of fixed, programmable and optional stages, where each stage operates on some input data and in 
+some cases produces output data for the next stage to consume.\\
 
 \begin{figure}[h]
     \centering
@@ -327,29 +326,26 @@ stage operates on some input data and in some cases produces output data for the
 \noindent
 The \emph{Vertex Attribute Fetch} stage (also called \emph{Input Assembler} stage) collects the geometric 
 input and creates primitives out of it, reading all necessary data associated with the primitive data. 
-These primitives are usually triangles but this can vary slightly from usecase to usecase, depending
+These primitives are usually triangles but this can vary slightly from use case to use case, depending
 on the prior configuration of the stage. After the Input Assembler, the data is sent to the \emph{Vertex Shader}.
-This stage is responsible for operating on vertex transformations, moving, rotating, scaling and distorting the 
-vertices according to the given transformation matrices. After that, the \emph{Tesselation Control Shader} can 
-optionally increase geometric resolution or triangulate polygonal geometry by applying tesselation functions.
-The next stage is the optional \emph{Geometry Shader}, which is capable of generating additional primitives 
-on the \ac{GPU}. However, it is commonly said to be not very efficient and is treated as deprecated since the 
-introduction of the more general purpose and faster \emph{Compute Shaders} [@TODO: source]. 
-The three-dimensional scene is then processed by the \emph{Rasterizer} which breaks down the scene description into 
-a discrete, two-dimensional "image". This final image, also called \emph{Frame Buffer}, contains the two-dimensional 
-projection of the scene from the cameras point of view. This rasterization process also implies creating discrete 
-samples from continuous lines and faces.
-Finally, the final frame buffer is colored correctly by the \emph{Pixel Shader}. This stage takes all given parameters 
-like light position, light color, light intensity, camera position, vertex colors, textures and many more into account 
-and creates a final image. The pixel shader can implement different functions (\ac{BRDF}) for calculation of the final 
-pixel color and is called once per pixel. This means, that the computational cost increases with the amount of pixel, 
-i.e. the frame buffers resolution. 
+This stage is responsible for operating on single vertices, transforming vertices according to the given 
+transformation matrices. After that, the \emph{Tesselation Control Shader} can optionally increase geometric 
+resolution or triangulate polygonal geometry by applying tesselation functions. The next stage is the optional 
+\emph{Geometry Shader}, which is capable of generating additional primitives on the \ac{GPU}. However, it is 
+commonly said to be not very efficient and is treated as deprecated since the introduction of the more general 
+purpose and faster \emph{Compute Shaders} [@TODO: source]. The three-dimensional scene is then projected onto the 
+view plane and is subsequently processed by the \emph{Rasterizer} which samples the continuous lines and faces to 
+find the appropriate pixels covered by the geometry. Finally, the final frame buffer is colored correctly by the 
+\emph{Pixel Shader}. This stage takes all given parameters like light position, light color, light intensity, camera 
+position, vertex colors, textures and many more into account and creates a final, colored image. The pixel shader can 
+implement different functions (\ac{BRDF}) for calculation of the final pixel color and is called once per pixel. 
+This means, that the computational cost increases with the amount of pixel, i.e. the frame buffers resolution. 
 
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=\linewidth]{images/graphics/mesh-rendering-pipeline.png}
-    \caption{The mesh shading pipeline as presented by NVIDIA in \cite[Christoph Kubisch]{Kubisch2018}.}
+    \caption{The mesh shading pipeline as presented by NVIDIA in \cite{Kubisch2018}.}
     \label{fig:mesh-rendering-pipeline}
 \end{figure}
 
@@ -357,18 +353,19 @@ The \emph{Mesh Shading Rendering Pipeline} is the a rendering pipeline, optimize
 density. It shares the Rasterizer and the Pixel Shader stages with the Vertex Shading Pipeline but 
 introduces two new stages which aim to replace the Vertex Shader, Geometry Shader and Tesselation stage.
 The new stages are called \emph{Task Shader} (or \emph{Amplification Shader}) and \emph{Mesh Shader}. Both 
-are fully programmable and are based on the Compute Shader architecture. Therefore they are inherently different 
+are fully programmable and are based on the compute shader architecture. Therefore they are inherently different 
 from the traditional Vertex Shader stage, even though they both can be used for vertex transformations.
 Figure \ref{fig:mesh-rendering-pipeline} shows the piepline stages and the order they are executed in. \\
 
 \noindent
 The Task Shader serves as a precomputational stage which is optional and invokes the Mesh Shader.
-The Task Shader can take any arbitrary data as input and operates on the data to produce output data which in 
-turn is scheduled for execution on the Mesh Shader. Since both shaders are based on Compute Shaders, a thread 
+It can take any arbitrary data as input and operates on the provided data to produce output data which in 
+turn is scheduled for execution on the Mesh Shader. Since both shaders are based on compute shaders, a thread 
 group size can be specified and groupshared memory can be allocated. This allows for highly parallelized execution 
 and optimized memory usage. A key difference to the traditional pipeline is, that the Amplification Shader can 
 invoke other compute shaders, create new tasks and dispatch none, one, or multiple mesh shader invocations. This 
-makes the shader extremely flexible and capable of providing the same results as the Geometry Shader did.\\
+makes the shader extremely flexible and capable of providing the same results as the Geometry Shader did, but 
+faster and more scalable.\\
 
 [@TODO: Add picture of meshlets]
 \noindent
@@ -376,9 +373,9 @@ The Mesh Shader output can be defined individually but usually it creates a smal
 number of triangles, called \emph{Meshlet}. This new approach to operating on vertices allows for a new interpretation 
 of mesh data. The primitive topology is not anymore constrained to triangles, triangle fans and triangle strips, 
 but can be individually specified by the developers.
-Meshlets are computed by thread groups which usually fetch the mesh data from the given buffers and apply 
-transformations and arbitrary operations. This new way of processing geometry is not only more efficient in many cases 
-and reduces the memory bandwidth, but also allows for per-meshlet operations \cite{Kubisch2020}. This is a key 
+Meshlets are computed by thread groups which usually fetch the mesh data from the given vertex and index buffers and 
+apply transformations and arbitrary operations. This new way of processing geometry is not only more efficient in many 
+cases and reduces the memory bandwidth, but also allows for per-meshlet operations \cite{Kubisch2020}. This is a key 
 advantage, since per-instance geometry can now be processed in parallel and still be individually discarded or post 
 processed. There are several other advantages over the traditional Vertex Shaded Pipeline, which we will not list to 
 the full degree. More details are provided in \cite{Kubisch2020}.\\
@@ -388,30 +385,52 @@ the full degree. More details are provided in \cite{Kubisch2020}.\\
 
 One major innovation which is enabled by the use of Mesh Shading is to cull on a per-primitve (per-meshlet) basis. 
 This allows for more granular culling of high density geometry even within instances. Prior to the implementation 
-of meshlets, culling had to be done on a per-instance basis (or for backface culling on a per triangle basis), 
+of meshlets, culling usually was done on a per-instance basis (or for backface culling on a per triangle basis), 
 ommiting whole instances depending on their position in space or their visibility from the point of view of the camera.\\
 
 \noindent
 But although the Mesh Shading Pipeline was first introduced in 2018, the idea of triangle clusters goes back even further.
 One example of this \ac{GPU} Driven Rendering technique is the 2014 title \emph{Assassin's Creed Unity} \cite{Ubisoft2014}.
-\cite{Aaltonen2015} provides an overview over multiple cluster related optimization techniques, implementing a highly 
-parallelized rendering pipeline before Mesh Shading became part of the official Rendering \ac{API}s.
+Aaltonen et al. \cite{Aaltonen2015} provide an overview over multiple cluster related optimization techniques, implementing 
+a highly parallelized rendering pipeline before Mesh Shading became part of the official Rendering \ac{API}s.
 For their \ac{GPU} culling algorithms they refer to the prior work of Hill \cite{Hill11} and Greene \cite{Greene93} which 
-provides the basis for some of the implementation in our case study.
-
+provides the basis for some of the implementation in our case study. Most of the culling algorithms discussed in chapter 
+\ref{sec-culling-techniques} can be adopted to use meshlet culling. The algorithms can usually be applied to triangle clusters 
+without the need of changing a lot of the algorithm. Bounding volumes can be calculated for meshlets, too, and meshlets do also 
+consist of triangles themselves. In this chapter we briefly revisit the basic culling algorithms and show, how they can be 
+adapted for the Mesh Shading pipeline.
 
 \subsubsection{Meshlet Backface Culling} \label{subsubsec-meshlet-backface-culling}
 
-[@TODO: Rewrite in context of Backface culling above]
-Backface culling refers to the discard of triangles, which face away from the camera. These triangles can usually be omitted 
-since they will not be seen by the camera anyway. Except from a few exceptions, backface culling can be applied to the 
-pipeline configuration safely. Meshlet backface culling refers to the same principle. In this case, not individual triangles  
-are culled but whole meshlets are discarded if they are facing away from the camera. Practical algorithms to determine meshlet 
-orientation are [@TODO: cite algos].\\ %\cite{} \cite{} \cite{}
+As shown in chapter \ref{subsec-backface-culling}, there are backface culling algorithms which can be applied to 
+triangle clusters as well. For instance, the normal cone approach by Shirmun et al \cite{Shirmun1993} can be used 
+in the Mesh Shading pipeline as well. In fact, having a hardware and software support for the computation of triangle 
+clusters makes this approach even more efficient. Clusters are evaluated in parallel, making a normal cone backface 
+culling algorithm very fast. \\
 
-%\noindent
-%Meshlet backface culling can be more efficient because adjacent triangles usually face in similar directions.
+\noindent
+Another algorithm compatible with triangle clusters is the one propsed by Aaltonen et al. \cite{Aaltonen2015}, again 
+in the context of the SIGGRAPH 2015 presentation showing their work for \emph{Assassins Creed Unity}. They introduce 
+a small bounding cube around \emph{n} triangles, which could correspond to a meshlet in the Mesh Shading pipeline. 
+"Each cube face is split into \emph{r} \begin{math}\times\end{math} \emph{r} 'pixels', each encoding an \emph{n}-
+bit mask that indicates whether the corresponding triangle is visible over that 'pixel'" \cite{AkenineMoeller2018}.
+As long as the camera is outside of the cube, the center of the cube creates a frustum with any of the "pixel's" on 
+the cube's surface, as shown in figure \ref{fig:backface-culling-ac-unity}. The frustum in which the camera is 
+located can be found and the bitmask can be accessed. This way, the backfacing triangles can be identified and 
+culled. \cite{Aaltonen2015}, \cite{AkenineMoeller2018}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{images/graphics/backface-culling-ac-unity.png}
+    \caption{Backface culling thechnique using a bounding box around a set of \emph{n} triangles, 
+    as proposed by Aaltonen et al. \cite{Aaltonen2015}. Image by Akenine-Möller et al. \cite{AkenineMoeller2018}.}
+    \label{fig:backface-culling-ac-unity}
+\end{figure}
+
 
 \subsubsection{Meshlet View Frustum Culling} \label{subsubsec-meshlet-view-frustum-culling}
+
+Frustum culling can be adapted to work on meshlets as well. Similar to backface culling, the basic technique remains 
+the same, but the 
 
 \subsubsection{Meshlet Occlusion Culling} \label{subsubsec-meshlet-occlusion-culling}
