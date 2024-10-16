@@ -293,10 +293,11 @@ and depth calculations can be inprecise, because the result is non-conservative.
 process sometimes fails to compute the correct depth values for objects, especially if they move relative to the 
 camera. Another problem occurs in use cases, where the camera moves very fast relative to the environment. In such 
 a case, the camera might cover a too large distance, so that none of the visible instances in a given frame were 
-visible during the previous frame. \cite{Kruskonja2022} 
+visible during the previous frame. \cite{Kruskonja2022} \\
 
-- non conservative
-- precision errors
+\noindent
+The \ac{TPOC} algorithm is used in our approach, with minimal changes to the selcetion of best occluders.
+Depth Reprojection could in general be used as well, but is not within the scope of our implementation.
 
 \section{Mesh Shading}  \label{sec-mesh-shading}
 
