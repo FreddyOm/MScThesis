@@ -431,7 +431,36 @@ culled. \cite{Aaltonen2015}, \cite{AkenineMoeller2018}
 
 \subsubsection{Meshlet View Frustum Culling} \label{subsubsec-meshlet-view-frustum-culling}
 
+[@TODO: Check if pre-calculated meshlets have been introduced; find sources]
 Frustum culling can be adapted to work on meshlets as well. Similar to backface culling, the basic technique remains 
-the same, but the 
+the same, but is applied to triangle clusters (meshlets) rather than instances (meshes). To implement this, meshlet 
+bounding volumes need to be computed. The same principles apply to meshlet bounding volumes as to instance bounding 
+volumes, so spherical volumes are usually fast and cheap to calculate. If the meshlets are pre-calculated, the 
+bounding volumes can be precalculated as well, since they will not change over time. Then, frustum culling is as simple 
+as using any existing frustum culling algorithm (see \ref{subsec-view-frustum-culling}) and applying it to the meshlets.
+Since this can be done in the Task Shader, the culling can be computed in parallel and culled meshlets can be discarded 
+early. This includes parts of single instances, which allows for even better optimization. In the traditional Vertex 
+Shading pipeline, instances had to completely outside of the view frustum to be culled. If an instance is partially 
+visible in the Mesh Shading pipeline, the meshlets inside the frustum can be drawn and the meshlets outside of the 
+frustum can be discarded. \\
+
+\noindent
+We use view frustum culling of individual meshlets in our approach to further optimize performance. A simple 
+implementation was already included in the framework we used for our case study.
 
 \subsubsection{Meshlet Occlusion Culling} \label{subsubsec-meshlet-occlusion-culling}
+
+Meshlet occlusion culling refers to the process of culling meshlets which are occluded by any other meshlet, by a 
+group of meshlets or another instance. This culling technique is rather new due to the relative novelty of the 
+Mesh Shading pipeline. Still, Aaltonen et al. \cite{Aaltonen2015} used what they call \emph{Cluster Culling} in 
+\emph{Assassin's Creed Unity} (Ubisoft \cite{Ubisoft2014}, 2014). Meshlet occlusion culling can be implemented in 
+a bunch of different ways, exactly as traditional occlusion culling algorithms. Often, this implies the use of a 
+\ac{BVH} like an octree to make visibilty checks easier. \ac{HZB} can also be applied the new pipeline, and meshlets 
+can be checked for occlusion, using the highly parallel Mesh Shading pipeline. Consequently, \ac{TPOC} is also applied 
+to individual meshlets, as seen in Alan Wake 2 (Remedy Entertainment \cite{Remedy2023}, 2023) or Epic Games' 
+\emph{Unreal Engine 5} and \emph{Nanite} \cite{Karis2021}.\\
+
+\noindent
+We believe that this new way of culling single meshes can generate new innovation in the field of computer graphics.
+This is why we decided to implement our approach in a Mesh Shading pipeline, which, when used carefully, is more 
+efficient than comparable pipelines like Geometry Shaders or Instancing. 
