@@ -268,8 +268,8 @@ capabilities of the \ac{GPU}. \\
 In contrast to the basic \ac{HZB}, this approach relies on the heavy use of \ac{GPU} computation and the pre-
 determination of best occluders. This way, the scene doesn't have to be reversed in a front to back order and 
 not necessarily needs to incorporate an octree, as long as object bounds can be computed efficiently enough.
-In SIGGRAPH 2015 presentation, Aaltonen et al. mention the addition of another acceleration technique, which 
-is compatible with \ac{TPOC}, \emph{Depth Reprojection}. 
+In SIGGRAPH 2015 presentation, Aaltonen et al. \cite{Aaltonen2015} mention the addition of another acceleration 
+technique, which is compatible with \ac{TPOC}, \emph{Depth Reprojection}.
 
 
 \subsection{Depth Reprojection} \label{subsec-depth-reprojection}
@@ -349,7 +349,8 @@ This means, that the computational cost increases with the amount of pixel, i.e.
     \label{fig:mesh-rendering-pipeline}
 \end{figure}
 
-The \emph{Mesh Shading Rendering Pipeline} is the a rendering pipeline, optimized for high geometrical 
+\noindent
+The \emph{Mesh Shading Rendering Pipeline} is a rendering pipeline, optimized for high geometrical 
 density. It shares the Rasterizer and the Pixel Shader stages with the Vertex Shading Pipeline but 
 introduces two new stages which aim to replace the Vertex Shader, Geometry Shader and Tesselation stage.
 The new stages are called \emph{Task Shader} (or \emph{Amplification Shader}) and \emph{Mesh Shader}. Both 
