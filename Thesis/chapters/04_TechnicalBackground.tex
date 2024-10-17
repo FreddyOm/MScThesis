@@ -269,7 +269,7 @@ One of the most renowned examples of this algorithm is present in the 2014 title
 \cite{Ubisoft2014}. One year later, Ulrich Haar and Sebastian Aaltonen presented their approach on SIGGRAPH 2015 
 \cite{Aaltonen2015}. Their implementation inspired other developers like \emph{Epic Games} for \emph{Unreal Engine 5} 
 to adopt similar techniques \cite{Karis2021}. This is the algorithm we use in our implementation. It shares its basic 
-principle with \ac{HZB} but focuses on a more \ac{GPU}-Driven configuration and using a given set of best occluders to 
+principle with \ac{HZB} but focuses on a more \ac{GPU}-driven configuration and using a given set of best occluders to 
 cull instances effectively. \\
 
 \noindent
@@ -279,7 +279,7 @@ by some of the buildings at any given moment. \ac{TPOC} thus uses artist-picked 
 computation. The best occluders are identified during runtime, drawn to depth buffer during a depth pre-pass, and 
 then used as described in chapter \ref{subsec-hierarchical-z-buffering}. The output of the depth buffer pre-pass is 
 shown in figure \ref{fig:depth-buffer-ac-unity}. Depth passes can be done quite efficiently, especially if they 
-only contain a handful of instances to draw. Additionally, because of the advances in \ac{GPU}-Driven Rendering, the 
+only contain a handful of instances to draw. Additionally, because of the advances in \ac{GPU}-driven Rendering, the 
 \ac{HiZ} pyramid can be computed by a \emph{compute shader}, which leverages the highly parallel computation 
 capabilities of the \ac{GPU}. \\
 
@@ -410,7 +410,7 @@ omitting whole instances depending on their position in space or their visibilit
 
 \noindent
 But although the Mesh Shading Pipeline was first introduced in 2018, the idea of triangle clusters goes back even further.
-One example of this \ac{GPU} Driven Rendering technique is the 2014 title \emph{Assassin's Creed Unity} \cite{Ubisoft2014}.
+One example of this \ac{GPU}-driven rendering technique is the 2014 title \emph{Assassin's Creed Unity} \cite{Ubisoft2014}.
 Aaltonen et al. \cite{Aaltonen2015} provide an overview over multiple cluster related optimization techniques, implementing 
 a highly parallelized rendering pipeline before Mesh Shading became part of the official Rendering \ac{API}s.
 For their \ac{GPU} culling algorithms they refer to the prior work of Hill \cite{Hill11} and Greene \cite{Greene93}, which 

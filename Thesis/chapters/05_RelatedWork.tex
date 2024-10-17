@@ -28,7 +28,7 @@ Most optimizations rely on culling voxels which are not visible, i.e. faces that
 Frustum culling and occlusion queries are also part of the optimization process, and partially used in \emph{Minecraft} 
 as well (though we cannot finally confirm the existance of frustum culling, or the specific occlusion culling 
 algorithm added in version 1.5). Nevertheless, most efforts towards better performance have been on the \ac{CPU} side.
-Lately, \ac{GPU}-Driven approaches have been implemented by various individual developers. [@TODO: Find specific 
+Lately, \ac{GPU}-driven approaches have been implemented by various individual developers. [@TODO: Find specific 
 optimizations and sources!]  \\
 
 
@@ -37,7 +37,7 @@ During the past years, ray tracing has become a more common rendering technique,
 shadows or ambient occlusion in rasterizer pipelines. Fully ray traced real-time rendering has mostly been available 
 for voxel rendering, using common optimization techniques like a \ac{BVH}. Voxel data for ray tracing has been a 
 major influence for our approach, since their implicit voxel representation is generally compatible with meshes 
-generated directly on the GPU. Various efforts have been made to optimize voxel representations for ray traced 
+generated directly on the \ac{GPU}. Various efforts have been made to optimize voxel representations for ray traced 
 pipelines. Assarsson et al. \cite{Assarsson2013} propose the use of their \emph{High-Resolution Sparse Voxel \ac{DAG}s}, 
 as discussed in chapter \ref{subsec-highres-svo-dags}. This approach is tailored to high voxel resolutions and data that 
 might not fit into memory all at once. Their data structure can be easily split up into several sub-trees, which in turn 
