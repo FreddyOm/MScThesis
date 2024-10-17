@@ -1,15 +1,15 @@
 \chapter{Related Work} \label{cpt-related-work}
 
-The approach we are proposing is a variation of a lot of ideas and implementations that have been 
+The approach we are proposing is an aggregation of a lot of ideas and implementations that have been 
 around for quite some time. It is of great interest to explore related work which can provide 
 context for usecases and additional techniques. Since our implementation is based on the areas 
 of Voxel Redering, Occlusion Culling and Mesh Shading, this chapter will highlight related work 
 for each of these topics. 
 
 
-[@TODO: Check if per topic is viable here or if it feels redundant; otherwise structure per game]
+[@TODO: Check redundancy with technological background]
 
-\section{Voxel Rendering}
+\section{Voxel Representation}
 
 Voxel Rendering has had huge success in sandbox and highly dynamic games like \emph{Minecraft} (Mojang, 2011) 
 or \emph{Teardown} (Tuxedo Labs, 2022). Usually these games try preserve some volumetric information for the 
@@ -20,11 +20,11 @@ allow for quick traversal in any direction. Each chunk maintains its own three-d
 data being highly compressed. Non-existing voxels are not being stored, and block states, textures and other 
 information is stored in per-chunk buffers or as global data in a global buffer. This way, using a texture atlas, 
 up to 256 different texture variants can be easily stored per voxel by only one byte 
-\cite{Bergensten2012,MinecraftFandom2021}. \\
+\cite{Bergensten2012, MinecraftFandom2021}. \\
 
 \noindent
-Over the years, many other games have made use of voxel rendering, adapting these principles of data compression and 
-data streaming. Most optimizations rely on culling voxels which are not visible, i.e. faces that touch other faces.
+Many other games have made use of voxel rendering, adapting these principles of data compression and data streaming. 
+Most optimizations rely on culling voxels which are not visible, i.e. faces that touch other faces.
 Frustum culling and occlusion queries are also part of the optimization process, and partially used in \emph{Minecraft} 
 as well (though we cannot finally confirm the existance of frustum culling, or the specific occlusion culling 
 algorithm added in version 1.5). Nevertheless, most efforts towards better performance have been on the \ac{CPU} side.
@@ -38,7 +38,14 @@ shadows or ambient occlusion in rasterizer pipelines. Fully ray traced real-time
 for voxel rendering, using common optimization techniques like a \ac{BVH}. Voxel data for ray tracing has been a 
 major influence for our approach, since their implicit voxel representation is generally compatible with meshes 
 generated directly on the GPU. Various efforts have been made to optimize voxel representations for ray traced 
-pipelines. [@TODO: sources]
+pipelines. Assarsson et al. \cite{Assarsson2013} propose the use of their \emph{High-Resolution Sparse Voxel \ac{DAG}s}, 
+as discussed in chapter \ref{subsec-highres-svo-dags}. This approach is tailored to high voxel resolutions and data that 
+might not fit into memory all at once. Their data structure can be easily split up into several sub-trees, which in turn 
+can be loaded individually. This approach seems promising for large scenes and use cases, which require the streaming of 
+data. 
+
+
+[@TODO: sources]
 
 
 
