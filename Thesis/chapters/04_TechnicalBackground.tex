@@ -5,8 +5,8 @@
 The voxel rendering in our evaluation relies on a volumetric representation of the scene.
 It is particularly important that the voxel model not only includes the surface but also 
 the space within the model. This constraint is often used in interactable use cases, where 
-the model is split, cut or manipulated in any given way. [@TODO: Reference Minecraft] lets
-the player take full control over the sandbox environment and allows adding or subtracting 
+the model is split, cut or manipulated in any given way. [@TODO: Reference] \emph{Minecraft} 
+lets the player take full control over the sandbox environment and allows adding or subtracting 
 voxels as they wish. Essentially, the voxel data of every possible voxel within the playable 
 space needs to be somehow present or encoded in memory, even though just a fraction of the 
 voxels are actually drawn to the screen.\\
@@ -99,6 +99,7 @@ our approach are specifically highlighted and analyzed.
 
 \subsection{Backface Culling} \label{subsec-backface-culling}
 
+[@TODO: Rework sentence or find source]
 Backface culling is probably the most commonly used culling algorithm. It is concerned with discarding triangles that 
 are facing away from the camera. These triangles will not be seen by the camera anyway and thus can be safely ignored 
 in the rendering process. To compute the facing direction of a triangle, which when normalized is equivalent to the 
@@ -129,7 +130,7 @@ Backface culling algorithms can also be applied to clusters of triangles. As Shi
 multiple triangles can be culled at once considering a common normal cone. "Shirmun and Abi-Ezzi \cite{Shirmun1993} 
 prove that if the viewer is located in [a] frontfacing cone" constructed by the normals of all the triangles within the 
 cluster, "then all faces in the cone are frontfacing, and similarly for the backfacing cone" \cite{AkenineMoeller2018}. 
-As will be mentioned later in chapter \ref{subsubsec-meshlet-backface-culling}, this approach can be used for more 
+As will be mentioned in chapter \ref{subsubsec-meshlet-backface-culling}, this approach can be used for more 
 parallelized backface culling using an updated rendering pipeline in current graphics \ac{API}s.
 
 \subsection{View Frustum Culling} \label{subsec-view-frustum-culling}
@@ -172,8 +173,8 @@ When considering highly populated scenes, there might be cases of meshes occludi
 when rasterizing the final projection, which means that multiple color values will be calculated for the same pixel 
 before the final color is determined. In general, overdraw should be avoided where possible. Having a lot overdraw 
 within the rendering process means that visibility determination of instances is deferred to the last possible point in 
-rendering pipeline. Often, it is better to pre-determine visibility and sample only visible instances. To achieve this, 
-algorithms can be used to select and ommit occluded instances. \\
+the rendering pipeline. Often, it is better to pre-determine visibility and sample only visible instances. To achieve 
+this, algorithms can be used to select and ommit occluded instances. \\
 
 \begin{figure}[h]
     \centering
@@ -274,7 +275,7 @@ world in a city with many large buildings. A rather large amount of instances ca
 by some of the buildings at any given moment. \ac{TPOC} thus uses artist-picked \emph{best occluders} for \ac{HZB} 
 computation. The best occluders are identified during runtime, drawn to depth buffer during a depth pre-pass, and 
 then used as described in chapter \ref{subsec-hierarchical-z-buffering}. The output of the depth buffer pre-pass is 
-shown in figure \ref{fig:depth-buffer-ac-unity}.Depth passes can be done quite efficiently, especially if they 
+shown in figure \ref{fig:depth-buffer-ac-unity}. Depth passes can be done quite efficiently, especially if they 
 only contain a handful of instances to draw. Additionally, because of the advances in \ac{GPU}-Driven Renderin, the 
 \ac{HiZ} pyramid can be computed by a \emph{compute shader}, which leverages the highly parallel computation 
 capabilities of the \ac{GPU}. \\
@@ -386,7 +387,7 @@ faster and more scalable.\\
 [@TODO: Add picture of meshlets]
 \noindent
 The Mesh Shader output can be defined individually but usually it creates a small patch consisting of a small 
-number of triangles, called \emph{Meshlet}. This new approach to operating on vertices allows for a new interpretation 
+number of triangles, called \emph{Meshlet}. This new approach to operate on vertices allows for a new interpretation 
 of mesh data. The primitive topology is not anymore constrained to triangles, triangle fans and triangle strips, 
 but can be individually specified by the developers.
 Meshlets are computed by thread groups which usually fetch the mesh data from the given vertex and index buffers and 

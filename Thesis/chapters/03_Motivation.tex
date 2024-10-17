@@ -8,12 +8,13 @@ One example is the \ac{GPU} itself, which is now considered the heart of modern 
 processing and is widely used in fields like science, artificial intelligence, games, and pretty 
 much all graphics related applications. Before 1995, there already had been a lot of iterations 
 on specialized graphics hardware, often focused on video formatting or color output operations
-\cite{Singer2023}.
+\cite{Singer2023}. \\
 
+\noindent
 The first graphics cards were specialized chips either used for video encoding and decoding
 or expensive hardware targeted for large companies, which arised during the early stages 
 of "3D consumer graphics" \cite{Singer2023}. Dedicated and affordable \ac{GPU}s for consumer 
-\ac{PC}s had their large breakthrough during the 1990s. In 1999, NVidia introduced their 
+\ac{PC} had their large breakthrough during the 1990s. In 1999, NVIDIA introduced their 
 first consumer graphics chip, the \emph{NVIDIA GeForce 256}, which was used for efficient 
 transformations and lighting \cite{Fenno2024}. Back then, this new hardware created a multitude 
 of new possibilities. 
@@ -35,10 +36,11 @@ especially the last years.
 
 \section{The Rise Of The GPU}
 
-Before the integration of specialized hardware, games like Wolfenstein 3D or the original Doom made use of 
-\ac{CPU} Rasterization, with all rendering operations executed sequentially by the \ac{CPU} [@TODO: check games and facts].
-[@TODO: Check if rendering ops were ALL on CPU]
-Therefore, a higher poly count usually led to lower framerates.
+Before the integration of specialized hardware, games like \emph{Wolfenstein 3D} or the 
+original \emph{Doom} made use of \ac{CPU} Rasterization, with all rendering operations 
+executed sequentially by the \ac{CPU} [@TODO: check games and facts].
+[@TODO: Check if rendering ops were ALL on CPU] Therefore, a higher poly count usually 
+led to lower framerates.
 
 \subsection{Rendering Pipeline}
 
@@ -79,8 +81,8 @@ voxel rendering.
 \subsection{Rasterized Voxel Rendering}
 
 The basic approach to rendering voxels is using the traditional Rasterized Rendering Pipeline.
-One of the most popular games of all time, Minecraft [@TODO: reference] uses this approach to 
-render thousands of cube shaped voxels on screen. Minecraft also makes use of various rendering 
+One of the most popular games of all time, \emph{Minecraft} [@TODO: reference] uses this approach to 
+render thousands of cube shaped voxels on screen. \emph{Minecraft} also makes use of various rendering 
 optimizations to improve frame times. This approach is straightforward in concept and can be 
 implemented for existing \ac{API}s, making use of hardware acceleration, i.e. the \ac{GPU}.
 The voxel representation allows for easy computations since geometry is laid out in a regular grid.
@@ -90,7 +92,7 @@ within the grid. Or, in general, to update voxels and their corresponding data e
 
 \noindent
 Since voxels are regular shapes, they can be easily created on the \ac{GPU} as opposed to being 
-sent over the PCI Express port. 
+sent over the \ac{PCI Express} port. 
 
 [@TODO: Write more!]
 
@@ -138,7 +140,7 @@ technique can benefit the most from advances in rendering technology.
 With most of the latest improvements of graphics hard- and software, the capabilities to process mesh data 
 and compute a rasterized image got better and better. Even the graphics hardware vendor's efforts to enable 
 real-time ray traced lighting, shadows, reflections and ambient occlusion is applied within the rasterized 
-pipeline and therefore relies on improvements to said paipeline over the last years. \\
+pipeline and therefore relies on improvements to said pipeline over the last years. \\
 We will first lay out a technical foundation in chapter \ref{cpt-technical-background} before discussing 
 related work on which our approach relies on in chapter \ref{cpt-related-work}.
 
