@@ -62,14 +62,14 @@ approach expand on.
 
 \subsection{High Resolution Sparse Voxel Directed Acyclic Graphs} \label{subsec-highres-svo-dags}
 
-Assarsson et al. \cite{Assarsson2013} use data redundancy to further generalize and optimize high resolution 
+Kampe et al. \cite{Kampe2013} use data redundancy to further generalize and optimize high resolution 
 \ac{SVO}s. In their implementation, the octree data structure relies on bitmasks, to encode the existence of child 
 nodes. This way, empty nodes are ignored and the information can be easily stored within one byte. This child node 
 mask uniquely identifies the layout of the nodes below and can also be used to store the voxel occupation of the 
 leaf nodes. Next, they make use of the fact that an octree node's position is uniquely identifed by the path along 
 the nodes from root to leaf node. Since voxels can be encoded as either being present or not, and non-present 
 voxels can be ignored, the data can be significantly reduced in size. Furthermore, equal child node masks 
-can simply be shared between different parent nodes instead of being duplicated. Assarsson et al. \cite{Assarsson2013} 
+can simply be shared between different parent nodes instead of being duplicated. Kampe et al. \cite{Kampe2013} 
 suggest a bottom-up approach to remove redundant nodes and replace whole sub-trees of the octree by pointing to one 
 instance of the same pattern within the tree, which is shown in figure \ref{fig:sparse-voxel-dag-creation}. 
 This optimization can be recursively done to each layer in the tree hierarchy, resulting in an optimized version 
@@ -78,7 +78,7 @@ of the data structure. The resulting structure is a more general hierarchical da
 \begin{figure}[h]
     \centering
     \includegraphics[width=\linewidth]{images/graphics/highres-sv-dag.png}
-    \caption{Reducing a \ac{SVO} using the approach of \cite{Assarsson2013}.}
+    \caption{Reducing a \ac{SVO} using the approach of \cite{Kampe2013}.}
     \label{fig:sparse-voxel-dag-creation}
 \end{figure}
 
