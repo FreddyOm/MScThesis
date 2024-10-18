@@ -31,7 +31,7 @@ created that covers the complete scene - in this case the bouding volume of the 
 chapter \ref{subsec-highres-svo-dags}, it is recommended to use a highly efficient and compressed octree 
 implementation like an \ac{SVO} or a Sparse Voxel \ac{DAG} \cite{Kampe2013}. For the purpose of our case study, 
 we used a custom octree implementation which refers to indices in a global \emph{voxel position buffer}, as 
-shown in figure \ref{fig:voxelpos-octreenode-buffer}.\\
+shown in figure \ref{fig:voxelpos-octreenode-buffer}.[@TODO: meshlets dont need to be pre-computed] \\
 
 \begin{figure}[h]
     \centering
@@ -57,7 +57,49 @@ based view frustum culling. To generate this data, the octree is queried during 
 in an extra \emph{octree node buffer} which stores an index into the voxel position buffer and a count of voxels,
 associated with the node. After sorting the voxel position buffer, this additional structure identifies voxel 
 positions that are located adjacent to each other inside an octree node. Figure \ref{fig:voxelpos-octreenode-buffer} 
-shows the data layout and how it relates to the voxel position buffer. 
+shows the data layout and how it relates to the voxel position buffer. \\
+
+\noindent
+The next step in the initialization procedure is to pre-compute the best occluders. This part is a significant one, 
+since it computes important data for the occlusion culling. As mentioned in chapter \ref{subsec-two-pass-occlusion-culling},
+best occluders are usually specifically authored by artists during the creation of the scene. This process is only 
+possible, if the models are static in a sense, that they do not change in size or shape. An alteration like this 
+could result in inefficient occlusion queries or even the elimination of occluders altogether. In the context of 
+volumetric scene representations, where voxel models are often a target of manipulation by players or physical 
+interactions, a predetermination of best occluders is not possible in the way it is for static models.
+This specific scenario is what our approach aimes for, and why the next step in the pipeline pre-processes best 
+occluders. Note, that this implementation does not include an update of the best occluders. It only serves as a 
+case study of the occlusion culling algorithm. Updating the best occluders when the voxel model is altered, 
+needs to be evaluated seperatly, but is considered to be trivial for occasional changes to the mesh. A more 
+demanding change to the octree content is given when computing physical interactions within the duration of a frame.
+In this case, further test need to be done to evaluate the impact on performance. \\
+
+\noindent
+To find the best occluders, different constraints need to be considered. Our approach makes use of the inner, non-visible 
+voxels, and approximates them using the octree. This means, an octree node is equivilent to a best occluder, if:
+
+\begin{itemize}
+    \item the maximum number of voxels per octree node is a power of three (e.g. $2^{3}$,  $3^{3}$, ...),
+    \item the number of voxels present within the node is equal to the maximum number of voxels per octree node
+    \item and the octree node's bounds are equal to the \emph{minimal convex hull} of all voxels within the node.
+\end{itemize}
+
+\noindent
+In practice, this means, that best occluders are given, if the octree node is completely, tightly filled 
+with voxels. If the octree node is larger than the block defined by the maximum number of voxels per node, 
+this block cannot be approximated correctly by the bounds of the node. [@TODO: add images]
+The best occluders are then seperatly stored in a buffer, so they can be dispatched efficiently.
+[@TODO: Add data structure diagram of best occluder buffer]\\
+
+\noindent
+This concludes the initialization of the pipeline. When changes are applied to the voxel data, the voxel buffer,
+the octree node buffer and the best occluder buffer need to be updated accordingly. Alternatively, the best 
+occluders can be implicitly calculated on the basis of the octree node buffer. This would make the best 
+occluders buffer redundant but would result in a higher dispatch count with a lot of discarded dispatches, 
+where the criteria for best occluder are not met. Since all computations are more or less in parallel, this 
+will not affect frametimes for a given amount of octree nodes. Nevertheless, since we are using static 
+voxel models with no runtime alternation, a static, pre-calculated buffer for best occluders is used.
+   
 
 \begin{figure}[h]
     \centering
@@ -65,6 +107,8 @@ shows the data layout and how it relates to the voxel position buffer.
     \caption{The rendering loop of the rendering pipeline.}
     \label{fig:pipeline-loop}
 \end{figure}
+
+
 
 
 % @TODO: Meshlet Creation -> Voxel
