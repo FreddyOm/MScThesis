@@ -38,7 +38,7 @@ shadows or ambient occlusion in rasterizer pipelines. Fully ray traced real-time
 for voxel rendering, using common optimization techniques like a \ac{BVH}. Voxel data for ray tracing has been a 
 major influence for our approach, since their implicit voxel representation is generally compatible with meshes 
 generated directly on the \ac{GPU}. Various efforts have been made to optimize voxel representations for ray traced 
-pipelines. Assarsson et al. \cite{Assarsson2013} propose the use of their \emph{High-Resolution Sparse Voxel \ac{DAG}s}, 
+pipelines. Assarsson et al. \cite{Kampe2013} propose the use of their \emph{High-Resolution Sparse Voxel \ac{DAG}s}, 
 as discussed in chapter \ref{subsec-highres-svo-dags}. This approach is tailored to high voxel resolutions and data that 
 might not fit into memory all at once. Their data structure can be easily split up into several sub-trees, which in turn 
 can be loaded individually. This approach seems promising for large scenes and use cases, which require the streaming of 

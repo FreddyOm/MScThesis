@@ -12,7 +12,7 @@ because of the use of additional acceleration structures. This chapter provides 
 additions to the framework and how the pipeline works in specific. The implementation details can be found in the 
 appendix \ref{cpt-appendix}.
 
-\section{Pipeline Overview}
+\section{Pipeline Initialization} \label{sec-piepline-initialization}
 
 \begin{figure}[h]
     \centering
@@ -22,16 +22,28 @@ appendix \ref{cpt-appendix}.
     \label{fig:pipeline-initialization}
 \end{figure}
 
-The pipeline is, as usually, split into an initialization routine and an update loop. The initialization is 
+\noindent
+The pipeline is, as usual, split into an initialization routine and an update loop. The initialization is 
 called once during the beginning of the execution flow and the render loop is initiated after the initialization 
 finished. Then, the loop is continuously called - once per frame. Figure \ref{fig:pipeline-initialization} shows 
-the initialization procedure. For the purpose of this case study, a single, solid voxel mesh is loaded, but this 
-could as well be a scene consisting of multiple solid voxel models. After loading any voxel model, an octree is 
-created that covers the complete scene - in this case the bouding volume of the voxel model. As discussed in 
-chapter \ref{subsec-highres-svo-dags}, it is recommended to use a highly efficient and compressed octree 
-implementation like an \ac{SVO} or a Sparse Voxel \ac{DAG} \cite{Kampe2013}. For the purpose of our case study, 
-we used a custom octree implementation which refers to indices in a global \emph{voxel position buffer}, as 
-shown in figure \ref{fig:voxelpos-octreenode-buffer}.[@TODO: meshlets dont need to be pre-computed] \\
+the initialization procedure. 
+
+\subsection*{Voxel Model Loading} \label{subsec-voxel-model-loading}
+
+For the purpose of this case study, a single, solid voxel mesh is loaded, but this could as well be a scene 
+consisting of multiple solid voxel models. In our implementation, the positions of voxels inside a regular 
+grid are loaded, skipping grid cells, where no voxels are located. For loading the voxels, the tool \emph{binvox} 
+is used \cite{binvox, Nooruddin2003}. 
+
+
+\subsection*{Octree Creation} \label{subsec-octree-creation}
+
+After loading any voxel model, an octree is created that covers 
+the complete scene - in this case the bouding volume of the voxel model. As discussed in chapter 
+\ref{subsec-highres-svo-dags}, it is recommended to use a highly efficient and compressed octree 
+implementation like an \ac{SVO} or a Sparse Voxel \ac{DAG} \cite{Kampe2013}. For the purpose of our case 
+study, we used a custom octree implementation which refers to indices in a global \emph{voxel position buffer}, 
+as shown in figure \ref{fig:voxelpos-octreenode-buffer}.\\
 
 \begin{figure}[h]
     \centering
@@ -57,9 +69,11 @@ based view frustum culling. To generate this data, the octree is queried during 
 in an extra \emph{octree node buffer} which stores an index into the voxel position buffer and a count of voxels,
 associated with the node. After sorting the voxel position buffer, this additional structure identifies voxel 
 positions that are located adjacent to each other inside an octree node. Figure \ref{fig:voxelpos-octreenode-buffer} 
-shows the data layout and how it relates to the voxel position buffer. \\
+shows the data layout and how it relates to the voxel position buffer. 
 
-\noindent
+
+\subsection*{Best Occluder Selection} \label{subsec-best-occluder-selection}
+
 The next step in the initialization procedure is to pre-compute the best occluders. This part is a significant one, 
 since it computes important data for the occlusion culling. As mentioned in chapter \ref{subsec-two-pass-occlusion-culling},
 best occluders are usually specifically authored by artists during the creation of the scene. This process is only 
@@ -80,26 +94,36 @@ voxels, and approximates them using the octree. This means, an octree node is eq
 
 \begin{itemize}
     \item the maximum number of voxels per octree node is a power of three (e.g. $2^{3}$,  $3^{3}$, ...),
-    \item the number of voxels present within the node is equal to the maximum number of voxels per octree node
-    \item and the octree node's bounds are equal to the \emph{minimal convex hull} of all voxels within the node.
+    \item the number of voxels present within the node is equal to the maximum number of voxels per octree node,
+    \item and the octree node's boundary is equal to the \emph{minimal convex hull} of all voxels within the node.
 \end{itemize}
 
 \noindent
 In practice, this means, that best occluders are given, if the octree node is completely, tightly filled 
-with voxels. If the octree node is larger than the block defined by the maximum number of voxels per node, 
-this block cannot be approximated correctly by the bounds of the node. [@TODO: add images]
-The best occluders are then seperatly stored in a buffer, so they can be dispatched efficiently.
-[@TODO: Add data structure diagram of best occluder buffer]\\
+with voxels. If the octree node, however, is larger than the block defined by the maximum number of voxels 
+per node, this block cannot be approximated correctly by the bounds of the node. This property of a best 
+occluder is propagated up the tree, as long as all eight child nodes satisfy the requirements of being a 
+best occluder. During the depth pre-pass, the best occluders are drawn as "large voxels" which are the size 
+of the respective best occluder node. This can be achieved by simply reusing the mesh shader used in the 
+normal draw call, and inputting the node's position and bounds. This way, a whole node gets drawn, instead 
+of the individual voxels, reducing the computation cost for the best occluders by at least \emph{n} times, 
+with \emph{n} being the maximum amount of voxels per node. The best occluders are seperatly stored in a 
+buffer, so they can be dispatched efficiently. \\
+
+%[@TODO: Add data structure diagram of best occluder buffer]
+%[@TODO: add images]
 
 \noindent
 This concludes the initialization of the pipeline. When changes are applied to the voxel data, the voxel buffer,
 the octree node buffer and the best occluder buffer need to be updated accordingly. Alternatively, the best 
 occluders can be implicitly calculated on the basis of the octree node buffer. This would make the best 
-occluders buffer redundant but would result in a higher dispatch count with a lot of discarded dispatches, 
+occluders buffer redundant but would result in a higher dispatch count with a lot of discarded nodes, 
 where the criteria for best occluder are not met. Since all computations are more or less in parallel, this 
-will not affect frametimes for a given amount of octree nodes. Nevertheless, since we are using static 
+will not affect frametimes for a moderate amount of octree nodes. Nevertheless, since we are using static 
 voxel models with no runtime alternation, a static, pre-calculated buffer for best occluders is used.
-   
+
+
+\section{Rendering Loop} \label{sec-rendering-loop}
 
 \begin{figure}[h]
     \centering
@@ -108,23 +132,50 @@ voxel models with no runtime alternation, a static, pre-calculated buffer for be
     \label{fig:pipeline-loop}
 \end{figure}
 
-
-
-
-% @TODO: Meshlet Creation -> Voxel
-
-- Meshlet creation for voxel meshes is trivial since meshlets don't have to be per-computed
-- Meshlet culling is also straight forward since Voxels are inherently AABBs
-- Where can I put the initial thought of having voxels as meshlets? -> maybe motivation? 
-
-\section{Setup}
-
-% @TODO: Add reference to Diligent Engine's github etc.
-For the case study, a starting point is used which provides a reliable and comparable environment.
-The framework used is the \emph{Diligent Engine} which already implements state of the art, multi-
-platform and multi-API rendering. \\
-
 \noindent
+The rendering loop consists of three main steps: The depth pre-pass including \ac{HiZ} generation, the 
+amplification shader and the mesh shader. The different stages consume and generate various data buffers 
+and textures, as shown in figure \ref{fig:pipeline-loop}. 
+
+\subsection*{Depth Pre-Pass} \label{subsec-depth-prepass}
+
+The frame computation starts by computing the depth pre-pass, which is the custom render pass central 
+for the occlusion culling. In this pass a compute shader is invoked that takes the best occluders and 
+draws them to the depth buffer. This depth pass does not draw to the back buffer, making the computation 
+relatively efficient. It can also include optional computations like frustum culling for further 
+optimization. This can be effective when there are a lot of nodes in the best occluders buffer. 
+Consequently, the depth buffer has data from possible occluders and the \ac{HiZ} generation is started. 
+The z-pyramid is generated by another compute shader, which samples four texels of the input texture 
+(the full resolution depth buffer) and outupts the lowest z-value to an outupt texture (mip level 1). 
+This chain of mip-maps is shown as the [@TODO: here is a jump from mip lvl 1 to full z-pyramid!]
+\ac{HiZ}-pyramid in figure \ref{fig:pipeline-loop}.
+
+
+\subsection*{The Amplification Shader} \label{subsec-amplification-shader}
+
+Now, the amplification shader is invoked, each threadgroup resembling one octree node. The amplification 
+shader now decides over which meshlets are drawn. Here, view frustum culling is applied to a threadgroup 
+and the occlusion culling is executed by projecting the boudning box of the meshlets onto the view plane 
+and querying the \ac{HiZ}-pyramid for depth values. If the voxel position is found to be visible - or not 
+occluded by the best occluders - the position is added to the payload, ready to be drawn by the mesh shader. 
+
+
+\subsection*{The Mesh Shader} \label{subsec-mesh-shader}
+
+The mesh shader executes the appropriate transformations, constructs a uniform voxel around the voxel position 
+and outputs the geometry. The voxels in a \ac{GPU}-Driven approach can be completely generated on the \ac{GPU}, 
+minimizing the memory bandwidth used per frame. This optimization technique is not only efficient, but also 
+trivial for uniform, static voxel geometry. When dispatching one voxel per thread, one voxel corresponds 
+to one meshlet, making pre-computation completely redundant, as opposed to the common precomputation of meshlets, 
+as mentioned in chapter \ref{sec-mesh-shading}. 
+
+
+\section{Something along the lines of "specific example"} \label{sec-todo}
+
+[@TODO: Check if I should explain mip levels in chptr 4]
+
+- Where can I put the initial thought of having voxels as meshlets? -> maybe motivation? 
+- Early-z rejection vs. our approach
 
 
 
@@ -147,14 +198,11 @@ Implementation Considerations:
 
 - Explain why Mesh Shading is useful here and what the differences to HiZ and Two-Pass OC are!
 
-- Align octree bounds with outer most voxel bounds, so no misalignment happens!
-    
+
 - Limitations: 
-    - Using Mesh Shading, we occlude meshlets against other meshlets, instead of instances against other
-    instances. This might be a limiting factor!
-
 - Worse performance on slopes? -> Check and measure!
+- Align octree bounds with outer most voxel bounds, so no misalignment happens!
 
-- Larger nodes which are not being split can be "full" without being full!
+- (Larger nodes which are not being split can be "full" without being full!)
 
 // --------------------------------------------------------------------------------- //
