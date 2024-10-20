@@ -170,7 +170,39 @@ to one meshlet, making pre-computation completely redundant, as opposed to the c
 as mentioned in chapter \ref{sec-mesh-shading}. 
 
 
-\section{Something along the lines of "specific example"} \label{sec-todo}
+\section{Data Flow} \label{sec-data-flow}
+
+[@TODO: Maybe rename]
+To illustrate the pipeline in even more detail, we take a look at the data and how it is sampled, computed 
+and output throughout the pipeline. 
+
+\subsection*{Data Pre-Processing}
+
+To obtain a valid model four our pipeline, a voxel mesh has to be created. To do this, \emph{binvox} 
+\cite{binvox} can be used. It works with any triangle mesh in the \emph{.obj} (Wavefront) or \emph{.ply} 
+(Stanford Polygon File Format) format, which in turn can be exported by most of the common 3D software. 
+Due to its availability, Blender \cite{Blender} is recommended. To convert the triangle mesh to a volumetric 
+voxel representation, \emph{binvox} is executed from the command line and the input file as well as optional 
+parameters are specified. The output is a \emph{.binvox} file. Figure \ref{fig:trimesh-to-voxel-mesh} shows 
+both the triangle mesh and the processed volumetric voxel mesh. 
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=150px]{images/graphics/lucy-triangle-mesh.png}
+    \includegraphics[width=150px]{images/graphics/lucy-triangle-mesh.png}
+    \caption{}
+    \label{fig:trimesh-to-voxel-mesh}
+\end{figure}
+
+\noindent
+The engine then takes the \emph{.binvox} file as an input and loads it during initialization. This data is then
+parsed, ready to be input into the octree.
+
+
+\subsection*{Octree Generation}
+
+The octree 
+
 
 [@TODO: Check if I should explain mip levels in chptr 4]
 
