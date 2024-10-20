@@ -188,9 +188,10 @@ both the triangle mesh and the processed volumetric voxel mesh.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=150px]{images/graphics/lucy-triangle-mesh.png}
-    \includegraphics[width=150px]{images/graphics/lucy-triangle-mesh.png}
-    \caption{}
+    \includegraphics[width=200px]{images/graphics/lucy-triangle-mesh.png}
+    \includegraphics[width=200px]{images/graphics/lucy-voxel-mesh.png}
+    \caption{The input triangle mesh (left) and the voxelized and parsed voxel mesh (right). 
+    Model \emph{Lucy} from \emph{The Stanford 3D Scanning Repository} \cite{Stanford23}.}
     \label{fig:trimesh-to-voxel-mesh}
 \end{figure}
 
@@ -201,7 +202,23 @@ parsed, ready to be input into the octree.
 
 \subsection*{Octree Generation}
 
-The octree 
+The octree is implementation allows for a boundary and a maximum instances per node threshold to be defined. 
+The boundary defines the space, which the octree occupies in the scene. All instances added to the octree must 
+be located within this boundary. Otherwise the octree cannot resolve the instance spatially. The maximum threshold 
+of instances is checked whenever an instance is added to the octree. The loaded voxel model is located in a regular 
+grid, which can be used to calculate the bounds of the octree. Each voxel is then added to the octree, which 
+automatically divides the space according to the voxel density, always satisfying the constraint of the maximum 
+amount of voxels per node. Figure \ref{fig:} shows that the voxels are grouped into octree nodes. 
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=100px]{images/graphics/lucy-voxel-octree-viz.png}
+    \includegraphics[width=300px]{images/graphics/lucy-voxel-octree-viz-2.png}
+    \caption{The input triangle mesh (left) and the voxelized and parsed voxel mesh (right). 
+    Model \emph{Lucy} from \emph{The Stanford 3D Scanning Repository} \cite{Stanford23}.}
+    \label{fig:trimesh-to-voxel-mesh}
+\end{figure}
 
 
 [@TODO: Check if I should explain mip levels in chptr 4]
