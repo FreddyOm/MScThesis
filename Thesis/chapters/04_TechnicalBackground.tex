@@ -404,13 +404,13 @@ Figure \ref{fig:mesh-rendering-pipeline} shows the pipeline stages and the order
 
 \noindent [@TODO: Check redundancy in first two sentances]
 The Task Shader serves as a precomputational stage which is optional and invokes the Mesh Shader.
-It can take any arbitrary data as input and operates on the provided data to produce output data, which in 
-turn is scheduled for execution on the Mesh Shader. Since both shaders are based on compute shaders, a thread 
-group size can be specified and groupshared memory can be allocated. This allows for highly parallelized execution 
-and optimized memory usage. A key difference to the traditional pipeline is that the Amplification Shader can 
-invoke other compute shaders, create new tasks and dispatch none, one, or multiple mesh shader invocations. This 
-makes the shader extremely flexible and capable of providing the same results as the Geometry Shader does, but 
-faster and more scalable.\\
+It can take any arbitrary data as input and operates on the provided data to produce output data, which is then 
+scheduled for further computation. Since both shaders are based on compute shaders, a thread group size can be 
+specified  and groupshared memory can be allocated. This allows for highly parallelized execution and optimized 
+memory usage. A key difference to the traditional pipeline is that the Amplification Shader can invoke other 
+compute shaders, create new tasks and dispatch none, one, or multiple mesh shader invocations. This makes the 
+shader extremely flexible and capable of providing the same results as the Geometry Shader does, but faster and 
+more scalable. It is often used for early culling, for efficient tesselation or \ac{LOD} decisions \cite{Kubisch2018}. \\
 
 \begin{figure}[h]
     \centering
