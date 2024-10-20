@@ -412,12 +412,19 @@ invoke other compute shaders, create new tasks and dispatch none, one, or multip
 makes the shader extremely flexible and capable of providing the same results as the Geometry Shader does, but 
 faster and more scalable.\\
 
-[@TODO: Add picture of meshlets]
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=300px]{images/graphics/bunny-meshlet.png}
+    \caption{The stanford bunny mesh geometry split into meshlets. Each meshlet is represented by a single color, 
+    and consists of multiple triangles \cite{Oberberger2024}.}
+    \label{fig:bunny-meshlet}
+\end{figure}
+
 \noindent
 The Mesh Shader output can be defined individually but usually it creates a small patch consisting of a small 
-number of triangles, called \emph{Meshlet}. This new approach to operate on vertices allows for a new interpretation 
-of mesh data. The primitive topology is not anymore constrained to triangles, triangle fans and triangle strips, 
-but can be individually specified by the developers.
+number of triangles, called \emph{Meshlet}, which are shown in figure \ref{fig:bunny-meshlet}. This new approach 
+to operate on vertices allows for a new interpretation of mesh data. The primitive topology is not anymore constrained 
+to triangles, triangle fans and triangle strips, but can be individually specified by the developers.
 Meshlets are computed by thread groups which usually fetch the mesh data from the given vertex and index buffers and 
 apply transformations and arbitrary operations. This new way of processing geometry is not only more efficient in many 
 cases and reduces the memory bandwidth, but also allows for per-meshlet operations \cite{Kubisch2020}. This is a key 
