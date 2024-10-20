@@ -208,17 +208,20 @@ be located within this boundary. Otherwise the octree cannot resolve the instanc
 of instances is checked whenever an instance is added to the octree. The loaded voxel model is located in a regular 
 grid, which can be used to calculate the bounds of the octree. Each voxel is then added to the octree, which 
 automatically divides the space according to the voxel density, always satisfying the constraint of the maximum 
-amount of voxels per node. Figure \ref{fig:} shows that the voxels are grouped into octree nodes. 
+amount of voxels per node. Figure \ref{fig:voxel-octree-viz} shows that the voxels are grouped into octree nodes. 
 
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=100px]{images/graphics/lucy-voxel-octree-viz.png}
-    \includegraphics[width=300px]{images/graphics/lucy-voxel-octree-viz-2.png}
-    \caption{The input triangle mesh (left) and the voxelized and parsed voxel mesh (right). 
-    Model \emph{Lucy} from \emph{The Stanford 3D Scanning Repository} \cite{Stanford23}.}
-    \label{fig:trimesh-to-voxel-mesh}
+    \includegraphics[width=151.5px]{images/graphics/lucy-voxel-octree-viz.png}
+    \includegraphics[width=250px]{images/graphics/lucy-voxel-octree-viz-2.png}
+    \caption{The octree structure visualized. Each color represents one octree node. The whole model contains 
+    470.355 voxels and 19.823 octree nodes, with one octree node holding up to \begin{math} 5 \times 5 \times 5 \end{math}
+    voxels.}
+    \label{fig:voxel-octree-viz}
 \end{figure}
+
+\noindent
 
 
 [@TODO: Check if I should explain mip levels in chptr 4]
