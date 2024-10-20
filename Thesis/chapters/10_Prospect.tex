@@ -6,4 +6,6 @@
 
 - Use every thread in thread group and do not leave threadgroups idle when rejecting nodes (View Frustum Culling or frustum culling)
 - Use Sparse Voxel DAGs and better data compression
-- se meshlet backface culling technique
+- Use meshlet backface culling technique
+- The construction of the \ac{HiZ}-pyramid can possibly be further optimized by computing values for all mip levels 
+  in parallel, instead of sequentially writing and reading the values to or from a given mip level. 
