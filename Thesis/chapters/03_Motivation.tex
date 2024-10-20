@@ -81,7 +81,7 @@ voxel rendering.
 \subsection{Rasterized Voxel Rendering}
 
 The basic approach to rendering voxels is using the traditional Rasterized Rendering Pipeline.
-One of the most popular games of all time, \emph{Minecraft} [@TODO: reference] uses this approach to 
+One of the most popular games of all time, \emph{Minecraft} (Mojang \cite{Mojang2024}, 2011) uses this approach to 
 render thousands of cube shaped voxels on screen. \emph{Minecraft} also makes use of various rendering 
 optimizations to improve frame times. This approach is straightforward in concept and can be 
 implemented for existing \ac{API}s, making use of hardware acceleration, i.e. the \ac{GPU}.
@@ -134,6 +134,10 @@ When rotated around any axis, they are still oriented bounding boxes, making col
 but still rather efficient. These characteristics make voxels excellent candidates for dynamic physics 
 calculations. Also, storing voxels in a spatial container helps keep collision checks to a minimum. \\
 
+\section{The Idea}
+
+[@TODO: Mention initial idea]
+
 \noindent
 In the next chapter we will focus on the first use case, the Rasterized Voxel Rendering. We belive that this 
 technique can benefit the most from advances in rendering technology.
@@ -143,10 +147,6 @@ real-time ray traced lighting, shadows, reflections and ambient occlusion is app
 pipeline and therefore relies on improvements to said pipeline over the last years. \\
 We will first lay out a technical foundation in chapter \ref{cpt-technical-background} before discussing 
 related work on which our approach relies on in chapter \ref{cpt-related-work}.
-
-
-
-
 
 
 

@@ -5,7 +5,7 @@
 The voxel rendering in our evaluation relies on a volumetric representation of the scene.
 It is particularly important that the voxel model not only includes the surface but also 
 the space within the model. This constraint is often used in interactable use cases, where 
-the model is split, cut or manipulated in any given way. [@TODO: Reference] \emph{Minecraft} 
+the model is split, cut or manipulated in any given way. \emph{Minecraft} \cite{Mojang2024}
 lets the player take full control over the sandbox environment and allows adding or subtracting 
 voxels as they wish. Essentially, the voxel data of every possible voxel within the playable 
 space needs to be somehow present or encoded in memory, even though just a fraction of the 
@@ -13,7 +13,6 @@ voxels are actually drawn to the screen.\\
 
 \subsection{Three Dimensional Grid} \label{subsec-three-dimensional-grid}
 
-[@TODO: Additional option of drawing bitwise]
 A basic approach for a scene representation is a three dimensional voxel grid. This 
 approach relies on a fixed size grid where each grid cell represents one voxel.
 To draw the voxels, a separate buffer can hold additional voxel information, which 
@@ -28,7 +27,7 @@ cache misses.
 
 \subsection{Octree Data Structure} \label{subsec-octree-data-structure}
 
-[@TODO: source] proposes the use of a spatial container to optimize traversal. The use of an octree 
+Another approach is to use a spatial container to optimize traversal. The use of an \emph{octree} 
 incorporates the relevant scene space and subdivides it into smaller child nodes. When inserting data 
 into the octree, the position is evaluated and the data is being stored as a \emph{payload} in 
 a node which includes the given position. If a node holds more payload instances than a specified threshold 
@@ -45,8 +44,7 @@ hierarchy where more data is present and a shallow hierarchy where almost no or 
     \label{fig:octree}
 \end{figure}
 
-[@TODO: Mention other spatial containers -> Binary Space Partitioning Trees]
-
+\noindent
 Octrees like this can vary in their specific implementation, especially in how they maintain the 
 payload. Some might store it right next to the octree node description, others might want to separate 
 octree and payload data. Octree nodes could also be appended to a dedicated buffer and therefore be stored 
@@ -78,7 +76,7 @@ of the data structure. The resulting structure is a more general hierarchical da
 \begin{figure}[h]
     \centering
     \includegraphics[width=\linewidth]{images/graphics/highres-sv-dag.png}
-    \caption{Reducing a \ac{SVO} using the approach of \cite{Kampe2013}.}
+    \caption{Reducing a \ac{SVO} using the approach of Kampe et al. \cite{Kampe2013}.}
     \label{fig:sparse-voxel-dag-creation}
 \end{figure}
 
@@ -99,11 +97,10 @@ our approach are specifically highlighted and analyzed.
 
 \subsection{Backface Culling} \label{subsec-backface-culling}
 
-[@TODO: Rework sentence or find source]
-Backface culling is probably the most commonly used culling algorithm. It is concerned with discarding triangles that 
-are facing away from the camera. These triangles will not be seen by the camera anyway and thus can be safely ignored 
-in the rendering process. To compute the facing direction of a triangle, which when normalized is equivalent to the 
-triangle's \emph{Surface Normal}, the vertex \emph{winding order} of the given rendering backend is considered.\\
+Backface culling is concerned with discarding triangles that are facing away from the camera. 
+These triangles will not be seen by the camera anyway and thus can be safely ignored in the rendering process. 
+To compute the facing direction of a triangle, which when normalized is equivalent to the triangle's 
+\emph{Surface Normal}, the vertex \emph{winding order} of the given rendering backend is considered.\\
 
 \begin{figure}[h]
     \centering
@@ -124,42 +121,70 @@ are automatically omitted immediately after screenmapping \cite{AkenineMoeller20
 backface culling can remove up to half of the triangles about to be rendered, proving very valuable to highly populated 
 scenes and high geometric density.\\
 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=300px]{images/graphics/cluster-backface-culling.png}
+    \caption{A common normal cone of a triangle cluster. It can be used to calculate a frontfacing
+    and a backfacing cone. If the camera is located in either of these cones, all triangles in the 
+    cluster are facing toward the camera, or away from it respectively \cite{AkenineMoeller2018}.}
+    \label{fig:cluster-backface-culling}
+\end{figure}
+
 \noindent 
-[@TODO: Add image]
 Backface culling algorithms can also be applied to clusters of triangles. As Shirmun et al. \cite{Shirmun1993} propose, 
 multiple triangles can be culled at once considering a common normal cone. "Shirmun and Abi-Ezzi \cite{Shirmun1993} 
-prove that if the viewer is located in [a] frontfacing cone" constructed by the normals of all the triangles within the 
-cluster, "then all faces in the cone are frontfacing, and similarly for the backfacing cone" \cite{AkenineMoeller2018}. 
+prove that if the viewer is located in [a] frontfacing cone [constructed by the normals of all the triangles within the 
+cluster], then all faces in the cone are frontfacing, and similarly for the backfacing cone" \cite{AkenineMoeller2018}. 
 As will be mentioned in chapter \ref{subsubsec-meshlet-backface-culling}, this approach can be used for more 
-parallelized backface culling using an updated rendering pipeline in current graphics \ac{API}s.
+parallelized backface culling using an updated rendering pipeline in current graphics \ac{API}s. A visual representation 
+is provided in figure \ref{fig:cluster-backface-culling}.
 
 \subsection{View Frustum Culling} \label{subsec-view-frustum-culling}
 
-[@TODO: Add pictures]
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{images/graphics/view-frustum-culling.png}
+    \caption{The camera's view frustum, relative to the scene. All objects that are completely outside of 
+    the view frustum can be ignored by the rendering pipeline, since they do not contribute to the resulting image.
+    Image by \cite{Pan2020}.}
+    \label{fig:view-frustum-culling}
+\end{figure}
 
+\noindent
 \emph{View Frustum Culling} is a technique that aims to remove instances, i.e. meshes, which are outside of the camera 
 view frustum. This leads to the skipping of all instances that are completely invisible due to their location relative to 
 the camera. Said instances can thus be safely ignored and discarded early in order to keep the memory occupation low. 
-To cull potantial instances, bounding boxes are calculated and checked against the camera view frustum, which in turn 
+Figure \ref{fig:view-frustum-culling} shows how the view frustum might look in relation to the scene. 
+To cull potantial instances, bounding volumes are calculated and checked against the camera view frustum, which in turn 
 is specified by the \emph{near plane} and \emph{far plane}, as well as the \emph{fov}, encoded in a \emph{dot-normal}
 representation. For instance, testing if a bounding sphere is partially or completely inside the view frustum can be 
 computed with the following algorithm: \\
 
-\begin{algorithmic}[1]
-    \State $radius \gets \text{GetBoundingSphereRadius()}$ 
-    \State $center \gets \text{GetBoundingSphereCenter()}$ 
-    \State $planeIndex \gets 0$
-    \While{$planeIndex < 6$}
-        \State $planeIndex \gets planeIndex + 1$
-        \State $frustum \gets \text{frustumPlanes}[planeIndex]$ 
-        \State $distance \gets \text{dot}(frustum, center)$
-        \If{$distance < -radius$}
-            \State \Return \textbf{FALSE}
-        \EndIf
-    \EndWhile
-    \State \Return \textbf{TRUE}
-\end{algorithmic}
+\fbox{
+\begin{minipage}{\linewidth}
+\begin{algorithm}[H]
+\SetAlgoLined
+\KwIn{float4 basePosAndScale}
+\KwResult{Boolean indicating whether an object is visible}
 
+\SetKwFunction{FMain}{IsVisible}
+\SetKwProg{Fn}{Function}{:}{}
+\Fn{\FMain{float4 basePosAndScale}}{
+    float4 center $\gets$ float4(basePosAndScale.xyz, 1.0f)\;
+    float radius $\gets$ abs(basePosAndScale.z)\;
+
+    \For{$i \gets 0$ \KwTo $5$}{
+        \If{dot(FrustumPlanes[$i$], center) $<$ $-$radius}{
+            \Return{false}\;
+        }
+    }
+    \Return{true}\;
+}
+\caption{Visibility Check Algorithm}
+\end{algorithm}
+\end{minipage}
+}
+    
 \vspace{0.5cm}
 \noindent
 In combination with acceleration structures like an octree, view frustum culling can be computed for the bounding 
