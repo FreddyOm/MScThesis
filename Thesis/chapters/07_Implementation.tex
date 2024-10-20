@@ -192,17 +192,21 @@ Implementation Considerations:
     - 2PDOC relies on drawing best occluders which are usually hand picked by artists (buildings)
         -> We can dynamically pick best occluders by selecting full octree nodes as best occluders!
 
-- Optimize octree by using High Res SVOs (https://www.cse.chalmers.se/~uffe/HighResolutionSparseVoxelDAGs.pdf).
+- [x] Optimize octree by using High Res SVOs (https://www.cse.chalmers.se/~uffe/HighResolutionSparseVoxelDAGs.pdf).
     - As shown in the paper, here we also only need to encode if a node is filled or not. This way we can 
     optimize memory and proccessing speed! (Not done here because of limitation in loading and voxelizing models.)
 
 - Explain why Mesh Shading is useful here and what the differences to HiZ and Two-Pass OC are!
 
+- Consider further optimization by removing redundant computations (e.g. for HiZ depth test, meshlets (or octree nodes)
+are already projected to screen space. This is then done again in the mesh shader. Maybe it could be an optimization 
+to do the projection in the amplification shader already, so it is only computed once. The already projected position 
+could then be input in the mesh shader, making the projection in the mesh shader redundant).
 
 - Limitations: 
-- Worse performance on slopes? -> Check and measure!
-- Align octree bounds with outer most voxel bounds, so no misalignment happens!
+    - Worse performance on slopes? -> Check and measure!
+    - Align octree bounds with outer most voxel bounds, so no misalignment happens!
 
-- (Larger nodes which are not being split can be "full" without being full!)
+    - (Larger nodes which are not being split can be "full" without being full!)
 
 // --------------------------------------------------------------------------------- //
