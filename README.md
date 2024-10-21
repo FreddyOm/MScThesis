@@ -17,6 +17,7 @@ scientific and presentational work.
 - [] Citation okay?
 - [] Mention less (sub-) chapters in contents?
 - [] Results and Discussion seperately? Or together?
+- [] Implementation before Methodoligy, then Case-Study and Results?
 
 ## Problems
 
