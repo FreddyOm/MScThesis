@@ -15,6 +15,8 @@ pipeline discussion and in depth data visualization.
 - [] Technical Background & Related Work? Redundant? Maybe related work more of specific application instead of 
 scientific and presentational work.
 - [] Citation okay?
+- [] Mention less (sub-) chapters in contents?
+- [] Results and Discussion seperately? Or together?
 
 ## Problems
 

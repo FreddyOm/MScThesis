@@ -172,7 +172,7 @@ as mentioned in chapter \ref{sec-mesh-shading}.
 
 \section{Data Flow} \label{sec-data-flow}
 
-[@TODO: Maybe rename]
+[@TODO: Maybe rename] [@TODO: Fix image positions]
 To illustrate the pipeline in even more detail, we take a look at the data and how it is sampled, computed 
 and output throughout the pipeline. 
 
@@ -271,7 +271,19 @@ The final draw call is initiated when dispatching the amplification shader. It a
 the \emph{octree node buffer} and the \emph{\ac{HiZ}-texture}. Each octree node is assigned to one threadgroup which will 
 in turn compute one voxel (meshlet) per thread. The octree data just points to the relevant part of the voxel position buffer 
 to get the position data. Each octree node is checked against the camera view frustum in order to cull it, if not visible.
-Figure \ref{} shows a partially culled model from a different perspective. 
+Figure \ref{fig:lucy-frustum-culling} shows a partially culled model from a different perspective. 
+
+[@TODO: Change model to stanford bunny!]
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=200px]{images/graphics/lucy-frustum-culling.png}
+    \caption{The whole \emph{Lucy} model culled against the view frustum. Octree nodes which are not visible are being 
+    culled and are therefore not visible.}
+    \label{fig:lucy-frustum-culling}
+\end{figure}
+
+
+\noindent
 Non-culled nodes are then drawn, checking each voxel (meshlet) for occlusion against the \ac{HiZ}-texture and its mip maps. 
 This operation introduces additional overhead which is normal for any acceleration struture. The goal is always to apply it 
 to a scenario, where the additional overhead is compensated by the acceleration it provides. In this case, the visible voxels 
