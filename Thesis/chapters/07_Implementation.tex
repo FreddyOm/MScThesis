@@ -1,16 +1,16 @@
 \chapter{Implementation} \label{cpt-implementation}
 
 Our case study is based on an implementation within the framework \emph{Diligent Engine} 
-\cite{DiligentGraphicsGitHub, DiligentGraphics}. This framework includes a multi-\ac{API} rendering backend, 
-with modern integrations for \ac{GPU}-driven rendering. One of these modern features is the support for mesh 
-shading in Microsoft's D3D12 rendering \ac{API}. The support for modern rendering features while still 
-maintaining access to all core features, makes \emph{Diligent Engine} a good place to start from. For the case 
-study, we enhanced the mesh shading pipelin to better fit our purposes of drawing a huge amount of voxels. We 
-also made small changes to the integrated view-frustum culling, which was updated to work on meshlet-groups 
-rather than meshlets themselves. This change was made during the restructuring of the draw tasks. The updated 
-pipeline changes how meshes are dispatched because of the use of additional acceleration structures. This 
-chapter provides an overview of all the changes and additions to the framework and how the pipeline works in 
-specific. The implementation details can be found in the appendix \ref{cpt-appendix}.
+\cite{DiligentGraphicsGitHub, DiligentGraphics}. This framework includes rendering backend supporting 
+multiple rendering \ac{API}s, with modern integrations for \ac{GPU}-driven rendering. One of these modern 
+features is the support for mesh shading in Microsoft's D3D12 rendering \ac{API}. The support for modern 
+rendering features, while still maintaining access to all core features, makes \emph{Diligent Engine} a good 
+place to start from. For the case study, we enhanced the mesh shading pipeline to better fit our purposes of 
+drawing a huge amount of voxels. We also made small changes to the integrated view-frustum culling, which was 
+updated to work on meshlet-groups rather than meshlets themselves. This change was made during the restructuring 
+of the draw tasks. The updated pipeline changes how meshes are dispatched because of the use of additional 
+acceleration structures. This chapter provides an overview of all the changes and additions to the framework and 
+how the pipeline works in particular. The implementation details can be found in the appendix \ref{cpt-appendix}.
 
 \section{Pipeline Initialization} \label{sec-piepline-initialization}
 
@@ -30,7 +30,7 @@ the initialization procedure.
 
 \subsection*{Voxel Model Loading} \label{subsec-voxel-model-loading}
 
-For the purpose of this case study, a single, solid voxel mesh is loaded, but this could as well be a scene 
+For the purpose of this case study, a single, solid voxel mesh is loaded, but this could also be a scene 
 consisting of multiple solid voxel models. In our implementation, the positions of voxels inside a regular 
 grid are loaded, skipping grid cells, where no voxels are located. For loading the voxels, the tool \emph{binvox} 
 is used \cite{binvox, Nooruddin2003}. 
@@ -38,12 +38,11 @@ is used \cite{binvox, Nooruddin2003}.
 
 \subsection*{Octree Creation} \label{subsec-octree-creation}
 
-After loading any voxel model, an octree is created that covers 
-the complete scene - in this case the bouding volume of the voxel model. As discussed in chapter 
-\ref{subsec-highres-svo-dags}, it is recommended to use a highly efficient and compressed octree 
-implementation like an \ac{SVO} or a Sparse Voxel \ac{DAG} \cite{Kampe2013}. For the purpose of our case 
-study, we used a custom octree implementation which refers to indices in a global \emph{voxel position buffer}, 
-as shown in figure \ref{fig:voxelpos-octreenode-buffer}.\\
+After loading any voxel model, an octree is created that covers the complete scene - in this case the bouding 
+volume of the voxel model. As discussed in chapter \ref{subsec-highres-svo-dags}, it is recommended to use a 
+highly efficient and compressed octree implementation like an \ac{SVO} or a Sparse Voxel \ac{DAG} \cite{Kampe2013}. 
+For the purpose of our case study, we used a custom octree implementation which refers to indices in a global 
+\emph{voxel position buffer}, as shown in figure \ref{fig:voxelpos-octreenode-buffer}.\\
 
 \begin{figure}[h]
     \centering
@@ -56,20 +55,19 @@ as shown in figure \ref{fig:voxelpos-octreenode-buffer}.\\
 \noindent
 Since the \ac{GPU} is supposed to generate a lot of voxels on the fly, data buffers like the voxel position buffer 
 need to be considered.
-For structuring the data, various options are available. A first approach involves the voxels being layed 
-out as individual meshlets, which was our initial idea. This means that individual voxels can be culled and 
-each \ac{GPU} thread generates one voxel. This would mean that only the voxel position buffer is needed. 
-The amplification shader takes the positions, culls meshlets against the view-frustum and dispatches the 
-mesh shader with the given data. As long as no spatial container like an octree is used, this approach works 
-fine. When considering the use of an octree, however, another layout serves better. In this case, each \ac{GPU} 
-threadgroup takes care of one octree node, with the maximum amount of voxels per node being equal to the 
-amount of threads per threadgroup. Using this layout, each thread in a threadgroup again takes care of one 
-voxel. The octree node information now can store additional information, which can be used for octree node 
-based view frustum culling. To generate this data, the octree is queried during the initialization, resulting 
-in an extra \emph{octree node buffer} which stores an index into the voxel position buffer and a count of voxels,
-associated with the node. After sorting the voxel position buffer, this additional structure identifies voxel 
-positions that are located adjacent to each other inside an octree node. Figure \ref{fig:voxelpos-octreenode-buffer} 
-shows the data layout and how it relates to the voxel position buffer. 
+For structuring the data, various options are available. Our initial idea was to lay out the voxels as individual 
+meshlets. This means that individual voxels can be culled and each \ac{GPU} thread generates one voxel. This would 
+mean that only the voxel position buffer is needed. The amplification shader takes the positions, culls meshlets 
+against the view frustum and dispatches the mesh shader with the given data. As long as no spatial container like 
+an octree is used, this approach works fine. When considering the use of an octree, however, another layout serves 
+better. In this case, each \ac{GPU} threadgroup takes care of one octree node, with the maximum amount of voxels 
+per node being equal to the amount of threads per threadgroup. Using this layout, each thread in a threadgroup 
+again takes care of at most one voxel. The octree node information can now store additional information, which can 
+be used for octree node based view frustum culling. To generate this data, the octree is queried during the 
+initialization, resulting in an extra \emph{octree node buffer} which stores an index pointing to the the voxel 
+position buffer and a count of voxels, associated with the node. After sorting the voxel position buffer, this 
+additional structure identifies voxel positions that are located adjacent to each other inside an octree node. Figure 
+\ref{fig:voxelpos-octreenode-buffer} shows the data layout and how it relates to the voxel position buffer. 
 
 
 \subsection*{Best Occluder Selection} \label{subsec-best-occluder-selection}
@@ -81,22 +79,40 @@ possible, if the models are static in a sense, that they do not change in size o
 could result in inefficient occlusion queries or even the elimination of occluders altogether. In the context of 
 volumetric scene representations, where voxel models are often a target of manipulation by players or physical 
 interactions, a predetermination of best occluders is not possible in the way it is for static models.
-This specific scenario is what our approach aimes for, and why the next step in the pipeline pre-processes best 
+This specific scenario is what our approach aims for, and why the next step in the pipeline pre-processes best 
 occluders. Note, that this implementation does not include an update of the best occluders. It only serves as a 
 case study of the occlusion culling algorithm. Updating the best occluders when the voxel model is altered, 
 needs to be evaluated seperatly, but is considered to be trivial for occasional changes to the mesh. A more 
 demanding change to the octree content is given when computing physical interactions within the duration of a frame.
-In this case, further test need to be done to evaluate the impact on performance. \\
+In this case, further tests need to be done to evaluate the impact on performance. \\
 
 \noindent
 To find the best occluders, different constraints need to be considered. Our approach makes use of the inner, non-visible 
-voxels, and approximates them using the octree. This means, an octree node is equivilent to a best occluder, if:
+voxels, and approximates them using the octree. This means, an octree node is equivalent to a best occluder, if:
 
 \begin{itemize}
-    \item the maximum number of voxels per octree node is a power of three (e.g. $2^{3}$,  $3^{3}$, ...),
+    \item the maximum number of voxels per octree node is a product of \begin{math}\emph{width} \times \emph{height} \times \emph{depth}\end{math}
     \item the number of voxels present within the node is equal to the maximum number of voxels per octree node,
     \item and the octree node's boundary is equal to the \emph{minimal convex hull} of all voxels within the node.
 \end{itemize}
+
+[@TODO: Check, if this can be reduced due to redundancy]
+
+\noindent [@TODO: Fix this sentence]
+The first criterium is necessary to allow for a cubical node shape, filled completely with voxels. The maximum number 
+of voxels per node must therefore be a product of the width, length and depth of a voxel chunk. This criterium can 
+be changed depending on the setup. We chose a cubical octree structure, the number of maximum voxels per octree node 
+is therefore a \emph{power of three}.
+
+\noindent
+The second criterium makes sure that the node is full. This is essential for this approach [@TODO: Finish sentence]
+
+\noindent
+The last criterium avoids full octree nodes which are not tightly filled. It is an intrinsic feature of an octree 
+to maintain differently sized nodes. This means that voxels, which are on the surface of a model, can be part of 
+a bigger node, which is not subdivided further. Therefore, a bigger node can be filled with the maximum amount of 
+voxels, without being tightly filled. The \ac{minimal convex hull} is thus a boundary volume which has the minimum 
+volume while still incorporating all voxels.
 
 \noindent
 In practice, this means, that best occluders are given, if the octree node is completely, tightly filled 
@@ -107,7 +123,7 @@ best occluder. During the depth pre-pass, the best occluders are drawn as "large
 of the respective best occluder node. This can be achieved by simply reusing the mesh shader used in the 
 normal draw call, and inputting the node's position and bounds. This way, a whole node gets drawn, instead 
 of the individual voxels, reducing the computation cost for the best occluders by at least \emph{n} times, 
-with \emph{n} being the maximum amount of voxels per node. The best occluders are seperatly stored in a 
+with \emph{n} being the maximum amount of voxels per node. The best occluders are separatly stored in a 
 buffer, so they can be dispatched efficiently. \\
 
 %[@TODO: Add data structure diagram of best occluder buffer]
@@ -127,7 +143,7 @@ voxel models with no runtime alternation, a static, pre-calculated buffer for be
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\linewidth]{images/graphics/render-loop.png}
+    \includegraphics[width=\linewidth]{images/graphics/rendering-loop.png}
     \caption{The rendering loop of the rendering pipeline.}
     \label{fig:pipeline-loop}
 \end{figure}
@@ -140,13 +156,13 @@ and textures, as shown in figure \ref{fig:pipeline-loop}.
 \subsection*{Depth Pre-Pass} \label{subsec-depth-prepass}
 
 The frame computation starts by computing the depth pre-pass, which is the custom render pass central 
-for the occlusion culling. In this pass a compute shader is invoked that takes the best occluders and 
+to the occlusion culling. In this pass a compute shader is invoked that takes the best occluders and 
 draws them to the depth buffer. This depth pass does not draw to the back buffer, making the computation 
 relatively efficient. It can also include optional computations like frustum culling for further 
 optimization. This can be effective when there are a lot of nodes in the best occluders buffer. 
 Consequently, the depth buffer has data from possible occluders and the \ac{HiZ} generation is started. 
 The z-pyramid is generated by another compute shader, which samples four texels of the input texture 
-(the full resolution depth buffer) and outupts the lowest z-value to an outupt texture (mip level 1). 
+(the full resolution depth buffer) and outupts the lowest z-value to an output texture (mip level 1). 
 This chain of mip-maps is shown as the [@TODO: here is a jump from mip lvl 1 to full z-pyramid!]
 \ac{HiZ}-pyramid in figure \ref{fig:pipeline-loop}.
 
@@ -155,7 +171,7 @@ This chain of mip-maps is shown as the [@TODO: here is a jump from mip lvl 1 to 
 
 Now, the amplification shader is invoked, each threadgroup resembling one octree node. The amplification 
 shader now decides over which meshlets are drawn. Here, view frustum culling is applied to a threadgroup 
-and the occlusion culling is executed by projecting the boudning box of the meshlets onto the view plane 
+and the occlusion culling is executed by projecting the bounding box of the meshlets onto the view plane 
 and querying the \ac{HiZ}-pyramid for depth values. If the voxel position is found to be visible - or not 
 occluded by the best occluders - the position is added to the payload, ready to be drawn by the mesh shader. 
 
@@ -170,7 +186,7 @@ to one meshlet, making pre-computation completely redundant, as opposed to the c
 as mentioned in chapter \ref{sec-mesh-shading}. 
 
 
-\section{Data Flow} \label{sec-data-flow}
+\section{Data Processing} \label{sec-data-flow}
 
 [@TODO: Maybe rename] [@TODO: Fix image positions]
 To illustrate the pipeline in even more detail, we take a look at the data and how it is sampled, computed 
@@ -178,7 +194,7 @@ and output throughout the pipeline.
 
 \subsection*{Data Pre-Processing}
 
-To obtain a valid model four our pipeline, a voxel mesh has to be created. To do this, \emph{binvox} 
+To obtain a valid model for our pipeline, a voxel mesh has to be created. To do this, \emph{binvox} 
 \cite{binvox} can be used. It works with any triangle mesh in the \emph{.obj} (Wavefront) or \emph{.ply} 
 (Stanford Polygon File Format) format, which in turn can be exported by most of the common 3D software. 
 Due to its availability, Blender \cite{Blender} is recommended. To convert the triangle mesh to a volumetric 
@@ -246,8 +262,8 @@ the actual depth buffer shows.
 \noindent
 After drawing the best occluders to the depth buffer, it is copied into the \ac{HiZ} texture resource. Then the 
 \ac{HiZ}-pyramid is constructed. This is done by a compute shader to optimize the work. The compute shader 
-sequentially access the the last valid mip level from mip level 0 to mip level \emph{n}, \emph{n} being the last 
-mip level that is larger than a specified threshold. The compute shader access a grid of \begin{math} 2 \times 2 
+sequentially accesses the last valid mip level from mip level 0 to mip level \emph{n}, \emph{n} being the last 
+mip level that is larger than a specified threshold. The compute shader accesses a grid of \begin{math} 2 \times 2 
 \end{math} texels and takes the maximum value of all the 4 depth values. This maximum value is then stored in the 
 subsequent mip map, then the next \begin{math} 2 \times 2 \end{math} texels are accessed. When all mip levels are 
 constructed, the \ac{HiZ}-pyramid can be used for occlusion culling. \\
@@ -283,7 +299,7 @@ Figure \ref{fig:lucy-frustum-culling} shows a partially culled model from a diff
 \end{figure}
 
 
-\noindent
+\noindent [@TODO: Check if meshlets or octree nodes are culled in the end]
 Non-culled nodes are then drawn, checking each voxel (meshlet) for occlusion against the \ac{HiZ}-texture and its mip maps. 
 This operation introduces additional overhead which is normal for any acceleration struture. The goal is always to apply it 
 to a scenario, where the additional overhead is compensated by the acceleration it provides. In this case, the visible voxels 
@@ -295,7 +311,6 @@ outer, visible layer, can be omitted.\\
 \noindent
 The voxels that passed all tests are finally dispatched for the final draw call, keeping the memory bandwidth to a minimum, 
 since the geometry, UVs, normals and more can be easily created on-chip. \\
-
 
 
 

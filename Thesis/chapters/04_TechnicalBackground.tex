@@ -405,7 +405,7 @@ Figure \ref{fig:mesh-rendering-pipeline} shows the pipeline stages and the order
 \noindent
 The Task Shader serves as a precomputational stage which is optional and invokes the Mesh Shader.
 It can take any arbitrary data as input and operates on the provided data to produce output data, which is then 
-scheduled for further computation. Since both shaders are based on compute shaders, a thread group size can be 
+scheduled for further computation. Since both shaders are based on compute shaders, a threadgroup size can be 
 specified  and groupshared memory can be allocated. This allows for highly parallelized execution and optimized 
 memory usage. A key difference to the traditional pipeline is that the Amplification Shader can invoke other 
 compute shaders, create new tasks and dispatch none, one, or multiple mesh shader invocations. This makes the 
@@ -425,7 +425,7 @@ The Mesh Shader output can be defined individually but usually it creates a smal
 number of triangles, called \emph{Meshlet}, which are shown in figure \ref{fig:bunny-meshlet}. This new approach 
 to operate on vertices allows for a new interpretation of mesh data. The primitive topology is not anymore constrained 
 to triangles, triangle fans and triangle strips, but can be individually specified by the developers.
-Meshlets are computed by thread groups which usually fetch the mesh data from the given vertex and index buffers and 
+Meshlets are computed by threadgroups which usually fetch the mesh data from the given vertex and index buffers and 
 apply transformations and arbitrary operations. This new way of processing geometry is not only more efficient in many 
 cases and reduces the memory bandwidth, but also allows for per-meshlet operations \cite{Kubisch2020}. This is a key 
 advantage, since per-instance geometry can now be processed in parallel and still be individually discarded or post-processed. 
