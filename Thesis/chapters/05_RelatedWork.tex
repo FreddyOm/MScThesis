@@ -11,15 +11,15 @@ for each of these topics.
 
 \section{Voxel Representation}
 
-Voxel Rendering has had huge success in sandbox and highly dynamic games like \emph{Minecraft} (Mojang \cite{Mojang2024}, 2011) 
-or \emph{Teardown} (Tuxedo Labs, 2022). Usually these games try to preserve some volumetric information for the 
-dynamic environment to be manipulated in real-time. \emph{Minecraft} generates a procedural environment based on 
-complex parameters. This way, they can easily generate nearly infinie worlds with interesting biomes and 
-landmarks. This huge world is split into chunks of size 16×384×16, to be able to stream the world dynamically and 
-allow for quick traversal in any direction. Each chunk maintains its own three-dimensional grid, with the voxel 
-data being highly compressed. Non-existing voxels are not being stored, and block states, textures and other 
-information is stored in per-chunk buffers or as global data in a global buffer. This way, using a texture atlas, 
-up to 256 different texture variants can be easily stored per voxel by only one byte 
+Voxel Rendering has had huge success in sandbox and highly dynamic games like \emph{Minecraft} (Mojang 
+\cite{Mojang2024}, 2011) or \emph{Teardown} (Tuxedo Labs \cite{TuxedoLabs2022}, 2022). Usually these games try 
+to preserve some volumetric information for the dynamic environment to be manipulated in real-time. \emph{Minecraft} 
+generates a procedural environment based on complex parameters. This way, they can easily generate nearly infinie 
+worlds with interesting biomes and landmarks. This huge world is split into chunks of size 16×384×16, to be able to 
+stream the world dynamically and allow for quick traversal in any direction. Each chunk maintains its own 
+three-dimensional grid, with the voxel data being highly compressed. Non-existing voxels are not being stored, and 
+block states, textures and other information is stored in per-chunk buffers or as global data in a global buffer. 
+This way, using a texture atlas, up to 256 different texture variants can be easily stored per voxel by only one byte 
 \cite{Bergensten2012, MinecraftFandom2021}. \\
 
 \noindent

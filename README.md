@@ -19,6 +19,8 @@ scientific and presentational work.
 - [] Results and Discussion seperately? Or together?
 - [] Implementation before Methodoligy, then Case-Study and Results?
 - [] Introduction topics (GPU Driven, Deferred Rendering, ... )
+- [] Show any code at all in the normal chapters? Or only use pseudo code?
+- [] Implementation before Methodology?
 
 ## Problems
 

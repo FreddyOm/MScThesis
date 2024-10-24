@@ -79,62 +79,10 @@ rendering performance, we believe that new innovations can be applied to this fi
 graphics. To highlight the possible improvements, one can consider different applications of 
 voxel rendering. 
 
-\subsection{Rasterized Voxel Rendering}
-
-[@TODO: Maybe put this into technical background and rather focus on initial idea]
-The basic approach to rendering voxels is using the traditional Rasterized Rendering Pipeline.
-One of the most popular games of all time, \emph{Minecraft} (Mojang \cite{Mojang2024}, 2011) uses this approach to 
-render thousands of cube shaped voxels on screen. \emph{Minecraft} also makes use of various rendering 
-optimizations to improve frame times. This approach is straightforward in concept and can be 
-implemented for existing \ac{API}s, making use of hardware acceleration, i.e. the \ac{GPU}.
-The voxel representation allows for easy computations since geometry is laid out in a regular grid.
-Lighting calculations, as well as phyisics operations, can be further optimized to be even more 
-efficient. The most significant advantage is the ability to dynamically enable or disable voxels 
-within the grid. Or, in general, to update voxels and their corresponding data efficiently.\\
-
-\noindent
-Since voxels are regular shapes, they can be easily created on the \ac{GPU} as opposed to being 
-sent over the \ac{PCI Express} port. 
-
-[@TODO: Write more!]
 
 
-\subsection{Ray Traced Voxel Rendering}
 
-[@TODO: Add citations for all examples]
-A rather common approach to visualization of voxels in 3D space is \emph{Ray Tracing}. When using 
-Ray Tracing, it is essential to consider different acceleration strategies. The regular 
-and memory efficient encoding of voxels allows for efficient tracing against the geometry. 
-Another acceleration technique is to use \ac{BSP} Trees or similar spatial algorithms which store 
-information about the layout of geometry in space. This can help discard parts of a scene which are 
-not of interest for the computational process or (e.g. using an \emph{Octree} data structure) store 
-more detailed data in one part of a scene, and keep the data resolution low in parts where (almost) 
-no geometry is present. Geometry doesn't even have to be present, since voxels can be stored 
-as a bit value, storing (1) either a voxel within a given part of the scene (e.g. in a regular grid),
-or keeping the bit clear (0) if no voxel is present at the given location. 
-Ray Traced approaches not always make use of the volumetric nature of voxel scenes, but often generate 
-voxels only where necessary for faster traversal. A \ac{SVO} only stores octree nodes, and therefore voxel 
-data, where there is actually data present, skipping paths down the hierarchical structure which are not 
-contributing to the final scene data. Still, Ray Tracing is a very expensive operation, depending on the 
-data that is being computed during each ray sample. That means that voxel resolutions have to be adapted 
-according to the use case. [@TODO: check that these informations are not meant for related work].
 
-\subsection{Voxel based physics}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=\linewidth]{images/graphics/teardown.jpg}
-    \caption{The voxel based sandbox Teardown (2022) by Tuxedo Labs.}
-    \label{fig:teardown}
-\end{figure}
-
-Tuxedo Labs' \emph{Teardown} (figure \ref{fig:teardown}) uses ray traced lighting, which is affordable due 
-to the voxel scene representation. [@TODO: Check Teardown ray tracing]
-Additionally, it makes use of highly dynamic physics operations, which are relatively efficient using the voxel 
-representation. In their base layout, cubical voxels are \ac{AABB}es which allows for trivial collision tests.
-When rotated around any axis, they are still oriented bounding boxes, making collision tests more expensive,
-but still rather efficient. These characteristics make voxels excellent candidates for dynamic physics 
-calculations. Also, storing voxels in a spatial container helps keep collision checks to a minimum. \\
 
 \section{The Idea}
 

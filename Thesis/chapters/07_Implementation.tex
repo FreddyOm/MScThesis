@@ -12,7 +12,10 @@ of the draw tasks. The updated pipeline changes how meshes are dispatched becaus
 acceleration structures. This chapter provides an overview of all the changes and additions to the framework and 
 how the pipeline works in particular. The implementation details can be found in the appendix \ref{cpt-appendix}.
 
-\section{Pipeline Initialization} \label{sec-piepline-initialization}
+\section{Pipeline Overview} \label{sec-piepline-initialization}
+
+
+\subsection*{Pipeline Initialization} \label{sec-piepline-initialization}
 
 \begin{figure}[h]
     \centering
@@ -28,7 +31,7 @@ called once during the beginning of the execution flow and the render loop is in
 finished. Then, the loop is continuously called - once per frame. Figure \ref{fig:pipeline-initialization} shows 
 the initialization procedure. 
 
-\subsection*{Voxel Model Loading} \label{subsec-voxel-model-loading}
+\subsubsection*{Voxel Model Loading} \label{subsec-voxel-model-loading}
 
 For the purpose of this case study, a single, solid voxel mesh is loaded, but this could also be a scene 
 consisting of multiple solid voxel models. In our implementation, the positions of voxels inside a regular 
@@ -36,7 +39,7 @@ grid are loaded, skipping grid cells, where no voxels are located. For loading t
 is used \cite{binvox, Nooruddin2003}. 
 
 
-\subsection*{Octree Creation} \label{subsec-octree-creation}
+\subsubsection*{Octree Creation} \label{subsec-octree-creation}
 
 After loading any voxel model, an octree is created that covers the complete scene - in this case the bouding 
 volume of the voxel model. As discussed in chapter \ref{subsec-highres-svo-dags}, it is recommended to use a 
@@ -70,7 +73,7 @@ additional structure identifies voxel positions that are located adjacent to eac
 \ref{fig:voxelpos-octreenode-buffer} shows the data layout and how it relates to the voxel position buffer. 
 
 
-\subsection*{Best Occluder Selection} \label{subsec-best-occluder-selection}
+\subsubsection*{Best Occluder Selection} \label{subsec-best-occluder-selection}
 
 The next step in the initialization procedure is to pre-compute the best occluders. This part is a significant one, 
 since it computes important data for the occlusion culling. As mentioned in chapter \ref{subsec-two-pass-occlusion-culling},
@@ -111,7 +114,7 @@ The second criterium makes sure that the node is full. This is essential for thi
 The last criterium avoids full octree nodes which are not tightly filled. It is an intrinsic feature of an octree 
 to maintain differently sized nodes. This means that voxels, which are on the surface of a model, can be part of 
 a bigger node, which is not subdivided further. Therefore, a bigger node can be filled with the maximum amount of 
-voxels, without being tightly filled. The \ac{minimal convex hull} is thus a boundary volume which has the minimum 
+voxels, without being tightly filled. The \emph{minimal convex hull} is thus a boundary volume which has the minimum 
 volume while still incorporating all voxels.
 
 \noindent
@@ -139,7 +142,7 @@ will not affect frametimes for a moderate amount of octree nodes. Nevertheless, 
 voxel models with no runtime alternation, a static, pre-calculated buffer for best occluders is used.
 
 
-\section{Rendering Loop} \label{sec-rendering-loop}
+\subsection*{Rendering Loop} \label{sec-rendering-loop}
 
 \begin{figure}[h]
     \centering
@@ -153,7 +156,7 @@ The rendering loop consists of three main steps: The depth pre-pass including \a
 amplification shader and the mesh shader. The different stages consume and generate various data buffers 
 and textures, as shown in figure \ref{fig:pipeline-loop}. 
 
-\subsection*{Depth Pre-Pass} \label{subsec-depth-prepass}
+\subsubsection*{Depth Pre-Pass} \label{subsec-depth-prepass}
 
 The frame computation starts by computing the depth pre-pass, which is the custom render pass central 
 to the occlusion culling. In this pass a compute shader is invoked that takes the best occluders and 
@@ -167,7 +170,7 @@ This chain of mip-maps is shown as the [@TODO: here is a jump from mip lvl 1 to 
 \ac{HiZ}-pyramid in figure \ref{fig:pipeline-loop}.
 
 
-\subsection*{The Amplification Shader} \label{subsec-amplification-shader}
+\subsubsection*{The Amplification Shader} \label{subsec-amplification-shader}
 
 Now, the amplification shader is invoked, each threadgroup resembling one octree node. The amplification 
 shader now decides over which meshlets are drawn. Here, view frustum culling is applied to a threadgroup 
@@ -176,7 +179,7 @@ and querying the \ac{HiZ}-pyramid for depth values. If the voxel position is fou
 occluded by the best occluders - the position is added to the payload, ready to be drawn by the mesh shader. 
 
 
-\subsection*{The Mesh Shader} \label{subsec-mesh-shader}
+\subsubsection*{The Mesh Shader} \label{subsec-mesh-shader}
 
 The mesh shader executes the appropriate transformations, constructs a uniform voxel around the voxel position 
 and outputs the geometry. The voxels in a \ac{GPU}-Driven approach can be completely generated on the \ac{GPU}, 
