@@ -10,14 +10,31 @@ much all graphics related applications. Before 1995, there already had been a lo
 on specialized graphics hardware, often focused on video formatting or color output operations
 \cite{Singer2023}. [@TODO: Last sentence is redundant]\\
 
+\noindent [@TODO: check if reference to this year is okay or not]
+This year marks the 25th anniversary of what is considered to be the first \ac{GPU}, the 
+\emph{NVIDIA GeForce 256}. Although graphics chips had been around for a while, especially 
+in the professional space of the industry, this card was the first to be marketed as a \ac{GPU}. 
+
+\begin{quote}
+    "\emph{What makes the GeForce different than its predecessors is the chip's ability to take over all 
+    processing functions for creating three-dimensional graphics. Previously, the computer's main 
+    processor would have to share in that responsibility, which could result in slower load times 
+    and 'stuttering' on the part of the software.}" \\  
+    (CNN Money \cite{CNNMoney1999}, 1999)
+\end{quote}
+
 \noindent
-The first graphics cards were specialized chips either used for video encoding and decoding
-or expensive hardware targeted for large companies, which arised during the early stages 
-of "3D consumer graphics" \cite{Singer2023}. Dedicated and affordable \ac{GPU}s for consumer 
-\ac{PC} had their large breakthrough during the 1990s. In 1999, NVIDIA introduced their 
-first consumer graphics chip, the \emph{NVIDIA GeForce 256}, which was used for efficient 
-transformations and lighting \cite{Fenno2024}. Back then, this new hardware created a multitude 
-of new possibilities. 
+Before 1999, the graphics units were specialized chips either used for video encoding and decoding
+or expensive hardware targeted for large companies, which arised during the early stages of "3D 
+consumer graphics" \cite{Singer2023}. Dedicated and affordable \ac{GPU}s for consumer \ac{PC} had 
+their large breakthrough during the 1990s. With the introduction of the \emph{NVIDIA GeForce 256}, 
+efficient transformations and lighting computations found their way into private \ac{PC}s 
+\cite{Fenno2024}. Back then, this new hardware created a multitude of new possibilities. Some of the 
+major innovations featured \emph{cube mapping}, \emph{per-pixel light calculations}, and a 
+\emph{standardized vertex buffer} \cite{NVIDIA1999, Battaglia2024}. [@TODO: Re-check vertex buffer]
+
+
+\noindent
 Although it was mostly used for graphics processing - hence the name - nowadays, \ac{GPU}s
 are used in a much more general way than in [@TODO: insert year of GPU advent]. Both the 
 technical complexity and the fields of application have tremendously increased. Today, a 
@@ -29,6 +46,8 @@ Nevertheless, \ac{GPU} architecture is still under a strong influence of the ent
 industry, first and foremost the games industry. Some of the latest changes to \ac{GPU} 
 hardware and \ac{API} design correlates to the ongoing demand for higher output resolutions, 
 higher geometric density or additionaly technology for \emph{Deep Learning} algorithms. 
+These possibilities led to a lot more applications of \ac{GPU}s in various fields of science, 
+like biology, machine learning, video encoding and decoding and more \cite{Battaglia2024}.
 To provide more context for how we made use of some of the more modern features of \ac{GPU}s 
 we will give a brief overview over the trends in computer graphics over the past decades, and 
 especially the last years.
@@ -36,26 +55,52 @@ especially the last years.
 
 \section{The Rise Of The GPU}
 
-[@TODO: Focus on the GeForce 256 as the first acclaimed customer graphics card]
+[@TODO: double check games]
 Before the integration of specialized hardware, games like \emph{Wolfenstein 3D} or the 
-original \emph{Doom} made use of \ac{CPU} Rasterization, with all rendering operations 
-executed sequentially by the \ac{CPU} [@TODO: check games and facts].
-[@TODO: Check if rendering ops were ALL on CPU] Therefore, a higher poly count usually 
-led to lower framerates.
+original \emph{Doom} made heavy use of \ac{CPU} computations for graphics processing, 
+executed sequentially \cite{NVIDIA1999}. A major problem was the demand for increasing 
+geometrical detail. Games needed to get bigger, more photo-realistic and provide more dense 
+geometry. Increasing the amount of triangles rendered, ultimately led to worse runtime 
+performance. The advent of a dedicated, massively parallel chip to perform a large amount of 
+operations introduced a solution for this problem. Over the years, more and more stages of the 
+rendering pipeline were offloaded to the \ac{GPU}, which in turn resulted in a lot of new effects, 
+games with higher triangle density and new lighting technology. As mentioned before, the \emph{NVIDIA 
+GeForce 256} introduced cube mapping to the pipeline, featuring real-time reflections, which is 
+shown in figure \ref{fig:bubble-reflection-demo} \cite{Battaglia2024}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=250px]{images/graphics/bubble-reflection-effects-demo.jpg}
+    \caption{The NVIDIA bubble demo showcasing advanced reflections using cube mapping (NVIDIA \cite{NVIDIABubble}, 2000).}
+    \label{fig:bubble-reflection-demo}
+\end{figure}
+
 
 \subsection{Rendering Pipeline}
 
-With the first \ac{GPU} available to larger audiences, games were able to add more and more 
-detail into their 3D environment. The heavily parallelized transformations allowed for a lot 
-more triangles in games, and the hardware accelerated lighting computations which made for 
-even more realistic lighting throughout the rendered scene. Having a dedicated hardware for 
-highly demanding tasks started a new era of computer graphics. One significant advantage: 
-The \ac{GPU} could operate on a large amount of data while not stalling the \ac{CPU} \cite{Fenno2024}.\\
+The standardization of the graphics hardware, as pioneered by \emph{NVIDIA}, in concert with capable 
+graphics \ac{API}s like \emph{Direct3D} or \emph{OpenGL} kick-started huge graphical improvements in 
+games and computer graphics. The heavily parallelized transformations allowed for a lot more triangles 
+in games, and the hardware accelerated lighting computations made for even more realistic lighting 
+throughout the rendered scenes. One significant advantage: The \ac{GPU} could operate on a large amount 
+of data while not stalling the \ac{CPU} \cite{Fenno2024}.\\
 
-\noindent 
-This new approach of "outsourcing" specific operations quickly became the standard procedure and 
-lead to a standardized rendering pipeline. 
+\noindent
+The new rendering pipeline was to be seen in a lot of games, some of the first being \emph{Epic Games'} 
+\emph{Unreal Turnament} (1999) and \emph{id Software's} \emph{Quake III Arena} (1999) \cite{UnrealTurnament, 
+Quake3Arena}. \emph{Microsoft's} multimedia \ac{API} \emph{DirectX 7} added support for the new \ac{TL} 
+features of \ac{GPU}s. During the following years, more and more features were added, slowly evolving the 
+standard towards the "modern" rendering pipeline that is used nowadays. Between the years 1999 and 2009,
+20 new minor versions of \emph{DirectX} were released \cite{WikiDirectX}. [@TODO: Check Wikipedia source] 
 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=172.5px]{images/graphics/unreal-turnament.jpg}
+    \includegraphics[width=230px]{images/graphics/quake-iii-arena.jpg}
+    \caption{A screenshot from the game \emph{Unreal Turnament} (1999) (left) and \emph{Quake III Arena} (1999) 
+    (right) \cite{GamespotUnrealTurnament, GameWatcher2006}.}
+    \label{fig:unreal-turnament-quake-arena}
+\end{figure}
 
 
 \subsection{Deferred Rendering}

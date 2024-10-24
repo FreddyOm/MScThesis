@@ -21,6 +21,7 @@ scientific and presentational work.
 - [] Introduction topics (GPU Driven, Deferred Rendering, ... )
 - [] Show any code at all in the normal chapters? Or only use pseudo code?
 - [] Implementation before Methodology?
+- [] Wikipedia source (DirectX) okay? Or not?
 
 ## Problems
 
