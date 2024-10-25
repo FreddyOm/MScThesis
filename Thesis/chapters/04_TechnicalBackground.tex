@@ -1,10 +1,10 @@
 \chapter{Technical Background} \label{cpt-technical-background}
 
 
-\section{Voxel Rendering}
+\section{Voxel Rendering} \label{sec-voxel-rendering}
 
 
-\subsection*{Rasterized Voxel Rendering}
+\subsection*{Rasterized Voxel Rendering} \label{subsec-rasterized-voxel-rendering}
 
 The basic approach to rendering voxels is using the traditional rasterized Rendering Pipeline.
 One of the most popular games of all time, \emph{Minecraft} (Mojang \cite{Mojang2024}, 2011) uses 
@@ -19,7 +19,7 @@ data efficiently. Also, since voxels are regular shapes, they can be easily crea
 as opposed to being sent over the \ac{PCI Express} port. 
 
 
-\subsection*{Ray Traced Voxel Rendering}
+\subsection*{Ray Traced Voxel Rendering} \label{subsec-ray-traced-voxel-rendering}
 
 [@TODO: Add citations for all examples]
 A rather common approach to visualization of voxels in 3D space is \emph{ray tracing}. When using 
@@ -40,7 +40,7 @@ That means that voxel resolutions have to be adapted according to the use case a
 preferrable to restrict the tracing operations to minimum.
 
 
-\subsection*{Voxel Physics}
+\subsection*{Voxel Physics} \label{subsec-voxel-physics}
 
 \begin{figure}[h]
     \centering
@@ -59,7 +59,7 @@ make voxels excellent candidates for dynamic physics calculations. Also, storing
 helps keep collision checks to a minimum.
 
 
-\section{Voxel Scene Layout}
+\section{Voxel Scene Layout} \label{sec-voxel-scene-layout}
 
 The voxel rendering in our evaluation relies on a volumetric representation of the scene.
 It is particularly important that the voxel model not only includes the surface but also 
@@ -285,7 +285,7 @@ widely adopted in real-time rendering \cite{AkenineMoeller2018}. These algorithm
 consider visibility of different instances.  
 
 
-\subsubsection*{Hierarchical Z-Buffering} \label{subsec-hierarchical-z-buffering}
+\subsubsection*{Hierarchical Z-Buffering} \label{subsubsec-hierarchical-z-buffering}
 
 \emph{\ac{HiZ} Buffering} is a technique first introduced for \ac{CPU} computation by Ned Greene et al. 
 \cite{Greene93,Greene95}. Since then, it "has had significant influence on occlusion culling research" 
@@ -339,12 +339,12 @@ are then drawn to the depth buffer, meaning all the geometry contained within th
 for being tested against during the computation of the following octree nodes. As Akenine-Möller et al. 
 \cite{AkenineMoeller2018} point out, this algorithm is not used in its original form. Modern variations of this 
 algorithm evolved from the work of Greene et al. \cite{Greene93} and are widely adopted in modern real-time computer 
-graphics. As will be shown in chapter \ref{subsec-two-pass-occlusion-culling}, the concept of an octree representation 
+graphics. As will be shown in chapter \ref{subsubsec-two-pass-occlusion-culling}, the concept of an octree representation 
 used for hierarchical culling and a z-pyramid used as an occlusion representation (\cite{AkenineMoeller2018}) can be 
 elegantly leveraged on the \ac{GPU} side for efficient occlusion culling.
 
 
-\subsubsection*{Two-Pass Occlusion Culling} \label{subsec-two-pass-occlusion-culling}
+\subsubsection*{Two-Pass Occlusion Culling} \label{subsubsec-two-pass-occlusion-culling}
 
 \begin{figure}[h]
     \centering
@@ -357,7 +357,7 @@ elegantly leveraged on the \ac{GPU} side for efficient occlusion culling.
 \end{figure}
 
 \noindent
-\emph{\ac{TPOC}} is an adaptation of the \ac{HZB} algorithm, introduced in chapter \ref{subsec-hierarchical-z-buffering}. 
+\emph{\ac{TPOC}} is an adaptation of the \ac{HZB} algorithm, introduced in chapter \ref{subsubsec-hierarchical-z-buffering}. 
 One of the most renowned examples of this algorithm is present in the 2014 title \emph{Assassin's Creed Unity} by Ubisoft 
 \cite{Ubisoft2014}. One year later, Ulrich Haar and Sebastian Aaltonen presented their approach on SIGGRAPH 2015 
 \cite{Aaltonen2015}. Their implementation inspired other developers like \emph{Epic Games} for \emph{Unreal Engine 5} 
@@ -370,7 +370,7 @@ Some use cases are especially well suited for \ac{TPOC}, \emph{Assassin's Creed 
 world in a city with many large buildings. A rather large amount of instances can therefore be expected to be occluded 
 by some of the buildings at any given moment. \ac{TPOC} thus uses artist-picked \emph{best occluders} for \ac{HZB} 
 computation. The best occluders are identified during runtime, drawn to depth buffer during a depth pre-pass, and 
-then used as described in chapter \ref{subsec-hierarchical-z-buffering}. The output of the depth buffer pre-pass is 
+then used as described in chapter \ref{subsubsec-hierarchical-z-buffering}. The output of the depth buffer pre-pass is 
 shown in figure \ref{fig:depth-buffer-ac-unity}. Depth passes can be done quite efficiently, especially if they 
 only contain a handful of instances to draw. Additionally, because of the advances in \ac{GPU}-driven Rendering, the 
 \ac{HiZ} pyramid can be computed by a \emph{compute shader}, which leverages the highly parallel computation 
@@ -384,7 +384,7 @@ In SIGGRAPH 2015 presentation, Aaltonen et al. \cite{Aaltonen2015} mention the a
 technique, which is compatible with \ac{TPOC}, \emph{Depth Reprojection}.
 
 
-\subsubsection*{Depth Reprojection} \label{subsec-depth-reprojection}
+\subsubsection*{Depth Reprojection} \label{subsubsec-depth-reprojection}
 
 \emph{Depth Reprojection} makes use of the temporal coherence of the z-buffer. The assumption is made that 
 between two consecutive frames most of the visible content remains the same. It is obvious that this will 

@@ -15,7 +15,7 @@ how the pipeline works in particular. The implementation details can be found in
 \section{Pipeline Overview} \label{sec-piepline-initialization}
 
 
-\subsection*{Pipeline Initialization} \label{sec-piepline-initialization}
+\subsection*{Pipeline Initialization} \label{subsec-piepline-initialization}
 
 \begin{figure}[h]
     \centering
@@ -76,7 +76,7 @@ additional structure identifies voxel positions that are located adjacent to eac
 \subsubsection*{Best Occluder Selection} \label{subsec-best-occluder-selection}
 
 The next step in the initialization procedure is to pre-compute the best occluders. This part is a significant one, 
-since it computes important data for the occlusion culling. As mentioned in chapter \ref{subsec-two-pass-occlusion-culling},
+since it computes important data for the occlusion culling. As mentioned in chapter \ref{subsubsec-two-pass-occlusion-culling},
 best occluders are usually specifically authored by artists during the creation of the scene. This process is only 
 possible, if the models are static in a sense, that they do not change in size or shape. An alteration like this 
 could result in inefficient occlusion queries or even the elimination of occluders altogether. In the context of 

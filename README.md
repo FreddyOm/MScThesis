@@ -22,6 +22,7 @@ scientific and presentational work.
 - [] Show any code at all in the normal chapters? Or only use pseudo code?
 - [] Implementation before Methodology?
 - [] Wikipedia source (DirectX) okay? Or not?
+- [] Check title. Is it fitting? What is the second pass? If it is reprojection, then rename!!
 
 ## Problems
 
