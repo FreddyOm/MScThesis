@@ -262,9 +262,9 @@ the actual depth buffer shows.
     \label{fig:best-occluder-viz}
 \end{figure}
 
-\noindent
-After drawing the best occluders to the depth buffer, it is copied into the \ac{HiZ} texture resource. Then the 
-\ac{HiZ}-pyramid is constructed. This is done by a compute shader to optimize the work. The compute shader 
+\noindent 
+After drawing the best occluders to the depth buffer, it is copied into the \ac{HiZ} texture resource. 
+Then the \ac{HiZ}-pyramid is constructed. This is done by a compute shader to optimize the work. The compute shader 
 sequentially accesses the last valid mip level from mip level 0 to mip level \emph{n}, \emph{n} being the last 
 mip level that is larger than a specified threshold. The compute shader accesses a grid of \begin{math} 2 \times 2 
 \end{math} texels and takes the maximum value of all the 4 depth values. This maximum value is then stored in the 

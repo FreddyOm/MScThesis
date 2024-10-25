@@ -31,8 +31,7 @@ their large breakthrough during the 1990s. With the introduction of the \emph{NV
 efficient transformations and lighting computations found their way into private \ac{PC}s 
 \cite{Fenno2024}. Back then, this new hardware created a multitude of new possibilities. Some of the 
 major innovations featured \emph{cube mapping}, \emph{per-pixel light calculations}, and a 
-\emph{standardized vertex buffer} \cite{NVIDIA1999, Battaglia2024}. [@TODO: Re-check vertex buffer]
-
+\emph{standardized vertex buffer} \cite{NVIDIA1999, Battaglia2024}. [@TODO: Re-check vertex buffer] \\
 
 \noindent
 Although it was mostly used for graphics processing - hence the name - nowadays, \ac{GPU}s
@@ -53,7 +52,7 @@ we will give a brief overview over the trends in computer graphics over the past
 especially the last years.
 
 
-\section{The Rise Of The GPU}
+\section{Rise Of The GPU} \label{sec-rise-of-the-gpu}
 
 [@TODO: double check games]
 
@@ -78,7 +77,7 @@ GeForce 256} introduced cube mapping to the pipeline, featuring real-time reflec
 shown in figure \ref{fig:bubble-reflection-demo} \cite{Battaglia2024}.
 
 
-\subsection{Rendering Pipeline}
+\subsection*{Rendering Pipeline} \label{subsec-rendering-pipeline}
 
 The standardization of the graphics hardware, as pioneered by \emph{NVIDIA}, in concert with capable 
 graphics \ac{API}s like \emph{Direct3D} or \emph{OpenGL} kick-started huge graphical improvements in 
@@ -105,8 +104,9 @@ standard towards the "modern" rendering pipeline that is used nowadays. Between 
 \end{figure}
 
 
-\subsection{Deferred Rendering}
+\subsection*{Deferred Rendering} \label{subsec-deferred-rendering}
 
+[@TODO: Sources]
 With a lot of innovative hard and software, the games got complexer and real-time computer graphics got even more 
 photo-realistic. The demand for more light sources increased in an attempt to make game worlds more realistic. 
 However, more light sources posed some problems for the developers. When using the traditional rendering pipeline,
@@ -138,7 +138,7 @@ creation of one frame in \emph{Guerilla Games'} \emph{Killzone 2} (2007) \cite{K
 \end{figure}
 
 \noindent
-As Akenine-Möller et al. point out, "the contributionof the models’ geometry has been fully decoupled from lighting 
+As Akenine-Möller et al. point out, "the contribution of the models’ geometry has been fully decoupled from lighting 
 computations" \cite{AkenineMoeller2018}. \emph{Deferred Shading} encompasses a lot more optimizations, like compression, 
 light clustering, deferred texturing and more \cite{AkenineMoeller2018}. All these techniques combined can ultimately 
 result in a more efficient shading model for specific use cases, for instance, when using a lot of lights in combination 
@@ -150,13 +150,52 @@ still used today for state-of-the-art game development. Dispatching work for the
 memory and data layouts for most efficient computation has also resulted in one of the latest trends in real-time 
 rendering.
 
-\subsection{GPU Driven Rendering}
+\subsection*{GPU Driven Rendering}
 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=300px]{images/graphics/assassins-creed-unity-gameplay.jpg}
+    \caption{A screenshot of the game \emph{Assassin's Creed Unity} (Ubisoft \cite{Ubisoft2014}, 2014) 
+    showcasing the high density of geometry and far draw distances \cite{Burke2014}.}
+    \label{fig:assassins-creed-unity-gameplay}
+\end{figure}
+
+\noindent [@TODO: Sources]
 Over a decade after the first \ac{GPU} was introduced, hardware acceleration was the de facto standard in 
 computer graphics and the rendering pipeline got more and more loaded with features, innovations and data. 
 This led to a new bottleneck: The memory bandwith between the \ac{CPU} and \ac{GPU}. Soon, a new trend was 
-developed: . The goal of  is, to minimize bandwidth between \ac{CPU} and \ac{GPU}. 
+developed: \emph{\ac{GPUDR}}. The goal of \ac{GPUDR} is, to minimize bandwidth between \ac{CPU} and \ac{GPU}. 
+An ideal \ac{GPU} driven application would only update the camera related data (view and projection matrices) 
+within a frame. Everything else would be computed by the \ac{GPU}. This trend arised with the rise of the 
+\ac{GPGPU} and the better support for the more generalized \emph{compute shaders}. The defintion for when 
+applications are \ac{GPU} driven and when not, is blurred, but one of the earlier games to make heavy use of 
+\ac{GPUDR} is \emph{Assassin's Creed Unity} (Ubisoft \cite{Ubisoft2014}, 2014), shown in figure 
+\ref{fig:assassins-creed-unity-gameplay}. In 2015, Aaltonen et al. \cite{Aaltonen2015} held a presentation 
+about \ac{GPUDR} on \emph{SIGGRAPH 2015}. This presentation pointed out previous work which was the basis for 
+their approach, [@TODO: such as ... quote]. However, their approaches and innovations to computation of geometry, 
+the use of \emph{occlusion culling} and \emph{deferred texturing} had a lasting impact on future games. 
+\emph{Ubisoft's} technology allowed for a densly populated, dynamic, open world. Some of the technology used 
+would only be seen in other games almost a decade later, when geometric computation was supported by specific 
+hardware adaptions.\\
 
+\noindent
+Especially large, open games can profit from optimizations like storing scene data directly on the \ac{GPU}. 
+In modern real-time computer graphics, the pre-computation by the \ac{CPU} and the data-transfer to the \ac{GPU} 
+is replaced by data generation on the \ac{GPU} itself. This trend is also acknowledged by hardware manufacturers, 
+adding larger memory to \ac{GPU}s every year \cite{}. [@TODO: Source for larger VRAM] 
+
+\subsection*{Mesh Shading Pipeline} \label{subsec-mesh-shading-pipeline}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=300px]{images/graphics/mesh-shading-asteroids-demo.png}
+    \caption{The offical NVIDIA \emph{Asteroids} demo, featuring the new \emph{Mesh Shading Pipeline} (2018)
+    and a high geometric density \cite{Kraemer2018}.}
+    \label{fig:mesh-shading-asteroids-demo}
+\end{figure}
+
+
+More elaborate algorithms for 
 
 \section{Hier kommt meine Motivation und Überleitung zur Forschungsfrage} \label{sec-todo}
 
