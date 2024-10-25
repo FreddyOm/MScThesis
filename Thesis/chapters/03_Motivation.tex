@@ -105,10 +105,50 @@ standard towards the "modern" rendering pipeline that is used nowadays. Between 
 
 \subsection{Deferred Rendering}
 
+With a lot of innovative hard and software, the games got complexer and real-time computer graphics got even more 
+photo-realistic. The demand for more light sources increased in an attempt to make game worlds more realistic. 
+However, more light sources posed some problems for the developers. When using the traditional rendering pipeline,
+lighting is calculated on a per-vertex basis. Interpolation can be used to generate lighting results for every sample 
+in between the vertices. Still, every vertex must be considered in combination with all light sources. This creates a 
+dependancy between the amount of vertices and the amount of lightsources. Basically, adding a few more light sources 
+will drastically increase computatoin times of the final image. Another method can be adopted: \emph{Deferred Shading}.
+This technique makes use of multiple render targets, and writes the data necessary for the lighting calculations into 
+various buffers. This way, the surface normals, the specular intensity, the albedo (texture color), the depth and more 
+values can all be stored individually, as per-pixel data. This includes the relevant data for the lighting calculations. 
+When all buffers are drawn, the final result is easily found by looking up all the relevant data from each buffer at one 
+pixel coordinate and combining them to a final result. Figure \ref{fig:deferred-shading-buffers} shows all the buffers 
+used for the creation of one frame in \emph{Guerilla Games'} \emph{Killzone 2} (2007) \cite{KillzoneFandom}. 
 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=175px]{images/graphics/killzone-2-buffer-depth.png}
+    \includegraphics[width=175px]{images/graphics/killzone-2-buffer-vsn.png}
+    \includegraphics[width=175px]{images/graphics/killzone-2-buffer-specular.png}
+    \includegraphics[width=175px]{images/graphics/killzone-2-buffer-specular-rough.png}
+    \includegraphics[width=175px]{images/graphics/killzone-2-buffer-ss-motion.png}
+    \includegraphics[width=175px]{images/graphics/killzone-2-buffer-albedo.png}
+    \includegraphics[width=175px]{images/graphics/killzone-2-buffer-composed-result.png}
+    \includegraphics[width=175px]{images/graphics/killzone-2-buffer-post.png}
+    \caption{Different buffers for deferred shading in \emph{Guerilla Games'} \emph{Killzone 2} (2009) \cite{Valient2007}.}
+    \label{fig:deferred-shading-buffers}
+\end{figure}
+
+\noindent
+As Akenine-Möller et al. point out, "the contributionof the models’ geometry has been fully decoupled from lighting 
+computations" \cite{AkenineMoeller2018}. Deferred Shading encompasses a lot more optimizations, like compression, 
+light clustering, deferred texturing and more \cite{AkenineMoeller2018}. All these techniques combined can ultimately 
+result in a more efficient shading model for specific use cases, for instance, when using a lot of lights in combination 
+with high density geometry.\\
+
+\noindent
+The basic idea of \emph{Deferred Shading} 
 
 \subsection{GPU Driven Rendering}
 
+Over a decade after the first \ac{GPU} was introduced, hardware acceleration was the de facto standard in 
+computer graphics and the rendering pipeline got more and more loaded with features, innovations and data. 
+This led to a new bottleneck: The memory bandwith between the \ac{CPU} and \ac{GPU}. Soon, a new trend was 
+developed: \emph{\ac{GPU} Driven Rendering}. [@TODO: Goal of GPUDR]
 
 \section{Hier kommt meine Motivation und Überleitung zur Forschungsfrage}
 
