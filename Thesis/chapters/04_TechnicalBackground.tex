@@ -350,7 +350,7 @@ elegantly leveraged on the \ac{GPU} side for efficient occlusion culling.
     \centering
     \includegraphics[width=200px]{images/graphics/depth-buffer-ac-unity.png}
     \includegraphics[width=200px]{images/graphics/final-frame-ac-unity.png}
-    \caption{The depth buffer (left) and the final back buffer (right) of \emph{Assassin's Creed Unity} (Ubisoft, 2014 \cite{Ubisoft2014}). 
+    \caption{The depth buffer (left) and the final back buffer (right) of \emph{Assassin's Creed Unity} (\emph{Ubisoft}, 2014 \cite{Ubisoft2014}). 
     The hand-picked \emph{best occluders} were already drawn to the depth buffer in a depth pre-pass.
     While rendering all the geometry to the back buffer, each instance can be checked against the z-pyramid \cite{Kruskonja2022}.}
     \label{fig:depth-buffer-ac-unity}
@@ -358,7 +358,7 @@ elegantly leveraged on the \ac{GPU} side for efficient occlusion culling.
 
 \noindent
 \emph{\ac{TPOC}} is an adaptation of the \ac{HZB} algorithm, introduced in chapter \ref{subsubsec-hierarchical-z-buffering}. 
-One of the most renowned examples of this algorithm is present in the 2014 title \emph{Assassin's Creed Unity} by Ubisoft 
+One of the most renowned examples of this algorithm is present in the 2014 title \emph{Assassin's Creed Unity} by \emph{Ubisoft} 
 \cite{Ubisoft2014}. One year later, Ulrich Haar and Sebastian Aaltonen presented their approach on SIGGRAPH 2015 
 \cite{Aaltonen2015}. Their implementation inspired other developers like \emph{Epic Games} for \emph{Unreal Engine 5} 
 to adopt similar techniques \cite{Karis2021}. This is the algorithm we use in our implementation. It shares its basic 
@@ -575,7 +575,7 @@ implementation was already included in the framework we used for our case study.
 Meshlet occlusion culling refers to the process of culling meshlets which are occluded by any other meshlet, by a 
 group of meshlets or another instance. This culling technique is rather new due to the relative novelty of the 
 Mesh Shading pipeline itself. Still, Aaltonen et al. \cite{Aaltonen2015} used what they call \emph{Cluster Culling} in 
-\emph{Assassin's Creed Unity} (Ubisoft \cite{Ubisoft2014}, 2014). Meshlet occlusion culling can be implemented in 
+\emph{Assassin's Creed Unity} (\emph{Ubisoft} \cite{Ubisoft2014}, 2014). Meshlet occlusion culling can be implemented in 
 a bunch of different ways, exactly as traditional occlusion culling algorithms. Often, this implies the use of a 
 \ac{BVH} like an octree to make visibilty checks easier. \ac{HZB} can also be applied to the new pipeline, and meshlets 
 can be checked for occlusion, using the highly parallel Mesh Shading pipeline. Consequently, \ac{TPOC} is also applied 

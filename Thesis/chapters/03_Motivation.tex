@@ -59,7 +59,7 @@ especially the last years.
 \begin{figure}[h]
     \centering
     \includegraphics[width=250px]{images/graphics/bubble-reflection-effects-demo.jpg}
-    \caption{The NVIDIA bubble demo showcasing advanced reflections using cube mapping (NVIDIA \cite{NVIDIABubble}, 2000).}
+    \caption{The \emph{NVIDIA} bubble demo showcasing advanced reflections using cube mapping (\emph{NVIDIA} \cite{NVIDIABubble}, 2000).}
     \label{fig:bubble-reflection-demo}
 \end{figure}
 
@@ -155,7 +155,7 @@ rendering.
 \begin{figure}[h]
     \centering
     \includegraphics[width=300px]{images/graphics/assassins-creed-unity-gameplay.jpg}
-    \caption{A screenshot of the game \emph{Assassin's Creed Unity} (Ubisoft \cite{Ubisoft2014}, 2014) 
+    \caption{A screenshot of the game \emph{Assassin's Creed Unity} (\emph{Ubisoft} \cite{Ubisoft2014}, 2014) 
     showcasing the high density of geometry and far draw distances \cite{Burke2014}.}
     \label{fig:assassins-creed-unity-gameplay}
 \end{figure}
@@ -169,33 +169,38 @@ An ideal \ac{GPU} driven application would only update the camera related data (
 within a frame. Everything else would be computed by the \ac{GPU}. This trend arised with the rise of the 
 \ac{GPGPU} and the better support for the more generalized \emph{compute shaders}. The defintion for when 
 applications are \ac{GPU} driven and when not, is blurred, but one of the earlier games to make heavy use of 
-\ac{GPUDR} is \emph{Assassin's Creed Unity} (Ubisoft \cite{Ubisoft2014}, 2014), shown in figure 
+\ac{GPUDR} is \emph{Assassin's Creed Unity} (\emph{Ubisoft} \cite{Ubisoft2014}, 2014), shown in figure 
 \ref{fig:assassins-creed-unity-gameplay}. In 2015, Aaltonen et al. \cite{Aaltonen2015} held a presentation 
 about \ac{GPUDR} on \emph{SIGGRAPH 2015}. This presentation pointed out previous work which was the basis for 
 their approach, [@TODO: such as ... quote]. However, their approaches and innovations to computation of geometry, 
 the use of \emph{occlusion culling} and \emph{deferred texturing} had a lasting impact on future games. 
 \emph{Ubisoft's} technology allowed for a densly populated, dynamic, open world. Some of the technology used 
 would only be seen in other games almost a decade later, when geometric computation was supported by specific 
-hardware adaptions.\\
-
-\noindent
-Especially large, open games can profit from optimizations like storing scene data directly on the \ac{GPU}. 
-In modern real-time computer graphics, the pre-computation by the \ac{CPU} and the data-transfer to the \ac{GPU} 
-is replaced by data generation on the \ac{GPU} itself. This trend is also acknowledged by hardware manufacturers, 
-adding larger memory to \ac{GPU}s every year \cite{}. [@TODO: Source for larger VRAM] 
+hardware adaptions. Especially large, open games can profit from optimizations like storing scene data directly 
+on the \ac{GPU}. In modern real-time computer graphics, the pre-computation by the \ac{CPU} and the data-transfer 
+to the \ac{GPU} is replaced by data generation on the \ac{GPU} itself.
 
 \subsection*{Mesh Shading Pipeline} \label{subsec-mesh-shading-pipeline}
+
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=300px]{images/graphics/mesh-shading-asteroids-demo.png}
-    \caption{The offical NVIDIA \emph{Asteroids} demo, featuring the new \emph{Mesh Shading Pipeline} (2018)
+    \caption{The offical \emph{Mesh Shading Pipeline} \emph{Asteroids} demo, featuring the new \emph{Mesh Shading Pipeline} (2018)
     and a high geometric density \cite{Kraemer2018}.}
     \label{fig:mesh-shading-asteroids-demo}
 \end{figure}
 
+\noindent
+More elaborate algorithms for data computation on the \ac{GPU} led to a further increase in geometrical density.
+This is why \emph{NVIDIA} introduced the new \emph{Mesh Shading Pipeline} in 2018 for \emph{NVIDIA Turing} \ac{GPU}s.
+This pipeline improves the "old" vertex shader and features a more flexible way of computing and drawing geometry. 
+It builds upon some of the innovations presented by Aaltonen et al.  \cite{Aaltonen2015} in 2015. Figure 
+\ref{fig:mesh-shading-asteroids-demo} shows a frame of the initial demo provided by \emph{NVIDIA}. The new pipeline is 
+discussed in more detail in chapter \ref{sec-mesh-shading} and are a central part of modern games such as \emph{Remedy's}
+Alan Wake 2 (\emph{Remedy Entertainment} \cite{AlanWake22023}, 2023) or even \emph{Epic Games'} \emph{Unreal Engine 5} 
+\cite{Karis2021}. 
 
-More elaborate algorithms for 
 
 \section{Hier kommt meine Motivation und Überleitung zur Forschungsfrage} \label{sec-todo}
 
