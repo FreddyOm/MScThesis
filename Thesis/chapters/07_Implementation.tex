@@ -207,8 +207,8 @@ both the triangle mesh and the processed volumetric voxel mesh.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=200px]{images/graphics/lucy-triangle-mesh.png}
-    \includegraphics[width=200px]{images/graphics/lucy-voxel-mesh.png}
+    \includegraphics[width=200px]{images/graphics/lucy-triangle-mesh.jpg}
+    \includegraphics[width=200px]{images/graphics/lucy-voxel-mesh.jpg}
     \caption{The input triangle mesh (left) and the voxelized and parsed voxel mesh (right). 
     Model \emph{Lucy} from \emph{The Stanford 3D Scanning Repository} \cite{Stanford23}.}
     \label{fig:trimesh-to-voxel-mesh}
@@ -236,8 +236,8 @@ Voxel Octree}.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=151.5px]{images/graphics/lucy-voxel-octree-viz.png}
-    \includegraphics[width=250px]{images/graphics/lucy-voxel-octree-viz-2.png}
+    \includegraphics[width=151.5px]{images/graphics/lucy-voxel-octree-viz.jpg}
+    \includegraphics[width=250px]{images/graphics/lucy-voxel-octree-viz-2.jpg}
     \caption{The octree structure visualized. Each color represents one octree node. The whole model contains 
     \emph{470.355} voxels and \emph{19.823} octree nodes, with one octree node holding up to \begin{math} 5 \times 5 \times 5 \end{math}
     voxels.}
@@ -253,8 +253,8 @@ the actual depth buffer shows.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=200px]{images/graphics/lucy-best-occluders-viz.png}
-    \includegraphics[width=200px]{images/graphics/lucy-best-occluders-diff-viz.png}
+    \includegraphics[width=200px]{images/graphics/lucy-best-occluders-viz.jpg}
+    \includegraphics[width=200px]{images/graphics/lucy-best-occluders-diff-viz.jpg}
     \caption{A visualization of the best occluders (left) and the best occluders blended with a silhouette 
     of the whole voxel model. Each color represents one octree node which is considered to be a best occluder.
     The best occluders describe the non-visible core of the model and can be aggregated and used to occlude 
@@ -278,7 +278,7 @@ The final \ac{HiZ}-pyramid is illustrated in figure \ref{fig:lucy-hiz-pyramid}.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\linewidth]{images/graphics/lucy-hiz-pyramid-inverted.png}
+    \includegraphics[width=\linewidth]{images/graphics/lucy-hiz-pyramid-inverted.jpg}
     \caption{The \ac{HiZ}-pyramid featuring the full resolution depth buffer as well as the individual mip map 
     levels. The color representation was inverted for better visualization.}
     \label{fig:lucy-hiz-pyramid}
@@ -295,7 +295,7 @@ Figure \ref{fig:lucy-frustum-culling} shows a partially culled model from a diff
 [@TODO: Change model to stanford bunny!]
 \begin{figure}[h]
     \centering
-    \includegraphics[width=200px]{images/graphics/lucy-frustum-culling.png}
+    \includegraphics[width=200px]{images/graphics/lucy-frustum-culling.jpg}
     \caption{The whole \emph{Lucy} model culled against the view frustum. Octree nodes which are not visible are being 
     culled and are therefore not visible.}
     \label{fig:lucy-frustum-culling}
