@@ -99,7 +99,7 @@ hierarchy where more data is present and a shallow hierarchy where almost no or 
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=300px]{images/graphics/octree.png}
+    \includegraphics[width=300px]{images/graphics/octree.jpg}
     \caption{An octree data structure. It stores data alongside its spatial characteristics, relative to 
     other data entries \cite{Six2021}.}
     \label{fig:octree}
@@ -138,7 +138,7 @@ of the data structure. The resulting structure is a more general hierarchical da
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\linewidth]{images/graphics/highres-sv-dag.png}
+    \includegraphics[width=\linewidth]{images/graphics/highres-sv-dag.jpg}
     \caption{Reducing a \ac{SVO} using the approach of Kampe et al. \cite{Kampe2013}.}
     \label{fig:sparse-voxel-dag-creation}
 \end{figure}
@@ -187,7 +187,7 @@ scenes and high geometric density.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=300px]{images/graphics/cluster-backface-culling.png}
+    \includegraphics[width=300px]{images/graphics/cluster-backface-culling.jpg}
     \caption{A common normal cone of a triangle cluster. It can be used to calculate a frontfacing
     and a backfacing cone. If the camera is located in either of these cones, all triangles in the 
     cluster are facing toward the camera, or away from it respectively \cite{AkenineMoeller2018}.}
@@ -208,7 +208,7 @@ is provided in figure \ref{fig:cluster-backface-culling}.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\linewidth]{images/graphics/view-frustum-culling.png}
+    \includegraphics[width=\linewidth]{images/graphics/view-frustum-culling.jpg}
     \caption{The camera's view frustum, relative to the scene. All objects that are completely outside of 
     the view frustum can be ignored by the rendering pipeline, since they do not contribute to the resulting image.
     Image by \cite{Pan2020}.}
@@ -270,7 +270,7 @@ this, algorithms can be used to select and omit occluded instances. \\
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=300px]{images/graphics/bounding-volume-quality.png}
+    \includegraphics[width=300px]{images/graphics/bounding-volume-quality.jpg}
     \caption{Different bounding volumes provide different advantages and disadvantages \cite{Six2021}.}
     \label{fig:bounding-volumes}
 \end{figure}
@@ -296,7 +296,7 @@ in more detail.\\
 [@TODO: explain texel (?), mip levels]
 \begin{figure}[h]
     \centering
-    \includegraphics[width=200px]{images/graphics/hiz-buf-values.png}
+    \includegraphics[width=200px]{images/graphics/hiz-buf-values.jpg}
     \caption{The calculation of a \ac{HiZ} buffer computes the farthest value of each texel window, 
     resulting in a new texel value for adjacent mip levels \cite{AkenineMoeller2018}.}
     \label{fig:hiz-value-computation}
@@ -320,7 +320,7 @@ levels.\\
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\linewidth]{images/graphics/hiz-mip-chain.png}
+    \includegraphics[width=\linewidth]{images/graphics/hiz-mip-chain.jpg}
     \caption{A mip chain of a scene's z-buffer. Every buffer in this chain is a quarter of the resolution of its 
     predecessor buffer \cite{Schachtschabel2017}.}
     \label{fig:hiz-mip-chain}
@@ -348,8 +348,8 @@ elegantly leveraged on the \ac{GPU} side for efficient occlusion culling.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=200px]{images/graphics/depth-buffer-ac-unity.png}
-    \includegraphics[width=200px]{images/graphics/final-frame-ac-unity.png}
+    \includegraphics[width=200px]{images/graphics/depth-buffer-ac-unity.jpg}
+    \includegraphics[width=200px]{images/graphics/final-frame-ac-unity.jpg}
     \caption{The depth buffer (left) and the final back buffer (right) of \emph{Assassin's Creed Unity} (\emph{Ubisoft}, 2014 \cite{Ubisoft2014}). 
     The hand-picked \emph{best occluders} were already drawn to the depth buffer in a depth pre-pass.
     While rendering all the geometry to the back buffer, each instance can be checked against the z-pyramid \cite{Kruskonja2022}.}
@@ -483,7 +483,7 @@ more scalable. It is often used for early culling, for efficient tesselation or 
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=300px]{images/graphics/bunny-meshlet.png}
+    \includegraphics[width=300px]{images/graphics/bunny-meshlet.jpg}
     \caption{The \emph{Stanford Bunny} mesh geometry split into meshlets. Each meshlet is represented by a single color, 
     and consists of multiple triangles \cite{Oberberger2024}.}
     \label{fig:bunny-meshlet}
@@ -543,7 +543,7 @@ culled. \cite{Aaltonen2015}, \cite{AkenineMoeller2018}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\linewidth]{images/graphics/backface-culling-ac-unity.png}
+    \includegraphics[width=\linewidth]{images/graphics/backface-culling-ac-unity.jpg}
     \caption{Backface culling thechnique using a bounding box around a set of \emph{n} triangles, 
     as proposed by Aaltonen et al. \cite{Aaltonen2015}. Image by Akenine-Möller et al. \cite{AkenineMoeller2018}.}
     \label{fig:backface-culling-ac-unity}

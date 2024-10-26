@@ -19,7 +19,7 @@ how the pipeline works in particular. The implementation details can be found in
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\linewidth]{images/graphics/pipeline-initialization.png}
+    \includegraphics[width=\linewidth]{images/graphics/pipeline-initialization.jpg}
     \caption{The initialization process of the rendering pipeline. Depending on the voxel model, an octree node 
     can hold anything between zero and \emph{n} voxels, \emph{n} being the amount of threads per threadgroup}
     \label{fig:pipeline-initialization}
@@ -49,7 +49,7 @@ For the purpose of our case study, we used a custom octree implementation which 
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\linewidth]{images/graphics/voxelpos-octreenode-buffer.png}
+    \includegraphics[width=\linewidth]{images/graphics/voxelpos-octreenode-buffer.jpg}
     \caption{The voxel position buffer and the octree node buffer. The latter one providing a 
     specific structure to the first one.}
     \label{fig:voxelpos-octreenode-buffer}
@@ -146,7 +146,7 @@ voxel models with no runtime alternation, a static, pre-calculated buffer for be
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\linewidth]{images/graphics/rendering-loop.png}
+    \includegraphics[width=\linewidth]{images/graphics/rendering-loop.jpg}
     \caption{The rendering loop of the rendering pipeline.}
     \label{fig:pipeline-loop}
 \end{figure}
@@ -200,7 +200,7 @@ and output throughout the pipeline.
 To obtain a valid model for our pipeline, a voxel mesh has to be created. To do this, \emph{binvox} 
 \cite{binvox} can be used. It works with any triangle mesh in the \emph{.obj} (Wavefront) or \emph{.ply} 
 (Stanford Polygon File Format) format, which in turn can be exported by most of the common 3D software. 
-Due to its availability, Blender \cite{Blender} is recommended. To convert the triangle mesh to a volumetric 
+Due to its availability, \emph{Blender} \cite{Blender} is recommended. To convert the triangle mesh to a volumetric 
 voxel representation, \emph{binvox} is executed from the command line and the input file as well as optional 
 parameters are specified. The output is a \emph{.binvox} file. Figure \ref{fig:trimesh-to-voxel-mesh} shows 
 both the triangle mesh and the processed volumetric voxel mesh. 
