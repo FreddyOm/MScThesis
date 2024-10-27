@@ -4,8 +4,7 @@ The approach we are proposing is an aggregation of a lot of ideas and implementa
 around for quite some time. It is of great interest to explore related work which can provide 
 context for use cases and additional techniques. Since our implementation is based on the areas 
 of Voxel Redering, Occlusion Culling and Mesh Shading, this chapter will highlight related work 
-for each of these topics. 
-
+for each of these topics.
 
 [@TODO: Check redundancy with technological background]
 
@@ -14,7 +13,7 @@ for each of these topics.
 \begin{figure}[h]
     \centering
     \includegraphics[width=300px]{images/graphics/minecraft-chunks.jpg}
-    \caption{A screenshot of minecraft, with a debug visualization of the voxel chunks \cite{Palm2022}.}
+    \caption{A screenshot from \emph{Minecraft}, with a debug visualization of the voxel chunks \cite{Palm2022}.}
     \label{fig:minecraft-chunks}
 \end{figure}
 
@@ -39,6 +38,13 @@ algorithm added in version 1.5). Nevertheless, most efforts towards better perfo
 Lately, \ac{GPU}-driven approaches have been implemented by various individual developers. [@TODO: Find specific 
 optimizations and sources!]  \\
 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=300px]{images/graphics/teardown-ray-tracing.jpg}
+    \caption{A screenshot from \emph{Teardown}, showcasing raytraced lighting \cite{TeardownSteam2022}.}
+    \label{fig:teardown-raytracing}
+\end{figure}
+
 \noindent
 During the past years, ray tracing has become a more common rendering technique, being used for global illumination, 
 shadows or ambient occlusion in rasterizer pipelines. Fully ray traced real-time rendering has mostly been available 
@@ -46,10 +52,10 @@ for voxel rendering, using common optimization techniques like a \ac{BVH}. Voxel
 major influence for our approach, since their implicit voxel representation is generally compatible with meshes 
 generated directly on the \ac{GPU}. Various efforts have been made to optimize voxel representations for ray traced 
 pipelines. Kampe et al. \cite{Kampe2013} propose the use of their \emph{High-Resolution Sparse Voxel \ac{DAG}s}, 
-as discussed in chapter \ref{subsec-highres-svo-dags}. This approach is tailored to high voxel resolutions and data that 
-might not fit into memory all at once. Their data structure can be easily split up into several sub-trees, which in turn 
-can be loaded individually. This approach seems promising for large scenes and use cases, which require the streaming of 
-data. 
+as discussed in chapter \ref{subsec-highres-svo-dags}. This approach is tailored to high voxel resolutions and data 
+that might not fit into memory all at once. Their data structure can be easily split up into several sub-trees, which 
+in turn can be loaded individually. This approach seems promising for large scenes and use cases, which require the 
+streaming of data. 
 
 
 [@TODO: sources]
@@ -57,26 +63,37 @@ data.
 
 \section{Occlusion Culling}
 
+In the past, occlusion culling in games has been heavily influenced by \emph{umbra} \cite{Umbra2024}, a company 
+specialized on 3D occlusion culling solutions. Umbra has been used by a lot of games such as \emph{Call of Duty: Ghosts} 
+(2013), \emph{Killzone: Shadow Fall} (2013), \emph{Alan Wake} (2012) and many more 
+\cite{UmbraWiki,CallOfDutyGhostsCredits, KillzoneUmbra,AlanWakeUmbra}. Umbra voxelizes the game world and proceeds 
+to process the data further, merging voxels to cells. A runtime hierarchy of the meshes inside the voxelgrid is created 
+and subsequently, using the camera position, the cells can be queried for occlusion. As long as there are large 
+occluders, this process can reduce the amount of instances and therefore the amount of triangles to draw 
+\cite{Bonet2021}. \\
+
+\noindent
+\emph{Assassin's Creed Unity} (2014) uses the two-pass occlusion culling discussed in chapter 
+\ref{subsubsec-two-pass-occlusion-culling} as presented by Aaltonen et al. \cite{Aaltonen2015}. This technique 
+involves both \ac{HZB} and depth reprojection. Both make for a good occlusion culling technique in games with large 
+occluders or interiors. It allowed developers to push for huge draw distances and densly crowded environments. The 
+game used advanced technology in its implementation. The most similar to our approach being the clustered geometry 
+and the \ac{GPU} centric approach of occlusion culling. However, the game doesn't use a volumetric representation but 
+the standard boundary representation for its world. \\
+
+\noindent
+Similar to \emph{Assassin's Creed Unity}, \emph{Alan Wake 2} (2023) also implements \ac{HZB} and depth reprojection. 
+It is directly based on the approach of Aaltonen et al. \cite{Aaltonen2015} but this time makes use of the new mesh 
+shading pipeline. The hardware integration of clustering geometry makes this approach even more efficient. \\
+
+\noindent
+\emph{Epic Games'} \emph{Unreal Engine 5} also features \ac{HZB}, reprojecting the last frames depth buffer and using 
+this data for conservative occlusion culling. This procedure also uses the mesh shading pipeline to cull individual 
+meshlets and is significantly influenced by Aaltonen et al. \cite{Aaltonen2015, Karis2021}. 
 
 
 
-
-%\section{Minecraft}
-
-%\section{Teardown}
-
-%\section{Assassin's Creed Unity}
-
-%\section{Nanite - Unreal Engine 5}
-
-%\section{Alan Wake / Northlight}
-
-
-%\section{Octree Occlusion Culling}
-
-
-
-- What is it?
-- What is interesting about it?
-- How does it relate to our work?
-- How does it differ from our work?
+% - What is it?
+% - What is interesting about it?
+% - How does it relate to our work?
+% - How does it differ from our work?
