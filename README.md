@@ -23,6 +23,7 @@ scientific and presentational work.
 - [] Implementation before Methodology?
 - [] Wikipedia source (DirectX) okay? Or not?
 - [] Check title. Is it fitting? What is the second pass? If it is reprojection, then rename!!
+- [] What else in Introduction?
 
 ## Problems
 

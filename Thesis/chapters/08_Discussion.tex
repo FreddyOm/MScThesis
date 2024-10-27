@@ -9,3 +9,9 @@
     - Depending on the voxel size, there might be a need for chunking the data effectively % @TODO: Check if this is still necessary with Meshlet Occlusion Culling enabled
     - Voxels as meshlets -> non-similar normals can be inefficient.. 
     - 
+
+
+Discussion points:
+
+- When already drawing aggregated bounding boxes, isn't this just HiZ Buffering? And is it then better to draw everything
+ to test for visibility instead of only best occluders? 

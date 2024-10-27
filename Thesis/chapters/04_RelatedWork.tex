@@ -91,9 +91,11 @@ shading pipeline. The hardware integration of clustering geometry makes this app
 this data for conservative occlusion culling. This procedure also uses the mesh shading pipeline to cull individual 
 meshlets and is significantly influenced by Aaltonen et al. \cite{Aaltonen2015, Karis2021}. 
 
-
-
-% - What is it?
-% - What is interesting about it?
-% - How does it relate to our work?
-% - How does it differ from our work?
+\noindent [@TODO: Probably remove because its \ac{HZB}]
+Another approach of applying occlusion culling is the \emph{raster occlusion culling}, proposed by \emph{NVIDIA}, among 
+others \cite{NVIDIAGLOC2016}. The approach relies on "invisibly" rasterizing the objects as bounding boxes and using the 
+rasterizer to query visibility checks and storing the per-object results in a visibility buffer. This buffer can then be 
+used to draw the actual shaded objects and discard invisible objects. For the bounding boxes, only up to three faces are 
+drawn in the early visibility check, to reduce load. Also, this can be optimized using instancing, the geometry shader or 
+mesh shading to compute the visibility buffer efficiently \cite{NVIDIAGLOC2016}. This approach, especially when using 
+mesh shading, is rather similar to ours. However, our use case is different in a few details.
