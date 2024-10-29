@@ -7,23 +7,25 @@ The thesis LaTeX project for the master's thesis "Optimizing Voxel Rendering usi
 
 ## Feedback Topics
 
-- [] "We" or "I" in thesis text -> S.R.
-- [] How much of the implementation should be discussed? All implementation to appendix anyway.
+- [x] "We" or "I" in thesis text -> S.R.
+- [x] How much of the implementation should be discussed? All implementation to appendix anyway.
 - [] Chapters 6.1 & 6.2 and chapter 6.3 are kind of redundant, but I would still like to seperate high level 
 pipeline discussion and in depth data visualization.
-- [] Introduction & Motivation? Redundant?
-- [] Technical Background & Related Work? Redundant? Maybe related work more of specific application instead of 
+- [x] Introduction & Motivation? Redundant?
+- [x] Technical Background & Related Work? Redundant? Maybe related work more of specific application instead of 
 scientific and presentational work.
 - [] Citation okay?
-- [] Mention less (sub-) chapters in contents?
-- [] Results and Discussion seperately? Or together?
-- [] Implementation before Methodoligy, then Case-Study and Results?
+- [x] Mention less (sub-) chapters in contents?
+- [x] Results and Discussion seperately? Or together?
+- [x] Implementation before Methodoligy, then Case-Study and Results?
 - [] Introduction topics (GPU Driven, Deferred Rendering, ... )
-- [] Show any code at all in the normal chapters? Or only use pseudo code?
-- [] Implementation before Methodology?
-- [] Wikipedia source (DirectX) okay? Or not?
+- [x] Show any code at all in the normal chapters? Or only use pseudo code?
+- [x] Wikipedia source (DirectX) okay? Or not?
 - [] Check title. Is it fitting? What is the second pass? If it is reprojection, then rename!!
 - [] What else in Introduction?
+- [] Kolloquium, Paper & Thesis -> Koll. Nach Abgabe 1h (~40-45 Präsi mit Live Demo); Paper zur gleichen Zeit wie MA
+- [x] Methodology as part of case study?
+- [] Games as related work?
 
 ## Problems
 
