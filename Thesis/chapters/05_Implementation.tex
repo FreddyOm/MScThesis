@@ -347,6 +347,9 @@ are already projected to screen space. This is then done again in the mesh shade
 to do the projection in the amplification shader already, so it is only computed once. The already projected position 
 could then be input in the mesh shader, making the projection in the mesh shader redundant).
 
+- Why not just discard octree nodes when I already know that they are not visible. -> Because they could as well be the
+  surface of the model! + can be used as occluders for rest of the scene
+
 - Limitations: 
     - Worse performance on slopes? -> Check and measure!
     - Align octree bounds with outer most voxel bounds, so no misalignment happens!

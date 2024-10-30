@@ -1,17 +1,101 @@
 \chapter{Experiment} \label{cpt-experiment}
 
-To be able to evaluate the strength and weaknesses of the given implementation, an in-depth 
-experiment is conducted and evaluated. The experimental environment is described in chapter 
-\ref{sec-experimental-environment}
+To be able to evaluate the strengths and weaknesses of the given implementation, an in-depth 
+experiment is conducted and evaluated. When considering the implementation, 
 
 
 \section{Experimental Evaluation} \label{sec-experimental-evaluation}
+
+To evaluate the key differences and the runtime performance in general, several aspects have to be considered.
+Unfortunatly, comparing the occlusion culling implementation to an alternative implementation is not within the 
+scope of this work, so efforts need to be made in order to evaluate the pipeline and its performance from a 
+conceptual point of view and compared to the plain pipeline, without any occlusion culling at all. The next  
+sections highlight the major aspects which are considered for the experiment and are evaluated during the 
+test runs. All aspects aim to demonstrate how the occlusion culling affects the given test scene and how the 
+computations differ compared to the plain pipeline. Later, use cases are considered which can be compared to 
+alternative algorithms on a high level. However, keep in mind that it is up to future measurements to quantitavely
+compare the pipeline to alternative approaches. 
+
+
+\subsection*{Scene Layout}
+
+First of, the scene layout and scene description need to be considered. Any occlusion culling algorithm somehow 
+relies on spatial information, be it in world space, sceen space or by using a spatial container. Consequently, 
+the scene layout and how the scene changes relative to the camera are important aspects to consider. For this 
+experimental setup, a moving camera is used in order to test the ability of the occlusion culling algorithm to 
+adapt to different angles of the scene. 
+
+Another aspect to consider is the model data structure. The voxel models are volumetric representations and thus, 
+not hollow. This leaves a large portion of computation to be irrelevant and allows for the occlusion culling to 
+optimize the data flow. Different types of models are used to challenge the culling algorithm in different ways. 
+In concept, the culling should be optimal on large, dense models with even faces. Consequently, models with 
+slopes and holes are tested, to see how well best occluders can be computed. Smaller models might also pose a 
+challenge for the optimization, especially when the octree nodes cannot be filled completely. Also, different 
+voxle resolutions are used to achieve different amounts of octree nodes in the scene. All these different 
+aspects should show the strengths and weaknesses of the algorithm and how it can be optimally used in practice.
+
+
+\subsection*{Timings}
+
+Ultimately, the time spent for various computations is relevant for the selection of the best algorithm. This is 
+a central tool to see how the implementation performs overall in the context of the framework used. The frame 
+time is the first measurment to be considered, but not necessarily the most meaningful in a complex pipeline. 
+Consequently, the timings for all major pipeline steps are considered, as well as the overall time spend on \ac{CPU} 
+and \ac{GPU} computations. 
+
+
+
+Frame time, 
+time spent in different pipeline steps,
+CPU time,
+GPU time
+
+When possible, compare timings to findings by \cite{Aaltonen2015} or \cite{Remedy2023}
+
+
+
+
+\subsection*{Visibility and Culling}
+
+In order to evaluate the general functionality and effectiveness of the pipeline, the voxel model is analysed 
+with and without the occlusion culling applied. The amount of culled voxels is compared to the total amount of 
+voxels resulting in an overview of how much geometry can be culled for different scene setups. The same is 
+valid for the amount of octree nodes. They can also be compared to the amount of best occluders. The more best 
+occluders present in a scene, the higher the probability to occlude other voxels or octree nodes. To evaluate 
+how much can be optimized during the depth pre pass, the amount of best occluders can be compared to the amount 
+of voxels representing the best occluders. Since the voxels are aggregated to larger cubes, drawing the inner 
+volume of the voxel model is more efficient than drawing all the voxels individually. [@TODO: Make this sentance 
+understandable]  
+Finally, the actual amount of processed triangles shows the geometry processed by 
+the \ac{GPU}. 
+
+Visible voxels, culled voxels,
+Overdraw, Visible Octree Nodes,
+Visible Triangles, Computed Triangles,
+Amount of Best Occluders,
+Amount Best Occluders vs. aggregated octree nodes (how many "voxels" do I draw for best occluders instead of meshlets)
+
+
+\subsection*{Additional Overhead}
+
+Ultimately, the additional overhead needs to be evaluated compared to the 
+
+What computations are done only for the OC algo?
+Rough timings / percentage of complete pipeline times
 
 
 
 Wieso das Experiment,
 Wie gehe ich vor, warum?
+Welche Schwächen haben andere OC algos, und wo kann unserer im Vergleich glänzen
 
+
+
+\section{Measurements}
+
+- NVIDIA NSight
+- RenderDoc
+- ...
 
 \section{Experimental Environment} \label{sec-experimental-environment}
 
