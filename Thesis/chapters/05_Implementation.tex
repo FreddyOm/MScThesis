@@ -316,6 +316,88 @@ The voxels that passed all tests are finally dispatched for the final draw call,
 since the geometry, UVs, normals and more can be easily created on-chip. \\
 
 
+\section{Occlusion Culling Algorithm} \label{sec-occlusion}
+
+The occlusion culling algorithm is the central part of the pipeline and thus deserves a more detailed coverage. The 
+basic implementation is very similar to the ones provided by Aaltonen et al., Greene et al. or Karis et al. 
+\cite{Aaltonen2015,Greene93,Karis2021}. It relies on the pre-computations discussed above and can be applied to the 
+octree nodes or to individual meshlets. Usually, octree nodes are culled in this process, as \cite{AkenineMoeller2018}
+points out. However, using the mesh shading pipeline it has become possible to cull more fine granular by using 
+meshlet bounding volumes as occludees. One advantage is that geometry can be culled, even when the occluder doesn't 
+fully overlap the octree node. Therefore, even small instances in the scene can occlude a lot of geometry, resulting 
+in better performance overall. On the other hand, this approach requires a lot more computations because all meshlets 
+are checked against the \ac{HiZ}-pyramid. Eventually, it is necessary to make precise measurements in order to find out 
+which approach works best under the given circumstances. In general, it is hard to predict the performance of 
+parallelized \ac{GPU} computations. For this implementation the culling of octree nodes is assumed. 
+
+\subsection*{Visibility Computation} \label{subsec-visibility-computation}
+
+As mentioned before, the amplification shader is used to pre-select and pre-process the scheduled geometry data, 
+which in this case is just the position of an individual octree node and all the voxels (meshlets) inside of the 
+node. This precomputational step is used for visibility checking, i.e. view frustum culling and occlusion culling. 
+Since the amplification shader is just a general term for any compute shader used before dispatching the meshes, 
+this pipeline step is realized using the standard compute architecture. \\
+
+\noindent
+To ceck for visibility, \emph{projected bounding boxes} need to be constructed and checked against the 
+\ac{HiZ}-pyramid. This step can be highly parallelized by using one \ac{GPU} thread per bounding box calculation. 
+The first step involves the projection of the bounding box onto the view plane, which results in a clip space 
+representation of the data. This early projection is done for all eight vertices of the bouding box, so the minimum 
+and maximum values on each axis can be calculated to end up with clip space and eventually with screen space coordinates.
+The min and max values for each axis represent a screen space rectangle, which can be used for the depth test. The 
+rectangle has the following characteristics.
+
+\begin{itemize}
+    \item The minimum and maximum \emph{x} values describe the \emph{width} of the rectangle.
+    \item The minimum and maximum \emph{y} values describe the \emph{height} of the rectangle.
+    \item The minimum \emph{z} value describes the \emph{depth} of the rectangle, i.e. nearest vertex of the bounding box.
+    \item The minimum and maximum \emph{x} and \emph{y} values describe the \emph{position} of the rectangle in clip space.
+\end{itemize}
+
+\noindent [@TODO: Add image of this!]
+The rectangle can be transformed into screen space and can be expressed as UV coordinates for sampling the 
+\ac{HiZ}-pyramid. To check for visibility, all vertices are assumed to be at the same distance from the camera,
+i.e. to have the same depth value. This depth value is the minimum \emph{z} value calculated earlier. This way,
+as long as any vertex of the rectangle is located \emph{in front} of the best occluders stored in the 
+\ac{HiZ}-pyramid, the rectangle could be visible partially or completely. Conversely, as long as all vertices of 
+the rectangle are located behind the best occluder, the rectangle must be completely occluded. A visualization of 
+this process is shown in figure \ref{fig:screen-space-occlusion-test}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{images/graphics/screen_space_occlusion_test.jpg}
+    \caption{The occlusion test is done in screen space using the minimum and maximum boundaries. The octree node 
+    is shown in blue, and the respective minimum and maximum values are traced by the dotted red lines. The green 
+    line represents the rectangle as viewed from above (left). The same rectangle is shown from a front view as a 
+    representation of the octree nodes screen space occupancy (right).}
+    \label{fig:screen-space-occlusion-test}
+\end{figure}
+
+\noindent
+The rectangles corners can now be used as coordinates for sampling the \ac{HiZ}-pyramid. Since the minimum \emph{z} 
+value is used for all corners, the rectangle describes a flat plane in the clip space. It is sufficient for the 
+depth testing to sample the four corners and compare each depth value sampled from the pyramid to the minimum \emph{z},
+as shown in figure \ref{fig:visibility-hiz-sampling}.
+In fact, it is sufficient to compare the lowest of the four \emph{z} values to the minimum \emph{z} value. Now the 
+hierarchy is traversed until the node is found to be fully occluded or until the hierarchy is fully traversed and the 
+node is found to be visible. Note, that the area which is checked is not perfectly congruent with the actual projected 
+boundary box. This can lead to edge cases, where a few percent of the octree nodes are drawn although they are actually 
+completely occluded.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{images/graphics/visibility-hiz-sampling.jpg}
+    \caption{The \ac{HiZ}-pyramid being sampled using the vertices of the screen-space rectangle, shown in green. 
+    The dotted yellow line resembles the the border between different depth values in the buffer. Sampling the four 
+    vertices can provide up to four different depth values. The smallest one being the "nearest" occluder.}
+    \label{fig:visibility-hiz-sampling}
+\end{figure}
+
+
+
+
+
+
 
 [@TODO: Mention view frustum culling in depth pre pass]
 [@TODO: Check if I should explain mip levels in chptr 4]
