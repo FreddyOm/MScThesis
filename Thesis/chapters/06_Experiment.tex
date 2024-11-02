@@ -84,19 +84,30 @@ What computations are done only for the OC algo?
 Rough timings / percentage of complete pipeline times
 
 
-
 Wieso das Experiment,
 Wie gehe ich vor, warum?
 Welche Schwächen haben andere OC algos, und wo kann unserer im Vergleich glänzen
 
 
+\section{Measuring Tools}
 
-\section{Measurements}
+To measure timings and data precisely, a few external tools are used. All tools are part of the industry 
+standard and can be evaluated as mostly reliable. Still, measuring performance usally comes with a minimal 
+overhead which means that the results will most likely vary in precision. Also, some of the tools provide 
+various ways of coming up with the data. Some data is measured while the profiled application is running, 
+and other data is acquired by replaying the command list of the \ac{GPU}. Consequently, all measurements 
+referring to one aspect of the application are compared against measurements using the same tool and 
+configuration, if not explicitly specified otherwise. \\
 
-- NVIDIA NSight
-- RenderDoc
-- PIX
-- ...
+\noindent
+For the collection of data output, \emph{RenderDoc} is used. It is a free, MIT licensed rendering debugger,
+widely used in the industy. [@TODO: Cite RenderDoc page]
+For \emph{NVIDIA} specific \ac{GPU} profiling, \emph{NVIDIA NSight} is used, which is another industry standard 
+profiling and debugging tool. It is only available for inspection of \emph{NVIDIA} graphics card computations but 
+provides valuable insights into the rendering pipeline and hardware usage. 
+The last tool used is \emph{Microsoft's PIX}, which is another performance debugging and profiling tool for 
+\emph{Windows} platform using \emph{Microsoft's DirectX} \ac{API}. 
+
 
 \section{Experimental Environment} \label{sec-experimental-environment}
 
@@ -142,8 +153,13 @@ Welche Schwächen haben andere OC algos, und wo kann unserer im Vergleich glänz
 
 
 
+
+
 \section{Results}
 
 - Results of the case study
 
-
+- Table for drawn vs occluded voxels in numbers and percent
+- Table for Execution times (full frame, prepass, draw, ...)
+- Table for triangles drawn vs. culled 
+- Table for 
