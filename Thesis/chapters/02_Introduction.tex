@@ -1,6 +1,6 @@
 \chapter{Introduction} \label{cpt-introduction}
 
-Ever since the early days of computer graphics, both hard- and software have rapidly evolved
+Ever since the early days of computer graphics, both hardware and software have rapidly evolved
 alongside the creative and challenging use cases provided by developers, scientists and others.
 Many technical increments relied on innovation, especially the advent of new capable hardware.
 One example is the \ac{GPU} itself, which is now considered the heart of modern graphics 
@@ -10,9 +10,10 @@ on specialized graphics hardware, often focused on video formatting or color out
 \cite{Singer2023}. [@TODO: Last sentence is redundant]\\
 
 \noindent
-The year 2024 marks the 25th anniversary of what is considered to be the first \ac{GPU}, the 
-\emph{NVIDIA GeForce 256}. Although graphics chips had been around for a while, especially 
-in the professional space of the industry, this card was the first to be marketed as a \ac{GPU}. 
+The year 2024 marks the 25th anniversary of what is considered to be the first consumer-grade PC 
+\ac{GPU}, the \emph{NVIDIA GeForce 256}. Although graphics chips had been around for a while, 
+especially in the professional space of the industry, this card was the first to be marketed 
+as a \ac{GPU}. 
 
 \begin{quote}
     "\emph{What makes the GeForce different than its predecessors is the chip's ability to take over all 
@@ -35,14 +36,14 @@ major innovations featured \emph{cube mapping}, \emph{per-pixel light calculatio
 \noindent
 Although it was mostly used for graphics processing - hence the name - nowadays, \ac{GPU}s are used 
 in a much more general way than in 1999. Both the technical complexity and the fields of application 
-have tremendously increased. Today, a \ac{GPU} is often also referred to as a \ac{GPGPU} instead 
-because of its evolution towards a multi-purpose tool. \\
+have tremendously increased. Today, a \ac{GPU} is often referred to as a \ac{GPGPU} because of its 
+evolution towards a multi-purpose tool. \\
 
 \noindent
 Nevertheless, \ac{GPU} architecture is still under a strong influence of the entertainment 
 industry, first and foremost the games industry. Some of the latest changes to \ac{GPU} 
 hardware and \ac{API} design correlates to the ongoing demand for higher output resolutions, 
-higher geometric density or additionaly technology for \emph{Deep Learning} algorithms. 
+higher geometric density and additionaly technology for \emph{Deep Learning} algorithms. 
 These possibilities led to a lot more applications of \ac{GPU}s in various fields of science, 
 like biology, machine learning, video encoding and decoding and more \cite{Battaglia2024}.
 To provide more context for how some of the more modern features of \ac{GPU}s can be of great 
@@ -65,7 +66,7 @@ the past decades, and especially the last years, is given.
 Before the integration of specialized hardware, games like \emph{Wolfenstein 3D} or the 
 original \emph{Doom} made heavy use of \ac{CPU} computations for graphics processing, 
 executed sequentially \cite{NVIDIA1999}. A major problem was the demand for increasing 
-geometrical detail. Games needed to get bigger, more photo-realistic and provide more dense 
+visual fidelity. Games needed to get bigger, more photo-realistic and provide more dense 
 geometry. Increasing the amount of triangles rendered, ultimately led to worse runtime 
 performance. The advent of a dedicated, massively parallel chip to perform a large amount of 
 operations introduced a solution for this problem. Over the years, more and more stages of the 
@@ -102,16 +103,16 @@ standard towards the "modern" rendering pipeline that is used nowadays. Between 
 \end{figure}
 
 
-\subsection*{Deferred Rendering} \label{subsec-deferred-rendering}
+\subsection*{Deferred Shading} \label{subsec-deferred-rendering}
 
 [@TODO: Sources]
-With a lot of innovative hard and software, the games got complexer and real-time computer graphics got even more 
+With a lot of innovative hard and software, the games got more complex and real-time computer graphics got even more 
 photo-realistic. The demand for more light sources increased in an attempt to make game worlds more realistic. 
 However, more light sources posed some problems for the developers. When using the traditional rendering pipeline,
 lighting is calculated on a per-vertex basis. Interpolation can be used to generate lighting results for every sample 
 in between the vertices. Still, every vertex must be considered in combination with all light sources. This creates a 
 dependancy between the amount of vertices and the amount of lightsources. Basically, adding a few more light sources 
-will drastically increase computatoin times of the final image. Another method can be adopted: \emph{Deferred Shading}.
+will drastically increase computation times of the final image. To improve thi, another method was adopted: \emph{Deferred Shading}.
 It was first adopted for the use on \ac{GPU}s by Dean Calver \cite{Calver2004} in 2004. This technique makes use of 
 multiple render targets, and writes the data necessary for the lighting calculations into various buffers. This way, 
 the surface normals, the specular intensity, the albedo (texture color), the depth and more values can all be stored 
@@ -162,21 +163,22 @@ rendering.
 Over a decade after the first \ac{GPU} was introduced, hardware acceleration was the de facto standard in 
 computer graphics and the rendering pipeline got more and more loaded with features, innovations and data. 
 This led to a new bottleneck: The memory bandwith between the \ac{CPU} and \ac{GPU}. Soon, a new trend was 
-developed: \emph{\ac{GPUDR}}. The goal of \ac{GPUDR} is, to minimize bandwidth between \ac{CPU} and \ac{GPU}. 
+developed: \emph{\ac{GPUDR}}. The goal of \ac{GPUDR} is to minimize bandwidth between \ac{CPU} and \ac{GPU}. 
 An ideal \ac{GPU} driven application would only update the camera related data (view and projection matrices) 
-within a frame. Everything else would be computed by the \ac{GPU}. This trend arised with the rise of the 
-\ac{GPGPU} and the better support for the more generalized \emph{compute shaders}. The defintion for when 
-applications are \ac{GPU} driven and when not, is blurred, but one of the earlier games to make heavy use of 
-\ac{GPUDR} is \emph{Assassin's Creed Unity} (\emph{Ubisoft} \cite{Ubisoft2014}, 2014), shown in figure 
-\ref{fig:assassins-creed-unity-gameplay}. In 2015, Aaltonen et al. \cite{Aaltonen2015} held a presentation 
-about \ac{GPUDR} on \emph{SIGGRAPH 2015}. This presentation pointed out previous work which was the basis for 
-their approach, such as \cite{Greene93, Greene95, Hill11}. However, their approaches and innovations to 
-computation of geometry, the use of \emph{occlusion culling} and \emph{deferred texturing} had a lasting impact 
-on future games. \emph{Ubisoft's} technology allowed for a densly populated, dynamic, open world. Some of the 
-technology used would only be seen in other games almost a decade later, when geometric computation was 
-supported by specific hardware adaptions. Especially large, open games can profit from optimizations like storing 
-scene data directly on the \ac{GPU}. In modern real-time computer graphics, the pre-computation by the \ac{CPU} 
-and the data-transfer to the \ac{GPU} is replaced by data generation on the \ac{GPU} itself.
+within a frame. All computations would be issued by the \ac{GPU} itself, potentially leading to new computations 
+issued directly on the \ac{GPU}. This way, no synchronization between \ac{CPU} and \ac{GPU} is necessary and the 
+complete scene can be rendered in a single \ac{CPU} draw call. However, for this to work, data has to be laid out 
+in a \ac{GPU} friendly way, representing data relationship in a way that can be processed by shaders efficiently.
+This trend gained attention with the rise of the \ac{GPGPU} and the better support for the more generalized 
+\emph{compute shaders}. The defintion for when applications are \ac{GPU} driven and when not, is blurred, but one 
+of the earlier games to make heavy use of \ac{GPUDR} is \emph{Assassin's Creed Unity} 
+(\emph{Ubisoft} \cite{Ubisoft2014}, 2014), shown in figure \ref{fig:assassins-creed-unity-gameplay}. 
+In 2015, Aaltonen et al. \cite{Aaltonen2015} presented approaches for \ac{GPUDR} which included \emph{occlusion culling},
+\emph{deferred texturing} and the clustering of geometry. The proposed technology allowed for a densly populated, 
+dynamic, open world. Some of the technology used would only be seen in other games almost a decade later, when 
+geometric computation was supported by specific hardware adaptions. Especially large, open games can profit from 
+optimizations like storing scene data directly on the \ac{GPU}. In modern real-time computer graphics, the 
+pre-computation by the \ac{CPU} and the data-transfer to the \ac{GPU} is replaced by data generation on the \ac{GPU} itself.
 
 \subsection*{Mesh Shading Pipeline} \label{subsec-mesh-shading-pipeline}
 
@@ -194,39 +196,48 @@ More elaborate algorithms for data computation on the \ac{GPU} led to a further 
 This is why \emph{NVIDIA} introduced the new \emph{Mesh Shading Pipeline} in 2018 for \emph{NVIDIA Turing} \ac{GPU}s.
 This pipeline improves the "old" vertex shader and features a more flexible way of computing and drawing geometry. 
 It builds upon some of the innovations presented by Aaltonen et al.  \cite{Aaltonen2015} in 2015. Figure 
-\ref{fig:mesh-shading-asteroids-demo} shows a frame of the initial demo provided by \emph{NVIDIA}. The new pipeline is 
-discussed in more detail in chapter \ref{sec-mesh-shading} and are a central part of modern games such as \emph{Remedy's}
-Alan Wake 2 (\emph{Remedy Entertainment} \cite{AlanWake22023}, 2023) or even \emph{Epic Games'} \emph{Unreal Engine 5} 
-\cite{Karis2021}. 
+\ref{fig:mesh-shading-asteroids-demo} shows a frame of the initial demo provided by \emph{NVIDIA}. Mesh Shading 
+allows developers to output geometrical primitives in any way they like and breaks down geometry into small clusters.
+Each cluster can be computed individually by using the compute shaders. This way, geometry can be manipulated more 
+detailed then before, and the processing of the primitives additionally benefits from the highly efficient compute 
+architecture - providing groupshared memory, less limitations and a more flexible way of operating on geometry.
+The pipeline is discussed in more detail in chapter \ref{sec-mesh-shading} and are a central part of modern games 
+such as \emph{Remedy's} Alan Wake 2 (\emph{Remedy Entertainment} \cite{AlanWake22023}, 2023) or even 
+\emph{Epic Games'} \emph{Unreal Engine 5} \cite{Karis2021}. 
 
 
 \section{Motivation} \label{sec-motivation}
 
 The latest innovations in computer graphics have been developing in different directions,
-one of them being \ac{GPU} Driven Rendering. Minimizing dependencies between \ac{CPU} and \ac{GPU} 
+one of them being \ac{GPU} driven rendering. Minimizing dependencies between \ac{CPU} and \ac{GPU} 
 has been an ongoing effort for the last decade. Many of the novel approaches which have been developed 
 over the years are visible in the latest technology. But there are still plenty of use cases which are 
 not yet living up to their full potential, considering modern hard- and software solutions.\\
 
 \noindent 
-One of those use cases is Voxel Rendering. Although there are ongoing efforts to improve voxel 
-rendering performance, there are reasons to believe that new innovations can be applied to this 
-field of computer graphics. For years, voxel rendering has been using \ac{CPU} and \ac{GPU} 
-optimization techniques in order to minimize the data computed by the \ac{GPU}. Many of these 
-techniques refer to culling triangles or whole voxels. \ac{CPU} algorithms can make use of the 
-regularity of the grid and reduce the amount of triangles sent over to the \ac{GPU}. 
-[@TODO: Add sources for gpu acceleration in voxel rendering and write a bit more] \\
+One of those use cases is \emph{voxel rendering}, i.e. the use of primitive geometry to provide a 
+volumetric description of a three dimensional scene. This technique is well known for using 
+cubical voxles (= \emph{volumetric pixels}), which is the form of voxel rendering this work is 
+focusing on. Although there are ongoing efforts to improve voxel rendering performance, there are 
+reasons to believe that new innovations can be applied to this field of computer graphics. For years, 
+voxel rendering has been using \ac{CPU} and \ac{GPU} optimization techniques in order to minimize 
+the data computed by the \ac{GPU}. Many of these techniques refer to culling triangles or whole voxels. 
+\ac{CPU} algorithms can make use of the regularity of the grid and reduce the amount of triangles sent 
+over to the \ac{GPU}. [@TODO: Add sources for gpu acceleration in voxel rendering and write a bit more] \\
 
 \noindent
 This poses the question, if advanced culling techniques using modern, \ac{GPU} driven techniques can 
 improve voxel rendering. An ideal culling would only draw visible voxels and ignore all other data 
 not contributing to the visible and gameplay relevant scene. Therefore, an initial idea involved 
-meshlet occlusion culling for large voxel scenes. The use of the new mesh shading pipeline in 
-combination with efficient culling could drastically improve frame times. However, as will be 
+the culling of individual voxels for large three dimensional scenes. The use of the new mesh shading 
+pipeline in combination with efficient culling could drastically improve frame times. However, as will be 
 pointed out in chapter \ref{subsubsec-two-pass-occlusion-culling}, for current occlusion culling 
-algorithms to work, objects of different sizes are used to cull smaller instances or even meshlets.
+algorithms to work, objects of different sizes are used to cull smaller instances or even primitives.
 Since voxels are always of the same size, this algorithm cannot be applied as is. The proposed approach 
 relies on preprocessing data and applying approximations to the scene layout, so a variation of a 
-common meshlet occlusion culling algorithm can be applied. In the next chapter \ref{cpt-related-work}
-related work is discussed before an in depth technical foundation is layed out in chapter 
-\ref{cpt-technical-background}. 
+common occlusion culling algorithm can be applied. \\
+
+\noindent
+[@TODO: Add short outline of the work]
+In the next chapter \ref{cpt-related-work} related work is discussed before an in depth technical foundation 
+is layed out in chapter \ref{cpt-technical-background}. 
