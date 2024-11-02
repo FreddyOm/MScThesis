@@ -1,11 +1,11 @@
 \chapter{Implementation} \label{cpt-implementation}
 
-Our case study is based on an implementation within the framework \emph{Diligent Engine} 
+The implementation used for the experiment is based on an implementation within the framework \emph{Diligent Engine} 
 \cite{DiligentGraphicsGitHub, DiligentGraphics}. This framework includes rendering backend supporting 
 multiple rendering \ac{API}s, with modern integrations for \ac{GPU}-driven rendering. One of these modern 
 features is the support for mesh shading in Microsoft's D3D12 rendering \ac{API}. The support for modern 
 rendering features, while still maintaining access to all core features, makes \emph{Diligent Engine} a good 
-place to start from. For the case study, the mesh shading pipeline is enhanced to better fit purpose of drawing 
+place to start from. For the experiment, the Mesh Shading pipeline is enhanced to better fit purpose of drawing 
 a huge amount of voxels. Also, the integrated view-frustum culling was altered to some degree so that it works on 
 meshlet-groups rather than meshlets themselves. This change was made during the restructuring of the draw tasks. 
 The updated pipeline changes how meshes are dispatched because of the use of additional acceleration structures. 
@@ -34,7 +34,7 @@ the initialization procedure.
 
 \subsubsection*{Voxel Model Loading} \label{subsec-voxel-model-loading}
 
-For the purpose of this case study, a single, solid voxel mesh is loaded, but this could also be a scene 
+For the purpose of this experiment, a single, solid voxel mesh is loaded, but this could also be a scene 
 consisting of multiple solid voxel models. In the provided implementation, the positions of voxels inside a regular 
 grid are loaded, skipping grid cells, where no voxels are located. For loading the voxels, the tool \emph{binvox} 
 is used \cite{binvox, Nooruddin2003}. 
@@ -42,11 +42,12 @@ is used \cite{binvox, Nooruddin2003}.
 
 \subsubsection*{Octree Creation} \label{subsec-octree-creation}
 
-After loading any voxel model, an octree is created that covers the complete scene - in this case the bouding 
-volume of the voxel model. As discussed in chapter \ref{subsec-highres-svo-dags}, it is recommended to use a 
-highly efficient and compressed octree implementation like an \ac{SVO} or a Sparse Voxel \ac{DAG} \cite{Kampe2013}. 
-For the purpose of this work, a custom octree implementation is used, which refers to indices in a global 
-\emph{voxel position buffer}, as shown in figure \ref{fig:voxelpos-octreenode-buffer}.\\
+After loading any voxel model, an octree is created that covers the complete scene - in this case, since there is 
+only one model present, the octree's bounding volume is the bouding volume of the voxel model. As discussed in 
+chapter \ref{subsec-highres-svo-dags}, it is recommended to use a highly efficient and compressed octree implementation 
+like an \ac{SVO} or a Sparse Voxel \ac{DAG} \cite{Kampe2013}. For the purpose of this work, a custom octree 
+implementation is used, which refers to indices in a global \emph{voxel position buffer}, as shown in figure 
+\ref{fig:voxelpos-octreenode-buffer}.\\
 
 \begin{figure}[h]
     \centering
