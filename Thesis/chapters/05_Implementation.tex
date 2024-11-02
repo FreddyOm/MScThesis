@@ -14,6 +14,7 @@ in particular. The full implementation details can be found in the appendix \ref
 
 \section{Pipeline Overview} \label{sec-piepline-initialization}
 
+[@TODO: Add meshlet based view frustum culling impl is used and was already in Diligent Engine]
 
 \subsection*{Pipeline Initialization} \label{subsec-piepline-initialization}
 
@@ -60,7 +61,7 @@ Since the \ac{GPU} is supposed to generate a lot of voxels on the fly, data buff
 need to be considered.
 For structuring the data, various options are available. The initial idea was to lay out the voxels as individual 
 meshlets. This means that individual voxels can be culled and each \ac{GPU} thread generates one voxel. This would 
-mean that only the voxel position buffer is needed. The amplification shader takes the positions, culls meshlets 
+mean that only the voxel position buffer is needed. The task shader takes the positions, culls meshlets 
 against the view frustum and dispatches the mesh shader with the given data. As long as no spatial container like 
 an octree is used, this approach works fine. When considering the use of an octree, however, another layout serves 
 better. In this case, each \ac{GPU} threadgroup takes care of one octree node, with the maximum amount of voxels 
@@ -153,7 +154,7 @@ no runtime alternation are assumed for this work, a static, pre-calculated buffe
 
 \noindent
 The rendering loop consists of three main steps: The depth pre-pass including \ac{HiZ} generation, the 
-amplification shader and the mesh shader. The different stages consume and generate various data buffers 
+task shader and the mesh shader. The different stages consume and generate various data buffers 
 and textures, as shown in figure \ref{fig:pipeline-loop}. 
 
 \subsubsection*{Depth Pre-Pass} \label{subsec-depth-prepass}
@@ -170,13 +171,13 @@ This chain of mip-maps is shown as the [@TODO: here is a jump from mip lvl 1 to 
 \ac{HiZ}-pyramid in figure \ref{fig:pipeline-loop}.
 
 
-\subsubsection*{The Amplification Shader} \label{subsec-amplification-shader}
+\subsubsection*{The Task Shader} \label{subsec-task-shader}
 
-Now, the amplification shader is invoked, each threadgroup resembling one octree node. The amplification 
-shader now decides over which meshlets are drawn. Here, view frustum culling is applied to a threadgroup 
-and the occlusion culling is executed by projecting the bounding box of the meshlets onto the view plane 
-and querying the \ac{HiZ}-pyramid for depth values. If the voxel position is found to be visible - or not 
-occluded by the best occluders - the position is added to the payload, ready to be drawn by the mesh shader. 
+Now, the task shader is invoked, each threadgroup resembling one octree node. It decides over which 
+meshlets are drawn. Here, view frustum culling is applied to a threadgroup and the occlusion culling is 
+executed by projecting the bounding box of the meshlets onto the view plane and querying the 
+\ac{HiZ}-pyramid for depth values. If the voxel position is found to be visible - or not occluded by 
+the best occluders - the position is added to the payload, ready to be drawn by the mesh shader. 
 
 
 \subsubsection*{The Mesh Shader} \label{subsec-mesh-shader}
@@ -286,7 +287,7 @@ The final \ac{HiZ}-pyramid is illustrated in figure \ref{fig:lucy-hiz-pyramid}.
 
 \subsection*{Culling and Draw Call}
 
-The final draw call is initiated when dispatching the amplification shader. It accesses the \emph{voxel position buffer}, 
+The final draw call is initiated when dispatching the task shader. It accesses the \emph{voxel position buffer}, 
 the \emph{octree node buffer} and the \emph{\ac{HiZ}-texture}. Each octree node is assigned to one threadgroup which will 
 in turn compute one voxel (meshlet) per thread. The octree data just points to the relevant part of the voxel position buffer 
 to get the position data. Each octree node is checked against the camera view frustum in order to cull it, if not visible.
@@ -332,10 +333,10 @@ parallelized \ac{GPU} computations. For this implementation the culling of octre
 
 \subsection*{Visibility Computation} \label{subsec-visibility-computation}
 
-As mentioned before, the amplification shader is used to pre-select and pre-process the scheduled geometry data, 
+As mentioned before, the task shader is used to pre-select and pre-process the scheduled geometry data, 
 which in this case is just the position of an individual octree node and all the voxels (meshlets) inside of the 
 node. This precomputational step is used for visibility checking, i.e. view frustum culling and occlusion culling. 
-Since the amplification shader is just a general term for any compute shader used before dispatching the meshes, 
+Since the task shader is just a general term for any compute shader used before dispatching the meshes, 
 this pipeline step is realized using the standard compute architecture. \\
 
 \noindent
@@ -476,7 +477,7 @@ Implementation Considerations:
 
 - Consider further optimization by removing redundant computations (e.g. for HiZ depth test, meshlets (or octree nodes)
 are already projected to screen space. This is then done again in the mesh shader. Maybe it could be an optimization 
-to do the projection in the amplification shader already, so it is only computed once. The already projected position 
+to do the projection in the task shader already, so it is only computed once. The already projected position 
 could then be input in the mesh shader, making the projection in the mesh shader redundant).
 
 - Why not just discard octree nodes when I already know that they are not visible. -> Because they could as well be the

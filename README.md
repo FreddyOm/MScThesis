@@ -7,25 +7,17 @@ The thesis LaTeX project for the master's thesis "Optimizing Voxel Rendering usi
 
 ## Feedback Topics
 
-- [x] "We" or "I" in thesis text -> S.R.
-- [x] How much of the implementation should be discussed? All implementation to appendix anyway.
 - [] Chapters 6.1 & 6.2 and chapter 6.3 are kind of redundant, but I would still like to seperate high level 
 pipeline discussion and in depth data visualization.
-- [x] Introduction & Motivation? Redundant?
-- [x] Technical Background & Related Work? Redundant? Maybe related work more of specific application instead of 
-scientific and presentational work.
 - [] Citation okay?
-- [x] Mention less (sub-) chapters in contents?
-- [x] Results and Discussion seperately? Or together?
-- [x] Implementation before Methodoligy, then Case-Study and Results?
-- [] Introduction topics (GPU Driven, Deferred Rendering, ... )
-- [x] Show any code at all in the normal chapters? Or only use pseudo code?
-- [x] Wikipedia source (DirectX) okay? Or not?
 - [] Check title. Is it fitting? What is the second pass? If it is reprojection, then rename!!
 - [] What else in Introduction?
-- [] Kolloquium, Paper & Thesis -> Koll. Nach Abgabe 1h (~40-45 Präsi mit Live Demo); Paper zur gleichen Zeit wie MA
-- [x] Methodology as part of case study?
+- [x] Kolloquium, Paper & Thesis -> Koll. Nach Abgabe 1h (~40-45 Präsi mit Live Demo); Paper zur gleichen Zeit wie MA
 - [] Games as related work?
+- [] Try implementing dynamic build up of models so the dynamic part can be shown here!
+- [] Try implementing raster occlusion culling using depth queries
+- [] Add depth queries to thesis text?
+- [] Add a short paragraph about what the reader is expected to know (z-buffer, mip-maps, texels, graphics pipeline in general, high level CPU and GPU architecture, ...)
 
 ## Problems
 
