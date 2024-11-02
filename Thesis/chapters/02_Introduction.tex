@@ -45,9 +45,9 @@ hardware and \ac{API} design correlates to the ongoing demand for higher output 
 higher geometric density or additionaly technology for \emph{Deep Learning} algorithms. 
 These possibilities led to a lot more applications of \ac{GPU}s in various fields of science, 
 like biology, machine learning, video encoding and decoding and more \cite{Battaglia2024}.
-To provide more context for how we made use of some of the more modern features of \ac{GPU}s 
-we will give a brief overview over the trends in computer graphics over the past decades, and 
-especially the last years.
+To provide more context for how some of the more modern features of \ac{GPU}s can be of great 
+use for new software approaches, a brief overview over the trends in computer graphics over 
+the past decades, and especially the last years, is given.
 
 
 \section{Rise Of The GPU} \label{sec-rise-of-the-gpu}
@@ -210,23 +210,23 @@ not yet living up to their full potential, considering modern hard- and software
 
 \noindent 
 One of those use cases is Voxel Rendering. Although there are ongoing efforts to improve voxel 
-rendering performance, we believe that new innovations can be applied to this field of computer 
-graphics. For years, voxel rendering has been using \ac{CPU} and \ac{GPU} optimization techniques 
-in order to minimize the data computed by the \ac{GPU}. Many of these techniques refer to culling 
-triangles or whole voxels. \ac{CPU} algorithms can make use of the regularity of the grid and 
-reduce the amount of triangles sent over to the \ac{GPU}. [@TODO: Add sources for gpu acceleration 
-in voxel rendering and write a bit more] \\
+rendering performance, there are reasons to believe that new innovations can be applied to this 
+field of computer graphics. For years, voxel rendering has been using \ac{CPU} and \ac{GPU} 
+optimization techniques in order to minimize the data computed by the \ac{GPU}. Many of these 
+techniques refer to culling triangles or whole voxels. \ac{CPU} algorithms can make use of the 
+regularity of the grid and reduce the amount of triangles sent over to the \ac{GPU}. 
+[@TODO: Add sources for gpu acceleration in voxel rendering and write a bit more] \\
 
 \noindent
 This poses the question, if advanced culling techniques using modern, \ac{GPU} driven techniques can 
 improve voxel rendering. An ideal culling would only draw visible voxels and ignore all other data 
-not contributing to the visible and gameplay relevant scene. Therefore, our initial idea involved 
+not contributing to the visible and gameplay relevant scene. Therefore, an initial idea involved 
 meshlet occlusion culling for large voxel scenes. The use of the new mesh shading pipeline in 
 combination with efficient culling could drastically improve frame times. However, as will be 
 pointed out in chapter \ref{subsubsec-two-pass-occlusion-culling}, for current occlusion culling 
 algorithms to work, objects of different sizes are used to cull smaller instances or even meshlets.
-Since voxels are always of the same size, this algorithm cannot be applied as is. Our approach 
+Since voxels are always of the same size, this algorithm cannot be applied as is. The proposed approach 
 relies on preprocessing data and applying approximations to the scene layout, so a variation of a 
-common meshlet occlusion culling algorithm can be applied. In the next chapter 
-\ref{cpt-technical-background} we first lay out a technical foundation before discussing related work 
-in chapter \ref{cpt-related-work}. 
+common meshlet occlusion culling algorithm can be applied. In the next chapter \ref{cpt-related-work}
+related work is discussed before an in depth technical foundation is layed out in chapter 
+\ref{cpt-technical-background}. 

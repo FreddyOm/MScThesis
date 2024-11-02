@@ -61,7 +61,7 @@ helps keep collision checks to a minimum.
 
 \section{Voxel Scene Layout} \label{sec-voxel-scene-layout}
 
-The voxel rendering in our evaluation relies on a volumetric representation of the scene.
+The voxel rendering in this work relies on a volumetric representation of the scene.
 It is particularly important that the voxel model not only includes the surface but also 
 the space within the model. This constraint is often used in interactable use cases, where 
 the model is split, cut or manipulated in any given way. \emph{Minecraft} \cite{Mojang2024}
@@ -144,9 +144,9 @@ of the data structure. The resulting structure is a more general hierarchical da
 \end{figure}
 
 \noindent
-This approach seems to be the best solution for reading, storing and optimizing octree data, although we use 
-a more basic approach in our implementation. Nevertheless, this concept of optimizing voxel data is compatible 
-with our use case and is highly recommended by us.
+This approach seems to be the best solution for reading, storing and optimizing octree data, although the work
+presented in chapter \ref{cpt-implementation} uses a more basic approach in the implementation. Nevertheless, 
+this concept of optimizing voxel data is compatible with the use case presented here, and is highly recommended.
 
 
 \section{Culling Techniques} \label{sec-culling-techniques}
@@ -155,8 +155,8 @@ with our use case and is highly recommended by us.
 image" \cite{AkenineMoeller2018}. This allows for highly populated scenes to be rendered, since most parts of a scene 
 will probably not be visible by the camera at the same time. Ignoring culled objects or triangles is therefore a common 
 process in real-time rendering. "The fastest triangle to render is the one never sent to the \ac{GPU}" 
-\cite{AkenineMoeller2018}. In this section, the most common culling techniques are presented and the ones considered by 
-our approach are specifically highlighted and analyzed. 
+\cite{AkenineMoeller2018}. In this section, the most common culling techniques are presented and the ones considered
+for the outlined approach are specifically highlighted and analyzed. 
 
 
 \subsection*{Backface Culling} \label{subsec-backface-culling}
@@ -237,7 +237,7 @@ computed with the following algorithm: \\
 \Fn{\FMain{float4 basePosAndScale}}
 {
     float4 center $\gets$ float4(basePosAndScale.xyz, 1.0f)\;
-    float radius $\gets$ abs(basePosAndScale.z)\;
+    float radius $\gets$ abs(basePosAndScale.w)\;
 
     \For{$i \gets 0$ \KwTo $5$}{
         \If{dot(FrustumPlanes[$i$], center) $<$ $-$radius}{
@@ -255,8 +255,8 @@ computed with the following algorithm: \\
 \noindent
 In combination with acceleration structures like an octree, view frustum culling can be computed for the bounding 
 volumes of the given structure, which can further optimize the culling operations due to spatial grouping of multiple 
-instances. This technique is also applied in our approach, using spheres as approximations for the cubical octree 
-bounding volumes.
+instances. This technique is also applied in the this work's implementation, using spheres as approximations for the 
+cubical octree bounding volumes.
 
 
 \subsection*{Occlusion Culling} \label{subsec-point-based-occlusion-culling}
@@ -289,8 +289,8 @@ consider visibility of different instances.
 
 \emph{\ac{HiZ} Buffering} is a technique first introduced for \ac{CPU} computation by Ned Greene et al. 
 \cite{Greene93,Greene95}. Since then, it "has had significant influence on occlusion culling research" 
-\cite{AkenineMoeller2018}. It is a fundamental basis on which our approach relies on, which will be discussed 
-in more detail.\\
+\cite{AkenineMoeller2018}. It is a fundamental basis on which the outlined approach relies on, which will be 
+discussed in more detail.\\
 
 
 [@TODO: explain texel (?), mip levels]
@@ -361,7 +361,7 @@ elegantly leveraged on the \ac{GPU} side for efficient occlusion culling.
 One of the most renowned examples of this algorithm is present in the 2014 title \emph{Assassin's Creed Unity} by \emph{Ubisoft} 
 \cite{Ubisoft2014}. One year later, Ulrich Haar and Sebastian Aaltonen presented their approach on SIGGRAPH 2015 
 \cite{Aaltonen2015}. Their implementation inspired other developers like \emph{Epic Games} for \emph{Unreal Engine 5} 
-to adopt similar techniques \cite{Karis2021}. This is the algorithm we use in our implementation. It shares its basic 
+to adopt similar techniques \cite{Karis2021}. This is the algorithm used in the proposed implementation. It shares its basic 
 principle with \ac{HZB} but focuses on a more \ac{GPU}-driven configuration and using a given set of best occluders to 
 cull instances effectively. \\
 
@@ -408,8 +408,9 @@ a case, the camera might cover a too large distance, so that none of the visible
 visible during the previous frame. \cite{Kruskonja2022} \\
 
 \noindent
-The \ac{TPOC} algorithm is used in our approach, with minimal changes to the selection of best occluders.
-Depth Reprojection could in general be used as well, but is not within the scope of our implementation.
+The \ac{TPOC} algorithm is used with minimal changes to the selection of best occluders. Depth Reprojection could 
+in general be used as well, but is not within the scope of this work and therefore is left to be evaluated by future 
+work.
 
 
 \section{Mesh Shading}  \label{sec-mesh-shading}
@@ -498,7 +499,7 @@ Meshlets are computed by threadgroups which usually fetch the mesh data from the
 apply transformations and arbitrary operations. This new way of processing geometry is not only more efficient in many 
 cases and reduces the memory bandwidth, but also allows for per-meshlet operations \cite{Kubisch2020}. This is a key 
 advantage, since per-instance geometry can now be processed in parallel and still be individually discarded or post-processed. 
-There are several other advantages over the traditional Vertex Shaded Pipeline, which we will not list to the full 
+There are several other advantages over the traditional Vertex Shaded Pipeline, which will not be listed to the full 
 degree. More details are provided in the blog post by NVIDIA \cite{Kubisch2020}.\\
 
 
@@ -515,11 +516,11 @@ One example of this \ac{GPU}-driven rendering technique is the 2014 title \emph{
 Aaltonen et al. \cite{Aaltonen2015} provide an overview over multiple cluster related optimization techniques, implementing 
 a highly parallelized rendering pipeline before Mesh Shading became part of the official Rendering \ac{API}s.
 For their \ac{GPU} culling algorithms they refer to the prior work of Hill \cite{Hill11} and Greene \cite{Greene93}, which 
-provides the basis for some of the implementation in our case study. Most of the culling algorithms discussed in chapter 
+provides the basis for some of the implementation in this work's approach. Most of the culling algorithms discussed in chapter 
 \ref{sec-culling-techniques} can be adopted to use meshlet culling. The algorithms can usually be applied to triangle clusters 
 without the need of changing a lot of the algorithm. Bounding volumes can be calculated for meshlets, too, and meshlets do also 
-consist of triangles themselves. In this chapter we briefly revisit the basic culling algorithms and show, how they can be 
-adapted for the Mesh Shading pipeline.
+consist of triangles themselves. In this chapter the basic culling algorithms are briefly revisited in order to show, how they 
+can be adapted for the Mesh Shading pipeline.
 
 
 \subsubsection*{Meshlet Backface Culling} \label{subsubsec-meshlet-backface-culling}
@@ -566,8 +567,8 @@ partially visible in the Mesh Shading pipeline, the meshlets inside the frustum 
 of the frustum can be discarded. \\
 
 \noindent
-We use view frustum culling of individual meshlets in our approach to further optimize performance. A simple 
-implementation was already included in the framework we used for our case study.
+The approach discussed in this work uses view frustum culling of individual meshlets to further optimize performance. 
+A simple implementation was already included in the framework used for the given implementation.
 
 
 \subsubsection*{Meshlet Occlusion Culling} \label{subsubsec-meshlet-occlusion-culling}
@@ -583,6 +584,6 @@ to individual meshlets, as seen in Alan Wake 2 (Remedy Entertainment \cite{Remed
 \emph{Unreal Engine 5} and \emph{Nanite} \cite{Karis2021}.\\
 
 \noindent
-We believe that this new way of culling single meshes can generate new innovation in the field of computer graphics.
-This is why we decided to implement our approach in a Mesh Shading pipeline, which, when used carefully, is more 
+It is assumed that this new way of culling single meshes can generate new innovation in the field of computer graphics.
+This is why the proposed approach is implemented in a Mesh Shading pipeline, which, when used carefully, is more 
 efficient than comparable methods like the use of Geometry Shaders or Instancing.
