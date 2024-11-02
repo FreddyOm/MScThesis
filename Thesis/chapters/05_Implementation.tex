@@ -149,7 +149,9 @@ no runtime alternation are assumed for this work, a static, pre-calculated buffe
 \begin{figure}[h]
     \centering
     \includegraphics[width=\linewidth]{images/graphics/rendering-loop.jpg}
-    \caption{The rendering loop of the rendering pipeline.}
+    \caption{The rendering loop of the rendering pipeline. The red sub-stage of the render loop marks the dispatch 
+    of the meshlets, involving the voxel positions and the octree node data. If an octree node or voxel is considered 
+    to be culled, the loop ends with the task shader.}
     \label{fig:pipeline-loop}
 \end{figure}
 
