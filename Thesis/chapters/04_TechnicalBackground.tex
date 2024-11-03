@@ -13,7 +13,7 @@ space needs to be somehow present or encoded in memory, even though just a fract
 voxels are actually drawn to the screen.
 
 
-\subsection{Three Dimensional Grid} \label{subsec-three-dimensional-grid}
+\subsection*{Three Dimensional Grid} \label{subsec-three-dimensional-grid}
 
 [@TODO: Restructure, make it clearer! One after the other!]
 A basic approach for a scene representation is a three dimensional voxel grid. This 
@@ -29,7 +29,7 @@ introduces a pointer indirection on each step of the traversal, potentially lead
 cache misses.
 
 
-\subsection{Octree Data Structure} \label{subsec-octree-data-structure}
+\subsection*{Octree Data Structure} \label{subsec-octree-data-structure}
 
 Another approach is to use a spatial container to optimize traversal. The use of an \emph{octree} 
 incorporates the relevant scene space and subdivides it into smaller child nodes. When inserting data 
@@ -64,7 +64,7 @@ A bitwise representation of voxels can significantly decrease the memory footpri
 approach expand on.
 
 
-\subsection{High Resolution Sparse Voxel Directed Acyclic Graphs} \label{subsec-highres-svo-dags}
+\subsection*{High Resolution Sparse Voxel Directed Acyclic Graphs} \label{subsec-highres-svo-dags}
 
 Kampe et al. \cite{Kampe2013} use data redundancy to further generalize and optimize high resolution 
 \ac{SVO}s. In their implementation, the octree data structure relies on bitmasks, to encode the existence of child 
@@ -94,7 +94,7 @@ this concept of optimizing voxel data is compatible with the use case presented 
 
 \section{Voxel Rendering} \label{sec-voxel-rendering}
 
-\subsection{Rasterized Voxel Rendering} \label{subsec-rasterized-voxel-rendering}
+\subsection*{Rasterized Voxel Rendering} \label{subsec-rasterized-voxel-rendering}
 
 The basic approach to rendering voxels is using the traditional rasterized rendering pipeline.
 One of the most popular games of all time, \emph{Minecraft} (Mojang \cite{Mojang2024}, 2011) uses 
@@ -115,7 +115,7 @@ data layout, which are used in ray traced voxel rendering. As long as these tech
 applied to rasterized voxel rendering, they can be of interest for this work's approach.
 
 
-\subsection{Voxel Physics} \label{subsec-voxel-physics}
+\subsection*{Voxel Physics} \label{subsec-voxel-physics}
 
 \begin{figure}[h]
     \centering
@@ -143,7 +143,7 @@ common process in real-time rendering, because "the fastest triangle to render i
 \cite{AkenineMoeller2018}. In this section, common culling techniques are presented and analyzed. 
 
 
-\subsection{Backface Culling} \label{subsec-backface-culling}
+\subsection*{Backface Culling} \label{subsec-backface-culling}
 
 Backface culling is concerned with discarding triangles that are facing away from the camera. 
 These triangles will not be seen by the camera anyway and thus can be safely ignored in the rendering process. 
@@ -188,7 +188,7 @@ can be used for more parallelized backface culling using an updated rendering pi
 \ac{API}s. A visual representation is provided in figure \ref{fig:cluster-backface-culling}.
 
 
-\subsection{View Frustum Culling} \label{subsec-view-frustum-culling}
+\subsection*{View Frustum Culling} \label{subsec-view-frustum-culling}
 
 \begin{figure}[h]
     \centering
@@ -214,7 +214,7 @@ instances. This technique is also applied in the this work's implementation, usi
 cubical octree bounding volumes.
 
 
-\subsection{Occlusion Culling} \label{subsec-point-based-occlusion-culling}
+\subsection*{Occlusion Culling} \label{subsec-point-based-occlusion-culling}
 
 When considering highly populated scenes, there might be cases of meshes occluding other meshes. This results 
 in overdraw when rasterizing the final projection, which means that multiple color values will be calculated 
@@ -239,8 +239,7 @@ with culling algorithms in general, occlusion culling algorithms usually rely on
 object positions and scale in space. Figure \ref{fig:bounding-volumes} shows how different bounding volumes can be 
 used to support faster computation or more accurate volume approximation.
 
-
-\subsubsection*{Hierarchical Z-Buffering} \label{subsubsec-hierarchical-z-buffering}
+\paragraph*{Hierarchical Z-Buffering} \label{subsubsec-hierarchical-z-buffering}
 
 \emph{\ac{HiZ} Buffering} is a technique first introduced for \ac{CPU} computation by Ned Greene et al. 
 \cite{Greene93,Greene95}. Since then, it "has had significant influence on occlusion culling research" 
@@ -307,7 +306,7 @@ of an octree representation used for hierarchical culling and a z-pyramid used a
 (\cite{AkenineMoeller2018}) can be elegantly leveraged on the \ac{GPU} side for efficient occlusion culling.
 
 
-\subsubsection*{Two-Pass Occlusion Culling} \label{subsubsec-two-pass-occlusion-culling}
+\paragraph*{Two-Pass Occlusion Culling} \label{subsubsec-two-pass-occlusion-culling}
 
 \begin{figure}[h]
     \centering
@@ -345,7 +344,7 @@ Aaltonen et al. \cite{Aaltonen2015} also mention the addition of \emph{Depth Rep
 with \ac{TPOC}, to further optimize the occlusion culling technique.
 
 
-\subsubsection*{Depth Reprojection} \label{subsubsec-depth-reprojection}
+\paragraph*{Depth Reprojection} \label{subsubsec-depth-reprojection}
 
 \emph{Depth Reprojection} makes use of the temporal coherence of the z-buffer. The assumption is made that 
 between two consecutive frames most of the visible content remains the same. It is obvious that this will 
@@ -380,7 +379,7 @@ gaming. It gained a lot of attention when it was used as the foundation of Epic 
 feature \emph{Nanite} \cite{Karis2021}.\\
 
 
-\subsection{Mesh Shading Pipeline} \label{subsec-the-mesh-shading-pipeline}
+\subsection*{Mesh Shading Pipeline} \label{subsec-the-mesh-shading-pipeline}
 
 In contrast to the \emph{Mesh Shading Rendering Pipeline}, the "traditional" \emph{Vertex Shading Pipeline} 
 has more specialized stages, which are listed in figure \ref{fig:traditional-rendering-pipeline}. This pipeline 
@@ -459,7 +458,7 @@ or post-processed. There are several other advantages over the traditional Verte
 listed to the full degree. More details are provided in the blog post by NVIDIA \cite{Kubisch2020}.\\
 
 
-\subsection{Meshlet Culling} \label{subsec-meshlet-culling}
+\subsection*{Meshlet Culling} \label{subsec-meshlet-culling}
 
 One major innovation that is enabled by the use of Mesh Shading is to cull on a per-primitive (per-meshlet) basis. 
 This allows for more granular culling of high density geometry even within whole meshes. Prior to the implementation 
@@ -479,7 +478,7 @@ consist of triangles themselves. In this chapter the basic culling algorithms ar
 can be adapted for the Mesh Shading pipeline.
 
 
-\subsubsection*{Meshlet Backface Culling} \label{subsubsec-meshlet-backface-culling}
+\paragraph*{Meshlet Backface Culling} \label{subsubsec-meshlet-backface-culling}
 
 As shown in chapter \ref{subsec-backface-culling}, there are backface culling algorithms which can be applied to 
 triangle clusters as well. For instance, the normal cone approach by Shirmun et al \cite{Shirmun1993} can be used 
@@ -507,7 +506,7 @@ culled. \cite{Aaltonen2015}, \cite{AkenineMoeller2018}
 \end{figure}
 
 
-\subsubsection*{Meshlet View Frustum Culling} \label{subsubsec-meshlet-view-frustum-culling}
+\paragraph*{Meshlet View Frustum Culling} \label{subsubsec-meshlet-view-frustum-culling}
 
 [@TODO: Check if pre-calculated meshlets have been introduced; find sources]
 Frustum culling can be adapted to work on meshlets as well. Similar to backface culling, the basic frustum culling 
@@ -523,7 +522,7 @@ in order to be culled. If an instance is partially visible in the Mesh Shading p
 frustum can be drawn and the meshlets outside of the frustum can be discarded.
 
 
-\subsubsection*{Meshlet Occlusion Culling} \label{subsubsec-meshlet-occlusion-culling}
+\paragraph*{Meshlet Occlusion Culling} \label{subsubsec-meshlet-occlusion-culling}
 
 Meshlet occlusion culling refers to the process of culling meshlets which are occluded by any other meshlet, by a 
 group of meshlets or another instance. Aaltonen et al. \cite{Aaltonen2015} used what they call \emph{Cluster Culling} 
