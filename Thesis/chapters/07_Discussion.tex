@@ -8,7 +8,8 @@
 - Con:
     - Depending on the voxel size, there might be a need for chunking the data effectively % @TODO: Check if this is still necessary with Meshlet Occlusion Culling enabled
     - Voxels as meshlets -> non-similar normals can be inefficient.. 
-    - 
+    - Note that the amount of threads used per group is equal to the amount of voxels within the repsective octree 
+    node, leaving a significant amount of threads unused for scarcely populated octree nodes.
 
 
 Discussion points:

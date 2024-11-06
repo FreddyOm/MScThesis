@@ -280,7 +280,7 @@ showing how the farthest value of each texel window is inserted into adjacent le
 \end{figure}
 
 \noindent
-A visibility test against this z-pyramid is computed as follows: The octree is traversed in and each octree node 
+A visibility test against this z-pyramid is computed as follows: The octree is traversed and each octree node 
 is transformed into image-space, essentially projecting the bounding volume of the node onto the view plane. Now, 
 the projected bounding volume overlaps a specific region of the view plane, which is then tested against the lowest 
 resolution z-pyramid texel group, containing this volume projection. The nearest z value of the bounding volume is 
@@ -482,29 +482,10 @@ can be adapted for the Mesh Shading pipeline.
 
 As shown in chapter \ref{subsec-backface-culling}, there are backface culling algorithms which can be applied to 
 triangle clusters as well. For instance, the normal cone approach by Shirmun et al \cite{Shirmun1993} can be used 
-in the Mesh Shading pipeline as well. In fact, having a hardware and software support for the computation of triangle 
-clusters makes this approach even more efficient. Clusters are evaluated in parallel, making a normal cone backface 
-culling algorithm very fast. \\
-
-\noindent
-Another algorithm compatible with triangle clusters is the one propsed by Aaltonen et al. \cite{Aaltonen2015}, again 
-in the context of the SIGGRAPH 2015 presentation, showing their work for \emph{Assassins Creed Unity}. They introduce 
-a small bounding cube around \emph{n} triangles, which could correspond to a meshlet in the Mesh Shading pipeline. 
-"Each cube face is split into \emph{r} \begin{math}\times\end{math} \emph{r} 'pixels', each encoding an \emph{n}-
-bit mask that indicates whether the corresponding triangle is visible over that 'pixel'" \cite{AkenineMoeller2018}.
-As long as the camera is outside of the cube, the center of the cube creates a frustum with any of the "pixels" on 
-the cube's surface, as shown in figure \ref{fig:backface-culling-ac-unity}. The frustum in which the camera is 
-located can be found and the bitmask can be accessed. This way, the backfacing triangles can be identified and 
-culled. \cite{Aaltonen2015}, \cite{AkenineMoeller2018}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=\linewidth]{images/graphics/backface-culling-ac-unity.jpg}
-    \caption{Backface culling thechnique using a bounding box around a set of \emph{n} triangles, 
-    as proposed by Aaltonen et al. \cite{Aaltonen2015}. Image by Akenine-Möller et al. \cite{AkenineMoeller2018}.}
-    \label{fig:backface-culling-ac-unity}
-\end{figure}
-
+in the Mesh Shading pipeline as well. In fact, having hardware and software support for the computation of triangle 
+clusters provided by the Mesh Shading pipeline makes this approach even more efficient. Clusters are evaluated in 
+parallel, making a normal cone backface culling algorithm very fast. For static meshes, surface characteristics can 
+also be precomputed for fast access at run-time. [@TODO: Maybe remove because it is not really relevant to the content]
 
 \paragraph*{Meshlet View Frustum Culling} \label{subsubsec-meshlet-view-frustum-culling}
 
@@ -515,7 +496,10 @@ implement this, meshlet bounding volumes need to be computed. The same principle
 as to instance bounding volumes, so spherical volumes are usually fast and cheap to calculate. If the meshlets are 
 pre-calculated, the bounding volumes can be precalculated as well, since they will not change over time. Then, frustum 
 culling is as simple as using any existing frustum culling algorithm (see \ref{subsec-view-frustum-culling}) and 
-applying it to the meshlets. Since this can be done in the Task Shader, the culling can be computed in parallel and 
+applying it to the meshlets. \\
+
+\noindent
+Since this can be done in the Task Shader, the culling can be computed in parallel and 
 culled meshlets can be discarded early. This includes parts of single instances, which allows for even better 
 optimization. In the traditional Vertex Shading pipeline, instances had to be completely outside of the view frustum 
 in order to be culled. If an instance is partially visible in the Mesh Shading pipeline, the meshlets inside the 

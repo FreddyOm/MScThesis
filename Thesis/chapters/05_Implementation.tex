@@ -29,27 +29,49 @@ found in the appendix \ref{cpt-appendix}.
 \end{figure}
 
 \noindent
-The pipeline is, as usual, split into an initialization routine and an update loop. The initialization is 
-called once during the beginning of the execution flow and the render loop is initiated after the initialization 
-finished. Then, the loop is continuously called - once per frame. Figure \ref{fig:pipeline-initialization} shows 
-the initialization procedure. 
+The pipeline is split into an initialization routine and an update loop. The initialization is called once during 
+the beginning of the execution flow and the render loop is initiated after the initialization finished. Then, the 
+loop is continuously called - once per frame. Figure \ref{fig:pipeline-initialization} shows the initialization 
+procedure. 
 
 \subsubsection*{Voxel Model Loading} \label{subsec-voxel-model-loading}
 
 For the purpose of this experiment, a single, solid voxel mesh is loaded, but this could also be a scene 
 consisting of multiple solid voxel models. In the provided implementation, the positions of voxels inside a regular 
 grid are loaded, skipping grid cells, where no voxels are located. For loading the voxels, the tool \emph{binvox} 
-is used \cite{binvox, Nooruddin2003}. 
+is used \cite{binvox, Nooruddin2003}. \\
 
+\noindent
+This model is then processed to fit the requirements of the proposed rendering pipeline. Central to the pipeline 
+are the data structures and the \ac{GPU} resources filled with the respective data. To minimize the memory footprint,
+the geometry is created on the \ac{GPU}. The only requirement to uniquely identify a voxel then is to know its position.
+The main resource is therefore a buffer filled with all the voxel positions as \emph{x, y, z} coordinates. Since \ac{GPU} 
+resources usually have to be aligned, 4 bytes of extra space can be used to store the voxel size alongside the position.
+It can be used to vary the size of the visible mesh or, for instance, to calculate bounding boxes seperatly. \\
+
+\noindent [@TODO: Double check because of comparison between both possible implementations]
+The voxel positions are already sufficient to render the voxel mesh by making each voxel one meshlet. This means that 
+individual voxels can be culled based on various meshlet culling techniques outlined in chapter 
+\ref{subsec-meshlet-culling}. Each \ac{GPU} thread generates one voxel, or none if the voxel is found to be culled. 
+As long as voxles are computed individually, this is very efficient and keeps the memory usage comparably low. But for 
+more sophisticated computations more data is necessary in order to compute spatial characteristics for the voxels. \\
+
+\noindent
+Especially when dealing with a lot of voxels, it can be beneficial to cull groups of voxels. For this approach, an 
+additional data structure like an \emph{octree} can be used to interpret the data differently. Now each \ac{GPU} 
+threadgroup computes the voxels of one octree node, with the maximum amount of voxels per node being equal to the 
+amount of threads per threadgroup. Using this layout, each thread in a threadgroup again takes care of at most one 
+voxel. The octree node structure can now store additional information that can be used for octree node based 
+culling.
 
 \subsubsection*{Octree Creation} \label{subsec-octree-creation}
 
-After loading any voxel model, an octree is created that covers the complete scene - in this case, since there is 
-only one model present, the octree's bounding volume is the bouding volume of the voxel model. As discussed in 
-chapter \ref{subsec-highres-svo-dags}, it is recommended to use a highly efficient and compressed octree implementation 
-like an \ac{SVO} or a Sparse Voxel \ac{DAG} \cite{Kampe2013}. For the purpose of this work, a custom octree 
-implementation is used, which refers to indices in a global \emph{voxel position buffer}, as shown in figure 
-\ref{fig:voxelpos-octreenode-buffer}.\\
+After loading any voxel model, an octree is created that covers the entire scene - in the simplest case there is 
+only one model present so the octree's bounding volume is considered to be equal to the bouding volume of the voxel 
+model. As discussed in chapter \ref{subsec-highres-svo-dags}, it is recommended to use a highly efficient and 
+compressed octree implementation like an \ac{SVO} or a Sparse Voxel \ac{DAG} \cite{Kampe2013}. For the purpose of 
+this work, a custom octree implementation is used, which refers to indices in a global \emph{voxel position buffer}, 
+as shown in figure \ref{fig:voxelpos-octreenode-buffer}.\\
 
 \begin{figure}[h]
     \centering
@@ -60,21 +82,13 @@ implementation is used, which refers to indices in a global \emph{voxel position
 \end{figure}
 
 \noindent
-Since the \ac{GPU} is supposed to generate a lot of voxels on the fly, data buffers like the voxel position buffer 
-need to be considered.
-For structuring the data, various options are available. The initial idea was to lay out the voxels as individual 
-meshlets. This means that individual voxels can be culled and each \ac{GPU} thread generates one voxel. This would 
-mean that only the voxel position buffer is needed. The task shader takes the positions, culls meshlets 
-against the view frustum and dispatches the mesh shader with the given data. As long as no spatial container like 
-an octree is used, this approach works fine. When considering the use of an octree, however, another layout serves 
-better. In this case, each \ac{GPU} threadgroup takes care of one octree node, with the maximum amount of voxels 
-per node being equal to the amount of threads per threadgroup. Using this layout, each thread in a threadgroup 
-again takes care of at most one voxel. The octree node information can now store additional information, which can 
-be used for octree node based view frustum culling. To generate this data, the octree is queried during the 
-initialization, resulting in an extra \emph{octree node buffer} which stores an index pointing to the the voxel 
-position buffer and a count of voxels, associated with the node. After sorting the voxel position buffer, this 
-additional structure identifies voxel positions that are located adjacent to each other inside an octree node. Figure 
-\ref{fig:voxelpos-octreenode-buffer} shows the data layout and how it relates to the voxel position buffer. 
+Figure \ref{fig:voxelpos-octreenode-buffer} shows the relation between the \ac{CPU} octree implementation and the buffer 
+that is sent to the \ac{GPU}. Since an octree is an inherently hierarchical data structure, it needs to be flattened in 
+order to be efficiently fed to the \ac{GPU}. This process involves sorting the \emph{voxel position buffer} so voxels 
+within one octree node can be located adjacent to one another. The additional "flat" \emph{octree node buffer} then only 
+needs a \emph{start index} and a \emph{voxel count} to represent the octree node. Additionally, the octree node's bounds 
+are stored alongside the \emph{start index} and the \emph{voxel count}, so octree node based computations can be executed 
+on the \ac{GPU} side. \\
 
 
 \subsubsection*{Best Occluder Selection} \label{subsec-best-occluder-selection}
