@@ -57,12 +57,12 @@ As long as voxles are computed individually, this is very efficient and keeps th
 more sophisticated computations more data is necessary in order to compute spatial characteristics for the voxels. \\
 
 \noindent
-Especially when dealing with a lot of voxels, it can be beneficial to cull groups of voxels. For this approach, an 
-additional data structure like an \emph{octree} can be used to interpret the data differently. Now each \ac{GPU} 
-threadgroup computes the voxels of one octree node, with the maximum amount of voxels per node being equal to the 
-amount of threads per threadgroup. Using this layout, each thread in a threadgroup again takes care of at most one 
-voxel. The octree node structure can now store additional information that can be used for octree node based 
-culling.
+Especially when dealing with a lot of voxels, it can be beneficial to cull groups of voxels. So for the proposed 
+implementation it serves well to manage an octree alongside the voxel position data. This additional data structure 
+can be used to interpret the data differently. Now each \ac{GPU} threadgroup computes the voxels of one octree node, 
+with the maximum amount of voxels per node being equal to the amount of threads per threadgroup. Using this layout, 
+each thread in a threadgroup again takes care of at most one voxel. The octree node structure can now store additional 
+information that can be used for octree node based culling.
 
 \subsubsection*{Octree Creation} \label{subsec-octree-creation}
 
@@ -70,7 +70,7 @@ After loading any voxel model, an octree is created that covers the entire scene
 only one model present so the octree's bounding volume is considered to be equal to the bouding volume of the voxel 
 model. As discussed in chapter \ref{subsec-highres-svo-dags}, it is recommended to use a highly efficient and 
 compressed octree implementation like an \ac{SVO} or a Sparse Voxel \ac{DAG} \cite{Kampe2013}. For the purpose of 
-this work, a custom octree implementation is used, which refers to indices in a global \emph{voxel position buffer}, 
+this work, a custom octree implementation is used, which refers to indices in the \emph{voxel position buffer}, 
 as shown in figure \ref{fig:voxelpos-octreenode-buffer}.\\
 
 \begin{figure}[h]
@@ -82,74 +82,61 @@ as shown in figure \ref{fig:voxelpos-octreenode-buffer}.\\
 \end{figure}
 
 \noindent
-Figure \ref{fig:voxelpos-octreenode-buffer} shows the relation between the \ac{CPU} octree implementation and the buffer 
-that is sent to the \ac{GPU}. Since an octree is an inherently hierarchical data structure, it needs to be flattened in 
-order to be efficiently fed to the \ac{GPU}. This process involves sorting the \emph{voxel position buffer} so voxels 
-within one octree node can be located adjacent to one another. The additional "flat" \emph{octree node buffer} then only 
-needs a \emph{start index} and a \emph{voxel count} to represent the octree node. Additionally, the octree node's bounds 
-are stored alongside the \emph{start index} and the \emph{voxel count}, so octree node based computations can be executed 
-on the \ac{GPU} side. \\
+Figure \ref{fig:voxelpos-octreenode-buffer} shows the relation between the octree resource and the \emph{voxel position buffer}.
+Since an octree is an inherently hierarchical data structure, it needs to be "flattened" in order to be efficiently fed 
+to the \ac{GPU}. This process involves sorting the \emph{voxel position buffer} so voxels within one octree node can be 
+located adjacent to one another. The additional "flat" \emph{octree node buffer} then only needs a \emph{start index} 
+and a \emph{voxel count} to represent the octree node. Additionally, the octree node's bounds are stored alongside the 
+\emph{start index} and the \emph{voxel count}, so octree node based computations can be executed on the \ac{GPU} side. \\
 
 
 \subsubsection*{Best Occluder Selection} \label{subsec-best-occluder-selection}
 
-The next step in the initialization procedure is to pre-compute the best occluders. This part is a significant one, 
-since it computes important data for the occlusion culling. As mentioned in chapter \ref{subsubsec-two-pass-occlusion-culling},
-best occluders are usually specifically authored by artists during the creation of the scene. This process is only 
-possible, if the models are static in a sense, that they do not change in size or shape. An alteration like this 
-could result in inefficient occlusion queries or even the elimination of occluders altogether. In the context of 
-volumetric scene representations, where voxel models are often a target of manipulation by players or physical 
-interactions, a predetermination of best occluders is not possible in the way it is for static models.
-This specific scenario is what the given approach aims for, and why the next step in the pipeline pre-processes best 
-occluders. Note, that this implementation does not include an update of the best occluders. It only serves as a 
-case study of the occlusion culling algorithm. Updating the best occluders when the voxel model is altered, 
-needs to be evaluated seperatly, but is considered to be trivial for occasional changes to the mesh. A more 
-demanding change to the octree content is given when computing physical interactions within the duration of a frame.
-In this case, further tests need to be done to evaluate the impact on performance. \\
+[@TODO: Evaluate problem of non-static best occluders]
+The next step in the initialization procedure is to pre-compute the best occluders. As mentioned in chapter 
+\ref{subsubsec-two-pass-occlusion-culling}, best occluders are usually authored by artists during the creation of 
+the scene. This process is only possible, if the models are static in a sense that they do not change in size or 
+shape. Although a change in position or rotation is not technically a problem, best occluders are usually iherently 
+static. Changes to the properties of the occluder could result in inefficient occlusion queries or even the elimination 
+of occluders altogether. In the context of volumetric scene representations, this can be a problem since voxel models 
+are often a target of manipulation by players or physical interactions. So a predetermination of best occluders is not 
+possible in the way it is for static models. This specific scenario is what the presented approach aims for, and why the 
+next step in the pipeline pre-processes best occluders. Note, that this implementation does not include an update of 
+the best occluders. It only serves as an experiment of the occlusion culling algorithm in the context of voxel rendering. 
+Updating the best occluders when the voxel model is altered, needs to be evaluated seperatly, but is considered to be 
+viable for occasional changes to the mesh. A more demanding change to the octree content is given when computing physical 
+interactions within the duration of a frame. In this case, further tests need to be done to evaluate the impact on 
+performance. \\
 
 \noindent
-To find the best occluders, different constraints need to be considered. The provided approach makes use of the inner, 
-non-visible voxels, and approximates them using the octree. This means, an octree node is equivalent to a best occluder, 
-if:
+The provided approach makes use of the inner, non-visible voxels, and approximates them using the octree. For this 
+to work, full octree nodes are used as occluders. This means, an octree node is a best occluder, if the number of 
+voxels present within the respective node is equal to the maximum number of voxels possible in that node. Only full 
+nodes can be considered best occluders because their shape can be approximated. If the node is not completely filled 
+or has holes in it, the approximation will not work. This property of a best occluder is propagated up the tree, as 
+long as all eight child nodes satisfy the requirements of being a best occluder. Figure 
+\ref{fig:octreenode-filled-non-filled} shows three possible leaf nodes. 
 
-\begin{itemize}
-    \item the maximum number of voxels per octree node is a product of \begin{math}\emph{width} \times \emph{height} \times \emph{depth}\end{math}
-    \item the number of voxels present within the node is equal to the maximum number of voxels per octree node,
-    \item and the octree node's boundary is equal to the \emph{minimal convex hull} of all voxels within the node.
-\end{itemize}
-
-[@TODO: Check, if this can be reduced due to redundancy]
-
-\noindent [@TODO: Fix this sentence]
-The first criterium is necessary to allow for a cubical node shape, filled completely with voxels. The maximum number 
-of voxels per node must therefore be a product of the width, length and depth of a voxel chunk. This criterium can 
-be changed depending on the setup. A cubical octree structure was selected. The number of maximum voxels per octree node 
-is therefore a \emph{power of three}.
-
-\noindent
-The second criterium makes sure that the node is full. This is essential for this approach [@TODO: Finish sentence]
-
-\noindent
-The last criterium avoids full octree nodes which are not tightly filled. It is an intrinsic feature of an octree 
-to maintain differently sized nodes. This means that voxels, which are on the surface of a model, can be part of 
-a bigger node, which is not subdivided further. Therefore, a bigger node can be filled with the maximum amount of 
-voxels, without being tightly filled. The \emph{minimal convex hull} is thus a boundary volume which has the minimum 
-volume while still incorporating all voxels.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=300px]{images/graphics/octree-nodes-filled.jpg}
+    \caption{Three possible \emph{leaf node} setups. The left node is completely filled up to its 
+    boundary and therefore considered to be a best occluder. The middle node is not completely filled and therefore 
+    not considered to be a best occluder. The right node has larger boundaries but can still be a leaf node as long 
+    as the amount of voxels in the node doesn't force the node to split. Since it is not completely filled it is not 
+    considered to be a best occluder. The gaps between voxels and the node boundaries are only for visualization 
+    purposes.}
+    \label{fig:octreenode-filled-non-filled}
+\end{figure}
 
 \noindent
-In practice, this means, that best occluders are given, if the octree node is completely, tightly filled 
-with voxels. If the octree node, however, is larger than the block defined by the maximum number of voxels 
-per node, this block cannot be approximated correctly by the bounds of the node. This property of a best 
-occluder is propagated up the tree, as long as all eight child nodes satisfy the requirements of being a 
-best occluder. During the depth pre-pass, the best occluders are drawn as "large voxels" which are the size 
-of the respective best occluder node. This can be achieved by simply reusing the mesh shader used in the 
-normal draw call, and inputting the node's position and bounds. This way, a whole node gets drawn, instead 
-of the individual voxels, reducing the computation cost for the best occluders by at least \emph{n} times, 
-with \emph{n} being the maximum amount of voxels per node. The best occluders are separatly stored in a 
-buffer, so they can be dispatched efficiently. \\
+During the depth pre-pass, the best occluders are drawn as "large voxels" which are the size of the respective 
+best occluder node. This can be achieved by simply reusing the mesh shader used in the normal draw call, and 
+inputting the node's position and bounds. This way, a whole node gets drawn, instead of the individual voxels, 
+reducing the computation cost for the best occluders by at least \emph{n} times, with \emph{n} being the maximum 
+amount of voxels per node. The best occluders are stored in a seperate buffer, so they can be dispatched efficiently. \\
 
 %[@TODO: Add data structure diagram of best occluder buffer]
-%[@TODO: add images]
 
 \noindent
 This concludes the initialization of the pipeline. When changes are applied to the voxel data, the voxel buffer,
@@ -159,6 +146,7 @@ occluders buffer redundant but would result in a higher dispatch count with a lo
 where the criteria for best occluder are not met. Since all computations are more or less in parallel, this 
 will not affect frametimes for a moderate amount of octree nodes. Nevertheless, since only static voxel models with 
 no runtime alternation are assumed for this work, a static, pre-calculated buffer for best occluders can be used.
+
 
 \subsection*{Rendering Loop} \label{sec-rendering-loop}
 
@@ -181,10 +169,12 @@ and textures, as shown in figure \ref{fig:pipeline-loop}.
 The frame computation starts by computing the depth pre-pass, which is the custom render pass central 
 to the occlusion culling. In this pass a compute shader is invoked that takes the best occluders and 
 draws them to the depth buffer. This depth pass does not draw to the back buffer, making the computation 
-relatively efficient. It can also include optional computations like frustum culling for further 
-optimization. This can be effective when there are a lot of nodes in the best occluders buffer. 
-Consequently, the depth buffer has data from possible occluders and the \ac{HiZ} generation is started. 
-The z-pyramid is generated by another compute shader, which samples four texels of the input texture 
+relatively efficient.
+
+\subsubsection*{HiZ Generation} \label{subsec-highz-generation}
+
+Now that the depth buffer has data from possible occluders, the \ac{HiZ} generation is started. 
+The z-pyramid is generated by a compute shader, which samples four texels of the input texture 
 (the full resolution depth buffer) and outupts the lowest z-value to an output texture (mip level 1). 
 This chain of mip-maps is shown as the [@TODO: here is a jump from mip lvl 1 to full z-pyramid!]
 \ac{HiZ}-pyramid in figure \ref{fig:pipeline-loop}.
@@ -218,11 +208,8 @@ and output throughout the pipeline.
 \subsection*{Data Pre-Processing} \label{subsec-data-pre-processing}
 
 To obtain a valid model for the pipeline, a voxel mesh has to be created. To do this, \emph{binvox} 
-\cite{binvox} can be used. It works with any triangle mesh in the \emph{.obj} (Wavefront) or \emph{.ply} 
-(Stanford Polygon File Format) format, which in turn can be exported by most of the common 3D software. 
-Due to its availability, \emph{Blender} \cite{Blender} is recommended. To convert the triangle mesh to a volumetric 
-voxel representation, \emph{binvox} is executed from the command line and the input file as well as optional 
-parameters are specified. The output is a \emph{.binvox} file. Figure \ref{fig:trimesh-to-voxel-mesh} shows 
+\cite{binvox} is used. It is a command line tool that converts triangle meshes (e.g. \emph{.obj}) to a volumetric 
+voxel representation. The resulting file can be consumed by the engine. Figure \ref{fig:trimesh-to-voxel-mesh} shows 
 both the triangle mesh and the processed volumetric voxel mesh. 
 
 \begin{figure}[h]
