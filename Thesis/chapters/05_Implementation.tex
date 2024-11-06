@@ -145,12 +145,12 @@ long as all eight child nodes satisfy the requirements of being a best occluder.
 \begin{figure}[h]
     \centering
     \includegraphics[width=300px]{images/graphics/octree-nodes-filled.jpg}
-    \caption{Three possible \emph{leaf node} setups. The left node is completely filled up to its 
-    boundary and therefore considered to be a best occluder. The middle node is not completely filled and therefore 
-    not considered to be a best occluder. The right node has larger boundaries but can still be a leaf node as long 
+    \caption{Four possible \emph{octree leaf node} setups. The most left node is completely filled up to its 
+    boundary and therefore considered to be a best occluder. The middle left node is not completely filled and therefore 
+    not considered to be a best occluder. The middle right node has larger boundaries but can still be a leaf node as long 
     as the amount of voxels in the node doesn't force the node to split. Since it is not completely filled it is not 
-    considered to be a best occluder. The gaps between voxels and the node boundaries are only for visualization 
-    purposes.}
+    considered to be a best occluder. The right node has eight full child nodes and is therefore considered full and a best occluder.
+    The gaps between voxels and the node boundaries are only for visualization purposes.}
     \label{fig:octreenode-filled-non-filled}
 \end{figure}
 
