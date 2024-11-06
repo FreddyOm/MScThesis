@@ -14,11 +14,9 @@ changes how meshes are dispatched because of the use of additional acceleration 
 a detailed overview of the complete pipeline and how it works in particular. The full implementation details can be 
 found in the appendix \ref{cpt-appendix}.
 
-\section{Implementation Overview} \label{sec-implementation-overview}
-
 [@TODO: Add meshlet based view frustum culling impl is used and was already in Diligent Engine]
 
-\subsection*{Pipeline Initialization} \label{subsec-piepline-initialization}
+\section{Pipeline Initialization} \label{sec-piepline-initialization}
 
 \begin{figure}[h]
     \centering
@@ -34,12 +32,24 @@ the beginning of the execution flow and the render loop is initiated after the i
 loop is continuously called - once per frame. Figure \ref{fig:pipeline-initialization} shows the initialization 
 procedure. 
 
-\subsubsection*{Voxel Model Loading} \label{subsec-voxel-model-loading}
+\subsection*{Voxel Model Loading} \label{subsec-voxel-model-loading}
 
 For the purpose of this experiment, a single, solid voxel mesh is loaded, but this could also be a scene 
 consisting of multiple solid voxel models. In the provided implementation, the positions of voxels inside a regular 
 grid are loaded, skipping grid cells, where no voxels are located. For loading the voxels, the tool \emph{binvox} 
-is used \cite{binvox, Nooruddin2003}. \\
+is used \cite{binvox, Nooruddin2003}. It is a command line tool that converts triangle meshes (e.g. \emph{.obj}) to 
+a volumetric voxel representation. The resulting file can be consumed by the engine. Figure 
+\ref{fig:trimesh-to-voxel-mesh} shows both the triangle mesh and the processed volumetric voxel mesh. 
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=200px]{images/graphics/lucy-triangle-mesh.jpg}
+    \includegraphics[width=200px]{images/graphics/lucy-voxel-mesh.jpg}
+    \caption{The input triangle mesh (left) and the voxelized and parsed voxel mesh (right). 
+    Model \emph{Lucy} from \emph{The Stanford 3D Scanning Repository} \cite{Stanford23}.}
+    \label{fig:trimesh-to-voxel-mesh}
+\end{figure}
+
 
 \noindent
 This model is then processed to fit the requirements of the proposed rendering pipeline. Central to the pipeline 
@@ -64,8 +74,19 @@ with the maximum amount of voxels per node being equal to the amount of threads 
 each thread in a threadgroup again takes care of at most one voxel. The octree node structure can now store additional 
 information that can be used for octree node based culling.
 
-\subsubsection*{Octree Creation} \label{subsec-octree-creation}
+\subsection*{Octree Creation} \label{subsec-octree-creation}
 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=151.5px]{images/graphics/lucy-voxel-octree-viz.jpg}
+    \includegraphics[width=250px]{images/graphics/lucy-voxel-octree-viz-2.jpg}
+    \caption{The octree structure visualized. Each color represents one octree node. The whole model contains 
+    \emph{470.355} voxels and \emph{19.823} octree nodes, with one leaf octree node holding up to \begin{math} 4 \times 4 \times 4 \end{math}
+    voxels.}
+    \label{fig:voxel-octree-viz}
+\end{figure}
+
+\noindent
 After loading any voxel model, an octree is created that covers the entire scene - in the simplest case there is 
 only one model present so the octree's bounding volume is considered to be equal to the bouding volume of the voxel 
 model. As discussed in chapter \ref{subsec-highres-svo-dags}, it is recommended to use a highly efficient and 
@@ -89,8 +110,12 @@ located adjacent to one another. The additional "flat" \emph{octree node buffer}
 and a \emph{voxel count} to represent the octree node. Additionally, the octree node's bounds are stored alongside the 
 \emph{start index} and the \emph{voxel count}, so octree node based computations can be executed on the \ac{GPU} side. \\
 
+\noindent
+Figure \ref{fig:voxel-octree-viz} shows that the voxels are grouped into octree nodes, which are visualized by distinct 
+random colors. 
 
-\subsubsection*{Best Occluder Selection} \label{subsec-best-occluder-selection}
+
+\subsection*{Best Occluder Selection} \label{subsec-best-occluder-selection}
 
 [@TODO: Evaluate problem of non-static best occluders]
 The next step in the initialization procedure is to pre-compute the best occluders. As mentioned in chapter 
@@ -148,7 +173,7 @@ will not affect frametimes for a moderate amount of octree nodes. Nevertheless, 
 no runtime alternation are assumed for this work, a static, pre-calculated buffer for best occluders can be used.
 
 
-\subsection*{Rendering Loop} \label{sec-rendering-loop}
+\section{Rendering Loop} \label{sec-rendering-loop}
 
 \begin{figure}[h]
     \centering
@@ -164,98 +189,14 @@ The rendering loop consists of three main steps: The depth pre-pass including \a
 task shader and the mesh shader. The different stages consume and generate various data buffers 
 and textures, as shown in figure \ref{fig:pipeline-loop}. 
 
-\subsubsection*{Depth Pre-Pass} \label{subsec-depth-prepass}
+\subsection*{Depth Pre-Pass} \label{subsec-depth-prepass}
 
 The frame computation starts by computing the depth pre-pass, which is the custom render pass central 
 to the occlusion culling. In this pass a compute shader is invoked that takes the best occluders and 
 draws them to the depth buffer. This depth pass does not draw to the back buffer, making the computation 
-relatively efficient.
-
-\subsubsection*{HiZ Generation} \label{subsec-highz-generation}
-
-Now that the depth buffer has data from possible occluders, the \ac{HiZ} generation is started. 
-The z-pyramid is generated by a compute shader, which samples four texels of the input texture 
-(the full resolution depth buffer) and outupts the lowest z-value to an output texture (mip level 1). 
-This chain of mip-maps is shown as the [@TODO: here is a jump from mip lvl 1 to full z-pyramid!]
-\ac{HiZ}-pyramid in figure \ref{fig:pipeline-loop}.
-
-
-\subsubsection*{The Task Shader} \label{subsec-task-shader}
-
-Now, the task shader is invoked, each threadgroup operating on one octree node. It decides which 
-meshlets are drawn. Here, view frustum culling is applied to a threadgroup and the occlusion culling is 
-executed by projecting the bounding box of the meshlets onto the view plane and querying the 
-\ac{HiZ}-pyramid for depth values. If the voxel position is found to be visible - or not occluded by 
-the best occluders - the position is added to the payload, ready to be drawn by the mesh shader. 
-
-
-\subsubsection*{The Mesh Shader} \label{subsec-mesh-shader}
-
-The mesh shader executes the appropriate transformations, constructs a uniform voxel around the voxel position 
-and outputs the geometry. The voxels in a \ac{GPU}-Driven approach can be completely generated on the \ac{GPU}, 
-minimizing the memory bandwidth used per frame. This optimization technique is not only efficient, but also 
-trivial for uniform, static voxel geometry. When dispatching one voxel per thread, one voxel corresponds 
-to one meshlet, making pre-computation completely redundant, as opposed to the common precomputation of meshlets, 
-as mentioned in chapter \ref{sec-mesh-shading}. 
-
-
-\section{Pipeline Data Processing} \label{sec-pipeline-data-processing}
-
-[@TODO: Fix image positions]
-To illustrate the pipeline in even more detail, this chapter focuses on the data and how it is sampled, computed 
-and output throughout the pipeline.
-
-\subsection*{Data Pre-Processing} \label{subsec-data-pre-processing}
-
-To obtain a valid model for the pipeline, a voxel mesh has to be created. To do this, \emph{binvox} 
-\cite{binvox} is used. It is a command line tool that converts triangle meshes (e.g. \emph{.obj}) to a volumetric 
-voxel representation. The resulting file can be consumed by the engine. Figure \ref{fig:trimesh-to-voxel-mesh} shows 
-both the triangle mesh and the processed volumetric voxel mesh. 
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=200px]{images/graphics/lucy-triangle-mesh.jpg}
-    \includegraphics[width=200px]{images/graphics/lucy-voxel-mesh.jpg}
-    \caption{The input triangle mesh (left) and the voxelized and parsed voxel mesh (right). 
-    Model \emph{Lucy} from \emph{The Stanford 3D Scanning Repository} \cite{Stanford23}.}
-    \label{fig:trimesh-to-voxel-mesh}
-\end{figure}
-
-\noindent
-The engine then takes the \emph{.binvox} file as an input and loads it during initialization. This data is then
-parsed, ready to be input into the octree.
-
-
-\subsection*{Octree Generation} \label{subsec-octree-generation}
-
-The octree implementation allows for a \emph{boundary} and a \emph{maximum instances per node threshold} to be 
-defined. The boundary defines the space, which the octree occupies in the scene. All instances added to the octree 
-must be located within this boundary. Otherwise the octree cannot resolve the instance spatially. The maximum 
-threshold of instances is checked whenever an instance is added to the octree. If the maximum is exceeded, the 
-node is split into child nodes, which are then filled with the node's data. The loaded voxel model is located in 
-a regular grid, which can be used to calculate the bounds of the octree. Each voxel is then added to the octree, 
-which automatically divides the space according to the voxel density, always satisfying the constraint of the 
-maximum amount of voxels per node. Figure \ref{fig:voxel-octree-viz} shows that the voxels are grouped into 
-octree nodes. This octree is then transferred to \ac{GPU} memory during pipeline initialization. Empty nodes are 
-not added to the buffer, hence the name \emph{Sparse Voxel Octree}. 
-
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=151.5px]{images/graphics/lucy-voxel-octree-viz.jpg}
-    \includegraphics[width=250px]{images/graphics/lucy-voxel-octree-viz-2.jpg}
-    \caption{The octree structure visualized. Each color represents one octree node. The whole model contains 
-    \emph{470.355} voxels and \emph{19.823} octree nodes, with one leaf octree node holding up to \begin{math} 4 \times 4 \times 4 \end{math}
-    voxels.}
-    \label{fig:voxel-octree-viz}
-\end{figure}
-
-\subsection*{Depth Pre-Pass} \label{subsec-depth-pre-pass}
-
-The depth pre-pass now draws the best occluders to the depth buffer. To get a better understanding of what this 
-means, figure \ref{fig:best-occluder-viz} shows the best occluders. Note, that the best occluders in this 
-visualization are not hierarchically aggregated, which results in a slightly different visual result than what 
-the actual depth buffer shows. 
+relatively efficient. To get a better understanding of what this means, figure \ref{fig:best-occluder-viz} 
+shows the best occluders. Note, that the best occluders in this visualization are not hierarchically 
+aggregated, which results in a slightly different visual result than what the actual depth buffer shows. 
 
 \begin{figure}[h]
     \centering
@@ -268,11 +209,16 @@ the actual depth buffer shows.
     \label{fig:best-occluder-viz}
 \end{figure}
 
-\noindent 
-After drawing the best occluders to the depth buffer, it is copied into the \ac{HiZ} texture resource. 
-Then the \ac{HiZ}-pyramid is constructed. This is done by a compute shader to optimize the work. After all mip 
-levels are constructed, the \ac{HiZ}-pyramid can be used for occlusion culling. The final \ac{HiZ}-pyramid is 
-illustrated in figure \ref{fig:lucy-hiz-pyramid}.
+
+\subsection*{HiZ Generation} \label{subsec-highz-generation}
+
+[@TODO: here is a jump from mip lvl 1 to full z-pyramid!]
+After drawing the best occluders to the depth buffer, it is copied into the \ac{HiZ} texture resource. Subsequently, 
+the z-pyramid is generated by a compute shader, which samples four texels of the input texture (the full resolution 
+depth buffer) and outupts the lowest z-value to the respective higher mip level. After all mip levels are constructed, 
+the \ac{HiZ}-pyramid can be used for occlusion culling. The final \ac{HiZ}-pyramid is illustrated in figure 
+\ref{fig:lucy-hiz-pyramid}. In the pipeline diagram in figure \ref{fig:pipeline-loop}, this chain of mip-maps is shown 
+as the \ac{HiZ}-pyramid  figure \ref{fig:pipeline-loop}.
 
 \begin{figure}[h]
     \centering
@@ -282,13 +228,13 @@ illustrated in figure \ref{fig:lucy-hiz-pyramid}.
     \label{fig:lucy-hiz-pyramid}
 \end{figure}
 
-\subsection*{Culling and Draw Call} \label{subsec-culling-and-draw-call}
 
-The final draw call is initiated when dispatching the task shader. It accesses the \emph{voxel position buffer}, 
-the \emph{octree node buffer} and the \emph{\ac{HiZ}-texture}. Each octree node is assigned to one threadgroup which will 
-in turn compute one voxel (meshlet) per thread. The octree data just points to the relevant part of the voxel position buffer 
-to get the position data. Each octree node is checked against the camera view frustum in order to cull it, if not visible.
-Figure \ref{fig:lucy-frustum-culling} shows a partially culled model from a different perspective. 
+\subsection*{Culling} \label{subsec-task-shader}
+
+Now, the task shader is invoked, each threadgroup operating on one octree node. It decides which 
+meshlets are drawn. This implementation uses view frustum culling to cull octree nodes which are 
+not visible. Figure \ref{fig:lucy-frustum-culling} shows a partially culled model from a different 
+perspective. 
 
 [@TODO: Change model to stanford bunny!]
 \begin{figure}[h]
@@ -299,19 +245,29 @@ Figure \ref{fig:lucy-frustum-culling} shows a partially culled model from a diff
     \label{fig:lucy-frustum-culling}
 \end{figure}
 
-
 \noindent [@TODO: Check if meshlets or octree nodes are culled in the end]
-Non-culled nodes are then drawn, checking each voxel (meshlet) for occlusion against the \ac{HiZ}-texture and its mip maps. 
-This operation introduces additional overhead which is normal for any acceleration struture. The goal is always to apply it 
-to a scenario, where the additional overhead is compensated by the acceleration it provides. In this case, the visible voxels 
-might have to pass the whole \ac{HiZ} structure. The non-visible voxels, however, will likely early-exit after just a few 
-operations, comparing against the mip map hierarchy. In a volumetric representation, the candidates for non-visible voxels 
-are plenty, as usually, only a fraction of the voxel data needs to be drawn at any time. Essentially, all voxels, but the 
-outer, visible layer, can be omitted.\\
+Nodes that were not culled using the view frustum are then drawn, checking each voxel for occlusion against the 
+\ac{HiZ}-texture and its mip maps. This operation introduces additional overhead which is normal for any acceleration struture. 
+The goal is always to apply it to a scenario, where the additional overhead is compensated by the acceleration it provides. 
+In this case, the visible voxels might have to pass the whole \ac{HiZ} structure. The non-visible voxels, however, will likely 
+early-exit after just a few operations, comparing against the mip map hierarchy. In a volumetric representation, the candidates 
+for non-visible voxels are plenty, as usually, only a fraction of the voxel data needs to be drawn at any time. Essentially, 
+all voxels, but the outer, visible layer, can be omitted.\\
 
 \noindent
 The voxels that passed all tests are finally dispatched for the final draw call, keeping the memory bandwidth to a minimum, 
 since the geometry, UVs, normals and more can easily be determined from the position alone and thus created on-chip. \\
+
+\subsection*{Drawing} \label{subsec-mesh-shader}
+
+The mesh shader executes the appropriate transformations, constructs a uniform voxel around the voxel position 
+and outputs the geometry. The voxels in a \ac{GPU}-Driven approach can be completely generated on the \ac{GPU}, 
+minimizing the memory bandwidth used per frame. This optimization technique is not only efficient, but also 
+trivial for uniform, static voxel geometry. When dispatching one voxel per thread, one voxel corresponds 
+to one meshlet, making pre-computation completely redundant, as opposed to the common precomputation of meshlets, 
+as mentioned in chapter \ref{sec-mesh-shading}. 
+
+
 
 
 \section{Occlusion Culling Algorithm} \label{sec-occlusion}
