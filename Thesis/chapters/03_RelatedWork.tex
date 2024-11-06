@@ -11,7 +11,7 @@ the highlighted concepts are revisited and discussed in more detail in chapter
 [@TODO: Check redundancy with technological background]
 [@TODO: Find scientific papers for voxel representations]
 
-\section*{Voxel Representation} \label{sec-voxel-representation}
+\section{Voxel Representation} \label{sec-voxel-representation}
 
 \begin{figure}[h]
     \centering
@@ -73,13 +73,21 @@ voxel meshes.
 
 [@TODO: Add more related work for voxel representations]
 
-\section*{Occlusion Culling}
-
+\section{Occlusion Culling}
 
 \subsection*{Occlusion Queries}
 
 The simplest method for testing visibility is the \ac{GPU} occlusion queries available in rendering \ac{API}s.
 [@TODO: Find source and add what they found]
+
+Another approach of applying occlusion culling is the \emph{raster occlusion culling}, proposed by \emph{NVIDIA}, among 
+others \cite{NVIDIAGLOC2016}. The approach relies on "invisibly" rasterizing the objects as bounding boxes and using the 
+rasterizer to query visibility checks and storing the per-object results in a visibility buffer. This buffer can then be 
+used to draw the actual shaded objects and discard invisible objects. For the bounding boxes, only up to three faces are 
+drawn in the early visibility check, to reduce load. Also, this can be optimized using instancing, the geometry shader or 
+mesh shading to compute the visibility buffer efficiently \cite{NVIDIAGLOC2016}. This approach, especially when using 
+mesh shading, is rather similar to the work employed here. However, the use case is different in a few details.
+
 
 \subsection*{Umbra}
 
@@ -149,19 +157,6 @@ While the implementation of Karis et al. and Remedy Entertainment are based on a
 require the use of a spatial container for the culling algorithm, this implementation aims for another use case. 
 In this work, voxels are used to represent the meshes and an additional spatial container is added to optimize the 
 data further. 
-
-
-
-
-
-\noindent [@TODO: Probably remove because its \ac{HZB}]
-Another approach of applying occlusion culling is the \emph{raster occlusion culling}, proposed by \emph{NVIDIA}, among 
-others \cite{NVIDIAGLOC2016}. The approach relies on "invisibly" rasterizing the objects as bounding boxes and using the 
-rasterizer to query visibility checks and storing the per-object results in a visibility buffer. This buffer can then be 
-used to draw the actual shaded objects and discard invisible objects. For the bounding boxes, only up to three faces are 
-drawn in the early visibility check, to reduce load. Also, this can be optimized using instancing, the geometry shader or 
-mesh shading to compute the visibility buffer efficiently \cite{NVIDIAGLOC2016}. This approach, especially when using 
-mesh shading, is rather similar to the work employed here. However, the use case is different in a few details.
 
 
 % SV DAGs
