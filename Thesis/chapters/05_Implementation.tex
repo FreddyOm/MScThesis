@@ -258,6 +258,7 @@ all voxels, but the outer, visible layer, can be omitted.\\
 The voxels that passed all tests are finally dispatched for the final draw call, keeping the memory bandwidth to a minimum, 
 since the geometry, UVs, normals and more can easily be determined from the position alone and thus created on-chip. \\
 
+
 \subsection*{Drawing} \label{subsec-mesh-shader}
 
 The mesh shader executes the appropriate transformations, constructs a uniform voxel around the voxel position 
@@ -282,6 +283,7 @@ are checked against the \ac{HiZ}-pyramid. Eventually, it is necessary to make pr
 which approach works best under the given circumstances. In general, it is hard to predict the performance of 
 parallelized \ac{GPU} computations. In chapter \ref{cpt-experiment} the culling of octree nodes is compared against the 
 culling of individual.
+
 
 \subsection*{Visibility Computation} \label{subsec-visibility-computation}
 
