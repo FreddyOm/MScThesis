@@ -81,23 +81,28 @@ voxel meshes.
 The simplest method for testing visibility is the \ac{GPU} occlusion queries available in rendering \ac{API}s.
 [@TODO: Find source and add what they found]
 
+\subsection*{Umbra}
+
 In the past, occlusion culling in games has been heavily influenced by \emph{Umbra} \cite{Umbra2024}, a company 
 specialized on 3D occlusion culling solutions. \emph{Umbra} has been used by a lot of games such as 
 \emph{Call of Duty: Ghosts} (2013), \emph{Killzone: Shadow Fall} (2013), \emph{Alan Wake} (2012) and many more 
-\cite{UmbraWiki,CallOfDutyGhostsCredits,KillzoneUmbra,AlanWakeUmbra}. \emph{Umbra} voxelizes the game world and proceeds 
-to process the data further, merging voxels into cells. A runtime hierarchy of the meshes inside the voxelgrid is created 
-and subsequently, using the camera position, the cells can be queried for occlusion. As long as there are large 
-occluders, this process can reduce the amount of instances and therefore the amount of triangles to draw. \emph{Umbra} 
-also keeps a simplified depth buffer in memory in order to quickly determine visibility \cite{Medium2018}. The 
-approach is similar to the approach provided in this work, in that both use a depth buffer and a scene hierarchy for 
-computing visibility early in the pipeline. Both approaches rely on screen space bounding comparisons, although 
-\emph{Umbra} uses a \emph{Portals and Cell} structure to manage visibility testing for a given camera position 
-\cite{Medium2018}. Furthermore, \emph{Umbra} is usually applied in triangle mesh scene representations instead of 
-volumetric, voxel-based scene representations. Another difference to this work's approach is the cell and portal 
-structure, which needs to be traversed and kept in memory. \emph{Umbra} uses these structures for efficient 
-visibility optimizations based on static scene meshes, while this work uses octree queries to dynamically determine 
-possible occluders during runtime - or as a one time pre-computation for voxel models that are known to be static. \\
+\cite{UmbraWiki,CallOfDutyGhostsCredits,KillzoneUmbra,AlanWakeUmbra}. \\
 
+\noindent
+\emph{Umbra} voxelizes the game world and proceeds to process the data further, merging voxels into cells. 
+A runtime hierarchy of the meshes inside the voxelgrid is created and subsequently, using the camera position, 
+the cells can be queried for occlusion. As long as there are large occluders, this process can reduce the amount 
+of instances and therefore the amount of triangles to draw. \emph{Umbra} also keeps a simplified depth buffer in 
+memory in order to quickly determine visibility \cite{Medium2018}. \\
+
+\noindent 
+The approach is similar to the approach provided  in this work, in that both use a depth buffer and a scene hierarchy 
+for computing visibility early in the pipeline. Both approaches rely on screen space bounding comparisons, although 
+\emph{Umbra} uses a \emph{Portals and Cell} structure to manage visibility testing for a given camera position 
+\cite{Medium2018}. Furthermore, \emph{Umbra} is usually applied in triangle mesh scene representations instead 
+of volumetric, voxel-based scene representations. \emph{Umbra} uses run-time data structures for efficient visibility 
+optimizations based on static scene meshes, while this work uses octree queries to dynamically determine possible 
+occluders during runtime - or as a one time pre-computation for voxel models that are known to be static. \\
 
 
 \subsection*{Two-Pass Occlusion Culling}
@@ -109,14 +114,16 @@ a good occlusion culling technique in games with large occluders or interiors. F
 \emph{best occluders} are drawn to the depth buffer in a depth pre-pass. Then, projected bounding boxes can be 
 used to test visibility of smaller objects in the scene. A hierarchical z-buffer is used to accelerate this testing,
 as proposed by Greene et al. \cite{Greene93,Greene95}. Finally, the depth buffer of the last frame can be 
-reprojected to further minimize computations. This technique allows developers to push for huge draw distances 
-and densly crowded environments. Similar to this work, the game uses advanced technology in its implementation, 
-clustering geometry and allowing for a \ac{GPU} centric approach of occlusion culling. However, the game doesn't 
-use a volumetric representation but the standard boundary representation for its world. Furthermore, the best 
-occluders are provided in different ways. Aaltonen et al. \cite{Aaltonen2015} propose the use of a hand-picked 
-set of large, static meshes, while this work relies on a simple approximation of the voxel layout. This way, 
-the latter implementation can dynamically provide best occluders in run-time, adapting the occlusion capabilities 
-with the addition or removal of voxels in the scene.\\
+reprojected to further minimize computations. \\
+
+\noindent
+This technique allows developers to push for huge draw distances and densly crowded environments. Similar to this 
+work, the game uses advanced technology in its implementation, clustering geometry and allowing for a \ac{GPU} 
+centric approach of occlusion culling. However, the game doesn't use a volumetric representation but the standard 
+boundary representation for its world. Furthermore, the best occluders are provided in different ways. Aaltonen 
+et al. \cite{Aaltonen2015} propose the use of a hand-picked set of large, static meshes, while this work relies 
+on a simple approximation of the voxel layout. This way, the latter implementation can dynamically provide best 
+occluders during run-time, adapting the occlusion capabilities with the addition or removal of voxels in the scene.
 
 \subsection*{Per-Meshlet Two-Pass Occlusion Culling}
 
