@@ -48,25 +48,38 @@ cannot be confirm finally and reliably. Nevertheless, many efforts towards bette
     \label{fig:teardown-raytracing}
 \end{figure}
 
+\subsection*{Sparse Voxel Directed Acyclic Graphs}
+
+Kampe et al. \cite{Kampe2013} propose the use of their \emph{High-Resolution Sparse Voxel \ac{DAG}s}. This approach 
+is tailored to high voxel resolutions and data that might not fit into memory all at once. Their data structure can 
+be easily split up into several sub-trees, which in turn can be loaded individually. This approach seems promising 
+for large scenes and use cases, which require the streaming of data. They propose to structure the data in a way that 
+enables equal nodes of an octree hierarchy to be reduced to only one instance, eliminating redundant parts of the 
+hierarchy and reducing the amount of used memory immensly. \\
+
 \noindent
-During the past years, ray tracing has become a more common rendering technique, being used for global illumination, 
-shadows or ambient occlusion in rasterizer pipelines. Fully ray traced real-time rendering has mostly been available 
-for voxel rendering, using common optimization techniques like a \ac{BVH}. Voxel data for ray tracing has been a 
-major influence for the proposed approach, since their implicit voxel representation is generally compatible with meshes 
-generated directly on the \ac{GPU}. Various efforts have been made to optimize voxel representations for ray traced 
-pipelines. Kampe et al. \cite{Kampe2013} propose the use of their \emph{High-Resolution Sparse Voxel \ac{DAG}s}, 
-as discussed in chapter \ref{subsec-highres-svo-dags}. This approach is tailored to high voxel resolutions and data 
-that might not fit into memory all at once. Their data structure can be easily split up into several sub-trees, which 
-in turn can be loaded individually. This approach seems promising for large scenes and use cases, which require the 
-streaming of data. 
+This approach relates to this implementation in how large voxelized scens can be efficiently loaded and stored in 
+memory. Although this work doesn't explicitly rely on Sparse Voxel \ac{DAG}s, Sparse Voxel Octrees are used in the 
+provoided implementation. Additionally, the proposed implementation can be optimized in the future to be working 
+with Sparse Voxel \ac{DAG}s, enabling the handling of meshes with even higher resolution. \\
+
+\noindent
+Sparse Voxel \ac{DAG}s are not commonly used in rasterized rendering pipelines and store voxlumetric data in a binary 
+format instead of storing positional data. This intoduces additional complexity to the pipeline which might result in 
+better runtime performance but is also less intuitive when dealing with nodes and individual voxels. Sparse Voxel 
+\ac{DAG}s mainly aim to provide a smaller memory footprint for raytraced applications while maintaining high resolution 
+voxel meshes.
 
 
-[@TODO: sources]
-
+[@TODO: Add more related work for voxel representations]
 
 \section*{Occlusion Culling}
 
-[@TODO: Add occlusion queries and maybe one more CPU based OC algo]
+
+\subsection*{Occlusion Queries}
+
+The simplest method for testing visibility is the \ac{GPU} occlusion queries available in rendering \ac{API}s.
+[@TODO: Find source and add what they found]
 
 In the past, occlusion culling in games has been heavily influenced by \emph{Umbra} \cite{Umbra2024}, a company 
 specialized on 3D occlusion culling solutions. \emph{Umbra} has been used by a lot of games such as 
@@ -85,6 +98,10 @@ structure, which needs to be traversed and kept in memory. \emph{Umbra} uses the
 visibility optimizations based on static scene meshes, while this work uses octree queries to dynamically determine 
 possible occluders during runtime - or as a one time pre-computation for voxel models that are known to be static. \\
 
+
+
+\subsection*{Two-Pass Occlusion Culling}
+
 \noindent
 \emph{Assassin's Creed Unity} (2014) uses a \ac{GPU} based two-pass occlusion culling technique as presented by 
 Aaltonen et al. \cite{Aaltonen2015}. This technique involves both \ac{HZB} and depth reprojection. Both make for 
@@ -101,11 +118,33 @@ set of large, static meshes, while this work relies on a simple approximation of
 the latter implementation can dynamically provide best occluders in run-time, adapting the occlusion capabilities 
 with the addition or removal of voxels in the scene.\\
 
-\noindent
+\subsection*{Per-Meshlet Two-Pass Occlusion Culling}
+
 Similar to \emph{Assassin's Creed Unity}, \emph{Alan Wake 2} (2023) and \emph{Unreal Engine 5} also implement \ac{HZB} 
 and depth reprojection. Both implementations are directly based on the approach of Aaltonen et al. \cite{Aaltonen2015} 
 but this time, making use of the new \emph{Mesh Shading} pipeline. The difference being the now provided hardware 
 integration of clustering geometry \cite{Remedy2023,Karis2021}.  \\
+
+\noindent
+Karis et al. and Remedy Entertainment find, that using \ac{HZB} can provide great runtime performance for open, 
+highly dense scenes. Both combine the \ac{HZB} with depth reprojection to further optimize the computation of the 
+depth buffer. Using the Mesh Shading pipeline, this concept can be applied to meshlets, enabling per-meshlet culling. 
+That means, that small parts of the geometry can be culled, even if other parts of the same mesh are still visible. 
+This optimizes the culling further, so scenes can be more densly populated with meshes.\\
+
+\noindent
+The findings of Karis et al. and Remedy Entertainment are based on the works of Aaltonen et al. \cite{Aaltonen2015}
+as well as Greene et al. \cite{Greene93,Greene95}. The same concept is adapted for this work's implementation and 
+also relies on the use of the Mesh Shading pipeline.\\
+
+\noindent
+While the implementation of Karis et al. and Remedy Entertainment are based on a boundary representation and do not 
+require the use of a spatial container for the culling algorithm, this implementation aims for another use case. 
+In this work, voxels are used to represent the meshes and an additional spatial container is added to optimize the 
+data further. 
+
+
+
 
 
 \noindent [@TODO: Probably remove because its \ac{HZB}]
@@ -122,4 +161,4 @@ mesh shading, is rather similar to the work employed here. However, the use case
 % AC Unity
 % Alan Wake 2
 % Greene
-% 
+% Raster OC using depth queries -> not viable for so many objects

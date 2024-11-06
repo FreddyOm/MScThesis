@@ -280,13 +280,14 @@ fully overlap the octree node. Therefore, even small instances in the scene can 
 in better performance overall. On the other hand, this approach requires a lot more computations because all meshlets 
 are checked against the \ac{HiZ}-pyramid. Eventually, it is necessary to make precise measurements in order to find out 
 which approach works best under the given circumstances. In general, it is hard to predict the performance of 
-parallelized \ac{GPU} computations. For this implementation the culling of octree nodes is assumed. 
+parallelized \ac{GPU} computations. In chapter \ref{cpt-experiment} the culling of octree nodes is compared against the 
+culling of individual.
 
 \subsection*{Visibility Computation} \label{subsec-visibility-computation}
 
 As mentioned before, the task shader is used to pre-select and pre-process the scheduled geometry data, 
-which in this case is just the position of an individual octree node and all the voxels (meshlets) inside of the 
-node. This precomputational step is used for visibility checking, i.e. view frustum culling and occlusion culling. 
+which in this case is just the position of an individual octree node and all the voxels inside of the node. 
+This precomputational step is used for visibility checking, i.e. view frustum culling and occlusion culling. 
 Since the task shader is just a general term for any compute shader used before dispatching the meshes, 
 this pipeline step is realized using the standard compute architecture. \\
 
@@ -300,18 +301,15 @@ The min and max values for each axis represent a screen space rectangle, which c
 rectangle has the following characteristics.
 
 \begin{itemize}
-    \item The minimum and maximum \emph{x} values describe the \emph{width} of the rectangle.
-    \item The minimum and maximum \emph{y} values describe the \emph{height} of the rectangle.
+    \item The minimum and maximum \emph{x} and \emph{y} values describe the four corners of the rectangle.
     \item The minimum \emph{z} value describes the \emph{depth} of the rectangle, i.e. nearest vertex of the bounding box.
-    \item The minimum and maximum \emph{x} and \emph{y} values describe the \emph{position} of the rectangle in clip space.
 \end{itemize}
 
-\noindent [@TODO: Add image of this!]
 The rectangle can be transformed into screen space and can be expressed as UV coordinates for sampling the 
-\ac{HiZ}-pyramid. To check for visibility, all vertices are assumed to be at the same distance from the camera,
-i.e. to have the same depth value. This depth value is the minimum \emph{z} value calculated earlier. This way,
-as long as any vertex of the rectangle is located \emph{in front} of the best occluders stored in the 
-\ac{HiZ}-pyramid, the rectangle could be visible partially or completely. Conversely, as long as all vertices of 
+\ac{HiZ}-pyramid. To check for visibility, all corners of the rectangle are assumed to be at the same distance 
+from the camera, i.e. to have the same depth value. This depth value is the minimum \emph{z} value calculated earlier.
+ This way, as long as any corner of the rectangle is located \emph{in front} of the best occluders stored in the 
+\ac{HiZ}-pyramid, the rectangle could be visible partially or completely. Conversely, as long as all corners of 
 the rectangle are located behind the best occluder, the rectangle must be completely occluded. A visualization of 
 this process is shown in figure \ref{fig:screen-space-occlusion-test}.
 
@@ -326,28 +324,24 @@ this process is shown in figure \ref{fig:screen-space-occlusion-test}.
 \end{figure}
 
 \noindent
-The rectangles corners can now be used as coordinates for sampling the \ac{HiZ}-pyramid. Since the minimum \emph{z} 
-value is used for all corners, the rectangle describes a flat plane in the clip space. It is sufficient for the 
-depth testing to sample the four corners and compare each depth value sampled from the pyramid to the minimum \emph{z},
-as shown in figure \ref{fig:visibility-hiz-sampling}.
-In fact, it is sufficient to compare the lowest of the four \emph{z} values to the minimum \emph{z} value. Now the 
-hierarchy is traversed until the node is found to be fully occluded or until the hierarchy is fully traversed and the 
-node is found to be visible. Note, that the area which is checked is not perfectly congruent with the actual projected 
-boundary box. This can lead to edge cases, where a few percent of the octree nodes are drawn although they are actually 
-completely occluded.
+Now the hierarchy is traversed until the node is found to be fully occluded or until the hierarchy is fully traversed 
+and the node is found to be visible. Note, that the area which is checked is not perfectly congruent with the actual 
+projected boundary box. This can lead to edge cases, where a few octree nodes are drawn although they are actually 
+completely occluded. Still, this algorithm is completely conservative, meaning that it does not occlude any geometry 
+that should in fact be visible.
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=\linewidth]{images/graphics/visibility-hiz-sampling.jpg}
-    \caption{The \ac{HiZ}-pyramid being sampled using the vertices of the screen-space rectangle, shown in green. 
+    \caption{The \ac{HiZ}-pyramid being sampled using the corners of the screen-space rectangle, shown in green. 
     The dotted yellow line resembles the border between different depth values in the buffer. Sampling the four 
-    vertices can provide up to four different depth values. The smallest one being the "nearest" occluder.}
+    corners can provide up to four different depth values. The smallest one being the "nearest" occluder.}
     \label{fig:visibility-hiz-sampling}
 \end{figure}
 
 
 \noindent
-The complete occlusion culling routine computes the bounding box vertices as \emph{uv} coordinates so it is independent 
+The complete occlusion culling routine computes the bounding box corners as \emph{uv} coordinates so it is independent 
 from the mip level the depth values are checked against. In the best case scenario, the visibility can be determined in 
 using the coarsest mip level. In the worst case, all mip levels up to the full resolution depth buffer need to be checked.
 The routine is shown in listing \ref{lst-occlusion-culling-algo} as pseudo code.
