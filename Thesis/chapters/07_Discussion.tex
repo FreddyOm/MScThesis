@@ -1,19 +1,28 @@
 \chapter{Discussion} \label{cpt-discussion}
 
-
-- Pro: 
-    - No meshlet precomputation, since meshlets are created on the GPU
-    - Meshlet voxels are inherently AABBs which is quite helpful for intense intersection computations % @TODO: Check if there are even any intersection comps to be done
-    - Cores of most models can be "removed"
-    - New possibility of using occluders for occlusoin of the same "mesh"
-- Con:
-    - Depending on the voxel size, there might be a need for chunking the data effectively % @TODO: Check if this is still necessary with Meshlet Occlusion Culling enabled
-    - Voxels as meshlets -> non-similar normals can be inefficient.. 
-    - Note that the amount of threads used per group is equal to the amount of voxels within the repsective octree 
-    node, leaving a significant amount of threads unused for scarcely populated octree nodes.
+Finally, possible advantages and disadvantages of the proposed approach are discussed based on the data.
+Other occlusion culling algorithms can be considered for qualitative comparison to this approach, although 
+a final comparison would require quantitave data to support any assumptions.\\
 
 
-Discussion points:
 
-- When already drawing aggregated bounding boxes, isn't this just HiZ Buffering? And is it then better to draw everything
- to test for visibility instead of only best occluders? 
+
+
+%
+%- Pro: 
+%    - No meshlet precomputation, since meshlets are created on the GPU
+%    - Meshlet voxels are inherently AABBs which is quite helpful for intense intersection computations % @TODO: Check if there are even any intersection comps to be done
+%    - Cores of most models can be "removed"
+%    - New possibility of using occluders for occlusoin of the same "mesh"
+%- Con:
+%    - Depending on the voxel size, there might be a need for chunking the data effectively % @TODO: Check if this is still necessary with Meshlet Occlusion Culling enabled
+%    - Voxels as meshlets -> non-similar normals can be inefficient.. 
+%    - Note that the amount of threads used per group is equal to the amount of voxels within the repsective octree 
+%    node, leaving a significant amount of threads unused for scarcely populated octree nodes.
+%    - Memory bandwidth between CPU and GPU is not really changed. Only the scheduling of the draw calls is optimized.
+%    Works fine in practice but is very use case sensitive.
+%
+%Discussion points:
+%
+%- When already drawing aggregated bounding boxes, isn't this just HiZ Buffering? And is it then better to draw everything
+% to test for visibility instead of only best occluders? 
