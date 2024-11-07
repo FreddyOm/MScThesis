@@ -48,6 +48,8 @@ cannot be confirm finally and reliably. Nevertheless, many efforts towards bette
     \label{fig:teardown-raytracing}
 \end{figure}
 
+\subsection*{Sparse Voxel Octrees}
+
 \subsection*{Sparse Voxel Directed Acyclic Graphs}
 
 Kampe et al. \cite{Kampe2013} propose the use of their \emph{High-Resolution Sparse Voxel \ac{DAG}s}. This approach 
@@ -59,7 +61,7 @@ hierarchy and reducing the amount of used memory immensly. \\
 
 \noindent
 This approach relates to this implementation in how large voxelized scens can be efficiently loaded and stored in 
-memory. Although this work doesn't explicitly rely on Sparse Voxel \ac{DAG}s, Sparse Voxel Octrees are used in the 
+memory. Although this work doesn't explicitly rely on Sparse Voxel \ac{DAG}s, Sparse Voxel octrees are used in the 
 provoided implementation. Additionally, the proposed implementation can be optimized in the future to be working 
 with Sparse Voxel \ac{DAG}s, enabling the handling of meshes with even higher resolution. \\
 
@@ -75,24 +77,29 @@ voxel meshes.
 
 \section{Occlusion Culling}
 
-\subsection*{Occlusion Queries}
-
-The simplest method for testing visibility is the \ac{GPU} occlusion queries available in rendering \ac{API}s.
-[@TODO: Find source and add what they found]
-
-Another approach of applying occlusion culling is the \emph{raster occlusion culling}, proposed by \emph{NVIDIA}, 
-among others \cite{NVIDIAGLOC2016}. The approach relies on "invisibly" rasterizing the objects as bounding boxes 
-and using the rasterizer to query visibility checks and storing the per-object results in a visibility buffer. 
-This buffer can then be used to draw the actual shaded objects and discard invisible objects. For the bounding 
-boxes, only up to three faces are drawn in the early visibility check, to reduce load. Also, this can be optimized 
-using instancing, the geometry shader or mesh shading to compute the visibility buffer efficiently 
-\cite{NVIDIAGLOC2016}. This approach, especially when using mesh shading, is rather similar to the work employed 
-here. However, the use case is different in a few details.
-
 
 \subsection*{Hierarchical Z-Buffering}
-Greene et al. \cite{Greene93,Greene95} proposed the first \ac{HZB} algorithm [@TODO: Write...]
 
+Greene et al. \cite{Greene93,Greene95} proposed the first \ac{HZB} algorithm with the capability to use screen space 
+data to cull meshes in large and densly populated scenes. The idea originated in the context of a forward rendered 
+pipeline, making use of the \ac{CPU} for culling instances. They propse to use a spatial container like an octree to 
+enable drawing the scene in a rough front-to-back order. Each mesh is individually drawn to a depth buffer resource, 
+starting with an empty one in the beginning and populating it as more meshes are drawn. The buffer resource also 
+maintains a mip chain that is updated when the full resolution depth buffer is updated. Each time a mesh is rendered 
+to the depth buffer, it is checked against the depth hierarchy, starting with the coarsest mip level. This way, near 
+and big objects are likely to occlude small, far objects, resulting in an efficient way to reject invisible meshes.\\
+
+\noindent
+Although this technique was intended for use on the \ac{CPU}, it can be easily adapted to work on \ac{GPU} resources, 
+without the need of a write-back to expose the data to \ac{CPU} memory. The approach by Greene et al. is the basis for 
+modern \ac{GPU} based algorithms and a major influence for the work at hand. It uses the same principle of hierarchical 
+visibility testing and maintaining a depth buffer. \\
+
+\noindent
+However, more modern approaches are used to adapt this algorithm for \ac{GPU} friendly design, like computing the depth 
+in a pre-pass, using only best occluders instead of all possible meshes, disabling color writes completely. This also 
+limits the amount of recomputations of the mip-chain since all occluders are only drawn to the depth buffer once per 
+frame instead of scaling with the number of visible meshes.
 
 \subsection*{Umbra}
 

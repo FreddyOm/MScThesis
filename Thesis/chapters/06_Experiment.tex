@@ -90,7 +90,7 @@ Welche Schwächen haben andere OC algos, und wo kann unserer im Vergleich glänz
 
 
 \section{Measuring Tools}
-
+[@TODO: Add quick sources for tools]
 To measure timings and data precisely, a few external tools are used. All tools are part of the industry 
 standard and can be evaluated as mostly reliable. Still, measuring performance usally comes with a minimal 
 overhead which means that the results will most likely vary in precision. Also, some of the tools provide 
@@ -106,46 +106,78 @@ For \emph{NVIDIA} specific \ac{GPU} profiling, \emph{NVIDIA NSight} is used, whi
 profiling and debugging tool. It is only available for inspection of \emph{NVIDIA} graphics card computations but 
 provides valuable insights into the rendering pipeline and hardware usage. 
 The last tool used is \emph{Microsoft's PIX}, which is another performance debugging and profiling tool for 
-\emph{Windows} platform using \emph{Microsoft's DirectX} \ac{API}. 
+\emph{Windows} platforms using \emph{Microsoft's DirectX} \ac{API}.
 
 
 \section{Experimental Environment} \label{sec-experimental-environment}
 
-- Compare:
-    - Model turntable rendered without OC
-    - Model turntable rendered with OC
-(   - Model turntable rendered with different OC implementation (? -> hard))
+For the experiment, different hardware setups are used to compare the runtime performance in different environments.
+Some more modern hardware is used to profile the best case computations, and older hardware is used for comparison of 
+different hardware features. 
+
+\begin{table}[h]
+    \begin{tabular}{|llll|}
+        \hline
+        \multicolumn{4}{|c|}{\textbf{Test setups}}                                                                                                               \\ \hline
+        \multicolumn{1}{|l|}{}                     & \multicolumn{1}{l|}{\textbf{Setup 1}} & \multicolumn{1}{l|}{\textbf{Setup 2}}   & \textbf{Setup 3}          \\ \hline
+        \multicolumn{1}{|l|}{\textbf{System Type}} & \multicolumn{1}{l|}{Desktop}          & \multicolumn{1}{l|}{Desktop}            & Laptop                    \\
+        \multicolumn{1}{|l|}{\textbf{CPU}}         & \multicolumn{1}{l|}{AMD ...}          & \multicolumn{1}{l|}{AMD ...}            & Intel Ultra 7 155H        \\
+        \multicolumn{1}{|l|}{\textbf{Cores}}       & \multicolumn{1}{l|}{x}                & \multicolumn{1}{l|}{x}                  & 16 (22)                   \\
+        \multicolumn{1}{|l|}{\textbf{RAM}}         & \multicolumn{1}{l|}{x GB}             & \multicolumn{1}{l|}{x GB}               & 16 GB                     \\
+        \multicolumn{1}{|l|}{\textbf{GPU}}         & \multicolumn{1}{l|}{NVIDIA RTX 4090}  & \multicolumn{1}{l|}{NVIDIA RTX 2080 Ti} & Intel Arc Graphics        \\
+        \multicolumn{1}{|l|}{\textbf{VRAM}}        & \multicolumn{1}{l|}{x GB}             & \multicolumn{1}{l|}{x GB}               & 128 MB (+ 8972 MB shared) \\
+        \multicolumn{1}{|l|}{\textbf{OS}}          & \multicolumn{1}{l|}{Windows 10}       & \multicolumn{1}{l|}{Windows 10}         & Windows 11                \\
+        \multicolumn{1}{|l|}{\textbf{Model}}       & \multicolumn{1}{l|}{-}                & \multicolumn{1}{l|}{-}                  & ASUS Zenbook 14 (2024)    \\ \hline
+    \end{tabular}
+    \caption{The experimental setups used to profile the applications performance.}
+    \label{tbl:hardware-setup}
+\end{table}
+
+\noindent
+Note that the use of the Mesh Shading pipeline requires graphics cards that support the pipeline in the first place. 
+For \emph{NVIDIA} \ac{GPU}s this is the \emph{Turing} lineup (\emph{NVIDIA RTX 20 series}) and for \emph{AMD} cards 
+this would be the \emph{RDNA 2} lineup (\emph{AMD RX 6000 series}). \emph{Intel} \ac{GPU}s support the feature as 
+well, starting from their first installment in the dedicated desktop \ac{GPU} series \emph{Intel Arc}. The specs of 
+the test setups are listed in table \ref{tbl:hardware-setup}.
 
 
-- Criteria: 
-    - Frame time
-    - Dispatch numbers (?)
-    - Duration of depth pre-pass
-        - Draw best occluders to depth buffer
-        - Duration of depth hierarchy creation
-    - Visible cubes
-    - Visible octree nodes
-    - Triangle count
-    - Amount of best occluders
-    - CPU time
-    - GPU time
-    - Amount of overdraw (heatmap if possible)
 
 
-- Model variations:
-    - Lucy
-    - Stanford Bunny
-    - Torus (for when objects have "holes")
-    - Some large, wide scenery
-    - Sponza        -> Ehrlich sein und T
-    - ...
-
-
-- Machines:
-    - Laptop
-    - RTX 2080 Ti
-    - RTX 4090
-    - Multiple devices
+%- Compare:
+%    - Model turntable rendered without OC
+%    - Model turntable rendered with OC
+%(   - Model turntable rendered with different OC implementation (? -> hard))
+%
+%
+%- Criteria: 
+%    - Frame time
+%    - Dispatch numbers (?)
+%    - Duration of depth pre-pass
+%        - Draw best occluders to depth buffer
+%        - Duration of depth hierarchy creation
+%    - Visible cubes
+%    - Visible octree nodes
+%    - Triangle count
+%    - Amount of best occluders
+%    - CPU time
+%    - GPU time
+%    - Amount of overdraw (heatmap if possible)
+%
+%
+%- Model variations:
+%    - Lucy
+%    - Stanford Bunny
+%    - Torus (for when objects have "holes")
+%    - Some large, wide scenery
+%    - Sponza        -> Ehrlich sein und T
+%    - ...
+%
+%
+%- Machines:
+%    - Laptop
+%    - RTX 2080 Ti
+%    - RTX 4090
+%    - Multiple devices
 
 
 \section{Tests}
