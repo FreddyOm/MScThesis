@@ -293,7 +293,7 @@ This precomputational step is used for visibility checking, i.e. view frustum cu
 Since the task shader is just a general term for any compute shader used before dispatching the meshes, 
 this pipeline step is realized using the standard compute architecture. \\
 
-\noindent
+\noindent   [@TODO: write min z and max z in mathematical format]
 To ceck for visibility, \emph{projected bounding boxes} need to be constructed and checked against the 
 \ac{HiZ}-pyramid. This step can be highly parallelized by using one \ac{GPU} thread per bounding box calculation. 
 The first step involves the projection of the bounding box onto the view plane, which results in a clip space 
@@ -370,7 +370,7 @@ The routine is shown in listing \ref{lst-occlusion-culling-algo} as pseudo code.
     float minZ $\gets$ GetMinZFromProjectedBoundingBox(center, scale)\;
     \BlankLine
 
-    rect uvRect $\gets$ CalculateUVRect(minX, maxX, minY, maxY, minZ)\;
+    Rect uvRect $\gets$ CalculateUVRect(minX, maxX, minY, maxY, minZ)\;
     \BlankLine
 
     \For{$mipLevel \gets HiZPyramid.GetNumMipLevels() - 1$ \KwTo $0$}{

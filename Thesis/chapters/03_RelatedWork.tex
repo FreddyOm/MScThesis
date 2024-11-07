@@ -80,13 +80,18 @@ voxel meshes.
 The simplest method for testing visibility is the \ac{GPU} occlusion queries available in rendering \ac{API}s.
 [@TODO: Find source and add what they found]
 
-Another approach of applying occlusion culling is the \emph{raster occlusion culling}, proposed by \emph{NVIDIA}, among 
-others \cite{NVIDIAGLOC2016}. The approach relies on "invisibly" rasterizing the objects as bounding boxes and using the 
-rasterizer to query visibility checks and storing the per-object results in a visibility buffer. This buffer can then be 
-used to draw the actual shaded objects and discard invisible objects. For the bounding boxes, only up to three faces are 
-drawn in the early visibility check, to reduce load. Also, this can be optimized using instancing, the geometry shader or 
-mesh shading to compute the visibility buffer efficiently \cite{NVIDIAGLOC2016}. This approach, especially when using 
-mesh shading, is rather similar to the work employed here. However, the use case is different in a few details.
+Another approach of applying occlusion culling is the \emph{raster occlusion culling}, proposed by \emph{NVIDIA}, 
+among others \cite{NVIDIAGLOC2016}. The approach relies on "invisibly" rasterizing the objects as bounding boxes 
+and using the rasterizer to query visibility checks and storing the per-object results in a visibility buffer. 
+This buffer can then be used to draw the actual shaded objects and discard invisible objects. For the bounding 
+boxes, only up to three faces are drawn in the early visibility check, to reduce load. Also, this can be optimized 
+using instancing, the geometry shader or mesh shading to compute the visibility buffer efficiently 
+\cite{NVIDIAGLOC2016}. This approach, especially when using mesh shading, is rather similar to the work employed 
+here. However, the use case is different in a few details.
+
+
+\subsection*{Hierarchical Z-Buffering}
+Greene et al. \cite{Greene93,Greene95} proposed the first \ac{HZB} algorithm [@TODO: Write...]
 
 
 \subsection*{Umbra}
@@ -122,23 +127,50 @@ a good occlusion culling technique in games with large occluders or interiors. F
 \emph{best occluders} are drawn to the depth buffer in a depth pre-pass. Then, projected bounding boxes can be 
 used to test visibility of smaller objects in the scene. A hierarchical z-buffer is used to accelerate this testing,
 as proposed by Greene et al. \cite{Greene93,Greene95}. Finally, the depth buffer of the last frame can be 
-reprojected to further minimize computations. \\
+reprojected to further minimize computations. This technique allows developers to push for huge draw distances and 
+densly crowded environments.\\
 
 \noindent
-This technique allows developers to push for huge draw distances and densly crowded environments. Similar to this 
-work, the game uses advanced technology in its implementation, clustering geometry and allowing for a \ac{GPU} 
-centric approach of occlusion culling. However, the game doesn't use a volumetric representation but the standard 
-boundary representation for its world. Furthermore, the best occluders are provided in different ways. Aaltonen 
-et al. \cite{Aaltonen2015} propose the use of a hand-picked set of large, static meshes, while this work relies 
-on a simple approximation of the voxel layout. This way, the latter implementation can dynamically provide best 
-occluders during run-time, adapting the occlusion capabilities with the addition or removal of voxels in the scene.
+Similar to this work, the game uses advanced technology in its implementation, clustering geometry and allowing 
+for a \ac{GPU} centric approach of occlusion culling. However, the game doesn't use a volumetric representation 
+but the standard boundary representation for its world. Furthermore, the best occluders are provided in different 
+ways. Aaltonen et al. \cite{Aaltonen2015} propose the use of a hand-picked set of large, static meshes, while this 
+work relies on a simple approximation of the voxel layout. This way, the latter implementation can dynamically 
+provide best occluders during run-time, adapting the occlusion capabilities with the addition or removal of voxels 
+in the scene.
+
+
+\subsection*{Masked Software Occlusion Culling}
+
+Hasselgren et al. \cite{Hasselgren2016} present a novel way of implementing occlusion culling relying on hardware 
+occlusion queries while optimizing the queries using \ac{CPU} \ac{SIMD} acceleration. The basic algorithm is very 
+similar to common \ac{CPU} or \ac{GPU} computed \ac{HZB}, with two major alterations to the implementation. First, 
+they make use of Intel's \ac{AVX} to compute depth values for tiles of 256 texels in parallel. The second difference 
+is the way they store depth and coverage data. In contrast to a "normal" \ac{HiZ} mip-chain, Hasselgren et al. 
+decouple depth and coverage data by storing a coverage mask for \begin{math}32 \times 8\end{math} pixel tiles, 
+which can be efficiently computed by using the \ac{AVX} of Intel \ac{CPU}s. In their results they show that their 
+implementation is up to 3 times faster than previous occlusion culling algorithms while also providing a lower 
+memory footprint. \\
+
+\noindent
+The work of Hasselgren et al. relates to this work's implementation in the general concept of occlusion culling, making 
+use of projected bounding boxes and a comparison of minimal z values. Their work show, that such an algorithm can be 
+optimized for \ac{CPU} execution using \ac{SIMD} and effective use of data structures. \\
+
+\noindent 
+In contrast to this work, Hasselgren et al. use their algorithm for non-volumetric triangle meshes. This means that 
+they make heavy use of raster occlusion queries, making rendering CPU-bound. While still efficient and possibly faster 
+than \ac{HZB}, Masked Software Occlusion Culling lacks the \ac{GPU} driven basis for this work's implementation. This 
+work's approach does not work with geometry on the \ac{CPU} side at all but leaves all of the triangle computations up 
+to the last possible stage of the pipeline, making the application of \ac{CPU} accelerated occlusion queries impractical.
+
 
 \subsection*{Per-Meshlet Two-Pass Occlusion Culling}
 
-Similar to \emph{Assassin's Creed Unity}, \emph{Alan Wake 2} (2023) and \emph{Unreal Engine 5} also implement \ac{HZB} 
-and depth reprojection. Both implementations are directly based on the approach of Aaltonen et al. \cite{Aaltonen2015} 
-but this time, making use of the new \emph{Mesh Shading} pipeline. The difference being the now provided hardware 
-integration of clustering geometry \cite{Remedy2023,Karis2021}.  \\
+Similar to \emph{Assassin's Creed Unity}, the game \emph{Alan Wake 2} (2023) and engine \emph{Unreal Engine 5} also 
+implement \ac{HZB} and depth reprojection. Both implementations are directly based on the approach of Aaltonen et 
+al. \cite{Aaltonen2015} but this time, making use of the new \emph{Mesh Shading} pipeline. The difference being the 
+now provided hardware integration of clustering geometry \cite{Remedy2023,Karis2021}.  \\
 
 \noindent
 Karis et al. and Remedy Entertainment find, that using \ac{HZB} can provide great runtime performance for open, 
@@ -148,15 +180,14 @@ That means, that small parts of the geometry can be culled, even if other parts 
 This optimizes the culling further, so scenes can be more densly populated with meshes.\\
 
 \noindent
-The findings of Karis et al. and Remedy Entertainment are based on the works of Aaltonen et al. \cite{Aaltonen2015}
-as well as Greene et al. \cite{Greene93,Greene95}. The same concept is adapted for this work's implementation and 
-also relies on the use of the Mesh Shading pipeline.\\
-
-\noindent
-While the implementation of Karis et al. and Remedy Entertainment are based on a boundary representation and do not 
-require the use of a spatial container for the culling algorithm, this implementation aims for another use case. 
-In this work, voxels are used to represent the meshes and an additional spatial container is added to optimize the 
-data further. 
+The findings of Karis et al. and Remedy Entertainment are adapted for this work's implementation which also relies on 
+the use of the Mesh Shading pipeline. While the implementation of Karis et al. and Remedy Entertainment are based on 
+a boundary representation and do not require the use of a spatial container for the culling algorithm, this 
+implementation aims for a different use case. Contrary to boundary representations, the spatial properties of voxels 
+can be used to approximate volumetric coverage by less complex geometry, making it more efficient to select and draw 
+best occluders. Also, this work uses the best occluders not only to occlude meshlets which are behind the best occluders, 
+but it can additionally be used to occlude parts of the best occluders itself. This poses a new way off applying occluders 
+in the context of rendering volumetric scenes.
 
 
 % SV DAGs
