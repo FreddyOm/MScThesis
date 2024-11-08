@@ -8,7 +8,6 @@ and \emph{Mesh Shading}, which the proposed implementation is based on. The most
 the highlighted concepts are revisited and discussed in more detail in chapter 
 \ref{cpt-technical-background}. 
 
-[@TODO: Check redundancy with technological background]
 [@TODO: Find scientific papers for voxel representations]
 
 \section{Voxel Representation} \label{sec-voxel-representation}
@@ -73,8 +72,6 @@ better runtime performance but is also less intuitive when dealing with nodes an
 voxel meshes.
 
 
-[@TODO: Add more related work for voxel representations]
-
 \section{Occlusion Culling}
 
 
@@ -120,7 +117,7 @@ The approach is similar to the approach provided  in this work, in that both use
 for computing visibility early in the pipeline. Both approaches rely on screen space bounding comparisons, although 
 \emph{Umbra} uses a \emph{Portals and Cell} structure to manage visibility testing for a given camera position 
 \cite{Medium2018}. Furthermore, \emph{Umbra} is usually applied in triangle mesh scene representations instead 
-of volumetric, voxel-based scene representations. \emph{Umbra} uses run-time data structures for efficient visibility 
+of volumetric, voxel-based scene representations. \emph{Umbra} uses runtime data structures for efficient visibility 
 optimizations based on static scene meshes, while this work uses octree queries to dynamically determine possible 
 occluders during runtime - or as a one time pre-computation for voxel models that are known to be static. \\
 
@@ -143,7 +140,7 @@ for a \ac{GPU} centric approach of occlusion culling. However, the game doesn't 
 but the standard boundary representation for its world. Furthermore, the best occluders are provided in different 
 ways. Aaltonen et al. \cite{Aaltonen2015} propose the use of a hand-picked set of large, static meshes, while this 
 work relies on a simple approximation of the voxel layout. This way, the latter implementation can dynamically 
-provide best occluders during run-time, adapting the occlusion capabilities with the addition or removal of voxels 
+provide best occluders during runtime, adapting the occlusion capabilities with the addition or removal of voxels 
 in the scene.
 
 
