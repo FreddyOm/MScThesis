@@ -1,9 +1,9 @@
 \chapter{Related Work} \label{cpt-related-work}
 
 The proposed approach is an aggregation of a lot of ideas and implementations that have been 
-around for quite some time. It is of great interest to explore related work which can provide 
-context for use cases and highlight additional techniques that can adopted additionally. This 
-chapter highlights related work adressing \emph{Voxel Rendering}, \emph{Occlusion Culling} 
+around for quite some time. It is of great interest to explore related work, which can provide 
+context for use cases and highlight additional techniques that can be adopted additionally. 
+This chapter highlights related work adressing \emph{Voxel Rendering}, \emph{Occlusion Culling} 
 and \emph{Mesh Shading}, which the proposed implementation is based on. The most important of 
 the highlighted concepts are revisited and discussed in more detail in chapter 
 \ref{cpt-technical-background}. 
@@ -23,7 +23,7 @@ the highlighted concepts are revisited and discussed in more detail in chapter
 Voxel Rendering has had huge success in sandbox and highly dynamic games like \emph{Minecraft} (Mojang 
 \cite{Mojang2024}, 2011) or \emph{Teardown} (Tuxedo Labs \cite{TuxedoLabs2022}, 2022). Usually these games try 
 to preserve some volumetric information for the dynamic environment to be manipulated in real-time. \emph{Minecraft} 
-generates a procedural environment based on complex parameters. This way, they can easily generate nearly infinie 
+generates a procedural environment based on complex parameters. This way, they can easily generate nearly infinite 
 worlds with interesting biomes and landmarks. This huge world is split into chunks of size 16×384×16, to be able to 
 stream the world dynamically and allow for quick traversal in any direction, shown in figure \ref{fig:minecraft-chunks}.
 Each chunk maintains its own three-dimensional grid, with the voxel data being highly compressed. Non-existing voxels 
@@ -33,7 +33,7 @@ per voxel by only one byte \cite{Bergensten2012, MinecraftFandom2021}. \\
 
 \noindent
 Many other games have made use of voxel rendering, adapting these principles of data compression and data streaming. 
-Most optimizations rely on culling voxels which are not visible, e. g. faces that touch other faces.
+Most optimizations rely on culling voxels, which are not visible, e. g. faces that touch other faces.
 Frustum culling and occlusion queries are also part of the optimization process, and partially used in \emph{Minecraft} 
 as well, though the existance of frustum culling or the specific occlusion culling algorithm added in version 1.5 
 cannot be confirm finally and reliably. Nevertheless, many efforts towards better performance have been made on the 
@@ -59,14 +59,14 @@ enables equal nodes of an octree hierarchy to be reduced to only one instance, e
 hierarchy and reducing the amount of used memory immensly. \\
 
 \noindent
-This approach relates to this implementation in how large voxelized scens can be efficiently loaded and stored in 
+This approach relates to this implementation in how large voxelized scenes can be efficiently loaded and stored in 
 memory. Although this work doesn't explicitly rely on Sparse Voxel \ac{DAG}s, Sparse Voxel octrees are used in the 
 provoided implementation. Additionally, the proposed implementation can be optimized in the future to be working 
 with Sparse Voxel \ac{DAG}s, enabling the handling of meshes with even higher resolution. \\
 
 \noindent
 Sparse Voxel \ac{DAG}s are not commonly used in rasterized rendering pipelines and store voxlumetric data in a binary 
-format instead of storing positional data. This intoduces additional complexity to the pipeline which might result in 
+format instead of storing positional data. This introduces additional complexity to the pipeline, which might result in 
 better runtime performance but is also less intuitive when dealing with nodes and individual voxels. Sparse Voxel 
 \ac{DAG}s mainly aim to provide a smaller memory footprint for raytraced applications while maintaining high resolution 
 voxel meshes.
@@ -158,7 +158,7 @@ memory footprint. \\
 
 \noindent
 The work of Hasselgren et al. relates to this work's implementation in the general concept of occlusion culling, making 
-use of projected bounding boxes and a comparison of minimal z values. Their work show, that such an algorithm can be 
+use of projected bounding boxes and a comparison of minimal z values. Their work shows that such an algorithm can be 
 optimized for \ac{CPU} execution using \ac{SIMD} and effective use of data structures. \\
 
 \noindent 
@@ -177,19 +177,19 @@ al. \cite{Aaltonen2015} but this time, making use of the new \emph{Mesh Shading}
 now provided hardware integration of clustering geometry \cite{Remedy2023,Karis2021}.  \\
 
 \noindent
-Karis et al. and Remedy Entertainment find, that using \ac{HZB} can provide great runtime performance for open, 
+Karis et al. and Remedy Entertainment find that using \ac{HZB} can provide great runtime performance for open, 
 highly dense scenes. Both combine the \ac{HZB} with depth reprojection to further optimize the computation of the 
 depth buffer. Using the Mesh Shading pipeline, this concept can be applied to meshlets, enabling per-meshlet culling. 
-That means, that small parts of the geometry can be culled, even if other parts of the same mesh are still visible. 
+That means that small parts of the geometry can be culled, even if other parts of the same mesh are still visible. 
 This optimizes the culling further, so scenes can be more densly populated with meshes.\\
 
 \noindent
-The findings of Karis et al. and Remedy Entertainment are adapted for this work's implementation which also relies on 
+The findings of Karis et al. and Remedy Entertainment are adapted for this work's implementation, which also relies on 
 the use of the Mesh Shading pipeline. While the implementation of Karis et al. and Remedy Entertainment are based on 
 a boundary representation and do not require the use of a spatial container for the culling algorithm, this 
 implementation aims for a different use case. Contrary to boundary representations, the spatial properties of voxels 
 can be used to approximate volumetric coverage by less complex geometry, making it more efficient to select and draw 
-best occluders. Also, this work uses the best occluders not only to occlude meshlets which are behind the best occluders, 
+best occluders. Also, this work uses the best occluders not only to occlude meshlets, which are behind the best occluders, 
 but it can additionally be used to occlude parts of the best occluders itself. This poses a new way off applying occluders 
 in the context of rendering volumetric scenes.
 
