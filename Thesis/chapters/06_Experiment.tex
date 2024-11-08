@@ -2,53 +2,57 @@
 
 To be able to evaluate the strengths and weaknesses of the given implementation, an in-depth 
 experiment is conducted and evaluated. When considering the implementation, 
-
+[@TODO: rework structure to: 1. Experimental Evaluation 2. Tests 3. Results]
 
 \section{Experimental Evaluation} \label{sec-experimental-evaluation}
 
-To evaluate the key differences and the runtime performance in general, several aspects have to be considered.
-Unfortunatly, comparing the occlusion culling implementation to an alternative implementation is not within the 
-scope of this work, so efforts need to be made in order to evaluate the pipeline and its performance from a 
-conceptual point of view and compared to the plain pipeline, without any occlusion culling at all. The next  
-sections highlight the major aspects which are considered for the experiment and are evaluated during the 
-test runs. All aspects aim to demonstrate how the occlusion culling affects the given test scene and how the 
+To evaluate the key differences and the runtime performance in general, several aspects had to be considered.
+Unfortunatly, comparing the occlusion culling implementation to an alternative implementation was not within the 
+scope of this work, so efforts were made in order to evaluate the pipeline and its performance from a conceptual 
+point of view and compared to the plain pipeline, without any occlusion culling at all. This includes two different 
+versions of occlusion culling, one based on culling octree node as it can be implemented without the use of the 
+Mesh Shading pipeline. The other one is based on per-meshlet occlusion culling, which makes use of the more parallel 
+computation capabilities of the \ac{GPU}. \\
+
+This sections highlights the major aspects which were considered for the experiment and were evaluated during the 
+test runs. All aspects aim to demonstrate how the occlusion culling affected the given test scene and how the 
 computations differ compared to the plain pipeline. Later, use cases are considered which can be compared to 
-alternative algorithms on a high level. However, keep in mind that it is up to future measurements to quantitavely
+alternative algorithms on a high level. However, keep in mind that it is up to future measurements to quantitavely 
 compare the pipeline to alternative approaches. 
 
 
 \subsection*{Scene Layout}
 
-First of, the scene layout and scene description need to be considered. Any occlusion culling algorithm somehow 
-relies on spatial information, be it in world space, sceen space or by using a spatial container. Consequently, 
-the scene layout and how the scene changes relative to the camera are important aspects to consider. For this 
-experimental setup, a moving camera is used in order to test the ability of the occlusion culling algorithm to 
-adapt to different angles of the scene. \\
+Any occlusion culling algorithm somehow relies on spatial information, be it in world space, sceen space or by 
+using a spatial container. Consequently, the scene layout and how the scene changes relative to the camera are 
+important aspects to consider. For this experimental setup, a moving camera was used in order to test the ability 
+of the occlusion culling algorithm to adapt to different angles of the scene. \\
 
 \noindent
+[@TODO: Consider replacing the last "algorithm" with the actual subelement of the algo (scene data / data dispatch / ...)] 
 Another aspect to consider is the model data structure. The voxel models are volumetric representations and thus, 
 not hollow. This leaves a large portion of computation to be irrelevant and allows for the occlusion culling to 
-optimize the data flow. Different types of models are used to challenge the culling algorithm in different ways. 
+optimize the data flow. Different types of models were used to challenge the culling algorithm in different ways. 
 In concept, the culling should be optimal on large, dense models with even faces. Consequently, models with 
-slopes and holes are tested, to see how well best occluders can be computed. Smaller models might also pose a 
-challenge for the optimization, especially when the octree nodes cannot be filled completely. Also, different 
-voxle resolutions are used to achieve different amounts of octree nodes in the scene. All these different 
-aspects should show the strengths and weaknesses of the algorithm and how it can be optimally used in practice.\\
+slopes and holes were tested, to see how best occluders can be computed for diverse geometry. Smaller models might 
+also pose a challenge for the optimization, especially when the octree nodes cannot be filled completely. Also, 
+different voxle resolutions were used to achieve different amounts of octree nodes in the scene. All these different 
+aspects aim to show the strengths and weaknesses of the algorithm and how it can be optimally used in practice. \\
 
 \noindent
-The models used for the tests are \emph{Lucy} (Stanford 3D Scanning Repository), the \emph{Stanford Bunny} 
+The models used in the tests are \emph{Lucy} (Stanford 3D Scanning Repository), the \emph{Stanford Bunny} 
 (Stanford 3D Scanning Repository), the \emph{Hairball}, a \emph{Torus}, a small \emph{Window Scene} and a 
-\emph{Terrain} scene. All of these models are providing different characteristics, which will test the 
-pipeline in a variety of ways. For instance, while \emph{Lucy} is tall and dense, the \emph{Torus} provides 
-a higher voxel count and a hole in it, which will create an area where the octree isn't densly filled with 
-voxels. For low resolutions, the \emph{Hairball} isn't voxelized enough to maintain all the thin and tiny 
-details, but for higher resolutions, the small structures are assumed to be not sufficient in density to 
-completely fill octree nodes. \\
+\emph{Terrain} scene. All of these models provide different characteristics, which tested the pipeline in 
+a variety of ways. For instance, while \emph{Lucy} is tall and dense, the \emph{Torus} provides a higher 
+voxel count and a hole in it, which will create an area where the octree isn't densly filled with voxels. 
+For low resolutions, the \emph{Hairball} isn't voxelized enough to maintain all the thin and tiny details, 
+but for higher resolutions, the small structures were assumed to be not sufficient in density to completely 
+fill octree nodes, resulting in a unfavorable data layout to test the limits of the mesh computations. \\
 
 \noindent
-As mentioned, the resolution of the voxelization process plays a central role in the experimentation process.
-For the experiment, the voxel scenes are constrained to be a power of two in length per axis, and the following
-scene resolutions are tested.
+As mentioned, the resolution of the voxelization process played a central role in the experimentation process.
+For the experiment, the voxel scenes were constrained to be a power of two in length per axis, and the following
+scene resolutions were tested.
 
 \begin{itemize}
     \item \begin{math} \emph{128} \times \emph{128} \times \emph{128}\end{math}, resulting in a maximum of \emph{2.097.152} voxels
@@ -57,12 +61,12 @@ scene resolutions are tested.
 \end{itemize}
 
 \noindent
-In practice, the maximum amount of voxels is limited by how the data is dispatched on the \ac{GPU}. In the 
-implementation, the shader model used (HLSL Shader Model 6.6) is limited to a maximum amount of 65.536 
-threadgroups. That means that the threadgroup size and the amount of constructed octree nodes will influence 
-the possible resolutions of the scenes. This limitation can be overcome by scheduling more than one draw call, 
-but for this experiment, only one draw call is used. That means that the actual maximum amount of voxels in the 
-scene will be around 3 - 4 million voxels, which is considered enough for this experiment.
+In practice, the maximum amount of voxels was limited by how the data is dispatched on the \ac{GPU}. In the 
+implementation, the shader model used (HLSL Shader Model 6.6) was limited to a maximum amount of 65.536 
+threadgroups. That means that the threadgroup size and the amount of constructed octree nodes influenced the 
+possible resolutions of the scenes. This limitation can be overcome by scheduling more than one draw call, 
+but for this experiment, only one draw call was used. Consequently, the actual maximum amount of voxels in the 
+scene was around 3 - 4 million voxels, which was considered enough for this experiment.
 
 [@TODO: Add images of all the models]
 
@@ -72,8 +76,8 @@ scene will be around 3 - 4 million voxels, which is considered enough for this e
 Ultimately, the time spent for various computations is relevant for the selection of the best algorithm. This is 
 a central tool to see how the implementation performs overall in the context of the framework used. The frame 
 time is the first measurment to be considered, but not necessarily the most meaningful in a complex pipeline. 
-Consequently, the timings for all major pipeline steps are considered, as well as the overall time spend on \ac{CPU} 
-and \ac{GPU} computations. 
+Consequently, the timings for all major pipeline steps were considered, as well as the overall time spend on 
+\ac{CPU} and \ac{GPU} computations. 
 
 %Frame time, 
 %time spent in different pipeline steps,
@@ -85,17 +89,20 @@ and \ac{GPU} computations.
 
 \subsection*{Visibility and Culling}
 
-In order to evaluate the general functionality and effectiveness of the pipeline, the voxel model is analysed 
-with and without the occlusion culling applied. The amount of culled voxels is compared to the total amount of 
-voxels resulting in an overview of how much geometry can be culled for different scene setups. The same is 
-valid for the amount of octree nodes. They can also be compared to the amount of best occluders. The more best 
+In order to evaluate the general functionality and effectiveness of the pipeline, the voxel model was analysed 
+with and without the occlusion culling applied. The amount of culled voxels was compared to the total amount of 
+voxels resulting in an overview of how much geometry could be culled for different scene setups. The same is 
+valid for the amount of octree nodes. They could also be compared to the amount of best occluders. The more best 
 occluders present in a scene, the higher the probability to occlude other voxels or octree nodes. To evaluate 
-how much can be optimized during the depth pre pass, the amount of best occluders can be compared to the amount 
-of voxels representing the best occluders. Since the voxels are aggregated to larger cubes, drawing the inner 
-volume of the voxel model is more efficient than drawing all the voxels individually. [@TODO: Make this sentance 
-understandable]  
-Finally, the actual amount of processed triangles shows the geometry processed by 
-the \ac{GPU}. 
+how much can be optimized during the depth pre pass, the amount of best occluders was compared to the amount 
+of voxels representing the best occluders. \\
+
+\noindent
+Finally, the actual amount of processed triangles was considered in order to show the actual geometry processed 
+by the \ac{GPU}. This data indicates how much work is being scheduled for the vertex transformations, the rasterizer 
+and the pixel shader. Ultimately, it decides over the amount of overdraw and should therefore be kept at a minimum.
+
+
 
 %Visible voxels, culled voxels,
 %Overdraw, Visible Octree Nodes,
@@ -106,17 +113,18 @@ the \ac{GPU}.
 
 \subsection*{Additional Overhead}
 
-Ultimately, the additional overhead needs to be evaluated compared to the gain in performance by the 
-occlusion culling. Because of that, the pipeline is analyzed and the timings are compared to a pipeline 
-without the culling algorithm. All per-frame computations are evaluated to see how much resources are 
-spent on culling overhead. The results are compared against the acceleration provided by the algorithm.\\
+[@TODO: Refresh sentence]
+The additional overhead needs to be evaluated compared to the gain in performance by the occlusion culling. 
+Because of that, the pipeline is analyzed and the timings are compared to a pipeline without the culling 
+algorithm. All per-frame computations are evaluated to see how much resources are spent on culling overhead. 
+The results are compared against the acceleration provided by the algorithm.\\
 
 \noindent
-To increase the significance of the data, the per-meshlet occlusion culling is compared against the 
+To increase the significance of the data, the per-meshlet occlusion culling was compared against the 
 per-octree occlusion culling. The difference should be able to show, how the Mesh Shading pipeline 
-influences the culling algorithm. The per-meshlet culling is expected to be more precise and to cull 
+influences the culling algorithm. The per-meshlet culling was expected to be more precise and to cull 
 more voxels, since individual voxels within one octree can be culled, as opposed to per-octree node 
-culling which either renders all voxels within an octree node or culls it completely. 
+culling, which either renders all voxels within an octree node or culls it completely. 
 
 %What computations are done only for the OC algo?
 %Rough timings / percentage of complete pipeline times
@@ -127,30 +135,30 @@ culling which either renders all voxels within an octree node or culls it comple
 %Welche Schwächen haben andere OC algos, und wo kann unserer im Vergleich glänzen
 
 
-\section{Measuring Tools}
+\subsection*{Measuring Tools}
 
-To measure timings and data precisely, a few external tools are used. All tools are part of the industry 
-standard and are therefore assumed to be mostly reliable. Still, measuring performance usally comes with 
-a minimal overhead which means that the results will most likely vary in precision. Also, some of the 
-tools provide various ways of coming up with the data. Some data is measured while the profiled application 
-is running, and other data is acquired by replaying the command list of the \ac{GPU}. Consequently, all 
-measurements referring to one aspect of the application are compared against measurements using the same 
+To measure timings and data precisely, a few external tools were used. All tools are part of the industry 
+standard and were therefore assumed to be mostly reliable. Still, measuring performance usally comes with 
+a minimal overhead which means that the results most likely vary in precision. Also, some of the tools 
+provided various ways of coming up with the data. Some data was measured while the profiled application 
+was running, and other data was acquired by replaying the command list of the \ac{GPU}. Consequently, all 
+measurements referring to one aspect of the application were compared against measurements using the same 
 tool and configuration, if not explicitly specified otherwise. \\
 
 \noindent
-For the collection of data output, \emph{RenderDoc} \cite{RenderDoc} is used. It is a free, MIT licensed 
+For the collection of data output, \emph{RenderDoc} \cite{RenderDoc} was used. It is a free, MIT licensed 
 rendering debugger, widely used in the industy. For \emph{NVIDIA} specific \ac{GPU} profiling, \emph{NVIDIA NSight} 
-\cite{NSight} is used, which is another industry standard profiling and debugging tool. It is only available for 
-inspection of \emph{NVIDIA} graphics card computations but provides valuable insights into the rendering pipeline 
+\cite{NSight} was used, which is another industry standard profiling and debugging tool. It is only available for 
+inspection of \emph{NVIDIA} graphics card computations but provided valuable insights into the rendering pipeline 
 and hardware usage. The last tool used is \emph{Microsoft's PIX} \cite{PIX}, which is another performance debugging 
 and profiling tool for \emph{Windows} platforms using \emph{Microsoft's DirectX} \ac{API}.
 
 
-\section{Experimental Environment} \label{sec-experimental-environment}
+\subsection*{Experimental Environment} \label{sec-experimental-environment}
 
-For the experiment, different hardware setups are used to compare the runtime performance in different environments.
-Some more modern hardware is used to profile the best case computations, and older hardware is used for comparison of 
-different hardware features. 
+For the experiment, different hardware setups were used to compare the runtime performance in different environments.
+Some more modern hardware was used to profile the best case computations, and older hardware was used for the results 
+to different versions of hardware features and capabilities.
 
 \begin{table}[h]
     \begin{tabular}{|llll|}
@@ -175,7 +183,8 @@ Note that the use of the Mesh Shading pipeline requires graphics cards that supp
 For \emph{NVIDIA} \ac{GPU}s this is the \emph{Turing} lineup (\emph{NVIDIA RTX 20 series}) and for \emph{AMD} cards 
 this would be the \emph{RDNA 2} lineup (\emph{AMD RX 6000 series}). \emph{Intel} \ac{GPU}s support the feature as 
 well, starting from their first installment in the dedicated desktop \ac{GPU} series \emph{Intel Arc}. The specs of 
-the test setups are listed in table \ref{tbl:hardware-setup}.
+the test setups are listed in table \ref{tbl:hardware-setup}. 
+
 
 
 
