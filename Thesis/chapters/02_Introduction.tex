@@ -103,39 +103,56 @@ standard towards the "modern" rendering pipeline that is used nowadays. Between 
 
 
 \subsection{Programmable Pipeline Stages}
+ 
+One of the first steps to integrating advanced, per-pixel operations into pipeline was the combination of
+multiple textures for use on the same fragment. This soon evolved to become more potent when \emph{NVIDIA} 
+introduced the \emph{GeForce 3} graphics card, which "contained the first example of true programmability" 
+\cite{KhronosProgramibility2024}. A specific vertex processor, equipped with 256 4-vector uniforms, was 
+introcuced to execute custom operations on vertices. The same trend was seen in the per-pixel operations, 
+which also became its own programmable stage \cite{KhronosProgramibility2024}. \\
 
-With the evolution of the rendering pipeline, the demand for more customization increased. Combining various 
-textures for use on the same fragment was one of the first steps to integrating advanced, per-pixel operations 
-into pipeline. This soon evolved to become more potent when \emph{NVIDIA} introduced the \emph{GeForce 3} graphics 
-card, which "contained the first example of true programmability" \cite{KhronosProgramibility2024}. A specific vertex 
-processor, equipped with 256 4-vector uniforms, was introcuced to execute custom operations on vertices. The same trend 
-was seen in the per-pixel operations, which also became its own programmable stage \cite{KhronosProgramibility2024}. \\
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{images/graphics/traditional-rendering-pipeline.jpg}
+    \caption{The rendering pipeline and its stages. The stages colored in light green are programmable, 
+    the ones colored in dark green are configurable \cite{Kubisch2018}.}
+    \label{fig:traditional-rendering-pipeline}
+\end{figure}
 
 \noindent
+The programmability of the stages enabled developers to customize their applications and the output presented 
+on screen. It also contributed to a more parallelized archicture, which improved computation capabilities on 
+the \ac{GPU} instead of sequential computations by the \ac{CPU}. Over the years, more stages like the 
+\emph{Geometry Shader} stage were added and the stages were expanded to be programmable - or at least configurable. \\
 
+\noindent
+Today, this is still considered the "standard rendering pipeline", although current advances in hardware and software 
+introduced additions to the piepline or even offered replacement technology for computing three dimensional data.
+Nevertheless, these new innovations increase the programmability and customization capabillities of the pipeline -  
+following a trend that began decades ago.
 
-
-[@TODO: Add excerpt about programmable shader stages]
 
 \subsection*{Deferred Shading} \label{subsec-deferred-rendering}
 
-[@TODO: Sources]
 With a lot of innovative hard and software, the games got more complex and real-time computer graphics got even more 
 photo-realistic. The demand for more light sources increased in an attempt to make game worlds more realistic. 
-However, more light sources posed some problems for the developers. When using the traditional rendering pipeline,
+However, more light sources posed some problems for the developers. When using the traditional rendering pipeline, 
 lighting is calculated on a per-vertex basis. Interpolation can be used to generate lighting results for every sample 
 in between the vertices. Still, every vertex must be considered in combination with all light sources. This creates a 
 dependancy between the amount of vertices and the amount of lightsources. Basically, adding a few more light sources 
-will drastically increase computation times of the final image. To improve thi, another method was adopted: \emph{Deferred Shading}.
-It was first adopted for the use on \ac{GPU}s by Dean Calver \cite{Calver2004} in 2004. This technique makes use of 
-multiple render targets, and writes the data necessary for the lighting calculations into various buffers. This way, 
-the surface normals, the specular intensity, the albedo (texture color), the depth and more values can all be stored 
-individually, as per-pixel data. This includes the relevant data for the lighting calculations. When all buffers are 
-drawn, the final result is easily found by looking up all the relevant data from each buffer at one pixel coordinate 
-and combining them to a final result. Figure \ref{fig:deferred-shading-buffers} shows all the buffers used for the 
-creation of one frame in \emph{Guerilla Games'} \emph{Killzone 2} (2007) \cite{KillzoneFandom}. 
+will drastically increase computation times of the final image. \\
 
-\begin{figure}[h]
+\noindent
+To improve this, another method was adopted: \emph{Deferred Shading}. It was first adopted for the use on \ac{GPU}s 
+by Dean Calver \cite{Calver2004} in 2004. This technique makes use of multiple render targets, and writes the data 
+necessary for the lighting calculations into various buffers. This way, the surface normals, the specular intensity, 
+the albedo (texture color), the depth and more values can all be stored individually, as per-pixel data. This includes 
+the relevant data for the lighting calculations. When all buffers are drawn, the final result is easily found by 
+looking up all the relevant data from each buffer at one pixel coordinate and combining them to a final result. Figure 
+\ref{fig:deferred-shading-buffers} shows all the buffers used for the creation of one frame in \emph{Guerilla Games'} 
+\emph{Killzone 2} (2007) \cite{KillzoneFandom}. 
+
+\begin{figure}[!]
     \centering
     \includegraphics[width=175px]{images/graphics/killzone-2-buffer-depth.jpg}
     \includegraphics[width=175px]{images/graphics/killzone-2-buffer-vsn.jpg}
@@ -252,6 +269,10 @@ relies on preprocessing data and applying approximations to the scene layout, so
 common occlusion culling algorithm can be applied. \\
 
 \noindent
-[@TODO: Add short outline of the work]
 In the next chapter \ref{cpt-related-work} related work is discussed before an in depth technical foundation 
-is layed out in chapter \ref{cpt-technical-background}. 
+is layed out in chapter \ref{cpt-technical-background}. Subsequently, the actual implementation is discussed 
+in detail in chapter \ref{cpt-implementation}, which is followed by an experiment in chapter \ref{cpt-experiment} 
+that aims to evaluate the differences between two culling approaches within the pipeline. With the use of the data, 
+a qualitative evaluation can highlight comceptual differences to the use of similar approaches within a different 
+use case, like non-volumetric representations. The results are discussed in chapter \ref{cpt-discussion} before 
+future work is identified and highlighted in chapter \ref{cpt-prospect}. 
