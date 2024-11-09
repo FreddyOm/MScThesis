@@ -295,22 +295,23 @@ this pipeline step is realized using the standard compute architecture. \\
 
 \noindent   [@TODO: write min z and max z in mathematical format]
 To ceck for visibility, \emph{projected bounding boxes} need to be constructed and checked against the 
-\ac{HiZ}-pyramid. This step can be highly parallelized by using one \ac{GPU} thread per bounding box calculation. 
-The first step involves the projection of the bounding box onto the view plane, which results in a clip space 
-representation of the data. This early projection is done for all eight vertices of the bouding box, so the minimum 
-and maximum values on each axis can be calculated to end up with clip space and eventually with screen space coordinates.
-The min and max values for each axis represent a screen space rectangle, which can be used for the depth test. The 
-rectangle has the following characteristics.
+\ac{HiZ}-pyramid. This step can be highly parallelized by using one \ac{GPU} thread per bounding box 
+calculation. The first step involves the projection of the bounding box onto the view plane, which results 
+in a clip space representation of the data. This early projection is done for all eight vertices of the 
+bouding box, so the minimum and maximum values on each axis can be calculated to end up with clip space 
+and eventually with screen space coordinates. The min and max values for each axis represent a screen 
+space rectangle, which can be used for the depth test. The rectangle has the following characteristics.
 
 \begin{itemize}
     \item The minimum and maximum \emph{x} and \emph{y} values describe the four corners of the rectangle.
     \item The minimum \emph{z} value describes the \emph{depth} of the rectangle, i.e. nearest vertex of the bounding box.
 \end{itemize}
 
+\noindent
 The rectangle can be transformed into screen space and can be expressed as UV coordinates for sampling the 
 \ac{HiZ}-pyramid. To check for visibility, all corners of the rectangle are assumed to be at the same distance 
 from the camera, i.e. to have the same depth value. This depth value is the minimum \emph{z} value calculated earlier.
- This way, as long as any corner of the rectangle is located \emph{in front} of the best occluders stored in the 
+This way, as long as any corner of the rectangle is located \emph{in front} of the best occluders stored in the 
 \ac{HiZ}-pyramid, the rectangle could be visible partially or completely. Conversely, as long as all corners of 
 the rectangle are located behind the best occluder, the rectangle must be completely occluded. A visualization of 
 this process is shown in figure \ref{fig:screen-space-occlusion-test}.

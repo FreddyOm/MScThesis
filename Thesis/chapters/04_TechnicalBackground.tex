@@ -3,9 +3,9 @@
 In order to put this work in context, some basic knowledge about computer graphics is expected.
 The reader is assumed to be familiar with the basic rendering pipeline and how 3D data is 
 transformed into a projected 2D image. Techniques like \emph{z-buffering}, \emph{mip-mapping}, 
-the use of \emph{textures} and basic \emph{transformations} are mentioned but not explained in 
-further detail. Beyond that, a more in depth discussion of related topics and techniques this 
-work builds upon is discussed below.
+the use of \emph{textures}, basic \emph{transformations} and \emph{compute shaders} are mentioned 
+but not explained in further detail. Beyond that, a more in depth discussion of related topics and 
+techniques this work builds upon is discussed below.
 
 
 \section{Voxel Scene Layout} \label{sec-voxel-scene-layout}
@@ -263,14 +263,14 @@ used to support faster computation or more accurate volume approximation.
 
 \noindent
 \ac{HZB} is computed in image space and relies on two main components. An octree scene representation and a 
-\emph{z-buffer} pyramid. [@TODO: Check if z-buffer or mip-map needs to explained] 
-The octree contains all instances present in the scene. The \emph{z-pyramid} is a set of z-buffer mip-maps, with every 
-map reducing in size relative to the previous mip-map. It is empty in the beginning and is gradually filled after the 
-depth buffer is populated. Each mip-level of the \emph{z-pyramid} is computed by aggregating values from 4 texels 
-(texture pixels) within the previous mip-map and writing the output value into one texel of the new mip-map level. 
-This way, both axes (u and v) are scaled to be half the length of the previous level. The resulting texture resource 
-then has the full resolution z-buffer as the highest resolution mip-map and a very low resolution and small mip-map on 
-the other end of the mip-level. An exemplary z-pyramid is shown in figure \ref{fig:hiz-mip-chain}.\\
+\emph{z-buffer} pyramid. The octree contains all instances present in the scene. The \emph{z-pyramid} is a set of 
+z-buffer mip-maps, with every map reducing in size relative to the previous mip-map. It is empty in the beginning 
+and is gradually filled after the depth buffer is populated. Each mip-level of the \emph{z-pyramid} is computed by 
+aggregating values from 4 texels (texture pixels) within the previous mip-map and writing the output value into one 
+texel of the new mip-map level. This way, both axes (u and v) are scaled to be half the length of the previous level. 
+The resulting texture resource then has the full resolution z-buffer as the highest resolution mip-map and a very 
+low resolution and small mip-map on the other end of the mip-level. An exemplary z-pyramid is shown in figure 
+\ref{fig:hiz-mip-chain}.\\
 
 \noindent
 In contrast to the classic generation of mip-maps, the computation of the values in the \emph{z-pyramid} works in a 
@@ -403,7 +403,7 @@ are fully programmable and are based on the Compute Shaders architecture. Theref
 from the traditional Vertex Shader stage, even though they both can be used for vertex transformations.
 Figure \ref{fig:mesh-rendering-pipeline} shows the pipeline stages and the order they are executed in. \\
 
-\noindent [@TODO: Double-check if concept of CS needs to be explained]
+\noindent
 The Task Shader serves as a precomputational stage, which is optional and invokes the Mesh Shader.
 It can take any arbitrary data as input and operates on the provided data to produce output data, which is then 
 scheduled for further computation. Since both shaders are based on Compute Shaders, a threadgroup size can be 
@@ -465,7 +465,7 @@ also be precomputed for fast access at runtime. [@TODO: Maybe remove because it 
 
 \paragraph*{Meshlet View Frustum Culling} \label{subsubsec-meshlet-view-frustum-culling}
 
-[@TODO: Check if pre-calculated meshlets have been introduced; find sources]
+[@TODO: Find sources]
 Frustum culling can be adapted to work on meshlets as well. Similar to backface culling, the basic frustum culling 
 technique remains the same, but is applied to triangle clusters (meshlets) rather than instances (meshes). To 
 implement this, meshlet bounding volumes need to be computed. The same principles apply to meshlet bounding volumes 
