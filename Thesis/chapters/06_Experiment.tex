@@ -47,13 +47,13 @@ aspects aim to show the strengths and weaknesses of the algorithm and how it can
 
 \noindent
 The models used in the tests are \emph{Lucy} (Stanford 3D Scanning Repository), the \emph{Stanford Bunny} 
-(Stanford 3D Scanning Repository), the \emph{Hairball}, a \emph{Torus}, a small \emph{Window Scene} and a 
-\emph{Terrain} scene. All of these models provide different characteristics, which tested the pipeline in 
-a variety of ways. For instance, while \emph{Lucy} is tall and dense, the \emph{Torus} provides a higher 
-voxel count and a hole in it, which will create an area where the octree isn't densly filled with voxels. 
-For low resolutions, the \emph{Hairball} isn't voxelized enough to maintain all the thin and tiny details, 
-but for higher resolutions, the small structures were assumed to be not sufficient in density to completely 
-fill octree nodes, resulting in a unfavorable data layout to test the limits of the mesh computations. \\
+(Stanford 3D Scanning Repository), the \emph{Hairball}, a \emph{Torus} and a \emph{Terrain} scene. All of 
+these models provide different characteristics, which tested the pipeline in a variety of ways. For 
+instance, while \emph{Lucy} is tall and dense, the \emph{Torus} provides a higher voxel count and a hole 
+in it, which will create an area where the octree isn't densly filled with voxels. For low resolutions, 
+the \emph{Hairball} isn't voxelized enough to maintain all the thin and tiny details, but for higher 
+resolutions, the small structures were assumed to be not sufficient in density to completely fill octree 
+nodes, resulting in a unfavorable data layout to test the limits of the mesh computations. \\
 
 \noindent
 As mentioned, the resolution of the voxelization process played a central role in the experimentation process.
@@ -241,9 +241,7 @@ the test setups are listed in table \ref{tbl:hardware-setup}.
     \multicolumn{1}{|l|}{}                          & \multicolumn{1}{l|}{\textbf{Stanford Lucy}}   & \multicolumn{1}{l|}{\textbf{Stanford Bunny}}  & \multicolumn{1}{l|}{\textbf{Torus}}   & \multicolumn{1}{l|}{\textbf{Terrain}}     & \multicolumn{1}{l|}{\textbf{Hairball}}    \\ \hline
     \multicolumn{1}{|l|}{Overall GPU Time}          & \multicolumn{1}{c|}{2.3009 ms}                & \multicolumn{1}{c|}{-}                        & \multicolumn{1}{c|}{-}                & \multicolumn{1}{c|}{-}                    & \multicolumn{1}{c|}{-}                    \\
     \multicolumn{1}{|l|}{Depth Pre-Pass}            & \multicolumn{1}{c|}{402.7 us}                 & \multicolumn{1}{c|}{-}                        & \multicolumn{1}{c|}{-}                & \multicolumn{1}{c|}{-}                    & -                                         \\
-    \multicolumn{1}{|l|}{Dispatch Mesh (Draw)}      & \multicolumn{1}{c|}{1.75 ms}                  & \multicolumn{1}{c|}{-}                        & \multicolumn{1}{c|}{-}                & \multicolumn{1}{c|}{-}                    & -                                         \\
-    \multicolumn{1}{|l|}{Voxel Count (Total)}       & \multicolumn{1}{c|}{331,254}                  & \multicolumn{1}{c|}{-}                        & \multicolumn{1}{c|}{-}                & \multicolumn{1}{c|}{-}                    & -                                         \\
-    \multicolumn{1}{|l|}{Non Culled Voxels}         & \multicolumn{1}{c|}{123,788}                  & \multicolumn{1}{c|}{-}                        & \multicolumn{1}{c|}{-}                & \multicolumn{1}{c|}{-}                    & -                                         \\ \hline
+    \multicolumn{1}{|l|}{Dispatch Mesh (Draw)}      & \multicolumn{1}{c|}{1.75 ms}                  & \multicolumn{1}{c|}{-}                        & \multicolumn{1}{c|}{-}                & \multicolumn{1}{c|}{-}                    & -                                         \\ \hline
     \end{tabular}
 \end{table}
 
@@ -281,9 +279,7 @@ the test setups are listed in table \ref{tbl:hardware-setup}.
     \multicolumn{1}{|l|}{}                          & \multicolumn{1}{l|}{\textbf{Stanford Lucy}}   & \multicolumn{1}{l|}{\textbf{Stanford Bunny}}  & \multicolumn{1}{l|}{\textbf{Torus}}   & \multicolumn{1}{l|}{\textbf{Terrain}}     & \multicolumn{1}{l|}{\textbf{Hairball}}    \\ \hline
     \multicolumn{1}{|l|}{Overall GPU Time}          & \multicolumn{1}{c|}{1.7162 ms}                & \multicolumn{1}{c|}{-}                        & \multicolumn{1}{c|}{-}                & \multicolumn{1}{c|}{-}                    & \multicolumn{1}{c|}{-}                    \\
     \multicolumn{1}{|l|}{Depth Pre-Pass}            & \multicolumn{1}{c|}{388.3 us}                 & \multicolumn{1}{c|}{-}                        & \multicolumn{1}{c|}{-}                & \multicolumn{1}{c|}{-}                    & -                                         \\
-    \multicolumn{1}{|l|}{Dispatch Mesh (Draw)}      & \multicolumn{1}{c|}{1.19 ms}                  & \multicolumn{1}{c|}{-}                        & \multicolumn{1}{c|}{-}                & \multicolumn{1}{c|}{-}                    & -                                         \\
-    \multicolumn{1}{|l|}{Voxel Count (Total)}       & \multicolumn{1}{c|}{331,254}                  & \multicolumn{1}{c|}{-}                        & \multicolumn{1}{c|}{-}                & \multicolumn{1}{c|}{-}                    & -                                         \\
-    \multicolumn{1}{|l|}{Non Culled Voxels}         & \multicolumn{1}{c|}{73,293}                   & \multicolumn{1}{c|}{-}                        & \multicolumn{1}{c|}{-}                & \multicolumn{1}{c|}{-}                    & -                                         \\ \hline
+    \multicolumn{1}{|l|}{Dispatch Mesh (Draw)}      & \multicolumn{1}{c|}{1.19 ms}                  & \multicolumn{1}{c|}{-}                        & \multicolumn{1}{c|}{-}                & \multicolumn{1}{c|}{-}                    & -                                         \\ \hline
     \end{tabular}
 \end{table}
 
