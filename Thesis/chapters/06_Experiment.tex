@@ -166,7 +166,15 @@ Note that the use of the Mesh Shading pipeline requires graphics cards that supp
 For \emph{NVIDIA} \ac{GPU}s this is the \emph{Turing} lineup (\emph{NVIDIA RTX 20 series}) and for \emph{AMD} cards 
 this would be the \emph{RDNA 2} lineup (\emph{AMD RX 6000 series}). \emph{Intel} \ac{GPU}s support the feature as 
 well, starting from their first installment in the dedicated desktop \ac{GPU} series \emph{Intel Arc}. The specs of 
-the test setups are listed in table \ref{tbl:hardware-setup}. 
+the test setups are listed in table \ref{tbl:hardware-setup}. \\
+
+\noindent
+Some of the data was sampled over time using a standardized camera animation, which was following a circular orbit 
+around the model and is visualized below. A vertical offset was added to the orbit, so the model is drawn from various 
+angles. This was especially important for models like the \emph{Torus}, which behaves very differently when viewed 
+from above compared to when viewed from the side.
+
+[@TODO: Add orbit visualization]
 
 
 
@@ -217,6 +225,69 @@ the test setups are listed in table \ref{tbl:hardware-setup}.
 
 \subsubsection*{Culling Effect}
 
+
+\begin{figure}[h!]              % Lucy 256 Voxels Test Anim (@TODO: add all other models as well)
+    \begin{center}
+      \begin{tikzpicture}
+        \begin{axis}[
+            width=\linewidth, % Scale the plot to \linewidth
+            height=100px,
+            xlabel={Frames},
+            ylabel={Visible Voxels},
+            grid,
+            xmin=0,
+            xmax=2392,
+            ymin=100000,
+            ymax=160000
+          ]
+          \addplot[red, no marks, solid] table[col sep=comma, x=frame, y=visible_voxels]{./plotdata/lucy_256_voxels.csv};
+          \addplot[blue, dotted, no marks, domain=0:2393, samples=50] {140842};
+        \end{axis}
+      \end{tikzpicture}
+      \caption{The amount of visible voxels over the course of the test animation shown in red. 
+      The average amount of visible voxels was \emph{140,842}, which is marked as the blue dotted line.}
+    \end{center}
+  \end{figure}
+
+  \begin{figure}[h!]            % Lucy 256 OT Nodes Test Anim
+    \begin{center}
+      \begin{tikzpicture}
+        \begin{axis}[
+            width=\linewidth, % Scale the plot to \linewidth
+            height=100px,
+            xlabel={Frames},
+            ylabel={Visible Nodes},
+            grid,
+            xmin=0,
+            xmax=2392,
+            ymin=2500,
+            ymax=4000
+          ]
+          \addplot[red, no marks, solid] table[col sep=comma, x=frame, y=visible_nodes]{./plotdata/lucy_256_nodes.csv};
+          \addplot[blue, dotted, no marks, domain=0:2393, samples=50] {3460};
+        \end{axis}
+      \end{tikzpicture}
+      \caption{The amount of visible octree nodes over the course of the test animation shown in red. 
+      The average amount of visible octree nodes was \emph{3460}, which is marked as the blue dotted line.}
+    \end{center}
+  \end{figure}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 \begin{table}[h]
     \begin{tabular}{|lccccc|}
     \hline
@@ -224,10 +295,10 @@ the test setups are listed in table \ref{tbl:hardware-setup}.
     \multicolumn{1}{|l|}{}                          & \multicolumn{1}{|l|}{\textbf{Stanford Lucy}}  & \multicolumn{1}{l|}{\textbf{Stanford Bunny}}  & \multicolumn{1}{l|}{\textbf{Torus}}   & \multicolumn{1}{l|}{\textbf{Terrain}}     & \multicolumn{1}{l|}{\textbf{Hairball}}    \\ \hline
     \multicolumn{1}{|l|}{Total Voxel Count}         & \multicolumn{1}{c|}{331,254}                  & \multicolumn{1}{c|}{-}                        & \multicolumn{1}{c|}{-}                & \multicolumn{1}{c|}{-}                    & \multicolumn{1}{c|}{-}                    \\
     \multicolumn{1}{|l|}{Culled Voxels}             & \multicolumn{1}{c|}{207,466}                  & \multicolumn{1}{c|}{-}                        & \multicolumn{1}{c|}{-}                & \multicolumn{1}{c|}{-}                    & -                                         \\
-    \multicolumn{1}{|l|}{Voxel Culling Ratio}       & \multicolumn{1}{c|}{62,63 \%}                 & \multicolumn{1}{c|}{-}                        & \multicolumn{1}{c|}{-}                & \multicolumn{1}{c|}{-}                    & -                                         \\ \hline
+    \multicolumn{1}{|l|}{Voxel Culling Ratio}       & \multicolumn{1}{c|}{\textbf{62,63 \%}}        & \multicolumn{1}{c|}{-}                        & \multicolumn{1}{c|}{-}                & \multicolumn{1}{c|}{-}                    & -                                         \\ \hline
     \multicolumn{1}{|l|}{Octree Nodes}              & \multicolumn{1}{c|}{6,830}                    & \multicolumn{1}{c|}{-}                        & \multicolumn{1}{c|}{-}                & \multicolumn{1}{c|}{-}                    & -                                         \\
     \multicolumn{1}{|l|}{Culled Octree Nodes}       & \multicolumn{1}{c|}{3,774}                    & \multicolumn{1}{c|}{-}                        & \multicolumn{1}{c|}{-}                & \multicolumn{1}{c|}{-}                    & -                                         \\
-    \multicolumn{1}{|l|}{Octree Culling Ratio}      & \multicolumn{1}{c|}{55,25 \%}                 & \multicolumn{1}{c|}{-}                        & \multicolumn{1}{c|}{-}                & \multicolumn{1}{c|}{-}                    & -                                         \\ \hline
+    \multicolumn{1}{|l|}{Octree Culling Ratio}      & \multicolumn{1}{c|}{\textbf{55,25 \%}}        & \multicolumn{1}{c|}{-}                        & \multicolumn{1}{c|}{-}                & \multicolumn{1}{c|}{-}                    & -                                         \\ \hline
     \end{tabular}
 \end{table}
 
@@ -262,10 +333,10 @@ the test setups are listed in table \ref{tbl:hardware-setup}.
     \multicolumn{1}{|l|}{}                          & \multicolumn{1}{|l|}{\textbf{Stanford Lucy}}  & \multicolumn{1}{l|}{\textbf{Stanford Bunny}}  & \multicolumn{1}{l|}{\textbf{Torus}}   & \multicolumn{1}{l|}{\textbf{Terrain}}     & \multicolumn{1}{l|}{\textbf{Hairball}}    \\ \hline
     \multicolumn{1}{|l|}{Total Voxel Count}         & \multicolumn{1}{c|}{331,254}                  & \multicolumn{1}{c|}{-}                        & \multicolumn{1}{c|}{-}                & \multicolumn{1}{c|}{-}                    & \multicolumn{1}{c|}{-}                    \\
     \multicolumn{1}{|l|}{Culled Voxels}             & \multicolumn{1}{c|}{257,961}                  & \multicolumn{1}{c|}{-}                        & \multicolumn{1}{c|}{-}                & \multicolumn{1}{c|}{-}                    & -                                         \\
-    \multicolumn{1}{|l|}{Voxel Culling Ratio}       & \multicolumn{1}{c|}{77,87 \%}                 & \multicolumn{1}{c|}{-}                        & \multicolumn{1}{c|}{-}                & \multicolumn{1}{c|}{-}                    & -                                         \\ \hline
+    \multicolumn{1}{|l|}{Voxel Culling Ratio}       & \multicolumn{1}{c|}{\textbf{77,87 \%}}        & \multicolumn{1}{c|}{-}                        & \multicolumn{1}{c|}{-}                & \multicolumn{1}{c|}{-}                    & -                                         \\ \hline
     \multicolumn{1}{|l|}{Octree Nodes}              & \multicolumn{1}{c|}{6,830}                    & \multicolumn{1}{c|}{-}                        & \multicolumn{1}{c|}{-}                & \multicolumn{1}{c|}{-}                    & -                                         \\
     \multicolumn{1}{|l|}{Culled Octree Nodes}       & \multicolumn{1}{c|}{4,329}                    & \multicolumn{1}{c|}{-}                        & \multicolumn{1}{c|}{-}                & \multicolumn{1}{c|}{-}                    & -                                         \\
-    \multicolumn{1}{|l|}{Octree Culling Ratio}      & \multicolumn{1}{c|}{63,38 \%}                 & \multicolumn{1}{c|}{-}                        & \multicolumn{1}{c|}{-}                & \multicolumn{1}{c|}{-}                    & -                                         \\ \hline
+    \multicolumn{1}{|l|}{Octree Culling Ratio}      & \multicolumn{1}{c|}{\textbf{63,38 \%}}        & \multicolumn{1}{c|}{-}                        & \multicolumn{1}{c|}{-}                & \multicolumn{1}{c|}{-}                    & -                                         \\ \hline
     \end{tabular}
 \end{table}
 
