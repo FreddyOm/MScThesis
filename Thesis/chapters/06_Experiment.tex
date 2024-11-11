@@ -231,6 +231,8 @@ presented below, comparing the per-octree culling with the per-meshlet culling. 
 profiling camera animation was used to provide better average values in a more realistic environment.\\
 
 
+\subsection*{Stanford Lucy - $256^3$}
+
 [@TODO: Add per meshlet culling graphs into these plots!]
 
 % --------------------------------------- LUCY 256 ---------------------------------------
@@ -259,7 +261,7 @@ profiling camera animation was used to provide better average values in a more r
   \end{figure}
 
 
-  \begin{figure}[h!]            % Lucy 256 OT Nodes Test Anim
+  \begin{figure}[h]            % Lucy 256 OT Nodes Test Anim
     \begin{center}
       \begin{tikzpicture}
         \begin{axis}[
@@ -285,10 +287,12 @@ profiling camera animation was used to provide better average values in a more r
 % ----------------------------------------------------------------------------------------
 
 
+\subsection*{Stanford Bunny - $256^3$}
+
 
 % --------------------------------------- BUNNY 256 --------------------------------------
 
-\begin{figure}[h!]              % Bunny 256 Voxels Test Anim
+\begin{figure}[h]              % Bunny 256 Voxels Test Anim
     \begin{center}
       \begin{tikzpicture}
         \begin{axis}[
@@ -308,11 +312,12 @@ profiling camera animation was used to provide better average values in a more r
       \end{tikzpicture}
       \caption{The amount of visible voxels over the course of the test animation shown in red. 
       The average amount of visible voxels was \emph{140,842}, which is marked as the blue dotted line.}
+      \label{plt:bunny-256-culling-res-voxels}
     \end{center}
   \end{figure}
 
 
-  \begin{figure}[h!]            % Bunny 256 OT Nodes Test Anim
+  \begin{figure}[h]            % Bunny 256 OT Nodes Test Anim
     \begin{center}
       \begin{tikzpicture}
         \begin{axis}[
@@ -332,11 +337,85 @@ profiling camera animation was used to provide better average values in a more r
       \end{tikzpicture}
       \caption{The amount of visible octree nodes over the course of the test animation shown in red. 
       The average amount of visible octree nodes was \emph{3460}, which is marked as the blue dotted line.}
+      \label{plt:bunny-256-culling-res-nodes}
     \end{center}
   \end{figure}
 
 % ----------------------------------------------------------------------------------------
 
+\subsection*{Torus - $256^3$}
+
+% --------------------------------------- TORUS 256 --------------------------------------
+
+\begin{figure}[h]              % Torus 256 Voxels Test Anim
+    \begin{center}
+      \begin{tikzpicture}
+        \begin{axis}[
+            width=\linewidth, % Scale the plot to \linewidth
+            height=100px,
+            xlabel={Frames},
+            ylabel={Visible Voxels},
+            grid,
+            xmin=0,
+            xmax=1087,
+            ymin=150000,
+            ymax=500000
+          ]
+          \addplot[red, no marks, solid] table[col sep=comma, x=frame, y=visible_voxels]{./plotdata/torus_256_voxels.csv};
+          \addplot[blue, dotted, no marks, domain=0:2393, samples=50] {140842};
+        \end{axis}
+      \end{tikzpicture}
+      \caption{The amount of visible voxels over the course of the test animation shown in red. 
+      The average amount of visible voxels was \emph{140,842}, which is marked as the blue dotted line.}
+      \label{plt:torus-256-culling-res-voxels}
+    \end{center}
+  \end{figure}
+
+
+  \begin{figure}[h]            % Torus 256 OT Nodes Test Anim
+    \begin{center}
+      \begin{tikzpicture}
+        \begin{axis}[
+            width=\linewidth, % Scale the plot to \linewidth
+            height=100px,
+            xlabel={Frames},
+            ylabel={Visible Nodes},
+            grid,
+            xmin=0,
+            xmax=1087,
+            ymin=3000,
+            ymax=10000
+          ]
+          \addplot[red, no marks, solid] table[col sep=comma, x=frame, y=visible_nodes]{./plotdata/torus_256_nodes.csv};
+          \addplot[blue, dotted, no marks, domain=0:2393, samples=50] {3460};
+        \end{axis}
+      \end{tikzpicture}
+      \caption{The amount of visible octree nodes over the course of the test animation shown in red. 
+      The average amount of visible octree nodes was \emph{3460}, which is marked as the blue dotted line.}
+      \label{plt:torus-256-culling-res-nodes}
+    \end{center}
+  \end{figure}
+
+% ----------------------------------------------------------------------------------------
+
+
+
+\noindent
+The torus model shows in particular how the amount of visible voxels is very dependent on the 
+viewing angle of the camera. In figures \ref{plt:torus-256-culling-res-nodes} and 
+\ref{plt:torus-256-culling-res-voxels} two immense drops in voxel and octree visibility can be noticed.
+They occured when the torus was visible from the side, hiding the hole in the middle and providing excellent 
+self-occlusion for the far end of the torus. Compared to the other meshes, the amount of visible voxels 
+varied the most on the torus, ranging from around $160,000$ to almost $430,000$ voxels. This is due to the 
+algorithm favoring solid models without holes in them. The torus is a great example for showing the limits of 
+the implementation, having a rather low volume, a completely round shape with no straight edges and significant 
+parts of the model being empty space. \\
+
+\noindent
+The results show that a model like the torus is not optimal for the use in actual performance agnostic applications.
+Because of its shape, the performance is assumed to rather unstable, as opposed to some of the other models, which 
+consistently cull a similar amount of voxels. [@TODO: Check if this should be put in discussion; refer to per-meshlet
+oc]
 
 
 
