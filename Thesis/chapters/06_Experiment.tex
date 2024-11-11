@@ -222,16 +222,20 @@ from above compared to when viewed from the side.
 %    - Multiple devices
 
 
-\section{Per-Octree Culling Results}
+\section{Culling Results}
+
+The amount of visible voxels compared to the amount of culled voxels is one major aspect of the 
+experiment and is not related to the actual performance measures. They are assumed to be the same 
+for all hardware setups and are therefore only measured on the \emph{Laptop} setup. The results are 
+presented below, comparing the per-octree culling with the per-meshlet culling. For the culling, the 
+profiling camera animation was used to provide better average values in a more realistic environment.\\
 
 
-\subsection*{Laptop Setup}
+[@TODO: Add per meshlet culling graphs into these plots!]
 
+% --------------------------------------- LUCY 256 ---------------------------------------
 
-\subsubsection*{Culling Effect}
-
-
-\begin{figure}[h!]              % Lucy 256 Voxels Test Anim (@TODO: add all other models as well)
+\begin{figure}[h!]              % Lucy 256 Voxels Test Anim
     \begin{center}
       \begin{tikzpicture}
         \begin{axis}[
@@ -254,7 +258,8 @@ from above compared to when viewed from the side.
     \end{center}
   \end{figure}
 
-  \begin{figure}[h!]            % Lucy 256 OT Nodes Test Anim (@TODO: Add other models as well)
+
+  \begin{figure}[h!]            % Lucy 256 OT Nodes Test Anim
     \begin{center}
       \begin{tikzpicture}
         \begin{axis}[
@@ -276,6 +281,73 @@ from above compared to when viewed from the side.
       The average amount of visible octree nodes was \emph{3460}, which is marked as the blue dotted line.}
     \end{center}
   \end{figure}
+
+% ----------------------------------------------------------------------------------------
+
+
+
+% --------------------------------------- BUNNY 256 --------------------------------------
+
+\begin{figure}[h!]              % Bunny 256 Voxels Test Anim
+    \begin{center}
+      \begin{tikzpicture}
+        \begin{axis}[
+            width=\linewidth, % Scale the plot to \linewidth
+            height=100px,
+            xlabel={Frames},
+            ylabel={Visible Voxels},
+            grid,
+            xmin=0,
+            xmax=1186,
+            ymin=250000,
+            ymax=500000
+          ]
+          \addplot[red, no marks, solid] table[col sep=comma, x=frame, y=visible_voxels]{./plotdata/bunny_256_voxels.csv};
+          \addplot[blue, dotted, no marks, domain=0:2393, samples=50] {140842};
+        \end{axis}
+      \end{tikzpicture}
+      \caption{The amount of visible voxels over the course of the test animation shown in red. 
+      The average amount of visible voxels was \emph{140,842}, which is marked as the blue dotted line.}
+    \end{center}
+  \end{figure}
+
+
+  \begin{figure}[h!]            % Bunny 256 OT Nodes Test Anim
+    \begin{center}
+      \begin{tikzpicture}
+        \begin{axis}[
+            width=\linewidth, % Scale the plot to \linewidth
+            height=100px,
+            xlabel={Frames},
+            ylabel={Visible Nodes},
+            grid,
+            xmin=0,
+            xmax=1186,
+            ymin=6000,
+            ymax=10000
+          ]
+          \addplot[red, no marks, solid] table[col sep=comma, x=frame, y=visible_nodes]{./plotdata/bunny_256_nodes.csv};
+          \addplot[blue, dotted, no marks, domain=0:2393, samples=50] {3460};
+        \end{axis}
+      \end{tikzpicture}
+      \caption{The amount of visible octree nodes over the course of the test animation shown in red. 
+      The average amount of visible octree nodes was \emph{3460}, which is marked as the blue dotted line.}
+    \end{center}
+  \end{figure}
+
+% ----------------------------------------------------------------------------------------
+
+
+
+
+
+\subsection*{Laptop Setup}
+
+
+\subsubsection*{Culling Effect}
+
+
+
 
 
 
