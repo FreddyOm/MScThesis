@@ -20,4 +20,3 @@ pipeline discussion and in depth data visualization.
 ## Problems
 
 - [x] Shader invocation limit at 65536 -> Multiple Batches? -> Not a problem after occlusion culling? -> Multiple passes?
-- [x] Lighting? Texturing? Normals? -> Can be easily added to shader
