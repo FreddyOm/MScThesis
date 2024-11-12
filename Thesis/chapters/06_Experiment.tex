@@ -235,7 +235,7 @@ profiling camera animation was used to provide better average values in a more r
 
 % --------------------------------------- LUCY 256 ---------------------------------------
 
-\begin{figure}[h!]              % Lucy 256 Voxels Test Anim
+\begin{figure}[h]              % Lucy 256 Voxels Test Anim
     \begin{center}
       \begin{tikzpicture}
         \begin{axis}[
@@ -255,8 +255,11 @@ profiling camera animation was used to provide better average values in a more r
           \addplot[red, dotted, no marks, domain=0:2393, samples=50] {84082};
         \end{axis}
       \end{tikzpicture}
-      \caption{The amount of visible voxels over the course of the test animation shown in red. 
-      The average amount of visible voxels was \emph{140,842}, which is marked as the blue dotted line.}
+      \caption{The amount of visible voxels over the course of the test animation shown in green for 
+      per-octree occlusion culling, and in orange for per-meshlet occlusion culling. 
+      The average amount of visible voxels was \emph{140,842} for per-octree occlusion culling, which is 
+      marked as the blue dotted line, and \emph{84,082} for per-meshlet occlusion culling, marked in red.}
+      \label{plt:lucy-256-culling-res-voxels}
     \end{center}
   \end{figure}
 
@@ -281,12 +284,37 @@ profiling camera animation was used to provide better average values in a more r
           \addplot[red, dotted, no marks, domain=0:2393, samples=50] {2483};
         \end{axis}
       \end{tikzpicture}
-      \caption{The amount of visible octree nodes over the course of the test animation shown in red. 
-      The average amount of visible octree nodes was \emph{3460}, which is marked as the blue dotted line.}
+      \caption{The amount of visible octree nodes over the course of the test animation shown in green for 
+      per-octree occlusion culling and in orange for per-meshlet occlusion culling. 
+      The average amount of visible octree nodes was \emph{3460} for per-octree occlusion culling, which is 
+      marked as the blue dotted line, and \emph{2483} for per-meshlet occlusion culling, which is marked in 
+      as the red dotted line.}
+      \label{plt:lucy-256-culling-res-nodes}
     \end{center}
   \end{figure}
 
 % ----------------------------------------------------------------------------------------
+
+Figures \ref{plt:lucy-256-culling-res-voxels} and \ref{plt:lucy-256-culling-res-nodes} show the 
+amount of visible voxels and visible octree nodes for both the per-octree meshlet culling and the 
+per-meshlet octree culling configuration. It is obvious that the per-meshlet culling significantly 
+reduces the amount of dispatched voxels and octree nodes, which leads to less load for the rasterizer 
+and the pixel shader. \\
+
+\noindent
+The amount of octree nodes decreases when using per-meshlet culling, because octree nodes can be culled,
+even when their corners are visible by the camera. For instance, when considering a node that holds just 
+5 voxels, which are all overlapped by a part of the model, this octree node will be inherently culled when 
+using per-meshlet culling. Contrary, when using per-octree culling, the culling is dependant on the 
+visibility of any of the octree nodes corners, which can result in a node being not culled, even though all 
+voxels within that node remain occluded. \\
+
+\noindent 
+Comparing the 
+[@TODO: Curve shape (rather flat or very bumpy)]
+
+\noindent
+[@TODO: Model shape, how does it influence the amount of visible voxels?]
 
 
 \subsection*{Stanford Bunny - $256^3$}
@@ -314,8 +342,10 @@ profiling camera animation was used to provide better average values in a more r
           \addplot[red, dotted, no marks, domain=0:1186, samples=50] {180266};
         \end{axis}
       \end{tikzpicture}
-      \caption{The amount of visible voxels over the course of the test animation shown in red. 
-      The average amount of visible voxels was \emph{140,842}, which is marked as the blue dotted line.}
+      \caption{The amount of visible voxels over the course of the test animation shown in green for 
+      per-octree occlusion culling, and in orange for per-meshlet occlusion culling. 
+      The average amount of visible voxels was \emph{385,210} for per-octree occlusion culling, which is 
+      marked as the blue dotted line, and \emph{180,266} for per-meshlet occlusion culling, marked in red.}
       \label{plt:bunny-256-culling-res-voxels}
     \end{center}
   \end{figure}
@@ -341,8 +371,11 @@ profiling camera animation was used to provide better average values in a more r
           \addplot[red, dotted, no marks, domain=0:1186, samples=50] {5415};
         \end{axis}
       \end{tikzpicture}
-      \caption{The amount of visible octree nodes over the course of the test animation shown in red. 
-      The average amount of visible octree nodes was \emph{3460}, which is marked as the blue dotted line.}
+      \caption{The amount of visible octree nodes over the course of the test animation shown in green for 
+      per-octree occlusion culling and in orange for per-meshlet occlusion culling. 
+      The average amount of visible octree nodes was \emph{8519} for per-octree occlusion culling, which is 
+      marked as the blue dotted line, and \emph{5415} for per-meshlet occlusion culling, which is marked in 
+      as the red dotted line.}
       \label{plt:bunny-256-culling-res-nodes}
     \end{center}
   \end{figure}
@@ -373,8 +406,10 @@ profiling camera animation was used to provide better average values in a more r
           \addplot[red, dotted, no marks, domain=0:1087, samples=50] {170772};
         \end{axis}
       \end{tikzpicture}
-      \caption{The amount of visible voxels over the course of the test animation shown in red. 
-      The average amount of visible voxels was \emph{140,842}, which is marked as the blue dotted line.}
+      \caption{The amount of visible voxels over the course of the test animation shown in green for 
+      per-octree occlusion culling, and in orange for per-meshlet occlusion culling. 
+      The average amount of visible voxels was \emph{359,313} for per-octree occlusion culling, which is 
+      marked as the blue dotted line, and \emph{170,772} for per-meshlet occlusion culling, marked in red.}
       \label{plt:torus-256-culling-res-voxels}
     \end{center}
   \end{figure}
@@ -400,8 +435,11 @@ profiling camera animation was used to provide better average values in a more r
           \addplot[red, dotted, no marks, domain=0:1087, samples=50] {4768};
         \end{axis}
       \end{tikzpicture}
-      \caption{The amount of visible octree nodes over the course of the test animation shown in red. 
-      The average amount of visible octree nodes was \emph{3460}, which is marked as the blue dotted line.}
+      \caption{The amount of visible octree nodes over the course of the test animation shown in green for 
+      per-octree occlusion culling and in orange for per-meshlet occlusion culling. 
+      The average amount of visible octree nodes was \emph{7712} for per-octree occlusion culling, which is 
+      marked as the blue dotted line, and \emph{4768} for per-meshlet occlusion culling, which is marked in 
+      as the red dotted line.}
       \label{plt:torus-256-culling-res-nodes}
     \end{center}
   \end{figure}
@@ -412,8 +450,8 @@ profiling camera animation was used to provide better average values in a more r
 
 \noindent
 The torus model shows in particular how the amount of visible voxels is very dependent on the 
-viewing angle of the camera. In figures \ref{plt:torus-256-culling-res-nodes} and 
-\ref{plt:torus-256-culling-res-voxels} two immense drops in voxel and octree visibility can be noticed.
+viewing angle of the camera. In figures \ref{plt:torus-256-culling-res-voxels} and 
+\ref{plt:torus-256-culling-res-nodes} two immense drops in voxel and octree visibility can be noticed.
 They occured when the torus was visible from the side, hiding the hole in the middle and providing excellent 
 self-occlusion for the far end of the torus. Compared to the other meshes, the amount of visible voxels 
 varied the most on the torus, ranging from around $160,000$ to almost $430,000$ voxels. This is due to the 
@@ -430,10 +468,7 @@ oc]
 
 
 
-\subsection*{Laptop Setup}
-
-
-\subsubsection*{Culling Effect}
+\section{Performance Results}
 
 
 
