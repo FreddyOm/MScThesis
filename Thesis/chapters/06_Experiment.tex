@@ -233,8 +233,6 @@ profiling camera animation was used to provide better average values in a more r
 
 \subsection*{Stanford Lucy - $256^3$}
 
-[@TODO: Add per meshlet culling graphs into these plots!]
-
 % --------------------------------------- LUCY 256 ---------------------------------------
 
 \begin{figure}[h!]              % Lucy 256 Voxels Test Anim
@@ -248,11 +246,13 @@ profiling camera animation was used to provide better average values in a more r
             grid,
             xmin=0,
             xmax=2392,
-            ymin=100000,
+            ymin=60000,
             ymax=160000
           ]
-          \addplot[red, no marks, solid] table[col sep=comma, x=frame, y=visible_voxels]{./plotdata/lucy_256_voxels.csv};
+          \addplot[green, no marks, solid] table[col sep=comma, x=frame, y=visible_voxels]{./plotdata/lucy_256_voxels.csv};
           \addplot[blue, dotted, no marks, domain=0:2393, samples=50] {140842};
+          \addplot[orange, no marks, solid] table[col sep=comma, x=frame, y=visible_voxels]{./plotdata/lucy_256_voxels_pmoc.csv};
+          \addplot[red, dotted, no marks, domain=0:2393, samples=50] {84082};
         \end{axis}
       \end{tikzpicture}
       \caption{The amount of visible voxels over the course of the test animation shown in red. 
@@ -272,11 +272,13 @@ profiling camera animation was used to provide better average values in a more r
             grid,
             xmin=0,
             xmax=2392,
-            ymin=2500,
+            ymin=1800,
             ymax=4000
           ]
-          \addplot[red, no marks, solid] table[col sep=comma, x=frame, y=visible_nodes]{./plotdata/lucy_256_nodes.csv};
+          \addplot[green, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 2392 / 2392, y=visible_nodes]{./plotdata/lucy_256_nodes.csv};
           \addplot[blue, dotted, no marks, domain=0:2393, samples=50] {3460};
+          \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 2392 / 2395, y=visible_nodes]{./plotdata/lucy_256_nodes_pmoc.csv};
+          \addplot[red, dotted, no marks, domain=0:2393, samples=50] {2483};
         \end{axis}
       \end{tikzpicture}
       \caption{The amount of visible octree nodes over the course of the test animation shown in red. 
@@ -303,11 +305,13 @@ profiling camera animation was used to provide better average values in a more r
             grid,
             xmin=0,
             xmax=1186,
-            ymin=250000,
+            ymin=100000,
             ymax=500000
           ]
-          \addplot[red, no marks, solid] table[col sep=comma, x=frame, y=visible_voxels]{./plotdata/bunny_256_voxels.csv};
-          \addplot[blue, dotted, no marks, domain=0:2393, samples=50] {140842};
+          \addplot[green, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1186 / 1186, y=visible_voxels]{plotdata/bunny_256_voxels.csv};
+          \addplot[blue, dotted, no marks, domain=0:1186, samples=50] {385210};
+          \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1186 / 1490, y=visible_voxels]{plotdata/bunny_256_voxels_pmoc.csv};
+          \addplot[red, dotted, no marks, domain=0:1186, samples=50] {180266};
         \end{axis}
       \end{tikzpicture}
       \caption{The amount of visible voxels over the course of the test animation shown in red. 
@@ -328,11 +332,13 @@ profiling camera animation was used to provide better average values in a more r
             grid,
             xmin=0,
             xmax=1186,
-            ymin=6000,
+            ymin=3000,
             ymax=10000
           ]
-          \addplot[red, no marks, solid] table[col sep=comma, x=frame, y=visible_nodes]{./plotdata/bunny_256_nodes.csv};
-          \addplot[blue, dotted, no marks, domain=0:2393, samples=50] {3460};
+          \addplot[green, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1186 / 1186, y=visible_nodes]{./plotdata/bunny_256_nodes.csv};
+          \addplot[blue, dotted, no marks, domain=0:1186, samples=50] {8519};
+          \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1186 / 1490, y=visible_nodes]{./plotdata/bunny_256_nodes_pmoc.csv};
+          \addplot[red, dotted, no marks, domain=0:1186, samples=50] {5415};
         \end{axis}
       \end{tikzpicture}
       \caption{The amount of visible octree nodes over the course of the test animation shown in red. 
@@ -358,11 +364,13 @@ profiling camera animation was used to provide better average values in a more r
             grid,
             xmin=0,
             xmax=1087,
-            ymin=150000,
+            ymin=70000,
             ymax=500000
           ]
-          \addplot[red, no marks, solid] table[col sep=comma, x=frame, y=visible_voxels]{./plotdata/torus_256_voxels.csv};
-          \addplot[blue, dotted, no marks, domain=0:2393, samples=50] {140842};
+          \addplot[green, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1087 / 1087, y=visible_voxels]{./plotdata/torus_256_voxels.csv};
+          \addplot[blue, dotted, no marks, domain=0:1087, samples=50] {359313};
+          \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1087 / 1845, y=visible_voxels]{./plotdata/torus_256_voxels_pmoc.csv};
+          \addplot[red, dotted, no marks, domain=0:1087, samples=50] {170772};
         \end{axis}
       \end{tikzpicture}
       \caption{The amount of visible voxels over the course of the test animation shown in red. 
@@ -383,11 +391,13 @@ profiling camera animation was used to provide better average values in a more r
             grid,
             xmin=0,
             xmax=1087,
-            ymin=3000,
+            ymin=1000,
             ymax=10000
           ]
-          \addplot[red, no marks, solid] table[col sep=comma, x=frame, y=visible_nodes]{./plotdata/torus_256_nodes.csv};
-          \addplot[blue, dotted, no marks, domain=0:2393, samples=50] {3460};
+          \addplot[green, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1087 / 1087, y=visible_nodes]{./plotdata/torus_256_nodes.csv};
+          \addplot[blue, dotted, no marks, domain=0:1087, samples=50] {7712};
+          \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1087 / 1845, y=visible_nodes]{./plotdata/torus_256_nodes_pmoc.csv};
+          \addplot[red, dotted, no marks, domain=0:1087, samples=50] {4768};
         \end{axis}
       \end{tikzpicture}
       \caption{The amount of visible octree nodes over the course of the test animation shown in red. 
