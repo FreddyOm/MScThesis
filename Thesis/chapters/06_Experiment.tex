@@ -310,11 +310,15 @@ visibility of any of the octree nodes corners, which can result in a node being 
 voxels within that node remain occluded. \\
 
 \noindent 
-Comparing the 
-[@TODO: Curve shape (rather flat or very bumpy)]
+Both curves indicate how the model fits the overall culling algorithm. For instance, the \emph{Stanford Lucy} 
+model has a relatively even curve over time. Of course, this is a dynamic measure and highly depends on the 
+angle of the camera. Still, the compact, tall model provides a good amount of best occluders to occlude a 
+relatively even number of voxels when viewed from the side. \\
 
 \noindent
-[@TODO: Model shape, how does it influence the amount of visible voxels?]
+Considering the average amount of visible voxels, the per-octree algorithm was able to cull $57.5\%$ of all 
+voxels. The per-meshlet culling even managed to ommit on average $74.6\%$ of all voxels. 
+
 
 
 \subsection*{Stanford Bunny - $256^3$}
@@ -381,6 +385,9 @@ Comparing the
   \end{figure}
 
 % ----------------------------------------------------------------------------------------
+
+
+
 
 \subsection*{Torus - $256^3$}
 
