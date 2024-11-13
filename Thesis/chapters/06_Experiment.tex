@@ -27,7 +27,7 @@ alternative algorithms on a high level. However, keep in mind that it is up to f
 compare the pipeline to alternative approaches. 
 
 
-\subsection*{Scene Layout}
+\subsection*{Scene Layout} \label{subsec-scene-layout}
 
 Any occlusion culling algorithm somehow relies on spatial information, be it in world space, sceen space or by 
 using a spatial container. Consequently, the scene layout and how the scene changes relative to the camera are 
@@ -46,17 +46,7 @@ different voxle resolutions were used to achieve different amounts of octree nod
 aspects aim to show the strengths and weaknesses of the algorithm and how it can be optimally used in practice. \\
 
 \noindent
-The models used in the tests are \emph{Lucy} (Stanford 3D Scanning Repository), the \emph{Stanford Bunny} 
-(Stanford 3D Scanning Repository), the \emph{Hairball}, a \emph{Torus} and a \emph{Terrain} scene. All of 
-these models provide different characteristics, which tested the pipeline in a variety of ways. For 
-instance, while \emph{Lucy} is tall and dense, the \emph{Torus} provides a higher voxel count and a hole 
-in it, which will create an area where the octree isn't densly filled with voxels. For low resolutions, 
-the \emph{Hairball} isn't voxelized enough to maintain all the thin and tiny details, but for higher 
-resolutions, the small structures were assumed to be not sufficient in density to completely fill octree 
-nodes, resulting in a unfavorable data layout to test the limits of the mesh computations. \\
-
-\noindent
-As mentioned, the resolution of the voxelization process played a central role in the experimentation process.
+The resolution of the voxelization process played a central role in the experimentation process.
 For the experiment, the voxel scenes were constrained to be a power of two in length per axis, and the following
 scene resolutions were tested.
 
@@ -77,7 +67,7 @@ scene was around 3 - 4 million voxels, which was considered enough for this expe
 [@TODO: Add images of all the models]
 
 
-\subsection*{Timings}
+\subsection*{Timings} \label{subsec-timings}
 
 Ultimately, the time spent for various computations is relevant for the selection of the best algorithm. This is 
 a central tool to see how the implementation performs overall in the context of the framework used. The frame 
@@ -86,7 +76,7 @@ Consequently, the timings for all major pipeline steps were considered, as well 
 \ac{CPU} and \ac{GPU} computations. 
 
 
-\subsection*{Visibility and Culling}
+\subsection*{Visibility and Culling} \label{subsec-visibility-and-culling}
 
 In order to evaluate the general functionality and effectiveness of the pipeline, the voxel model was analysed 
 with and without the occlusion culling applied. The amount of culled voxels was compared to the total amount of 
@@ -102,7 +92,7 @@ by the \ac{GPU}. This data indicates how much work is being scheduled for the ve
 and the pixel shader. Ultimately, it decides over the amount of overdraw and should therefore be kept at a minimum.
 
 
-\subsection*{Additional Overhead}
+\subsection*{Additional Overhead} \label{subsec-additional-overhead}
 
 [@TODO: Refresh sentence]
 The additional overhead needs to be evaluated compared to the gain in performance by the occlusion culling. 
@@ -118,7 +108,7 @@ more voxels, since individual voxels within one octree can be culled, as opposed
 culling, which either renders all voxels within an octree node or culls it completely. 
 
 
-\subsection*{Measuring Tools}
+\subsection*{Measuring Tools} \label{subsec-measuring-tools}
 
 To measure timings and data precisely, a few external tools were used. All tools are part of the industry 
 standard and were therefore assumed to be mostly reliable. Still, measuring performance usally comes with 
@@ -137,7 +127,7 @@ and hardware usage. The last tool used is \emph{Microsoft's PIX} \cite{PIX}, whi
 and profiling tool for \emph{Windows} platforms using \emph{Microsoft's DirectX} \ac{API}.
 
 
-\subsection*{Experimental Environment} \label{sec-experimental-environment}
+\subsection*{Experimental Environment} \label{subsec-experimental-environment}
 
 For the experiment, different hardware setups were used to compare the runtime performance in different environments.
 Some more modern hardware was used to profile the best case computations, and older hardware was used for the results 
@@ -167,6 +157,47 @@ For \emph{NVIDIA} \ac{GPU}s this is the \emph{Turing} lineup (\emph{NVIDIA RTX 2
 this would be the \emph{RDNA 2} lineup (\emph{AMD RX 6000 series}). \emph{Intel} \ac{GPU}s support the feature as 
 well, starting from their first installment in the dedicated desktop \ac{GPU} series \emph{Intel Arc}. The specs of 
 the test setups are listed in table \ref{tbl:hardware-setup}. \\
+
+
+\subsection*{Models} \label{subsec-models}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=100px]{images/graphics/model-lucy.jpg}
+  \includegraphics[width=100px]{images/graphics/model-bunny.jpg}
+  \includegraphics[width=100px]{images/graphics/model-torus.jpg}
+  \includegraphics[width=100px]{images/graphics/model-terrain.jpg}
+  \caption{The models used for the experiment.}
+  \label{fig:experiment-models}
+\end{figure}
+
+\noindent
+The models used in the tests are \emph{Lucy} (Stanford 3D Scanning Repository), the \emph{Stanford Bunny} 
+(Stanford 3D Scanning Repository), the \emph{Hairball}, a \emph{Torus} and a \emph{Terrain} scene. All of 
+these models provide different characteristics, which tested the pipeline in a variety of ways. \\
+
+\noindent
+The \emph{Lucy} model is tall and slim, which means that its volume is distributed more over one axis 
+than over the other two axis. This is assumed to provide interesting insights into how such an object 
+self-occludes the voxels when viewed from different perspectives. It also has a few narrow parts where 
+no best occluders are expected. \\
+
+\noindent
+For low resolutions, the \emph{Hairball} isn't voxelized enough to maintain all the thin and tiny details, 
+but for higher resolutions, the small structures were assumed to be not sufficient in density to completely
+fill octree nodes, resulting in an unfavorable data layout to test the limits of the mesh computations. \\
+
+
+\noindent
+The \emph{Torus} provides a higher voxel count and a hole in it, which will create an area where the 
+octree isn't densly filled with voxels. This model is specifically used to test the algorithms 
+capabilities of culling voxels, when the voxels are densly crowded in small parts of the scene, and 
+also provides areas with no voxels at all. Also, the \emph{Torus} is an inherently round shape and 
+therefore will have a lot of partially filled octree nodes representing its surface. \\
+
+\noindent
+The \emph{Terrain} model aims to replicate a relatively flat, open area that could be found in actual 
+games like \emph{Minecraft}. It is  
 
 \noindent
 Some of the data was sampled over time using a standardized camera animation, which was following a circular orbit 
@@ -286,8 +317,8 @@ profiling camera animation was used to provide better average values in a more r
       \end{tikzpicture}
       \caption{The amount of visible octree nodes over the course of the test animation shown in green for 
       per-octree occlusion culling and in orange for per-meshlet occlusion culling. 
-      The average amount of visible octree nodes was \emph{3460} for per-octree occlusion culling, which is 
-      marked as the blue dotted line, and \emph{2483} for per-meshlet occlusion culling, which is marked in 
+      The average amount of visible octree nodes was \emph{3,460} for per-octree occlusion culling, which is 
+      marked as the blue dotted line, and \emph{2,483} for per-meshlet occlusion culling, which is marked in 
       as the red dotted line.}
       \label{plt:lucy-256-culling-res-nodes}
     \end{center}
@@ -295,6 +326,7 @@ profiling camera animation was used to provide better average values in a more r
 
 % ----------------------------------------------------------------------------------------
 
+\noindent
 Figures \ref{plt:lucy-256-culling-res-voxels} and \ref{plt:lucy-256-culling-res-nodes} show the 
 amount of visible voxels and visible octree nodes for both the per-octree meshlet culling and the 
 per-meshlet octree culling configuration. It is obvious that the per-meshlet culling significantly 
@@ -377,8 +409,8 @@ voxels. The per-meshlet culling even managed to ommit on average $74.6\%$ of all
       \end{tikzpicture}
       \caption{The amount of visible octree nodes over the course of the test animation shown in green for 
       per-octree occlusion culling and in orange for per-meshlet occlusion culling. 
-      The average amount of visible octree nodes was \emph{8519} for per-octree occlusion culling, which is 
-      marked as the blue dotted line, and \emph{5415} for per-meshlet occlusion culling, which is marked in 
+      The average amount of visible octree nodes was \emph{8,519} for per-octree occlusion culling, which is 
+      marked as the blue dotted line, and \emph{5,415} for per-meshlet occlusion culling, which is marked in 
       as the red dotted line.}
       \label{plt:bunny-256-culling-res-nodes}
     \end{center}
@@ -386,6 +418,13 @@ voxels. The per-meshlet culling even managed to ommit on average $74.6\%$ of all
 
 % ----------------------------------------------------------------------------------------
 
+\noindent
+Similar to the first model, the \emph{Stanford Bunny} also discards a significant amount of 
+voxels in both of the applied culling configurations. The average culling ratio was $88.6\%$ 
+for the per-octree occlusion culling, and $94.6\%$ for the per-meshlet culling. This immense 
+amount of occlusion is due to the already large amount of \emph{3,379,738} total voxels in the 
+mesh and the large volume of the model, which provides a good basis for the generation of best 
+occluders. \\
 
 
 
@@ -444,8 +483,8 @@ voxels. The per-meshlet culling even managed to ommit on average $74.6\%$ of all
       \end{tikzpicture}
       \caption{The amount of visible octree nodes over the course of the test animation shown in green for 
       per-octree occlusion culling and in orange for per-meshlet occlusion culling. 
-      The average amount of visible octree nodes was \emph{7712} for per-octree occlusion culling, which is 
-      marked as the blue dotted line, and \emph{4768} for per-meshlet occlusion culling, which is marked in 
+      The average amount of visible octree nodes was \emph{7,712} for per-octree occlusion culling, which is 
+      marked as the blue dotted line, and \emph{4,768} for per-meshlet occlusion culling, which is marked in 
       as the red dotted line.}
       \label{plt:torus-256-culling-res-nodes}
     \end{center}
@@ -453,6 +492,74 @@ voxels. The per-meshlet culling even managed to ommit on average $74.6\%$ of all
 
 % ----------------------------------------------------------------------------------------
 
+\noindent
+The \emph{Torus} model shows 
+
+
+
+\subsection*{Terrain - $256^3$}
+
+% -------------------------------------- TERRAIN 256 -------------------------------------
+
+\begin{figure}[h]              % Terrain 256 Voxels Test Anim
+    \begin{center}
+      \begin{tikzpicture}
+        \begin{axis}[
+            width=\linewidth, % Scale the plot to \linewidth
+            height=100px,
+            xlabel={Frames},
+            ylabel={Visible Voxels},
+            grid,
+            xmin=0,
+            xmax=1239,
+            ymin=70000,
+            ymax=500000
+          ]
+          \addplot[green, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1239 / 1239, y=visible_voxels]{./plotdata/terrain_256_voxels.csv};
+          \addplot[blue, dotted, no marks, domain=0:1239, samples=50] {396228};
+          \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1239 / 1759, y=visible_voxels]{./plotdata/terrain_256_voxels_pmoc.csv};
+          \addplot[red, dotted, no marks, domain=0:1239, samples=50] {180440};
+        \end{axis}
+      \end{tikzpicture}
+      \caption{The amount of visible voxels over the course of the test animation shown in green for 
+      per-octree occlusion culling, and in orange for per-meshlet occlusion culling. 
+      The average amount of visible voxels was \emph{396,228} for per-octree occlusion culling, which is 
+      marked as the blue dotted line, and \emph{180,440} for per-meshlet occlusion culling, marked in red.}
+      \label{plt:terrain-256-culling-res-voxels}
+    \end{center}
+  \end{figure}
+
+
+  \begin{figure}[h]            % Terrain 256 OT Nodes Test Anim
+    \begin{center}
+      \begin{tikzpicture}
+        \begin{axis}[
+            width=\linewidth, % Scale the plot to \linewidth
+            height=100px,
+            xlabel={Frames},
+            ylabel={Visible Nodes},
+            grid,
+            xmin=0,
+            xmax=1239,
+            ymin=1000,
+            ymax=10000
+          ]
+          \addplot[green, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1239 / 1239, y=visible_nodes]{./plotdata/terrain_256_nodes.csv};
+          \addplot[blue, dotted, no marks, domain=0:1239, samples=50] {8207};
+          \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1239 / 1759, y=visible_nodes]{./plotdata/terrain_256_nodes_pmoc.csv};
+          \addplot[red, dotted, no marks, domain=0:1239, samples=50] {3832};
+        \end{axis}
+      \end{tikzpicture}
+      \caption{The amount of visible octree nodes over the course of the test animation shown in green for 
+      per-octree occlusion culling and in orange for per-meshlet occlusion culling. 
+      The average amount of visible octree nodes was \emph{8,207} for per-octree occlusion culling, which is 
+      marked as the blue dotted line, and \emph{3,832} for per-meshlet occlusion culling, which is marked in 
+      as the red dotted line.}
+      \label{plt:terrain-256-culling-res-nodes}
+    \end{center}
+  \end{figure}
+
+% ----------------------------------------------------------------------------------------
 
 
 \noindent
