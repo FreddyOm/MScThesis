@@ -173,7 +173,7 @@ the test setups are listed in table \ref{tbl:hardware-setup}. \\
 \end{figure}
 
 \noindent
-The models used in the tests are \emph{Lucy} (Stanford 3D Scanning Repository), the \emph{Stanford Bunny} 
+The models that were used in the tests are \emph{Lucy} (Stanford 3D Scanning Repository), the \emph{Stanford Bunny} 
 (Stanford 3D Scanning Repository), the \emph{Hairball}, a \emph{Torus} and a \emph{Terrain} scene. All of 
 these models provide different characteristics, which tested the pipeline in a variety of ways. \\
 
@@ -196,21 +196,23 @@ to be efficient when rendering the best occluders, aggregating a lot of smaller 
 approximations. \\ 
 
 \noindent
-The \emph{Torus} provides a higher voxel count and a hole in it, which will create an area where the 
-octree isn't densly filled with voxels. This model is specifically used to test the algorithms 
-capabilities of culling voxels, when the voxels are densly crowded in small parts of the scene, and 
-also provides areas with no voxels at all. Also, the \emph{Torus} is an inherently round shape and 
-therefore will have a lot of partially filled octree nodes representing its surface. \\
+The \emph{Torus} provides a higher voxel count and a hole in it, which created an area where the 
+octree isn't densly filled with voxels. This model was specifically used to test the algorithm's 
+capabilities of culling voxels, when the voxels were densly crowded in small parts of the scene, and 
+at the same time provided areas with no voxels at all. Also, the \emph{Torus} is an inherently round 
+shape and therefore has a lot of partially filled octree nodes representing its surface. \\
 
 \noindent
-The \emph{Terrain} model aims to replicate a relatively flat, open area that could be found in actual 
-games like \emph{Minecraft}. It is  
+The \emph{Terrain} model aimed to replicate a relatively flat, open area that could be found in actual 
+games like \emph{Minecraft}. Its surface is setup in a way that allows for only a small amount of best 
+occluders to be formed. The terrain's hills are assumed to be occluders which again would help for rendering 
+such a scene in a game. \\
 
 \noindent
 Some of the data was sampled over time using a standardized camera animation, which was following a circular orbit 
-around the model and is visualized below. A vertical offset was added to the orbit, so the model is drawn from various 
-angles. This was especially important for models like the \emph{Torus}, which behaves very differently when viewed 
-from above compared to when viewed from the side.
+around the model, visualized below. A vertical offset was added to the orbit, so the model was drawn from various 
+angles. This was especially important for models like the \emph{Torus}, which are likely to behave very differently 
+when viewed from above compared to when viewed from the side.
 
 \begin{figure}[h]
     \centering
@@ -393,7 +395,6 @@ voxels. The per-meshlet culling even managed to ommit on average $74.6\%$ of all
     \end{center}
   \end{figure}
 
-
   \begin{figure}[h]            % Bunny 256 OT Nodes Test Anim
     \begin{center}
       \begin{tikzpicture}
@@ -422,7 +423,7 @@ voxels. The per-meshlet culling even managed to ommit on average $74.6\%$ of all
       \label{plt:bunny-256-culling-res-nodes}
     \end{center}
   \end{figure}
-
+ 
 % ----------------------------------------------------------------------------------------
 
 \noindent
@@ -500,7 +501,17 @@ occluders. \\
 % ----------------------------------------------------------------------------------------
 
 \noindent
-The \emph{Torus} model shows 
+The \emph{Torus} model varied in culling efficiency depending on the view angle. As expected, the hole 
+in the mesh turned out to be inefficient for the culling algorithm. When considering the occlusion ratio, 
+both the per-octree occlusion culling and the oer-meshlet occlusion culling performed significantly better 
+when the torus was viewed from an angle, occluding the hole in the middle. The variation between the maxium 
+amount of visible voxels and the minimum amount of voxels was the highest for the \emph{Torus} model, which 
+is remarkable compared to the other models. Using this particular experimental setup, the lowest amount of 
+visible voxels was $36.8\%$ of the maximum amount of visible voxels. This variation is also clearly evident 
+in figure \ref{plt:torus-256-culling-res-voxels}. \\ 
+
+\noindent
+In general, for per-octree culling, the average culling ratio was $84.4\%$, and $92.6\%$ for per-meshlet culling. 
 
 
 
@@ -570,6 +581,15 @@ The \emph{Torus} model shows
 
 
 \noindent
+The terrain model shows a rather stable occlusion over time, with a ratio of about $58.4\%$ culled voxels 
+using the per-octree culling configuration, and about $81.1\%$ voxels being culled in the per-meshlet 
+configuration. 
+
+
+
+[@TODO: Remove other resolutions]
+
+\noindent
 The torus model shows in particular how the amount of visible voxels is very dependent on the 
 viewing angle of the camera. In figures \ref{plt:torus-256-culling-res-voxels} and 
 \ref{plt:torus-256-culling-res-nodes} two immense drops in voxel and octree visibility can be noticed.
@@ -583,15 +603,45 @@ parts of the model being empty space. \\
 \noindent
 The results show that a model like the torus is not optimal for the use in actual performance agnostic applications.
 Because of its shape, the performance is assumed to rather unstable, as opposed to some of the other models, which 
-consistently cull a similar amount of voxels. [@TODO: Check if this should be put in discussion; refer to per-meshlet
-oc]
+consistently cull a similar amount of voxels.
 
 
+[@TODO: Add best occluder count]
+
+\begin{table}[h]
+  \begin{tabular}{|lccccc|}
+  \hline
+  \multicolumn{6}{|c|}{\textbf{Scene Resolution: $256^3$ - Per-Octree Occlusion Culling}}                                                                                                                                                                                         \\ \hline
+  \multicolumn{1}{|l|}{}                          & \multicolumn{1}{|l|}{\textbf{Stanford Lucy}}  & \multicolumn{1}{l|}{\textbf{Stanford Bunny}}  & \multicolumn{1}{l|}{\textbf{Torus}}   & \multicolumn{1}{l|}{\textbf{Terrain}}     & \multicolumn{1}{l|}{\textbf{Hairball}}    \\ \hline
+  \multicolumn{1}{|l|}{Total Voxel Count}         & \multicolumn{1}{c|}{331,254}                  & \multicolumn{1}{c|}{3,379,738}                & \multicolumn{1}{c|}{2,311,006}        & \multicolumn{1}{c|}{953,362}              & \multicolumn{1}{c|}{1,652,435}            \\
+  \multicolumn{1}{|l|}{Avg. Visible Voxels}       & \multicolumn{1}{c|}{140,842}                  & \multicolumn{1}{c|}{385,210}                  & \multicolumn{1}{c|}{359,313}          & \multicolumn{1}{c|}{396,228}              & \multicolumn{1}{c|}{697,549}              \\
+  \multicolumn{1}{|l|}{Avg. Culled Voxels}        & \multicolumn{1}{c|}{190,412}                  & \multicolumn{1}{c|}{2,994,528}                & \multicolumn{1}{c|}{1,951,693}        & \multicolumn{1}{c|}{557,134}              & \multicolumn{1}{c|}{954,886}              \\
+  \multicolumn{1}{|l|}{Avg. Culled Voxel Ratio}   & \multicolumn{1}{c|}{\textbf{57.5 \%}}         & \multicolumn{1}{c|}{\textbf{88.6 \%}}         & \multicolumn{1}{c|}{\textbf{84.5 \%}} & \multicolumn{1}{c|}{\textbf{58.4 \%}}     & \multicolumn{1}{c|}{\textbf{57.8 \%}}     \\ \hline
+  \multicolumn{1}{|l|}{Total Octree Nodes}        & \multicolumn{1}{c|}{6,830}                    & \multicolumn{1}{c|}{57,481}                   & \multicolumn{1}{c|}{39,794}           & \multicolumn{1}{c|}{18,465}               & \multicolumn{1}{c|}{39,591}               \\
+  \multicolumn{1}{|l|}{Avg. Visible Nodes}        & \multicolumn{1}{c|}{3,460}                    & \multicolumn{1}{c|}{8,519}                    & \multicolumn{1}{c|}{7,712}            & \multicolumn{1}{c|}{8,207}                & \multicolumn{1}{c|}{21,229}               \\
+  \multicolumn{1}{|l|}{Avg. Culled Nodes}         & \multicolumn{1}{c|}{3,370}                    & \multicolumn{1}{c|}{48,962}                   & \multicolumn{1}{c|}{32,082}           & \multicolumn{1}{c|}{10,258}               & \multicolumn{1}{c|}{18,362}               \\
+  \multicolumn{1}{|l|}{Avg. Culled Node Ratio}    & \multicolumn{1}{c|}{\textbf{49.3 \%}}         & \multicolumn{1}{c|}{\textbf{85.2 \%}}         & \multicolumn{1}{c|}{\textbf{80.6 \%}} & \multicolumn{1}{c|}{\textbf{55.6 \%}}     & \multicolumn{1}{c|}{\textbf{46.4 \%}}     \\ \hline
+  \multicolumn{1}{|l|}{Avg. Node Population}      & \multicolumn{1}{c|}{\textbf{48.5 \%}}         & \multicolumn{1}{c|}{\textbf{91.9 \%}}         & \multicolumn{1}{c|}{\textbf{90.7 \%}} & \multicolumn{1}{c|}{\textbf{80.7 \%}}     & \multicolumn{1}{c|}{\textbf{65.2 \%}}     \\
+  \multicolumn{1}{|l|}{Best Occluder Count}       & \multicolumn{1}{c|}{0}                        & \multicolumn{1}{c|}{0}                        & \multicolumn{1}{c|}{0}                & \multicolumn{1}{c|}{0}                    & \multicolumn{1}{c|}{0}                    \\ \hline
+  
+
+  \end{tabular}
+\end{table}
+
+% Avg. Node Population is for the complete, non-culled model. The higher the more efficient the model can be culled
 
 
 \section{Performance Results}
 
+The performance results were measured for specifc frames in the standardized camera animation cycle. For each 
+model, a couple of frames were located and further analyzed to gain more information about the rendering 
+process. The frames selected were usually the ones with the most respective the fewest voxels visible. Additionally,
+a few more frames were analyzed, which provided an average voxel count. All measurements were done for both 
+culling configurations (per-octree culling and per-meshlet culling) and were repeated multiple times to compensate 
+for moise. The average measurements are listed below. \\
 
+\noindent
+[@TODO: Add measurements]
 
 
 
