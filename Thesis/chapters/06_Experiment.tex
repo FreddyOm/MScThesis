@@ -602,8 +602,8 @@ configuration.
             grid,
             xmin=0,
             xmax=940,
-            ymin=400000,
-            ymax=800000
+            ymin=450000,
+            ymax=850000
           ]
           \addplot[green, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 940 / 940, y=visible_voxels]{./plotdata/hairball_256_voxels.csv};
           \addplot[blue, dotted, no marks, domain=0:940, samples=50] {697549};
@@ -631,8 +631,8 @@ configuration.
             grid,
             xmin=0,
             xmax=940,
-            ymin=10000,
-            ymax=30000
+            ymin=15000,
+            ymax=25000
           ]
           \addplot[green, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 940 / 940, y=visible_nodes]{./plotdata/hairball_256_nodes.csv};
           \addplot[blue, dotted, no marks, domain=0:940, samples=50] {21229};
@@ -677,7 +677,7 @@ consistently cull a similar amount of voxels.
   \begin{tabular}{|lccccc|}
   \hline
   \multicolumn{6}{|c|}{\textbf{Scene Resolution: $256^3$ - Per-Octree Occlusion Culling}}                                                                                                                                                                                         \\ \hline
-  \multicolumn{1}{|l|}{}                          & \multicolumn{1}{|l|}{\textbf{Stanford Lucy}}  & \multicolumn{1}{l|}{\textbf{Stanford Bunny}}  & \multicolumn{1}{l|}{\textbf{Torus}}   & \multicolumn{1}{l|}{\textbf{Terrain}}     & \multicolumn{1}{l|}{\textbf{Hairball}}    \\ \hline
+  \multicolumn{1}{|l|}{}                          & \multicolumn{1}{|c|}{\textbf{Stanford Lucy}}  & \multicolumn{1}{c|}{\textbf{Stanford Bunny}}  & \multicolumn{1}{c|}{\textbf{Torus}}   & \multicolumn{1}{c|}{\textbf{Terrain}}     & \multicolumn{1}{c|}{\textbf{Hairball}}    \\ \hline
   \multicolumn{1}{|l|}{Total Voxel Count}         & \multicolumn{1}{c|}{331,254}                  & \multicolumn{1}{c|}{3,379,738}                & \multicolumn{1}{c|}{2,311,006}        & \multicolumn{1}{c|}{953,362}              & \multicolumn{1}{c|}{1,652,435}            \\
   \multicolumn{1}{|l|}{Avg. Visible Voxels}       & \multicolumn{1}{c|}{140,842}                  & \multicolumn{1}{c|}{385,210}                  & \multicolumn{1}{c|}{359,313}          & \multicolumn{1}{c|}{396,228}              & \multicolumn{1}{c|}{697,549}              \\
   \multicolumn{1}{|l|}{Avg. Culled Voxels}        & \multicolumn{1}{c|}{190,412}                  & \multicolumn{1}{c|}{2,994,528}                & \multicolumn{1}{c|}{1,951,693}        & \multicolumn{1}{c|}{557,134}              & \multicolumn{1}{c|}{954,886}              \\
