@@ -163,10 +163,11 @@ the test setups are listed in table \ref{tbl:hardware-setup}. \\
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=100px]{images/graphics/model-lucy.jpg}
-  \includegraphics[width=100px]{images/graphics/model-bunny.jpg}
-  \includegraphics[width=100px]{images/graphics/model-torus.jpg}
-  \includegraphics[width=100px]{images/graphics/model-terrain.jpg}
+  \includegraphics[width=80px]{images/graphics/model-lucy.jpg}
+  \includegraphics[width=80px]{images/graphics/model-hairball.jpg}
+  \includegraphics[width=80px]{images/graphics/model-bunny.jpg}
+  \includegraphics[width=80px]{images/graphics/model-torus.jpg}
+  \includegraphics[width=80px]{images/graphics/model-terrain.jpg}
   \caption{The models used for the experiment.}
   \label{fig:experiment-models}
 \end{figure}
@@ -187,6 +188,12 @@ For low resolutions, the \emph{Hairball} isn't voxelized enough to maintain all 
 but for higher resolutions, the small structures were assumed to be not sufficient in density to completely
 fill octree nodes, resulting in an unfavorable data layout to test the limits of the mesh computations. \\
 
+\noindent
+The \emph{Stanford Bunny} is a large and dense model with a lot of voxels in any possible resolution.
+It also has different features to it, one of them being the curved surface resulting in a lot of octree 
+nodes not being filled completely. On the other hand, because of its large volume, the model is assumed 
+to be efficient when rendering the best occluders, aggregating a lot of smaller octree nodes to larger 
+approximations. \\ 
 
 \noindent
 The \emph{Torus} provides a higher voxel count and a hole in it, which will create an area where the 
