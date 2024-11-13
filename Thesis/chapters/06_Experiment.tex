@@ -587,6 +587,71 @@ configuration.
 
 
 
+\subsection*{Terrain - $256^3$}
+
+% -------------------------------------- HAIRBALL 256 -------------------------------------
+
+\begin{figure}[h]              % Hairball 256 Voxels Test Anim
+    \begin{center}
+      \begin{tikzpicture}
+        \begin{axis}[
+            width=\linewidth, % Scale the plot to \linewidth
+            height=100px,
+            xlabel={Frames},
+            ylabel={Visible Voxels},
+            grid,
+            xmin=0,
+            xmax=940,
+            ymin=400000,
+            ymax=800000
+          ]
+          \addplot[green, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 940 / 940, y=visible_voxels]{./plotdata/hairball_256_voxels.csv};
+          \addplot[blue, dotted, no marks, domain=0:940, samples=50] {697549};
+          \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 940 / 1187, y=visible_voxels]{./plotdata/hairball_256_voxels_pmoc.csv};
+          \addplot[red, dotted, no marks, domain=0:940, samples=50] {0};
+        \end{axis}
+      \end{tikzpicture}
+      \caption{The amount of visible voxels over the course of the test animation shown in green for 
+      per-octree occlusion culling, and in orange for per-meshlet occlusion culling. 
+      The average amount of visible voxels was \emph{697,549} for per-octree occlusion culling, which is 
+      marked as the blue dotted line, and \emph{0} for per-meshlet occlusion culling, marked in red.}
+      \label{plt:terrain-256-culling-res-voxels}
+    \end{center}
+  \end{figure}
+
+
+  \begin{figure}[h]            % Hairball 256 OT Nodes Test Anim
+    \begin{center}
+      \begin{tikzpicture}
+        \begin{axis}[
+            width=\linewidth, % Scale the plot to \linewidth
+            height=100px,
+            xlabel={Frames},
+            ylabel={Visible Nodes},
+            grid,
+            xmin=0,
+            xmax=940,
+            ymin=10000,
+            ymax=30000
+          ]
+          \addplot[green, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 940 / 940, y=visible_nodes]{./plotdata/hairball_256_nodes.csv};
+          \addplot[blue, dotted, no marks, domain=0:940, samples=50] {21229};
+          \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 940 / 1187, y=visible_nodes]{./plotdata/hairball_256_nodes_pmoc.csv};
+          \addplot[red, dotted, no marks, domain=0:940, samples=50] {0};
+        \end{axis}
+      \end{tikzpicture}
+      \caption{The amount of visible octree nodes over the course of the test animation shown in green for 
+      per-octree occlusion culling and in orange for per-meshlet occlusion culling. 
+      The average amount of visible octree nodes was \emph{21,229} for per-octree occlusion culling, which is 
+      marked as the blue dotted line, and \emph{0} for per-meshlet occlusion culling, which is marked in 
+      as the red dotted line.}
+      \label{plt:terrain-256-culling-res-nodes}
+    \end{center}
+  \end{figure}
+
+% ----------------------------------------------------------------------------------------
+
+
 [@TODO: Remove other resolutions]
 
 \noindent
