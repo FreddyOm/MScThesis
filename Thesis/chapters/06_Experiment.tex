@@ -134,9 +134,9 @@ Some more modern hardware was used to profile the best case computations, and ol
 to different versions of hardware features and capabilities.
 
 \begin{table}[h]
-    \begin{tabular}{|llll|}
+    \begin{tabular}{|lll|}
         \hline
-        \multicolumn{4}{|c|}{\textbf{Test setups}}                                                                              \\ \hline
+        \multicolumn{3}{|c|}{\textbf{Test setups}}                                                                              \\ \hline
         \multicolumn{1}{|l|}{}                     & \multicolumn{1}{l|}{\textbf{Setup 1}}          & \textbf{Setup 2}          \\ \hline
         \multicolumn{1}{|l|}{\textbf{System Type}} & \multicolumn{1}{l|}{Desktop}                   & Laptop                    \\
         \multicolumn{1}{|l|}{\textbf{CPU}}         & \multicolumn{1}{l|}{AMD Ryzen 9 9950X}         & Intel Ultra 7 155H        \\
@@ -678,6 +678,7 @@ consistently cull a similar amount of voxels.
   \hline
   \multicolumn{6}{|c|}{\textbf{Scene Resolution: $256^3$ - Per-Octree Occlusion Culling}}                                                                                                                                                                                         \\ \hline
   \multicolumn{1}{|l|}{}                          & \multicolumn{1}{|c|}{\textbf{Stanford Lucy}}  & \multicolumn{1}{c|}{\textbf{Stanford Bunny}}  & \multicolumn{1}{c|}{\textbf{Torus}}   & \multicolumn{1}{c|}{\textbf{Terrain}}     & \multicolumn{1}{c|}{\textbf{Hairball}}    \\ \hline
+  \multicolumn{1}{|l|}{Best Occluder Count}       & \multicolumn{1}{c|}{1600}                     & \multicolumn{1}{c|}{8256}                     & \multicolumn{1}{c|}{7168}             & \multicolumn{1}{c|}{6976}                 & \multicolumn{1}{c|}{5056}                 \\ \hline
   \multicolumn{1}{|l|}{Total Voxel Count}         & \multicolumn{1}{c|}{331,254}                  & \multicolumn{1}{c|}{3,379,738}                & \multicolumn{1}{c|}{2,311,006}        & \multicolumn{1}{c|}{953,362}              & \multicolumn{1}{c|}{1,652,435}            \\
   \multicolumn{1}{|l|}{Avg. Visible Voxels}       & \multicolumn{1}{c|}{140,842}                  & \multicolumn{1}{c|}{385,210}                  & \multicolumn{1}{c|}{359,313}          & \multicolumn{1}{c|}{396,228}              & \multicolumn{1}{c|}{697,549}              \\
   \multicolumn{1}{|l|}{Avg. Culled Voxels}        & \multicolumn{1}{c|}{190,412}                  & \multicolumn{1}{c|}{2,994,528}                & \multicolumn{1}{c|}{1,951,693}        & \multicolumn{1}{c|}{557,134}              & \multicolumn{1}{c|}{954,886}              \\
@@ -686,10 +687,8 @@ consistently cull a similar amount of voxels.
   \multicolumn{1}{|l|}{Avg. Visible Nodes}        & \multicolumn{1}{c|}{3,460}                    & \multicolumn{1}{c|}{8,519}                    & \multicolumn{1}{c|}{7,712}            & \multicolumn{1}{c|}{8,207}                & \multicolumn{1}{c|}{21,229}               \\
   \multicolumn{1}{|l|}{Avg. Culled Nodes}         & \multicolumn{1}{c|}{3,370}                    & \multicolumn{1}{c|}{48,962}                   & \multicolumn{1}{c|}{32,082}           & \multicolumn{1}{c|}{10,258}               & \multicolumn{1}{c|}{18,362}               \\
   \multicolumn{1}{|l|}{Avg. Culled Node Ratio}    & \multicolumn{1}{c|}{\textbf{49.3 \%}}         & \multicolumn{1}{c|}{\textbf{85.2 \%}}         & \multicolumn{1}{c|}{\textbf{80.6 \%}} & \multicolumn{1}{c|}{\textbf{55.6 \%}}     & \multicolumn{1}{c|}{\textbf{46.4 \%}}     \\ \hline
-  \multicolumn{1}{|l|}{Avg. Node Population}      & \multicolumn{1}{c|}{\textbf{48.5 \%}}         & \multicolumn{1}{c|}{\textbf{91.9 \%}}         & \multicolumn{1}{c|}{\textbf{90.7 \%}} & \multicolumn{1}{c|}{\textbf{80.7 \%}}     & \multicolumn{1}{c|}{\textbf{65.2 \%}}     \\
-  \multicolumn{1}{|l|}{Best Occluder Count}       & \multicolumn{1}{c|}{0}                        & \multicolumn{1}{c|}{0}                        & \multicolumn{1}{c|}{0}                & \multicolumn{1}{c|}{0}                    & \multicolumn{1}{c|}{0}                    \\ \hline
+  \multicolumn{1}{|l|}{Avg. Node Population}      & \multicolumn{1}{c|}{\textbf{48.5 \%}}         & \multicolumn{1}{c|}{\textbf{91.9 \%}}         & \multicolumn{1}{c|}{\textbf{90.7 \%}} & \multicolumn{1}{c|}{\textbf{80.7 \%}}     & \multicolumn{1}{c|}{\textbf{65.2 \%}}     \\ \hline
   
-
   \end{tabular}
 \end{table}
 
@@ -717,42 +716,9 @@ for moise. The average measurements are listed below. \\
 
 
 
+\subsubsection*{Timings}
 
-
-
-
-
-
-
-
-\begin{table}[h]
-    \begin{tabular}{|lccccc|}
-    \hline
-    \multicolumn{6}{|c|}{\textbf{Scene Resolution: $256^3$}}                                                                                                                                                                                                         \\ \hline
-    \multicolumn{1}{|l|}{}                          & \multicolumn{1}{|l|}{\textbf{Stanford Lucy}}  & \multicolumn{1}{l|}{\textbf{Stanford Bunny}}  & \multicolumn{1}{l|}{\textbf{Torus}}   & \multicolumn{1}{l|}{\textbf{Terrain}}     & \multicolumn{1}{l|}{\textbf{Hairball}}    \\ \hline
-    \multicolumn{1}{|l|}{Total Voxel Count}         & \multicolumn{1}{c|}{331,254}                  & \multicolumn{1}{c|}{-}                        & \multicolumn{1}{c|}{-}                & \multicolumn{1}{c|}{-}                    & \multicolumn{1}{c|}{-}                    \\
-    \multicolumn{1}{|l|}{Culled Voxels}             & \multicolumn{1}{c|}{207,466}                  & \multicolumn{1}{c|}{-}                        & \multicolumn{1}{c|}{-}                & \multicolumn{1}{c|}{-}                    & -                                         \\
-    \multicolumn{1}{|l|}{Voxel Culling Ratio}       & \multicolumn{1}{c|}{\textbf{62,63 \%}}        & \multicolumn{1}{c|}{-}                        & \multicolumn{1}{c|}{-}                & \multicolumn{1}{c|}{-}                    & -                                         \\ \hline
-    \multicolumn{1}{|l|}{Octree Nodes}              & \multicolumn{1}{c|}{6,830}                    & \multicolumn{1}{c|}{-}                        & \multicolumn{1}{c|}{-}                & \multicolumn{1}{c|}{-}                    & -                                         \\
-    \multicolumn{1}{|l|}{Culled Octree Nodes}       & \multicolumn{1}{c|}{3,774}                    & \multicolumn{1}{c|}{-}                        & \multicolumn{1}{c|}{-}                & \multicolumn{1}{c|}{-}                    & -                                         \\
-    \multicolumn{1}{|l|}{Octree Culling Ratio}      & \multicolumn{1}{c|}{\textbf{55,25 \%}}        & \multicolumn{1}{c|}{-}                        & \multicolumn{1}{c|}{-}                & \multicolumn{1}{c|}{-}                    & -                                         \\ \hline
-    \end{tabular}
-\end{table}
-
-
-\subsubsection*{GPU Timings}
-
-\begin{table}[h]
-    \begin{tabular}{|lccccc|}
-    \hline
-    \multicolumn{6}{|c|}{\textbf{Scene Resolution: $256^3$}}                                                                                                                                                                                                         \\ \hline
-    \multicolumn{1}{|l|}{}                          & \multicolumn{1}{l|}{\textbf{Stanford Lucy}}   & \multicolumn{1}{l|}{\textbf{Stanford Bunny}}  & \multicolumn{1}{l|}{\textbf{Torus}}   & \multicolumn{1}{l|}{\textbf{Terrain}}     & \multicolumn{1}{l|}{\textbf{Hairball}}    \\ \hline
-    \multicolumn{1}{|l|}{Overall GPU Time}          & \multicolumn{1}{c|}{2.3009 ms}                & \multicolumn{1}{c|}{-}                        & \multicolumn{1}{c|}{-}                & \multicolumn{1}{c|}{-}                    & \multicolumn{1}{c|}{-}                    \\
-    \multicolumn{1}{|l|}{Depth Pre-Pass}            & \multicolumn{1}{c|}{402.7 us}                 & \multicolumn{1}{c|}{-}                        & \multicolumn{1}{c|}{-}                & \multicolumn{1}{c|}{-}                    & -                                         \\
-    \multicolumn{1}{|l|}{Dispatch Mesh (Draw)}      & \multicolumn{1}{c|}{1.75 ms}                  & \multicolumn{1}{c|}{-}                        & \multicolumn{1}{c|}{-}                & \multicolumn{1}{c|}{-}                    & -                                         \\ \hline
-    \end{tabular}
-\end{table}
-
+[@TODO: Add CPU and GPU timings]
 
 
 

@@ -20,3 +20,9 @@ pipeline discussion and in depth data visualization.
 ## Problems
 
 - [x] Shader invocation limit at 65536 -> Multiple Batches? -> Not a problem after occlusion culling? -> Multiple passes?
+
+
+## Kolloquium
+
+- If I were do redo it Id focus on the aggregation of the best occluders as the central innovation
+and do experiments with dynamically updating and changing the voxel meshes.
