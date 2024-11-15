@@ -12,7 +12,19 @@ pipeline steps. When accurately measuring the two configurations, per-meshlet cu
 per-octree culling, the difference between both can be evaluated by looking at various pipeline 
 steps and their timings. A cross-comparison between pipelines using different models can additionally 
 provide insights into why the computation times scale and how the complexity of the scene refers to 
-the scaling.
+the scaling.\\
+
+\noindent
+Ultimately, the two approaches \emph{per-octree node occlusion culling} and \emph{per-meshlet occlusion culling} 
+were compared in this experiment, both in terms of how many voxels could be culled and in terms of the respective 
+overhead and the performance gains. \\
+
+\noindent
+First, the experiment is evaluated in how it shows the differences between the pipelines. In this context, various 
+factors are discussed and it is presented how these factors were taken into account during the experiment. AAfter 
+that, the tools that were used to perform the measurements are presented, as well as the models, which were tested.
+Finally, the results are discussed by presenting the measurements for each model. A brief summary of the results is 
+given in the end, aggregating average data from all the tests performed during the experiment.
 
 \section{Experimental Evaluation} \label{sec-experimental-evaluation}
 
@@ -54,7 +66,6 @@ which are likely to behave very differently when viewed from above compared to w
     \label{fig:test-anim-camera-path}
 \end{figure}
 
-
 \noindent
 [@TODO: Consider replacing the last "algorithm" with the actual subelement of the algo (scene data / data dispatch / ...)] 
 Another aspect to consider is the model data structure. The voxel models are volumetric representations and thus, 
@@ -80,6 +91,7 @@ scene was around 3 - 4 million voxels, which was considered enough for this expe
 \noindent
 For comparison of particular measures, some of the models were additionally tested using higher or lower resolutions.
 Whenever the respective comparison is meaningful, it is highlighted as such.
+
 
 \subsection*{Timings} \label{subsec-timings}
 
@@ -143,6 +155,7 @@ and profiling tool for \emph{Windows} platforms using \emph{Microsoft's DirectX}
 
 \subsection*{Experimental Environment} \label{subsec-experimental-environment}
 
+[@TODO: Rethink section title]
 For the experiment, different hardware setups were used to compare the runtime performance in different environments.
 Some more modern hardware was used to profile the best case computations, and older hardware was used for the results 
 to different versions of hardware features and capabilities.
@@ -260,16 +273,16 @@ such a scene in a game.
 %    - Multiple devices
 
 
-\section{Culling Results}
+\section{Experimental Results}
 
-The amount of visible voxels compared to the amount of culled voxels is one major aspect of the 
-experiment and is not related to the actual performance measures. They are assumed to be the same 
-for all hardware setups and are therefore only measured on the \emph{Laptop} setup. The results are 
-presented below, comparing the per-octree culling with the per-meshlet culling. For the culling, the 
-profiling camera animation was used to provide better average values in a more realistic environment.\\
+In this section the experimental results are presented and discussed for each model tested.
+For each model the culling results are presented, which includes data that isn't dependent 
+on specific hardware. After that, the profiling measurements are discussed, which relate to 
+the hardware setup presented in \ref{subsec-experimental-environment}. 
 
+\subsection*{Stanford Lucy}
 
-\subsection*{Stanford Lucy - $256^3$}
+ \subsubsection*{Culling Results}
 
 % --------------------------------------- LUCY 256 ---------------------------------------
 
@@ -336,17 +349,25 @@ profiling camera animation was used to provide better average values in a more r
 \noindent
 Figures \ref{plt:lucy-256-culling-res-voxels} and \ref{plt:lucy-256-culling-res-nodes} show the 
 amount of visible voxels and visible octree nodes for both the per-octree meshlet culling and the 
-per-meshlet octree culling configuration. It is obvious that the per-meshlet culling significantly 
-reduces the amount of dispatched voxels and octree nodes, which leads to less load for the rasterizer 
-and the pixel shader. \\
+per-meshlet octree culling configuration. The measurements were directly sampled from the 
+\emph{Task Shader} over the course of the testing animation. Figure \ref{plt:lucy-256-culling-res-voxels}
+presents the amount of visible voxels while figure \ref{plt:lucy-256-culling-res-nodes} shows the amount 
+of visible octree nodes. Both values directly correlate since culled octree nodes result in culled voxels.
+The per-octree occlusion culling configuration is shown in green, with a dotted blue line representing the 
+average value over time. The orange graph shows the per-meshlet occlusion culling configuration, and an 
+additional red dotted line representing the average values for this configuration. The respective graphs for 
+the other models follow the same color code. [@TODO: Consider moving analysis out of per model text]\\
+
 
 \noindent
-The amount of octree nodes decreases when using per-meshlet culling, because octree nodes can be culled,
-even when their corners are visible by the camera. For instance, when considering a node that holds just 
-5 voxels, which are all overlapped by a part of the model, this octree node will be inherently culled when 
-using per-meshlet culling. Contrary, when using per-octree culling, the culling is dependant on the 
-visibility of any of the octree nodes corners, which can result in a node being not culled, even though all 
-voxels within that node remain occluded. \\
+It is obvious that the per-meshlet culling 
+significantly reduced the amount of dispatched voxels and octree nodes, which lead to less load for the 
+rasterizer and the pixel shader. The amount of octree nodes decreased when using per-meshlet culling, because 
+octree nodes could be culled, even when their corners were visible by the camera. For instance, when considering 
+a node that holds just 5 voxels, which are all overlapped by a part of the model, this octree node will be 
+inherently culled when using per-meshlet culling. Contrary, when using per-octree culling, the culling is 
+dependant on the visibility of any of the octree nodes corners, which can result in a node being not culled, 
+even though all voxels within that node remain occluded. \\
 
 \noindent 
 Both curves indicate how the model fits the overall culling algorithm. For instance, the \emph{Stanford Lucy} 
@@ -357,6 +378,17 @@ relatively even number of voxels when viewed from the side. \\
 \noindent
 Considering the average amount of visible voxels, the per-octree algorithm was able to cull $57.5\%$ of all 
 voxels. The per-meshlet culling even managed to ommit on average $74.6\%$ of all voxels. 
+
+
+\subsubsection*{Performance Results}
+
+% CPU performance
+
+
+% GPU performance
+
+
+
 
 
 
