@@ -2,12 +2,17 @@
 
 When considering occlusion culling algorithms that can be used in a given use case, the runtime 
 performance is a critical aspect. But runtime performance is a multi-dimensional measure, in that 
-most algorithms provide given results under specific circumstances and by setting several constraints.
+most algorithms provide results under specific circumstances and by setting several constraints.
 To be able to evaluate the strengths and weaknesses of the given implementation, an in-depth  
 experiment was conducted and evaluated, highlighting a diverse set of measured data. \\ 
 
 \noindent
-The method of profiling performance was chosen because 
+The method of profiling performance was chosen because it allows for an in-depth analysis of the 
+pipeline steps. When accurately measuring the two configurations, per-meshlet culling and 
+per-octree culling, the difference between both can be evaluated by looking at various pipeline 
+steps and their timings. A cross-comparison between pipelines using different models can additionally 
+provide insights into why the computation times scale and how the complexity of the scene refers to 
+the scaling.
 
 \section{Experimental Evaluation} \label{sec-experimental-evaluation}
 
@@ -29,10 +34,26 @@ compare the pipeline to alternative approaches.
 
 \subsection*{Scene Layout} \label{subsec-scene-layout}
 
-Any occlusion culling algorithm somehow relies on spatial information, be it in world space, sceen space or by 
-using a spatial container. Consequently, the scene layout and how the scene changes relative to the camera are 
-important aspects to consider. For this experimental setup, a moving camera was used in order to test the ability 
-of the occlusion culling algorithm to adapt to different angles of the scene. \\
+Every occlusion culling algorithm somehow relies on spatial information, be it in world space or sceen space. 
+Consequently, the scene layout and how the scene changes relative to the camera were important aspects to consider. 
+For this experimental setup, a moving camera was used in order to test the ability of the occlusion culling 
+algorithm to adapt to different angles of the scene. \\
+
+\noindent
+The data was sampled over time using a standardized camera animation, which was following a circular orbit 
+around the model, visualized in figure \ref{fig:test-anim-camera-path}. A vertical offset was added to the orbit, 
+so the model could be drawn from various angles. This was especially important for models like the \emph{Torus}, 
+which are likely to behave very differently when viewed from above compared to when viewed from the side.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=200px]{images/graphics/test-anim-camera-path.jpg}
+    \caption{During profiling, the camera is moved along an orbit around the voxel mesh, while being offset to compensate 
+    for models, which behave differently when viewed from an angle. The visualization is not to scale, the models 
+    are always completely visible and not culled by view frustum culling.}
+    \label{fig:test-anim-camera-path}
+\end{figure}
+
 
 \noindent
 [@TODO: Consider replacing the last "algorithm" with the actual subelement of the algo (scene data / data dispatch / ...)] 
@@ -42,30 +63,23 @@ optimize the data flow. Different types of models were used to challenge the cul
 In concept, the culling should be optimal on large, dense models with even faces. Consequently, models with 
 slopes and holes were tested, to see how best occluders can be computed for diverse geometry. Smaller models might 
 also pose a challenge for the optimization, especially when the octree nodes cannot be filled completely. Also, 
-different voxle resolutions were used to achieve different amounts of octree nodes in the scene. All these different 
+different voxel resolutions were used to achieve different amounts of octree nodes in the scene. All these different 
 aspects aim to show the strengths and weaknesses of the algorithm and how it can be optimally used in practice. \\
 
 \noindent
 The resolution of the voxelization process played a central role in the experimentation process.
-For the experiment, the voxel scenes were constrained to be a power of two in length per axis, and the following
-scene resolutions were tested.
-
-\begin{itemize}
-    \item \begin{math} \emph{128} \times \emph{128} \times \emph{128}\end{math}, resulting in a maximum of \emph{2.097.152} voxels
-    \item \begin{math} \emph{256} \times \emph{256} \times \emph{256}\end{math}, resulting in a maximum of \emph{16.777.216} voxels
-    \item \begin{math} \emph{512} \times \emph{512} \times \emph{512}\end{math}, resulting in a maximum of \emph{134.217.728} voxels
-\end{itemize}
+For the experiment, the voxel scenes were constrained to be a power of two in length per axis, and a resolution 
+of $\emph{256} \times \emph{256} \times \emph{256}$ were used for the performance profiling, resulting in a maximum 
+of \emph{16.777.216} voxels. In practice, the maximum amount of voxels was limited by how the data is dispatched 
+by the \ac{GPU}. In the implementation, the shader model used (HLSL Shader Model 6.6) was limited to a maximum 
+amount of 65.536 threadgroups. That means that the threadgroup size and the amount of constructed octree nodes 
+influenced the possible resolutions of the scenes. This limitation can be overcome by scheduling more than one draw 
+call, but for this experiment, only one draw call was used. Consequently, the actual maximum amount of voxels in the 
+scene was around 3 - 4 million voxels, which was considered enough for this experiment. \\
 
 \noindent
-In practice, the maximum amount of voxels was limited by how the data is dispatched on the \ac{GPU}. In the 
-implementation, the shader model used (HLSL Shader Model 6.6) was limited to a maximum amount of 65.536 
-threadgroups. That means that the threadgroup size and the amount of constructed octree nodes influenced the 
-possible resolutions of the scenes. This limitation can be overcome by scheduling more than one draw call, 
-but for this experiment, only one draw call was used. Consequently, the actual maximum amount of voxels in the 
-scene was around 3 - 4 million voxels, which was considered enough for this experiment.
-
-[@TODO: Add images of all the models]
-
+For comparison of particular measures, some of the models were additionally tested using higher or lower resolutions.
+Whenever the respective comparison is meaningful, it is highlighted as such.
 
 \subsection*{Timings} \label{subsec-timings}
 
@@ -133,7 +147,7 @@ For the experiment, different hardware setups were used to compare the runtime p
 Some more modern hardware was used to profile the best case computations, and older hardware was used for the results 
 to different versions of hardware features and capabilities.
 
-\begin{table}[h]
+\begin{table}[h]          % System setup table
     \begin{tabular}{|lll|}
         \hline
         \multicolumn{3}{|c|}{\textbf{Test setups}}                                                                              \\ \hline
@@ -206,23 +220,7 @@ shape and therefore has a lot of partially filled octree nodes representing its 
 The \emph{Terrain} model aimed to replicate a relatively flat, open area that could be found in actual 
 games like \emph{Minecraft}. Its surface is setup in a way that allows for only a small amount of best 
 occluders to be formed. The terrain's hills are assumed to be occluders which again would help for rendering 
-such a scene in a game. \\
-
-\noindent
-Some of the data was sampled over time using a standardized camera animation, which was following a circular orbit 
-around the model, visualized below. A vertical offset was added to the orbit, so the model was drawn from various 
-angles. This was especially important for models like the \emph{Torus}, which are likely to behave very differently 
-when viewed from above compared to when viewed from the side.
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=200px]{images/graphics/test-anim-camera-path.jpg}
-    \caption{During profiling, the camera is moved along an orbit around the voxel mesh, while being offset to compensate 
-    for models, which behave differently when viewed from an angle. The visualization is not to scale, the models 
-    are always completely visible and not culled by view frustum culling.}
-    \label{fig:test-anim-camera-path}
-\end{figure}
-
+such a scene in a game.
 
 
 %- Compare:
@@ -671,8 +669,6 @@ Because of its shape, the performance is assumed to rather unstable, as opposed 
 consistently cull a similar amount of voxels.
 
 
-[@TODO: Add best occluder count]
-
 \begin{table}[h]
   \begin{tabular}{|lccccc|}
   \hline
@@ -709,53 +705,47 @@ for moise. The average measurements are listed below. \\
 
 
 
+\subsubsection*{CPU Timings}
 
 
-
-
-
-
-
-\subsubsection*{Timings}
-
-[@TODO: Add CPU and GPU timings]
-
-
-
-
-\section{Per-Meshlet Culling Results}
-
-\subsection*{Laptop Setup}
-
-\subsubsection*{Culling Effect}
-
-\begin{table}[h]
-    \begin{tabular}{|lccccc|}
-    \hline
-    \multicolumn{6}{|c|}{\textbf{Scene Resolution: $256^3$}}                                                                                                                                                                                                         \\ \hline
-    \multicolumn{1}{|l|}{}                          & \multicolumn{1}{|l|}{\textbf{Stanford Lucy}}  & \multicolumn{1}{l|}{\textbf{Stanford Bunny}}  & \multicolumn{1}{l|}{\textbf{Torus}}   & \multicolumn{1}{l|}{\textbf{Terrain}}     & \multicolumn{1}{l|}{\textbf{Hairball}}    \\ \hline
-    \multicolumn{1}{|l|}{Total Voxel Count}         & \multicolumn{1}{c|}{331,254}                  & \multicolumn{1}{c|}{-}                        & \multicolumn{1}{c|}{-}                & \multicolumn{1}{c|}{-}                    & \multicolumn{1}{c|}{-}                    \\
-    \multicolumn{1}{|l|}{Culled Voxels}             & \multicolumn{1}{c|}{257,961}                  & \multicolumn{1}{c|}{-}                        & \multicolumn{1}{c|}{-}                & \multicolumn{1}{c|}{-}                    & -                                         \\
-    \multicolumn{1}{|l|}{Voxel Culling Ratio}       & \multicolumn{1}{c|}{\textbf{77,87 \%}}        & \multicolumn{1}{c|}{-}                        & \multicolumn{1}{c|}{-}                & \multicolumn{1}{c|}{-}                    & -                                         \\ \hline
-    \multicolumn{1}{|l|}{Octree Nodes}              & \multicolumn{1}{c|}{6,830}                    & \multicolumn{1}{c|}{-}                        & \multicolumn{1}{c|}{-}                & \multicolumn{1}{c|}{-}                    & -                                         \\
-    \multicolumn{1}{|l|}{Culled Octree Nodes}       & \multicolumn{1}{c|}{4,329}                    & \multicolumn{1}{c|}{-}                        & \multicolumn{1}{c|}{-}                & \multicolumn{1}{c|}{-}                    & -                                         \\
-    \multicolumn{1}{|l|}{Octree Culling Ratio}      & \multicolumn{1}{c|}{\textbf{63,38 \%}}        & \multicolumn{1}{c|}{-}                        & \multicolumn{1}{c|}{-}                & \multicolumn{1}{c|}{-}                    & -                                         \\ \hline
-    \end{tabular}
-\end{table}
 
 
 \subsubsection*{GPU Timings}
 
-\begin{table}[h]
-    \begin{tabular}{|lccccc|}
-    \hline
-    \multicolumn{6}{|c|}{\textbf{Scene Resolution: 256\textasciicircum{}3}}                                                                                                                                                                                                         \\ \hline
-    \multicolumn{1}{|l|}{}                          & \multicolumn{1}{l|}{\textbf{Stanford Lucy}}   & \multicolumn{1}{l|}{\textbf{Stanford Bunny}}  & \multicolumn{1}{l|}{\textbf{Torus}}   & \multicolumn{1}{l|}{\textbf{Terrain}}     & \multicolumn{1}{l|}{\textbf{Hairball}}    \\ \hline
-    \multicolumn{1}{|l|}{Overall GPU Time}          & \multicolumn{1}{c|}{1.7162 ms}                & \multicolumn{1}{c|}{-}                        & \multicolumn{1}{c|}{-}                & \multicolumn{1}{c|}{-}                    & \multicolumn{1}{c|}{-}                    \\
-    \multicolumn{1}{|l|}{Depth Pre-Pass}            & \multicolumn{1}{c|}{388.3 us}                 & \multicolumn{1}{c|}{-}                        & \multicolumn{1}{c|}{-}                & \multicolumn{1}{c|}{-}                    & -                                         \\
-    \multicolumn{1}{|l|}{Dispatch Mesh (Draw)}      & \multicolumn{1}{c|}{1.19 ms}                  & \multicolumn{1}{c|}{-}                        & \multicolumn{1}{c|}{-}                & \multicolumn{1}{c|}{-}                    & -                                         \\ \hline
-    \end{tabular}
-\end{table}
+[@TODO: Add CPU and GPU timings]
+
+
+\begin{tikzpicture}
+  \begin{axis}[
+    xbar stacked,
+    xmin=0,
+    width=\textwidth,
+    height=10cm,
+    ytick=data,
+    bar width=10pt,
+    xlabel={Time (us)},
+    symbolic y coords={Lucy2, Lucy1, Lucy0, Bunny2, Bunny1, Bunny0, Torus2, Torus1, Torus0, 
+    Terrain2, Terrain1, Terrain0, Hairball2, Hairball1, Hairball0},
+    ytick=data,
+    legend style={at={(0.5,-0.15)}, anchor=north, legend columns=-2}
+  ]
+
+  \addplot [fill=green!80]  table [col sep=comma, x=DepthPrepass, y=Label]  {plotdata/gpu/gpu_profiling_frame_pooc.csv};
+  \addplot [fill=blue!60]   table [col sep=comma, x=DispatchMesh, y=Label]  {plotdata/gpu/gpu_profiling_frame_pooc.csv};
+  \addplot [fill=orange!60] table [col sep=comma, x=Misc,         y=Label]  {plotdata/gpu/gpu_profiling_frame_pooc.csv};
+  %\addplot [fill=red!60]    table [col sep=comma, x=HiZDispatchBO,y=Label]  {plotdata/gpu/gpu_profiling_pooc.csv};
+  %\addplot [fill=yellow!60] table [col sep=comma, x=HiZCpyTex,    y=Label]  {plotdata/gpu/gpu_profiling_pooc.csv};
+  %\addplot [fill=orange!60] table [col sep=comma, x=HiZCreateMips,y=Label]  {plotdata/gpu/gpu_profiling_pooc.csv};
+
+  \legend{Depth Prepass, Dispatch Mesh, Miscellaneous}
+  \end{axis}
+\end{tikzpicture}
+
+
+
+
+
+
 
 
 
