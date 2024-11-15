@@ -387,12 +387,70 @@ voxels. The per-meshlet culling even managed to ommit on average $74.6\%$ of all
 
 % GPU performance
 
+\begin{figure}
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+      xbar stacked,
+      xmin=0,
+      width=\textwidth,
+      height=5cm,
+      ytick=data,
+      bar width=10pt,
+      xlabel={Time (us)},
+      symbolic y coords={Lucy4, Lucy3, Lucy2, Lucy1, Lucy0},
+      ytick=data,
+      legend style={at={(0.5,1.1)}, anchor=south, legend columns=-1}
+    ]
+
+    \addplot [fill=green!80]  table [col sep=comma, x=DepthPrepass, y=Label]  {plotdata/gpu/lucy_gpu_profiling_frame_pooc.csv};
+    \addplot [fill=blue!60]   table [col sep=comma, x=DispatchMesh, y=Label]  {plotdata/gpu/lucy_gpu_profiling_frame_pooc.csv};
+    \addplot [fill=orange!60] table [col sep=comma, x=Misc,         y=Label]  {plotdata/gpu/lucy_gpu_profiling_frame_pooc.csv};
+
+    \legend{Depth Prepass, Dispatch Mesh, Miscellaneous}
+    \end{axis}
+  \end{tikzpicture}
+  \caption{The complete time measured on the \ac{GPU}. The \emph{Depth Prepass} is the extra overhead introduced 
+  by the \ac{HZB}. The \emph{Dispatch Mesh} is the drawing of the meshes, including the occlusion culling. 
+  \emph{Miscellaneous} includes a small amount of \emph{barriers} used for synchronisation and the rendering 
+  of some debug \ac{UI}. It is considered to be more or less static in computation time and is not part of 
+  the actual algorithm measured in this experiment.}
+\end{figure}
 
 
 
 
+\begin{figure}
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+      xbar stacked,
+      xmin=0,
+      width=\textwidth,
+      height=5cm,
+      ytick=data,
+      bar width=10pt,
+      xlabel={Time (us)},
+      symbolic y coords={Lucy4, Lucy3, Lucy2, Lucy1, Lucy0},
+      ytick=data,
+      legend style={at={(0.5,1)}, anchor=north, legend columns=-1}
+    ]
 
-\subsection*{Stanford Bunny - $256^3$}
+    \addplot [fill=red!80]    table [col sep=comma, x=DispatchBestOccluders,  y=Label]  {plotdata/gpu/lucy_gpu_profiling_prepass_pooc.csv};
+    \addplot [fill=pink!60]   table [col sep=comma, x=CopyTex,                y=Label]  {plotdata/gpu/lucy_gpu_profiling_prepass_pooc.csv};
+    \addplot [fill=yellow!60] table [col sep=comma, x=GenMipChain,            y=Label]  {plotdata/gpu/lucy_gpu_profiling_prepass_pooc.csv};
+
+    \legend{Dispatch Best Occluders, Copy Depth Buffer, Generate HiZ-Pyramid}
+    \end{axis}
+  \end{tikzpicture}
+  \caption{The time measured in the \emph{Depth Prepass}. The \emph{Dispatch Best Occluders} is the drawing to the 
+  depth buffer. The \emph{Copy Depth Buffer} computation copies the depth buffers content into the final \ac{HiZ} resource.
+  Finally, \emph{Generate HiZ-Pyramid} shows the \ac{HiZ} creation, which is done sequentially.}
+\end{figure}
+
+
+
+\subsection*{Stanford Bunny}
 
 
 % --------------------------------------- BUNNY 256 --------------------------------------
@@ -701,6 +759,7 @@ Because of its shape, the performance is assumed to rather unstable, as opposed 
 consistently cull a similar amount of voxels.
 
 
+[@TODO: Consider this table as one of the overall overviews]
 \begin{table}[h]
   \begin{tabular}{|lccccc|}
   \hline
