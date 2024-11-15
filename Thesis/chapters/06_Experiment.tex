@@ -397,7 +397,7 @@ voxels. The per-meshlet culling even managed to ommit on average $74.6\%$ of all
       height=5cm,
       ytick=data,
       bar width=10pt,
-      xlabel={Time (us)},
+      xlabel={Time (\mu s)},
       symbolic y coords={Lucy4, Lucy3, Lucy2, Lucy1, Lucy0},
       ytick=data,
       legend style={at={(0.5,1.1)}, anchor=south, legend columns=-1}
@@ -430,10 +430,10 @@ voxels. The per-meshlet culling even managed to ommit on average $74.6\%$ of all
       height=5cm,
       ytick=data,
       bar width=10pt,
-      xlabel={Time (us)},
+      xlabel={Time (\mu s)},
       symbolic y coords={Lucy4, Lucy3, Lucy2, Lucy1, Lucy0},
       ytick=data,
-      legend style={at={(0.5,1)}, anchor=north, legend columns=-1}
+      legend style={at={(0.5,1.1)}, anchor=north, legend columns=-1}
     ]
 
     \addplot [fill=red!80]    table [col sep=comma, x=DispatchBestOccluders,  y=Label]  {plotdata/gpu/lucy_gpu_profiling_prepass_pooc.csv};
