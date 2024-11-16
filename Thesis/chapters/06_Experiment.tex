@@ -280,13 +280,15 @@ For each model the culling results are presented, which includes data that isn't
 on specific hardware. After that, the profiling measurements are discussed, which relate to 
 the hardware setup presented in \ref{subsec-experimental-environment}. 
 
+\cleardoublepage
+
 \subsection*{Stanford Lucy}
 
 \subsubsection*{Culling Results}
 
 % --------------------------------------- LUCY 256 ---------------------------------------
 
-\begin{figure}[h]              % Lucy 256 Voxels Test Anim
+\begin{figure}[h!]              % Lucy 256 Voxels Test Anim
     \begin{center}
       \begin{tikzpicture}
         \begin{axis}[
@@ -315,7 +317,7 @@ the hardware setup presented in \ref{subsec-experimental-environment}.
   \end{figure}
 
 
-  \begin{figure}[h]            % Lucy 256 OT Nodes Test Anim
+  \begin{figure}[h!]            % Lucy 256 OT Nodes Test Anim
     \begin{center}
       \begin{tikzpicture}
         \begin{axis}[
@@ -380,36 +382,9 @@ Considering the average amount of visible voxels, the per-octree algorithm was a
 voxels. The per-meshlet culling even managed to ommit on average $74.6\%$ of all voxels. 
 
 
-\subsubsection*{Performance Results}
+\subsubsection*{CPU Performance Results} \label{subsubsec-cpu-performance-results-lucy}
 
-% CPU performance
-
-
-\begin{figure}[h]              % Lucy frameTimes
-  \begin{center}
-    \begin{tikzpicture}
-      \begin{axis}[
-          width=\linewidth,
-          height=100px,
-          xlabel={Frames},
-          ylabel={Frame Time (s)},
-          grid,
-          xmin=0,
-          xmax=1864,
-          ymin=0,
-          ymax=0.05
-        ]
-        \addplot[green, no marks, solid] table[col sep=comma, x=frame, y=time]{./plotdata/cpu/lucy_256_frameTime_pooc.csv};
-        \addplot[orange, no marks, solid] table[col sep=comma, x=frame, y=time]{./plotdata/cpu/lucy_256_frameTime.csv};
-      \end{axis}
-    \end{tikzpicture}
-    \caption{}
-    \label{plt:lucy-256-culling-frame-time}
-  \end{center}
-\end{figure}
-
-
-\begin{figure}[h]              % Lucy renderTimes
+\begin{figure}[h!]              % Lucy renderTimes
   \begin{center}
     \begin{tikzpicture}
       \begin{axis}[
@@ -419,21 +394,22 @@ voxels. The per-meshlet culling even managed to ommit on average $74.6\%$ of all
           ylabel={Render Time (s)},
           grid,
           xmin=0,
-          xmax=1864,
+          xmax=2392,
           ymin=0,
-          ymax=0.0008
+          ymax=0.00025
         ]
-        \addplot[green, no marks, solid] table[col sep=comma, x=frame, y=time]{./plotdata/cpu/lucy_256_renderTime_pooc.csv};
-        \addplot[orange, no marks, solid] table[col sep=comma, x=frame, y=time]{./plotdata/cpu/lucy_256_renderTime.csv};
+        \addplot[green, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 2392 / 1863, y=time]{./plotdata/cpu/lucy_256_renderTime_pooc.csv};
+        \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 2392 / 1867, y=time]{./plotdata/cpu/lucy_256_renderTime.csv};
       \end{axis}
     \end{tikzpicture}
-    \caption{}
-    \label{plt:lucy-256-culling-frame-time}
+    \caption{Overview of the render times over the course of the test animation. The graph shows the time each frame took to 
+    execute the function \emph{Render()} on the \ac{CPU}. This includes the completion of the \ac{GPU} computations.}
+    \label{plt:lucy-256-culling-render-time}
   \end{center}
 \end{figure}
 
 
-\begin{figure}[h]              % Lucy updateTimes
+\begin{figure}[h!]              % Lucy updateTimes
   \begin{center}
     \begin{tikzpicture}
       \begin{axis}[
@@ -443,44 +419,67 @@ voxels. The per-meshlet culling even managed to ommit on average $74.6\%$ of all
           ylabel={Render Time (s)},
           grid,
           xmin=0,
-          xmax=1864,
+          xmax=2392,
           ymin=0,
-          ymax=0.00015
+          ymax=0.00005
         ]
-        \addplot[green, no marks, solid] table[col sep=comma, x=frame, y=time]{./plotdata/cpu/lucy_256_updateTime_pooc.csv};
-        \addplot[orange, no marks, solid] table[col sep=comma, x=frame, y=time]{./plotdata/cpu/lucy_256_updateTime.csv};
+        \addplot[green, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 2392 / 1863, y=time]{./plotdata/cpu/lucy_256_updateTime_pooc.csv};
+        \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 2392 / 1867, y=time]{./plotdata/cpu/lucy_256_updateTime.csv};
       \end{axis}
     \end{tikzpicture}
-    \caption{}
-    \label{plt:lucy-256-culling-frame-time}
+    \caption{Overview of the frames over the course of the test animation. The graph shows the time it took to execute the 
+    \emph{Update()} function on the \ac{CPU}.}
+    \label{plt:lucy-256-culling-update-time}
   \end{center}
 \end{figure}
 
-% GPU performance
+\noindent
+The overall framerate of the application is artificially clamped to 30, 60 or 120 \emph{Hz} by \emph{Diligent Engine}, 
+which occasionally results in an abrupt change of frame times. This also means that the overall frame time is not 
+reliably showing the \ac{CPU} workload. However, measuring only the internal render and update routines provided 
+more reliable results. Figure \ref{plt:lucy-256-culling-render-time} shows the isolated computation time of the 
+\ac{CPU} \emph{Render()} function. This is a good indicator of how the computation time changes and it includes the 
+\ac{GPU} work that is called during the function, like \emph{DispatchMesh()} during the depth prepass and the final 
+draw call. \\
+
+\noindent
+Figure \ref{plt:lucy-256-culling-update-time} shows the time the update function took to calculate the new camera 
+position. This function was expected to be static in runtime, regardless of the culling configuration. The graphs 
+show that this is generally correct, as both are not significantly diverging.\\
+
+\noindent
+In general, the times spent on the most significant \ac{CPU} computations was pretty much static for this specific 
+model. This result is as expected, as most of the work was executed on the \ac{GPU}, including the creation of the 
+voxel meshes. After all, this approach is \ac{GPU} driven at its core, so the bandwidth is small and the culling 
+completely happens on the \ac{GPU} end of the piepeline. The same was expected for all tested models. 
+
+
+\subsubsection*{GPU Performance Results} \label{subsubsec-gpu-performance-results-lucy}
+
 
 On the \ac{GPU}, the per-meshlet occlusion culling turned out to be faster in computation. As the occlusion 
 culling algorithm intended, the time spent drawing the meshes could be reduced by $\%$ on average.
 
-\begin{figure}[h]
+\begin{figure}[h!]
   \centering
   \begin{tikzpicture}
     \begin{axis}[
       xbar stacked,
-      xmin=0,
       width=\textwidth,
-      height=10cm,
+      height=4cm,
+      xmin=0,
+      bar width=8pt,
       ytick=data,
-      bar width=10pt,
       xlabel={Time ($\mu$s)},
-      symbolic y coords={LucyPM4, Lucy4, LucyPM2, Lucy3, LucyPM1, Lucy2, LucyPM3, Lucy0, LucyPM0, Lucy1},
-      yticklabels={Per-Octree Node OC, Per-Meshlet OC, Per-Octree Node OC,Per-Meshlet OC, Per-Octree Node OC, Per-Meshlet OC, Per-Octree Node OC, Per-Meshlet OC, Per-Octree Node OC, Per-Meshlet OC},
+      symbolic y coords={LucyOOC, LucyMOC},
+      yticklabels={A, B},
       ytick=data,
-      legend style={at={(0.5,1.1)}, anchor=south, legend columns=-1}
+      legend style={at={(0.5,1.5)}, anchor=south, legend columns=-1}
     ]
 
-    \addplot [fill=green!80]  table [col sep=comma, x=DepthPrepass, y=Label]  {plotdata/gpu/lucy_gpu_profiling_frame_pooc.csv};
-    \addplot [fill=blue!60]   table [col sep=comma, x=DispatchMesh, y=Label]  {plotdata/gpu/lucy_gpu_profiling_frame_pooc.csv};
-    \addplot [fill=orange!60] table [col sep=comma, x=Misc,         y=Label]  {plotdata/gpu/lucy_gpu_profiling_frame_pooc.csv};
+    \addplot [fill=green!80]  table [col sep=comma, x=DepthPrepass, y=Label]  {plotdata/gpu/lucy_gpu_profiling_frame.csv};
+    \addplot [fill=blue!60]   table [col sep=comma, x=DispatchMesh, y=Label]  {plotdata/gpu/lucy_gpu_profiling_frame.csv};
+    \addplot [fill=orange!60] table [col sep=comma, x=Misc,         y=Label]  {plotdata/gpu/lucy_gpu_profiling_frame.csv};
 
     \legend{Depth Prepass, Dispatch Mesh, Miscellaneous}
     \end{axis}
@@ -493,25 +492,26 @@ culling algorithm intended, the time spent drawing the meshes could be reduced b
 \end{figure}
 
 
-\begin{figure}[h]
+\begin{figure}[h!]
   \centering
   \begin{tikzpicture}
     \begin{axis}[
       xbar stacked,
       xmin=0,
       width=\textwidth,
-      height=5cm,
+      height=4cm,
       ytick=data,
-      bar width=10pt,
+      bar width=8pt,
       xlabel={Time ($\mu$s)},
-      symbolic y coords={Lucy4, Lucy3, Lucy2, Lucy1, Lucy0},
+      symbolic y coords={LucyOOC, LucyMOC},
+      yticklabels={A, B},
       ytick=data,
       legend style={at={(0.5,1.3)}, anchor=north, legend columns=-1}
     ]
 
-    \addplot [fill=red!80]    table [col sep=comma, x=DispatchBestOccluders,  y=Label]  {plotdata/gpu/lucy_gpu_profiling_prepass_pooc.csv};
-    \addplot [fill=pink!60]   table [col sep=comma, x=CopyTex,                y=Label]  {plotdata/gpu/lucy_gpu_profiling_prepass_pooc.csv};
-    \addplot [fill=yellow!60] table [col sep=comma, x=GenMipChain,            y=Label]  {plotdata/gpu/lucy_gpu_profiling_prepass_pooc.csv};
+    \addplot [fill=red!80]    table [col sep=comma, x=DispatchBestOccluders,  y=Label]  {plotdata/gpu/lucy_gpu_profiling_prepass.csv};
+    \addplot [fill=pink!60]   table [col sep=comma, x=CopyTex,                y=Label]  {plotdata/gpu/lucy_gpu_profiling_prepass.csv};
+    \addplot [fill=yellow!60] table [col sep=comma, x=GenMipChain,            y=Label]  {plotdata/gpu/lucy_gpu_profiling_prepass.csv};
 
     \legend{Dispatch Best Occluders, Copy Depth Buffer, Generate HiZ-Pyramid}
     \end{axis}
@@ -523,8 +523,14 @@ culling algorithm intended, the time spent drawing the meshes could be reduced b
 
 
 
+
+
+\cleardoublepage
+
+
 \subsection*{Stanford Bunny}
 
+\subsubsection*{Culling Results}
 
 % --------------------------------------- BUNNY 256 --------------------------------------
 
@@ -594,6 +600,133 @@ for the per-octree occlusion culling, and $94.6\%$ for the per-meshlet culling. 
 amount of occlusion is due to the already large amount of \emph{3,379,738} total voxels in the 
 mesh and the large volume of the model, which provides a good basis for the generation of best 
 occluders. \\
+
+
+\subsubsection*{CPU Performance Results} \label{subsubsec-cpu-performance-results-bunny}
+
+
+\begin{figure}[h]              % Bunny renderTimes
+  \begin{center}
+    \begin{tikzpicture}
+      \begin{axis}[
+          width=\linewidth,
+          height=100px,
+          xlabel={Frames},
+          ylabel={Render Time (s)},
+          grid,
+          xmin=0,
+          xmax=1186,
+          ymin=0,
+          ymax=0.00025
+        ]
+        \addplot[green, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1186 / 1574, y=time]{./plotdata/cpu/bunny_256_renderTime_pooc.csv};
+        \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1186 / 1700, y=time]{./plotdata/cpu/bunny_256_renderTime.csv};
+      \end{axis}
+    \end{tikzpicture}
+    \caption{Overview of the render times over the course of the test animation. The graph shows the time each frame took to 
+    execute the function \emph{Render()} on the \ac{CPU}. This includes the completion of the \ac{GPU} computations.}
+    \label{plt:bunny-256-culling-render-time}
+  \end{center}
+\end{figure}
+
+
+\begin{figure}[h]              % Bunny updateTimes
+  \begin{center}
+    \begin{tikzpicture}
+      \begin{axis}[
+          width=\linewidth,
+          height=100px,
+          xlabel={Frames},
+          ylabel={Render Time (s)},
+          grid,
+          xmin=0,
+          xmax=1186,
+          ymin=0,
+          ymax=0.00005
+        ]
+        \addplot[green, no marks, solid]  table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1186 / 1574, y=time]{./plotdata/cpu/bunny_256_updateTime_pooc.csv};
+        \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1186 / 1700, y=time]{./plotdata/cpu/bunny_256_updateTime.csv};
+      \end{axis}
+    \end{tikzpicture}
+    \caption{Overview of the frames over the course of the test animation. The graph shows the time it took to execute the 
+    \emph{Update()} function on the \ac{CPU}.}
+    \label{plt:bunny-256-culling-update-time}
+  \end{center}
+\end{figure}
+
+\noindent
+Like with the \emph{Lucy} model, the \emph{Bunny} showed no significant difference in \ac{CPU} computation time. 
+In figure \ref{plt:bunny-256-culling-render-time} there are a small amount of frames between frames 280 and 380, 
+which seem to have been faster in execution using the per-meshlet occlusion culling, however, it is not obvious 
+why there would be any difference here. Similarly, figure \ref{plt:bunny-256-culling-update-time} also shows 
+small differences that are not considered significant enough to make any assumptions about them. Therefore, for 
+this particular model the \ac{CPU} compute times are also considered to be static between both configurations.
+
+
+\subsubsection*{GPU Performance Results} \label{subsubsec-gpu-performance-results-bunny}
+
+
+\begin{figure}[h!]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+      xbar stacked,
+      xmin=0,
+      width=\textwidth,
+      height=4cm,
+      ytick=data,
+      bar width=8pt,
+      xlabel={Time ($\mu$s)},
+      symbolic y coords={BunnyOOC, BunnyMOC},
+      yticklabels={A, B},
+      ytick=data,
+      legend style={at={(0.5,1.1)}, anchor=south, legend columns=-1}
+    ]
+
+    \addplot [fill=green!80]  table [col sep=comma, x=DepthPrepass, y=Label]  {plotdata/gpu/bunny_gpu_profiling_frame.csv};
+    \addplot [fill=blue!60]   table [col sep=comma, x=DispatchMesh, y=Label]  {plotdata/gpu/bunny_gpu_profiling_frame.csv};
+    \addplot [fill=orange!60] table [col sep=comma, x=Misc,         y=Label]  {plotdata/gpu/bunny_gpu_profiling_frame.csv};
+
+    \legend{Depth Prepass, Dispatch Mesh, Miscellaneous}
+    \end{axis}
+  \end{tikzpicture}
+  \caption{The complete time measured on the \ac{GPU}. The \emph{Depth Prepass} is the extra overhead introduced 
+  by the \ac{HZB}. The \emph{Dispatch Mesh} is the drawing of the meshes, including the occlusion culling. 
+  \emph{Miscellaneous} includes a small amount of \emph{barriers} used for synchronisation and the rendering 
+  of some debug \ac{UI}. It is considered to be more or less static in computation time and is not part of 
+  the actual algorithm measured in this experiment.}
+\end{figure}
+
+
+\begin{figure}[h!]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+      xbar stacked,
+      xmin=0,
+      width=\textwidth,
+      height=4cm,
+      ytick=data,
+      bar width=8pt,
+      xlabel={Time ($\mu$s)},
+      symbolic y coords={BunnyOOC, BunnyMOC},
+      yticklabels={A, B},
+      ytick=data,
+      legend style={at={(0.5,1.3)}, anchor=north, legend columns=-1}
+    ]
+
+    \addplot [fill=red!80]    table [col sep=comma, x=DispatchBestOccluders,  y=Label]  {plotdata/gpu/bunny_gpu_profiling_prepass.csv};
+    \addplot [fill=pink!60]   table [col sep=comma, x=CopyTex,                y=Label]  {plotdata/gpu/bunny_gpu_profiling_prepass.csv};
+    \addplot [fill=yellow!60] table [col sep=comma, x=GenMipChain,            y=Label]  {plotdata/gpu/bunny_gpu_profiling_prepass.csv};
+
+    \legend{Dispatch Best Occluders, Copy Depth Buffer, Generate HiZ-Pyramid}
+    \end{axis}
+  \end{tikzpicture}
+  \caption{The time measured in the \emph{Depth Prepass}. The \emph{Dispatch Best Occluders} is the drawing to the 
+  depth buffer. The \emph{Copy Depth Buffer} computation copies the depth buffers content into the final \ac{HiZ} resource.
+  Finally, \emph{Generate HiZ-Pyramid} shows the \ac{HiZ} creation, which is done sequentially.}
+\end{figure}
+
 
 
 
