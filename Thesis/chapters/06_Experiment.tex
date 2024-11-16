@@ -282,6 +282,7 @@ the hardware setup presented in \ref{subsec-experimental-environment}.
 
 \cleardoublepage
 
+
 \subsection*{Stanford Lucy}
 
 \subsubsection*{Culling Results}
@@ -396,21 +397,12 @@ voxels. The per-meshlet culling even managed to ommit on average $74.6\%$ of all
           xmin=0,
           xmax=2392,
           ymin=0,
-          ymax=0.00025
+          ymax=0.00005
         ]
-        \addplot[green, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 2392 / 1863, y=time]{./plotdata/cpu/lucy_256_renderTime_pooc.csv};
-        \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 2392 / 1867, y=time]{./plotdata/cpu/lucy_256_renderTime.csv};
+        \addplot[green, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 2392 / 1863, y=time]{./plotdata/cpu/lucy_256_updateTime_pooc.csv};
+        \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 2392 / 1867, y=time]{./plotdata/cpu/lucy_256_updateTime.csv};
       \end{axis}
     \end{tikzpicture}
-    \caption{Overview of the render times over the course of the test animation. The graph shows the time each frame took to 
-    execute the function \emph{Render()} on the \ac{CPU}. This includes the completion of the \ac{GPU} computations.}
-    \label{plt:lucy-256-culling-render-time}
-  \end{center}
-\end{figure}
-
-
-\begin{figure}[h!]              % Lucy updateTimes
-  \begin{center}
     \begin{tikzpicture}
       \begin{axis}[
           width=\linewidth,
@@ -421,29 +413,33 @@ voxels. The per-meshlet culling even managed to ommit on average $74.6\%$ of all
           xmin=0,
           xmax=2392,
           ymin=0,
-          ymax=0.00005
+          ymax=0.00025
         ]
-        \addplot[green, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 2392 / 1863, y=time]{./plotdata/cpu/lucy_256_updateTime_pooc.csv};
-        \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 2392 / 1867, y=time]{./plotdata/cpu/lucy_256_updateTime.csv};
+        \addplot[green, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 2392 / 1863, y=time]{./plotdata/cpu/lucy_256_renderTime_pooc.csv};
+        \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 2392 / 1867, y=time]{./plotdata/cpu/lucy_256_renderTime.csv};
       \end{axis}
     \end{tikzpicture}
-    \caption{Overview of the frames over the course of the test animation. The graph shows the time it took to execute the 
-    \emph{Update()} function on the \ac{CPU}.}
-    \label{plt:lucy-256-culling-update-time}
+    \caption{Overview of the render times over the course of the test animation. The upper graph shows the time 
+    each frame took to execute the \emph{Update()} function on the \ac{CPU}. The lower graph shows the time each 
+    frame took to execute the function \emph{Render()} on the \ac{CPU}. This includes the completion of the 
+    \ac{GPU} computations.}
+    \label{plt:lucy-256-culling-cpu-time}
   \end{center}
 \end{figure}
+
+
 
 \noindent
 The overall framerate of the application is artificially clamped to 30, 60 or 120 \emph{Hz} by \emph{Diligent Engine}, 
 which occasionally results in an abrupt change of frame times. This also means that the overall frame time is not 
 reliably showing the \ac{CPU} workload. However, measuring only the internal render and update routines provided 
-more reliable results. Figure \ref{plt:lucy-256-culling-render-time} shows the isolated computation time of the 
+more reliable results. Figure \ref{plt:lucy-256-culling-cpu-time} shows the isolated computation time of the 
 \ac{CPU} \emph{Render()} function. This is a good indicator of how the computation time changes and it includes the 
 \ac{GPU} work that is called during the function, like \emph{DispatchMesh()} during the depth prepass and the final 
 draw call. \\
 
-\noindent
-Figure \ref{plt:lucy-256-culling-update-time} shows the time the update function took to calculate the new camera 
+\noindent [@TODO: Fix ref to double plot]
+Figure \ref{plt:lucy-256-culling-cpu-time} shows the time the update function took to calculate the new camera 
 position. This function was expected to be static in runtime, regardless of the culling configuration. The graphs 
 show that this is generally correct, as both are not significantly diverging.\\
 
@@ -472,7 +468,7 @@ culling algorithm intended, the time spent drawing the meshes could be reduced b
       ytick=data,
       xlabel={Time ($\mu$s)},
       symbolic y coords={LucyOOC, LucyMOC},
-      yticklabels={A, B},
+      yticklabels={B, A},
       ytick=data,
       legend style={at={(0.5,1.5)}, anchor=south, legend columns=-1}
     ]
@@ -504,7 +500,7 @@ culling algorithm intended, the time spent drawing the meshes could be reduced b
       bar width=8pt,
       xlabel={Time ($\mu$s)},
       symbolic y coords={LucyOOC, LucyMOC},
-      yticklabels={A, B},
+      yticklabels={B, A},
       ytick=data,
       legend style={at={(0.5,1.3)}, anchor=north, legend columns=-1}
     ]
@@ -605,32 +601,7 @@ occluders. \\
 \subsubsection*{CPU Performance Results} \label{subsubsec-cpu-performance-results-bunny}
 
 
-\begin{figure}[h]              % Bunny renderTimes
-  \begin{center}
-    \begin{tikzpicture}
-      \begin{axis}[
-          width=\linewidth,
-          height=100px,
-          xlabel={Frames},
-          ylabel={Render Time (s)},
-          grid,
-          xmin=0,
-          xmax=1186,
-          ymin=0,
-          ymax=0.00025
-        ]
-        \addplot[green, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1186 / 1574, y=time]{./plotdata/cpu/bunny_256_renderTime_pooc.csv};
-        \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1186 / 1700, y=time]{./plotdata/cpu/bunny_256_renderTime.csv};
-      \end{axis}
-    \end{tikzpicture}
-    \caption{Overview of the render times over the course of the test animation. The graph shows the time each frame took to 
-    execute the function \emph{Render()} on the \ac{CPU}. This includes the completion of the \ac{GPU} computations.}
-    \label{plt:bunny-256-culling-render-time}
-  \end{center}
-\end{figure}
-
-
-\begin{figure}[h]              % Bunny updateTimes
+\begin{figure}[h]              % Bunny cpu
   \begin{center}
     \begin{tikzpicture}
       \begin{axis}[
@@ -648,17 +619,36 @@ occluders. \\
         \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1186 / 1700, y=time]{./plotdata/cpu/bunny_256_updateTime.csv};
       \end{axis}
     \end{tikzpicture}
-    \caption{Overview of the frames over the course of the test animation. The graph shows the time it took to execute the 
-    \emph{Update()} function on the \ac{CPU}.}
-    \label{plt:bunny-256-culling-update-time}
+    \begin{tikzpicture}
+      \begin{axis}[
+          width=\linewidth,
+          height=100px,
+          xlabel={Frames},
+          ylabel={Render Time (s)},
+          grid,
+          xmin=0,
+          xmax=1186,
+          ymin=0,
+          ymax=0.00025
+        ]
+        \addplot[green, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1186 / 1574, y=time]{./plotdata/cpu/bunny_256_renderTime_pooc.csv};
+        \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1186 / 1700, y=time]{./plotdata/cpu/bunny_256_renderTime.csv};
+      \end{axis}
+    \end{tikzpicture}
+    \caption{Overview of the render times over the course of the test animation. The upper graph shows the time 
+    each frame took to execute the \emph{Update()} function on the \ac{CPU}. The lower graph shows the time each 
+    frame took to execute the function \emph{Render()} on the \ac{CPU}. This includes the completion of the 
+    \ac{GPU} computations.}
+    \label{plt:bunny-256-culling-cpu-time}
   \end{center}
 \end{figure}
+
 
 \noindent
 Like with the \emph{Lucy} model, the \emph{Bunny} showed no significant difference in \ac{CPU} computation time. 
 In figure \ref{plt:bunny-256-culling-render-time} there are a small amount of frames between frames 280 and 380, 
 which seem to have been faster in execution using the per-meshlet occlusion culling, however, it is not obvious 
-why there would be any difference here. Similarly, figure \ref{plt:bunny-256-culling-update-time} also shows 
+why there would be any difference here. Similarly, figure \ref{plt:bunny-256-culling-cpu-time} also shows 
 small differences that are not considered significant enough to make any assumptions about them. Therefore, for 
 this particular model the \ac{CPU} compute times are also considered to be static between both configurations.
 
@@ -678,7 +668,7 @@ this particular model the \ac{CPU} compute times are also considered to be stati
       bar width=8pt,
       xlabel={Time ($\mu$s)},
       symbolic y coords={BunnyOOC, BunnyMOC},
-      yticklabels={A, B},
+      yticklabels={B, A},
       ytick=data,
       legend style={at={(0.5,1.1)}, anchor=south, legend columns=-1}
     ]
@@ -710,7 +700,7 @@ this particular model the \ac{CPU} compute times are also considered to be stati
       bar width=8pt,
       xlabel={Time ($\mu$s)},
       symbolic y coords={BunnyOOC, BunnyMOC},
-      yticklabels={A, B},
+      yticklabels={B, A},
       ytick=data,
       legend style={at={(0.5,1.3)}, anchor=north, legend columns=-1}
     ]
@@ -728,9 +718,9 @@ this particular model the \ac{CPU} compute times are also considered to be stati
 \end{figure}
 
 
+\cleardoublepage
 
-
-\subsection*{Torus - $256^3$}
+\subsection*{Torus}
 
 % --------------------------------------- TORUS 256 --------------------------------------
 
@@ -807,6 +797,115 @@ in figure \ref{plt:torus-256-culling-res-voxels}. \\
 \noindent
 In general, for per-octree culling, the average culling ratio was $84.4\%$, and $92.6\%$ for per-meshlet culling. 
 
+
+\subsubsection*{CPU Performance Results} \label{subsubsec-cpu-performance-results-torus}
+
+
+\begin{figure}[h!]              % Torus renderTimes
+  \begin{center}
+    \begin{tikzpicture}
+      \begin{axis}[
+          width=\linewidth,
+          height=100px,
+          xlabel={Frames},
+          ylabel={Render Time (s)},
+          grid,
+          xmin=0,
+          xmax=1087,
+          ymin=0,
+          ymax=0.00005
+        ]
+        \addplot[green, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1554 / 1863, y=time]{./plotdata/cpu/torus_256_updateTime_pooc.csv};
+        \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1087 / 1785, y=time]{./plotdata/cpu/torus_256_updateTime.csv};
+      \end{axis}
+    \end{tikzpicture}
+    \begin{tikzpicture}
+      \begin{axis}[
+          width=\linewidth,
+          height=100px,
+          xlabel={Frames},
+          ylabel={Render Time (s)},
+          grid,
+          xmin=0,
+          xmax=1087,
+          ymin=0,
+          ymax=0.00025
+        ]
+        \addplot[green, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1087 / 1554, y=time]{./plotdata/cpu/torus_256_renderTime_pooc.csv};
+        \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1087 / 1785, y=time]{./plotdata/cpu/torus_256_renderTime.csv};
+      \end{axis}
+    \end{tikzpicture}
+    \caption{Overview of the render times over the course of the test animation. The upper graph shows the time 
+    each frame took to execute the \emph{Update()} function on the \ac{CPU}. The lower graph shows the time each 
+    frame took to execute the function \emph{Render()} on the \ac{CPU}. This includes the completion of the 
+    \ac{GPU} computations.}
+    \label{plt:torus-256-culling-cpu-time}
+  \end{center}
+\end{figure}
+
+\subsubsection*{GPU Performance Results} \label{subsubsec-gpu-performance-results-torus}
+
+
+\begin{figure}[h!]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+      xbar stacked,
+      xmin=0,
+      width=\textwidth,
+      height=4cm,
+      ytick=data,
+      bar width=8pt,
+      xlabel={Time ($\mu$s)},
+      symbolic y coords={TorusOOC, TorusMOC},
+      yticklabels={B, A},
+      ytick=data,
+      legend style={at={(0.5,1.1)}, anchor=south, legend columns=-1}
+    ]
+
+    \addplot [fill=green!80]  table [col sep=comma, x=DepthPrepass, y=Label]  {plotdata/gpu/torus_gpu_profiling_frame.csv};
+    \addplot [fill=blue!60]   table [col sep=comma, x=DispatchMesh, y=Label]  {plotdata/gpu/torus_gpu_profiling_frame.csv};
+    \addplot [fill=orange!60] table [col sep=comma, x=Misc,         y=Label]  {plotdata/gpu/torus_gpu_profiling_frame.csv};
+
+    \legend{Depth Prepass, Dispatch Mesh, Miscellaneous}
+    \end{axis}
+  \end{tikzpicture}
+  \caption{The complete time measured on the \ac{GPU}. The \emph{Depth Prepass} is the extra overhead introduced 
+  by the \ac{HZB}. The \emph{Dispatch Mesh} is the drawing of the meshes, including the occlusion culling. 
+  \emph{Miscellaneous} includes a small amount of \emph{barriers} used for synchronisation and the rendering 
+  of some debug \ac{UI}. It is considered to be more or less static in computation time and is not part of 
+  the actual algorithm measured in this experiment.}
+\end{figure}
+
+
+\begin{figure}[h!]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+      xbar stacked,
+      xmin=0,
+      width=\textwidth,
+      height=4cm,
+      ytick=data,
+      bar width=8pt,
+      xlabel={Time ($\mu$s)},
+      symbolic y coords={TorusOOC, TorusMOC},
+      yticklabels={B, A},
+      ytick=data,
+      legend style={at={(0.5,1.3)}, anchor=north, legend columns=-1}
+    ]
+
+    \addplot [fill=red!80]    table [col sep=comma, x=DispatchBestOccluders,  y=Label]  {plotdata/gpu/torus_gpu_profiling_prepass.csv};
+    \addplot [fill=pink!60]   table [col sep=comma, x=CopyTex,                y=Label]  {plotdata/gpu/torus_gpu_profiling_prepass.csv};
+    \addplot [fill=yellow!60] table [col sep=comma, x=GenMipChain,            y=Label]  {plotdata/gpu/torus_gpu_profiling_prepass.csv};
+
+    \legend{Dispatch Best Occluders, Copy Depth Buffer, Generate HiZ-Pyramid}
+    \end{axis}
+  \end{tikzpicture}
+  \caption{The time measured in the \emph{Depth Prepass}. The \emph{Dispatch Best Occluders} is the drawing to the 
+  depth buffer. The \emph{Copy Depth Buffer} computation copies the depth buffers content into the final \ac{HiZ} resource.
+  Finally, \emph{Generate HiZ-Pyramid} shows the \ac{HiZ} creation, which is done sequentially.}
+\end{figure}
 
 
 \subsection*{Terrain - $256^3$}
@@ -1024,16 +1123,14 @@ for moise. The average measurements are listed below. \\
     symbolic y coords={Lucy2, Lucy1, Lucy0, Bunny2, Bunny1, Bunny0, Torus2, Torus1, Torus0, 
     Terrain2, Terrain1, Terrain0, Hairball2, Hairball1, Hairball0},
     ytick=data,
+    ytick distance=3,
     legend style={at={(0.5,-0.15)}, anchor=north, legend columns=-2}
   ]
 
   \addplot [fill=green!80]  table [col sep=comma, x=DepthPrepass, y=Label]  {plotdata/gpu/gpu_profiling_frame_pooc.csv};
   \addplot [fill=blue!60]   table [col sep=comma, x=DispatchMesh, y=Label]  {plotdata/gpu/gpu_profiling_frame_pooc.csv};
   \addplot [fill=orange!60] table [col sep=comma, x=Misc,         y=Label]  {plotdata/gpu/gpu_profiling_frame_pooc.csv};
-  %\addplot [fill=red!60]    table [col sep=comma, x=HiZDispatchBO,y=Label]  {plotdata/gpu/gpu_profiling_pooc.csv};
-  %\addplot [fill=yellow!60] table [col sep=comma, x=HiZCpyTex,    y=Label]  {plotdata/gpu/gpu_profiling_pooc.csv};
-  %\addplot [fill=orange!60] table [col sep=comma, x=HiZCreateMips,y=Label]  {plotdata/gpu/gpu_profiling_pooc.csv};
-
+  
   \legend{Depth Prepass, Dispatch Mesh, Miscellaneous}
   \end{axis}
 \end{tikzpicture}
