@@ -150,7 +150,20 @@ rendering debugger, widely used in the industy. For \emph{NVIDIA} specific \ac{G
 \cite{NSight} was used, which is another industry standard profiling and debugging tool. It is only available for 
 inspection of \emph{NVIDIA} graphics card computations but provided valuable insights into the rendering pipeline 
 and hardware usage. The last tool used is \emph{Microsoft's PIX} \cite{PIX}, which is another performance debugging 
-and profiling tool for \emph{Windows} platforms using \emph{Microsoft's DirectX} \ac{API}.
+and profiling tool for \emph{Windows} platforms using \emph{Microsoft's DirectX} \ac{API}. \\
+
+\noindent
+The culling result measurements were directly sampled from the \emph{Task Shader} over the course of the testing 
+animation, using \emph{RenderDoc} and emph{PIX}. They were generally independent from the hardware and rather 
+depended on the camera position and viewing angle as well as on model resolution. Also, the screen resolution 
+affected the amount of mips generated for the \ac{HiZ}-pyramid, so it was fixed to $1440 \times 900$ pixels. 
+All of the aspects above were standardized for each model over all test runs.\\
+
+\noindent 
+The overall framerate of the application was artificially clamped to 30, 60 or 120 \emph{Hz} by \emph{Diligent Engine}, 
+which occasionally results in an abrupt change of frame times. This also means that the overall frame time is not 
+reliably showing the \ac{CPU} workload. However, measuring only the internal render and update routines provided 
+more reliable results, which are shown in the respective \ac{CPU} graphs. 
 
 
 \subsection*{Experimental Environment} \label{subsec-experimental-environment}
@@ -276,20 +289,20 @@ such a scene in a game.
 \section{Experimental Results}
 
 In this section the experimental results are presented and discussed for each model tested.
-For each model the culling results are presented, which includes data that isn't dependent 
-on specific hardware. After that, the profiling measurements are discussed, which relate to 
-the hardware setup presented in \ref{subsec-experimental-environment}. 
-
-\cleardoublepage
+For each model, the culling results include data that isn't dependent on specific hardware. 
+After that, the profiling measurements are discussed, which relate to the hardware setup presented 
+in \ref{subsec-experimental-environment}. The data analysis is structured similarly for all models,
+comparing the per-octree node configuration to the per-meshlet configuration. Finally, an overview 
+is presented that summarizes all the relevant data in a compact visualization.
 
 
 \subsection*{Stanford Lucy}
 
-\subsubsection*{Culling Results}
+\subsubsection*{Culling Results} \label{subsubsec-culling-results-lucy}
 
 % --------------------------------------- LUCY 256 ---------------------------------------
 
-\begin{figure}[h!]              % Lucy 256 Voxels Test Anim
+\begin{figure}[!htb]              % Lucy 256 Culling Res
     \begin{center}
       \begin{tikzpicture}
         \begin{axis}[
@@ -309,17 +322,7 @@ the hardware setup presented in \ref{subsec-experimental-environment}.
           \addplot[red, dotted, no marks, domain=0:2393, samples=50] {84082};
         \end{axis}
       \end{tikzpicture}
-      \caption{The amount of visible voxels over the course of the test animation shown in green for 
-      per-octree occlusion culling, and in orange for per-meshlet occlusion culling. 
-      The average amount of visible voxels was \emph{140,842} for per-octree occlusion culling, which is 
-      marked as the blue dotted line, and \emph{84,082} for per-meshlet occlusion culling, marked in red.}
-      \label{plt:lucy-256-culling-res-voxels}
-    \end{center}
-  \end{figure}
 
-
-  \begin{figure}[h!]            % Lucy 256 OT Nodes Test Anim
-    \begin{center}
       \begin{tikzpicture}
         \begin{axis}[
             width=\linewidth, % Scale the plot to \linewidth
@@ -338,39 +341,39 @@ the hardware setup presented in \ref{subsec-experimental-environment}.
           \addplot[red, dotted, no marks, domain=0:2393, samples=50] {2483};
         \end{axis}
       \end{tikzpicture}
-      \caption{The amount of visible octree nodes over the course of the test animation shown in green for 
-      per-octree occlusion culling and in orange for per-meshlet occlusion culling. 
-      The average amount of visible octree nodes was \emph{3,460} for per-octree occlusion culling, which is 
-      marked as the blue dotted line, and \emph{2,483} for per-meshlet occlusion culling, which is marked in 
-      as the red dotted line.}
-      \label{plt:lucy-256-culling-res-nodes}
+
+      \caption{First: The amount of visible voxels over the course of the test animation shown in green for 
+      per-octree occlusion culling, and in orange for per-meshlet occlusion culling. Second: The amount of 
+      visible octree nodes over the course of the test animation shown in green for per-octree occlusion 
+      culling and in orange for per-meshlet occlusion culling.}
+      \label{plt:lucy-256-culling-culling-results}
     \end{center}
   \end{figure}
+
 
 % ----------------------------------------------------------------------------------------
 
 \noindent
-Figures \ref{plt:lucy-256-culling-res-voxels} and \ref{plt:lucy-256-culling-res-nodes} show the 
-amount of visible voxels and visible octree nodes for both the per-octree meshlet culling and the 
-per-meshlet octree culling configuration. The measurements were directly sampled from the 
-\emph{Task Shader} over the course of the testing animation. Figure \ref{plt:lucy-256-culling-res-voxels}
-presents the amount of visible voxels while figure \ref{plt:lucy-256-culling-res-nodes} shows the amount 
-of visible octree nodes. Both values directly correlate since culled octree nodes result in culled voxels.
-The per-octree occlusion culling configuration is shown in green, with a dotted blue line representing the 
-average value over time. The orange graph shows the per-meshlet occlusion culling configuration, and an 
-additional red dotted line representing the average values for this configuration. The respective graphs for 
-the other models follow the same color code. [@TODO: Consider moving analysis out of per model text]\\
-
+Figure \ref{plt:lucy-256-culling-culling-results} shows the amount of visible voxels and visible octree 
+nodes for both the per-octree node occlusion culling (upper graph) and the per-meshlet occlusion culling 
+(lower graph) configuration. \\
 
 \noindent
-It is obvious that the per-meshlet culling 
-significantly reduced the amount of dispatched voxels and octree nodes, which lead to less load for the 
-rasterizer and the pixel shader. The amount of octree nodes decreased when using per-meshlet culling, because 
-octree nodes could be culled, even when their corners were visible by the camera. For instance, when considering 
-a node that holds just 5 voxels, which are all overlapped by a part of the model, this octree node will be 
-inherently culled when using per-meshlet culling. Contrary, when using per-octree culling, the culling is 
-dependant on the visibility of any of the octree nodes corners, which can result in a node being not culled, 
-even though all voxels within that node remain occluded. \\
+The average amount of visible voxels was \emph{140,842} for per-octree occlusion culling, which is marked 
+as the blue dotted line, and \emph{84,082} for per-meshlet occlusion culling, marked in red.
+The average amount of visible octree nodes was \emph{3,460} for per-octree occlusion culling, which is marked 
+as the blue dotted line, and \emph{2,483} for per-meshlet occlusion culling, which is marked in as the red 
+dotted line. \\
+
+\noindent
+[@TODO: Consider moving explanations and further analysis to discussion part.]
+It is obvious that the per-meshlet culling significantly reduced the amount of dispatched voxels and octree nodes, 
+which lead to less load for the rasterizer and the pixel shader. The amount of octree nodes decreased when using 
+per-meshlet culling, because octree nodes could be culled, even when their corners were visible by the camera. 
+For instance, when considering a node that holds just 5 voxels, which are all overlapped by a part of the model, 
+this octree node will be inherently culled when using per-meshlet culling. Contrary, when using per-octree culling, 
+the culling is dependant on the visibility of any of the octree nodes corners, which can result in a node being not 
+culled, even though all voxels within that node remain occluded. \\
 
 \noindent 
 Both curves indicate how the model fits the overall culling algorithm. For instance, the \emph{Stanford Lucy} 
@@ -382,10 +385,9 @@ relatively even number of voxels when viewed from the side. \\
 Considering the average amount of visible voxels, the per-octree algorithm was able to cull $57.5\%$ of all 
 voxels. The per-meshlet culling even managed to ommit on average $74.6\%$ of all voxels. 
 
-
 \subsubsection*{CPU Performance Results} \label{subsubsec-cpu-performance-results-lucy}
 
-\begin{figure}[h!]              % Lucy renderTimes
+\begin{figure}[!htb]              % Lucy renderTimes
   \begin{center}
     \begin{tikzpicture}
       \begin{axis}[
@@ -419,44 +421,39 @@ voxels. The per-meshlet culling even managed to ommit on average $74.6\%$ of all
         \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 2392 / 1867, y=time]{./plotdata/cpu/lucy_256_renderTime.csv};
       \end{axis}
     \end{tikzpicture}
-    \caption{Overview of the render times over the course of the test animation. The upper graph shows the time 
-    each frame took to execute the \emph{Update()} function on the \ac{CPU}. The lower graph shows the time each 
-    frame took to execute the function \emph{Render()} on the \ac{CPU}. This includes the completion of the 
+    \caption{Overview of the render times over the course of the test animation. The first graph shows the time 
+    each frame took to execute the \emph{Update()} function on the \ac{CPU}. The second graph shows the time each 
+    frame took to execute the \emph{Render()} function on the \ac{CPU}. This includes the completion of the 
     \ac{GPU} computations.}
     \label{plt:lucy-256-culling-cpu-time}
   \end{center}
 \end{figure}
 
-
+\noindent
+Figure \ref{plt:lucy-256-culling-cpu-time} shows the \ac{CPU} computations over the course of the test animation.
+The first graphs shows the computation of the \ac{CPU} \emph{Update()} function, which includes updatimg the camera's 
+view and projection matrices. This function was expected to be static in runtime, regardless of the culling configuration. 
+The graph shows that this is generally correct, as both are not significantly diverging.\\
 
 \noindent
-The overall framerate of the application is artificially clamped to 30, 60 or 120 \emph{Hz} by \emph{Diligent Engine}, 
-which occasionally results in an abrupt change of frame times. This also means that the overall frame time is not 
-reliably showing the \ac{CPU} workload. However, measuring only the internal render and update routines provided 
-more reliable results. Figure \ref{plt:lucy-256-culling-cpu-time} shows the isolated computation time of the 
-\ac{CPU} \emph{Render()} function. This is a good indicator of how the computation time changes and it includes the 
-\ac{GPU} work that is called during the function, like \emph{DispatchMesh()} during the depth prepass and the final 
-draw call. \\
-
-\noindent [@TODO: Fix ref to double plot]
-Figure \ref{plt:lucy-256-culling-cpu-time} shows the time the update function took to calculate the new camera 
-position. This function was expected to be static in runtime, regardless of the culling configuration. The graphs 
-show that this is generally correct, as both are not significantly diverging.\\
+The second graph shows the isolated computation time of the \ac{CPU} \emph{Render()} function. It is a good indicator of 
+how the computation time changed and it includes the \ac{GPU} work that was called during the function, like 
+\emph{DispatchMesh()} during the depth prepass and the final draw call. \\
 
 \noindent
 In general, the times spent on the most significant \ac{CPU} computations was pretty much static for this specific 
 model. This result is as expected, as most of the work was executed on the \ac{GPU}, including the creation of the 
 voxel meshes. After all, this approach is \ac{GPU} driven at its core, so the bandwidth is small and the culling 
-completely happens on the \ac{GPU} end of the piepeline. The same was expected for all tested models. 
-
+completely happens on the \ac{GPU} end of the piepeline.
 
 \subsubsection*{GPU Performance Results} \label{subsubsec-gpu-performance-results-lucy}
 
 
 On the \ac{GPU}, the per-meshlet occlusion culling turned out to be faster in computation. As the occlusion 
-culling algorithm intended, the time spent drawing the meshes could be reduced by $\%$ on average.
+culling algorithm intended, the time spent drawing the meshes could be reduced by $30\%$ on average for this 
+particular model.
 
-\begin{figure}[h!]
+\begin{figure}[!htb]      % Lucy GPU Results
   \centering
   \begin{tikzpicture}
     \begin{axis}[
@@ -470,7 +467,7 @@ culling algorithm intended, the time spent drawing the meshes could be reduced b
       symbolic y coords={LucyOOC, LucyMOC},
       yticklabels={B, A},
       ytick=data,
-      legend style={at={(0.5,1.5)}, anchor=south, legend columns=-1}
+      legend style={at={(0.5,1.05)}, anchor=south, legend columns=-1}
     ]
 
     \addplot [fill=green!80]  table [col sep=comma, x=DepthPrepass, y=Label]  {plotdata/gpu/lucy_gpu_profiling_frame.csv};
@@ -480,16 +477,7 @@ culling algorithm intended, the time spent drawing the meshes could be reduced b
     \legend{Depth Prepass, Dispatch Mesh, Miscellaneous}
     \end{axis}
   \end{tikzpicture}
-  \caption{The complete time measured on the \ac{GPU}. The \emph{Depth Prepass} is the extra overhead introduced 
-  by the \ac{HZB}. The \emph{Dispatch Mesh} is the drawing of the meshes, including the occlusion culling. 
-  \emph{Miscellaneous} includes a small amount of \emph{barriers} used for synchronisation and the rendering 
-  of some debug \ac{UI}. It is considered to be more or less static in computation time and is not part of 
-  the actual algorithm measured in this experiment.}
-\end{figure}
 
-
-\begin{figure}[h!]
-  \centering
   \begin{tikzpicture}
     \begin{axis}[
       xbar stacked,
@@ -512,25 +500,34 @@ culling algorithm intended, the time spent drawing the meshes could be reduced b
     \legend{Dispatch Best Occluders, Copy Depth Buffer, Generate HiZ-Pyramid}
     \end{axis}
   \end{tikzpicture}
-  \caption{The time measured in the \emph{Depth Prepass}. The \emph{Dispatch Best Occluders} is the drawing to the 
-  depth buffer. The \emph{Copy Depth Buffer} computation copies the depth buffers content into the final \ac{HiZ} resource.
-  Finally, \emph{Generate HiZ-Pyramid} shows the \ac{HiZ} creation, which is done sequentially.}
+
+  \caption{First: The complete time measured on the \ac{GPU}. The \emph{Depth Prepass} is the extra overhead 
+  introduced by the \ac{HZB}. The \emph{Dispatch Mesh} is the drawing of the meshes, including the occlusion 
+  culling. \emph{Miscellaneous} includes a small amount of \emph{Barriers} used for synchronisation and the 
+  rendering of some debug \ac{UI}. It is considered to be more or less static in computation time and is not 
+  part of the actual algorithm measured in this experiment. Second: The time measured in the \emph{Depth Prepass}. 
+  The \emph{Dispatch Best Occluders} is the drawing to the depth buffer. The \emph{Copy Depth Buffer} computation 
+  copies the depth buffers content into the final \ac{HiZ} resource. Finally, \emph{Generate HiZ-Pyramid} shows 
+  the \ac{HiZ} creation, which is done sequentially.}
 \end{figure}
 
+\noindent
+The comparison of the depth prepass shows a small difference in computation time. The per-octree node configuration 
+terminated faster by $1.93$ microseconds on average. In this case the difference was created by small deviations in 
+copying the depth buffer and computing the mip maps. 
 
 
+\clearpage
 
-
-\cleardoublepage
 
 
 \subsection*{Stanford Bunny}
 
-\subsubsection*{Culling Results}
+\subsubsection*{Culling Results} \label{subsubsec-culling-results-bunny}
 
 % --------------------------------------- BUNNY 256 --------------------------------------
 
-\begin{figure}[h]              % Bunny 256 Voxels Test Anim
+\begin{figure}[!htb]              % Bunny 256 Voxels Test Anim
     \begin{center}
       \begin{tikzpicture}
         \begin{axis}[
@@ -550,16 +547,7 @@ culling algorithm intended, the time spent drawing the meshes could be reduced b
           \addplot[red, dotted, no marks, domain=0:1186, samples=50] {180266};
         \end{axis}
       \end{tikzpicture}
-      \caption{The amount of visible voxels over the course of the test animation shown in green for 
-      per-octree occlusion culling, and in orange for per-meshlet occlusion culling. 
-      The average amount of visible voxels was \emph{385,210} for per-octree occlusion culling, which is 
-      marked as the blue dotted line, and \emph{180,266} for per-meshlet occlusion culling, marked in red.}
-      \label{plt:bunny-256-culling-res-voxels}
-    \end{center}
-  \end{figure}
 
-  \begin{figure}[h]            % Bunny 256 OT Nodes Test Anim
-    \begin{center}
       \begin{tikzpicture}
         \begin{axis}[
             width=\linewidth, % Scale the plot to \linewidth
@@ -578,30 +566,35 @@ culling algorithm intended, the time spent drawing the meshes could be reduced b
           \addplot[red, dotted, no marks, domain=0:1186, samples=50] {5415};
         \end{axis}
       \end{tikzpicture}
-      \caption{The amount of visible octree nodes over the course of the test animation shown in green for 
-      per-octree occlusion culling and in orange for per-meshlet occlusion culling. 
-      The average amount of visible octree nodes was \emph{8,519} for per-octree occlusion culling, which is 
-      marked as the blue dotted line, and \emph{5,415} for per-meshlet occlusion culling, which is marked in 
-      as the red dotted line.}
-      \label{plt:bunny-256-culling-res-nodes}
+
+      \caption{First: The amount of visible voxels over the course of the test animation shown in green for 
+      per-octree occlusion culling, and in orange for per-meshlet occlusion culling. 
+      Second: The amount of visible octree nodes over the course of the test animation shown in green for 
+      per-octree occlusion culling and in orange for per-meshlet occlusion culling. }
+      \label{plt:bunny-256-culling-res-voxels}
     \end{center}
   \end{figure}
- 
 % ----------------------------------------------------------------------------------------
 
 \noindent
-Similar to the first model, the \emph{Stanford Bunny} also discards a significant amount of 
+Similar to the first model, the \emph{Stanford Bunny} also discarded a significant amount of 
 voxels in both of the applied culling configurations. The average culling ratio was $88.6\%$ 
 for the per-octree occlusion culling, and $94.6\%$ for the per-meshlet culling. This immense 
-amount of occlusion is due to the already large amount of \emph{3,379,738} total voxels in the 
-mesh and the large volume of the model, which provides a good basis for the generation of best 
+amount of occlusion was due to the already large amount of \emph{3,379,738} total voxels in the 
+mesh and the large volume of the model, which provided a good basis for the generation of best 
 occluders. \\
 
 
+\noindent
+The average amount of visible voxels was \emph{385,210} for per-octree occlusion culling, which is 
+marked as the blue dotted line, and \emph{180,266} for per-meshlet occlusion culling, marked in red.
+The average amount of visible octree nodes was \emph{8,519} for per-octree occlusion culling, which is 
+marked as the blue dotted line, and \emph{5,415} for per-meshlet occlusion culling, which is marked in 
+as the red dotted line.
+
 \subsubsection*{CPU Performance Results} \label{subsubsec-cpu-performance-results-bunny}
 
-
-\begin{figure}[h]              % Bunny cpu
+\begin{figure}[!htb]              % Bunny cpu
   \begin{center}
     \begin{tikzpicture}
       \begin{axis}[
@@ -635,8 +628,8 @@ occluders. \\
         \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1186 / 1700, y=time]{./plotdata/cpu/bunny_256_renderTime.csv};
       \end{axis}
     \end{tikzpicture}
-    \caption{Overview of the render times over the course of the test animation. The upper graph shows the time 
-    each frame took to execute the \emph{Update()} function on the \ac{CPU}. The lower graph shows the time each 
+    \caption{Overview of the render times over the course of the test animation. The first graph shows the time 
+    each frame took to execute the \emph{Update()} function on the \ac{CPU}. The second graph shows the time each 
     frame took to execute the function \emph{Render()} on the \ac{CPU}. This includes the completion of the 
     \ac{GPU} computations.}
     \label{plt:bunny-256-culling-cpu-time}
@@ -646,17 +639,15 @@ occluders. \\
 
 \noindent
 Like with the \emph{Lucy} model, the \emph{Bunny} showed no significant difference in \ac{CPU} computation time. 
-In figure \ref{plt:bunny-256-culling-render-time} there are a small amount of frames between frames 280 and 380, 
-which seem to have been faster in execution using the per-meshlet occlusion culling, however, it is not obvious 
-why there would be any difference here. Similarly, figure \ref{plt:bunny-256-culling-cpu-time} also shows 
-small differences that are not considered significant enough to make any assumptions about them. Therefore, for 
-this particular model the \ac{CPU} compute times are also considered to be static between both configurations.
-
+In figure \ref{plt:bunny-256-culling-cpu-time} the second graph shows a small amount of frames between frames 280 
+and 380, which seem to have been faster in execution using the per-meshlet occlusion culling, however, it is not 
+obvious why there would be any difference here. Similarly, the first graph also shows small differences that are 
+not considered significant enough to make any assumptions about them. Therefore, for this particular model the 
+\ac{CPU} compute times are also considered to be static between both configurations.
 
 \subsubsection*{GPU Performance Results} \label{subsubsec-gpu-performance-results-bunny}
 
-
-\begin{figure}[h!]
+\begin{figure}[!htb]
   \centering
   \begin{tikzpicture}
     \begin{axis}[
@@ -670,7 +661,7 @@ this particular model the \ac{CPU} compute times are also considered to be stati
       symbolic y coords={BunnyOOC, BunnyMOC},
       yticklabels={B, A},
       ytick=data,
-      legend style={at={(0.5,1.1)}, anchor=south, legend columns=-1}
+      legend style={at={(0.5,1.05)}, anchor=south, legend columns=-1}
     ]
 
     \addplot [fill=green!80]  table [col sep=comma, x=DepthPrepass, y=Label]  {plotdata/gpu/bunny_gpu_profiling_frame.csv};
@@ -680,16 +671,7 @@ this particular model the \ac{CPU} compute times are also considered to be stati
     \legend{Depth Prepass, Dispatch Mesh, Miscellaneous}
     \end{axis}
   \end{tikzpicture}
-  \caption{The complete time measured on the \ac{GPU}. The \emph{Depth Prepass} is the extra overhead introduced 
-  by the \ac{HZB}. The \emph{Dispatch Mesh} is the drawing of the meshes, including the occlusion culling. 
-  \emph{Miscellaneous} includes a small amount of \emph{barriers} used for synchronisation and the rendering 
-  of some debug \ac{UI}. It is considered to be more or less static in computation time and is not part of 
-  the actual algorithm measured in this experiment.}
-\end{figure}
 
-
-\begin{figure}[h!]
-  \centering
   \begin{tikzpicture}
     \begin{axis}[
       xbar stacked,
@@ -712,19 +694,41 @@ this particular model the \ac{CPU} compute times are also considered to be stati
     \legend{Dispatch Best Occluders, Copy Depth Buffer, Generate HiZ-Pyramid}
     \end{axis}
   \end{tikzpicture}
-  \caption{The time measured in the \emph{Depth Prepass}. The \emph{Dispatch Best Occluders} is the drawing to the 
-  depth buffer. The \emph{Copy Depth Buffer} computation copies the depth buffers content into the final \ac{HiZ} resource.
-  Finally, \emph{Generate HiZ-Pyramid} shows the \ac{HiZ} creation, which is done sequentially.}
+
+  \caption{First: The complete time measured on the \ac{GPU}. The \emph{Depth Prepass} is the extra overhead 
+  introduced by the \ac{HZB}. The \emph{Dispatch Mesh} is the drawing of the meshes, including the occlusion 
+  culling. \emph{Miscellaneous} includes a small amount of \emph{Barriers} used for synchronisation and the 
+  rendering of some debug \ac{UI}. It is considered to be more or less static in computation time and is not 
+  part of the actual algorithm measured in this experiment. Second: The time measured in the \emph{Depth Prepass}. 
+  The \emph{Dispatch Best Occluders} is the drawing to the depth buffer. The \emph{Copy Depth Buffer} computation 
+  copies the depth buffers content into the final \ac{HiZ} resource. Finally, \emph{Generate HiZ-Pyramid} 
+  shows the \ac{HiZ} creation, which is done sequentially.}
 \end{figure}
 
+\noindent
+The \ac{GPU} performance shows a significant difference when comparing both configurations. The per-meshlet 
+occlusion culling was able to decrease the time spend on \emph{DispatchMesh} by $36.1\%$ on average as compared 
+to the per-octree node occlusion culling. On closer inspection, the depth prepass showed a minor difference 
+in runtime, similar to the prepass of the \emph{Lucy} model. The difference in runtime is 1.6 microseconds, 
+mostly due to differences in \ac{HiZ} dispatch and depth buffer copy. \\
 
-\cleardoublepage
+\noindent
+Compared to the \emph{Lucy} model, the depth prepass took considerably longer to compute. This was mainly due to 
+the longer dispatch of the best occluders, which took about three times as long. The \emph{Bunny}'s amount of 
+best occluders was 5.1 times as high as the amount of best occluders in the \emph{Lucy} model.
+
+\clearpage
+
+
+
 
 \subsection*{Torus}
 
+\subsubsection*{Culling Results} \label{subsubsec-culling-results-torus}
+
 % --------------------------------------- TORUS 256 --------------------------------------
 
-\begin{figure}[h]              % Torus 256 Voxels Test Anim
+\begin{figure}[!htb]              % Torus 256 Voxels Test Anim
     \begin{center}
       \begin{tikzpicture}
         \begin{axis}[
@@ -744,17 +748,7 @@ this particular model the \ac{CPU} compute times are also considered to be stati
           \addplot[red, dotted, no marks, domain=0:1087, samples=50] {170772};
         \end{axis}
       \end{tikzpicture}
-      \caption{The amount of visible voxels over the course of the test animation shown in green for 
-      per-octree occlusion culling, and in orange for per-meshlet occlusion culling. 
-      The average amount of visible voxels was \emph{359,313} for per-octree occlusion culling, which is 
-      marked as the blue dotted line, and \emph{170,772} for per-meshlet occlusion culling, marked in red.}
-      \label{plt:torus-256-culling-res-voxels}
-    \end{center}
-  \end{figure}
 
-
-  \begin{figure}[h]            % Torus 256 OT Nodes Test Anim
-    \begin{center}
       \begin{tikzpicture}
         \begin{axis}[
             width=\linewidth, % Scale the plot to \linewidth
@@ -773,12 +767,16 @@ this particular model the \ac{CPU} compute times are also considered to be stati
           \addplot[red, dotted, no marks, domain=0:1087, samples=50] {4768};
         \end{axis}
       \end{tikzpicture}
-      \caption{The amount of visible octree nodes over the course of the test animation shown in green for 
-      per-octree occlusion culling and in orange for per-meshlet occlusion culling. 
-      The average amount of visible octree nodes was \emph{7,712} for per-octree occlusion culling, which is 
-      marked as the blue dotted line, and \emph{4,768} for per-meshlet occlusion culling, which is marked in 
-      as the red dotted line.}
-      \label{plt:torus-256-culling-res-nodes}
+
+      \caption{First: The amount of visible voxels over the course of the test animation shown in green for 
+      per-octree occlusion culling, and in orange for per-meshlet occlusion culling. The average amount of 
+      visible voxels was \emph{359,313} for per-octree occlusion culling, which is marked as the blue dotted 
+      line, and \emph{170,772} for per-meshlet occlusion culling, marked in red. Second: The amount of visible 
+      octree nodes over the course of the test animation shown in green for per-octree occlusion culling and 
+      in orange for per-meshlet occlusion culling. The average amount of visible octree nodes was \emph{7,712} 
+      for per-octree occlusion culling, which is marked as the blue dotted line, and \emph{4,768} for per-meshlet 
+      occlusion culling, which is marked in as the red dotted line.}
+      \label{plt:torus-256-culling-res-voxels}
     \end{center}
   \end{figure}
 
@@ -797,11 +795,15 @@ in figure \ref{plt:torus-256-culling-res-voxels}. \\
 \noindent
 In general, for per-octree culling, the average culling ratio was $84.4\%$, and $92.6\%$ for per-meshlet culling. 
 
-
 \subsubsection*{CPU Performance Results} \label{subsubsec-cpu-performance-results-torus}
 
+Similar to the other models, the \emph{Torus} showed very similar \ac{CPU} performances in both 
+occlusion culling configurations. The measurments confirmed what could already be shown for the 
+\emph{Bunny}: The time spent on the depth prepass directly correlates to the amount of best occluders 
+for a given model.
 
-\begin{figure}[h!]              % Torus renderTimes
+
+\begin{figure}[!htb]              % Torus CPU times
   \begin{center}
     \begin{tikzpicture}
       \begin{axis}[
@@ -845,8 +847,12 @@ In general, for per-octree culling, the average culling ratio was $84.4\%$, and 
 
 \subsubsection*{GPU Performance Results} \label{subsubsec-gpu-performance-results-torus}
 
+The \ac{GPU} performance for the \emph{Torus} model was considerably better using the per-meshlet 
+occlusion culling approach. While the depth prepass differed by only 0.54 microseconds in favor of the 
+per-octree node occlusion culling, the complete time spent on the \ac{GPU} was decreased by $36.8\%$ 
+using the per-meshlet occlusion culling configuration as shown in figure \ref{fig:torus-gpu-results}.
 
-\begin{figure}[h!]
+\begin{figure}[!htb]              % Torus GPU times
   \centering
   \begin{tikzpicture}
     \begin{axis}[
@@ -860,7 +866,7 @@ In general, for per-octree culling, the average culling ratio was $84.4\%$, and 
       symbolic y coords={TorusOOC, TorusMOC},
       yticklabels={B, A},
       ytick=data,
-      legend style={at={(0.5,1.1)}, anchor=south, legend columns=-1}
+      legend style={at={(0.5,1.05)}, anchor=south, legend columns=-1}
     ]
 
     \addplot [fill=green!80]  table [col sep=comma, x=DepthPrepass, y=Label]  {plotdata/gpu/torus_gpu_profiling_frame.csv};
@@ -870,16 +876,7 @@ In general, for per-octree culling, the average culling ratio was $84.4\%$, and 
     \legend{Depth Prepass, Dispatch Mesh, Miscellaneous}
     \end{axis}
   \end{tikzpicture}
-  \caption{The complete time measured on the \ac{GPU}. The \emph{Depth Prepass} is the extra overhead introduced 
-  by the \ac{HZB}. The \emph{Dispatch Mesh} is the drawing of the meshes, including the occlusion culling. 
-  \emph{Miscellaneous} includes a small amount of \emph{barriers} used for synchronisation and the rendering 
-  of some debug \ac{UI}. It is considered to be more or less static in computation time and is not part of 
-  the actual algorithm measured in this experiment.}
-\end{figure}
 
-
-\begin{figure}[h!]
-  \centering
   \begin{tikzpicture}
     \begin{axis}[
       xbar stacked,
@@ -902,17 +899,34 @@ In general, for per-octree culling, the average culling ratio was $84.4\%$, and 
     \legend{Dispatch Best Occluders, Copy Depth Buffer, Generate HiZ-Pyramid}
     \end{axis}
   \end{tikzpicture}
-  \caption{The time measured in the \emph{Depth Prepass}. The \emph{Dispatch Best Occluders} is the drawing to the 
-  depth buffer. The \emph{Copy Depth Buffer} computation copies the depth buffers content into the final \ac{HiZ} resource.
-  Finally, \emph{Generate HiZ-Pyramid} shows the \ac{HiZ} creation, which is done sequentially.}
+  \label{fig:torus-gpu-results}
+  \caption{First: The complete time measured on the \ac{GPU}. The \emph{Depth Prepass} is the extra overhead 
+  introduced by the \ac{HZB}. The \emph{Dispatch Mesh} is the drawing of the meshes, including the occlusion 
+  culling. \emph{Miscellaneous} includes a small amount of \emph{Barriers} used for synchronisation and the 
+  rendering of some debug \ac{UI}. It is considered to be more or less static in computation time and is not 
+  part of the actual algorithm measured in this experiment. Second: The time measured in the \emph{Depth Prepass}. 
+  The \emph{Dispatch Best Occluders} is the drawing to the depth buffer. The \emph{Copy Depth Buffer} computation 
+  copies the depth buffers content into the final \ac{HiZ} resource. Finally, \emph{Generate HiZ-Pyramid} shows 
+  the \ac{HiZ} creation, which is done sequentially.}
 \end{figure}
 
 
-\subsection*{Terrain - $256^3$}
+
+\clearpage
+
+
+
+
+
+
+
+\subsection*{Terrain}
+
+\subsubsection*{Culling Results} \label{subsubsec-culling-results-terrain}
 
 % -------------------------------------- TERRAIN 256 -------------------------------------
 
-\begin{figure}[h]              % Terrain 256 Voxels Test Anim
+\begin{figure}[!htb]              % Terrain 256 Voxels Test Anim
     \begin{center}
       \begin{tikzpicture}
         \begin{axis}[
@@ -932,17 +946,7 @@ In general, for per-octree culling, the average culling ratio was $84.4\%$, and 
           \addplot[red, dotted, no marks, domain=0:1239, samples=50] {180440};
         \end{axis}
       \end{tikzpicture}
-      \caption{The amount of visible voxels over the course of the test animation shown in green for 
-      per-octree occlusion culling, and in orange for per-meshlet occlusion culling. 
-      The average amount of visible voxels was \emph{396,228} for per-octree occlusion culling, which is 
-      marked as the blue dotted line, and \emph{180,440} for per-meshlet occlusion culling, marked in red.}
-      \label{plt:terrain-256-culling-res-voxels}
-    \end{center}
-  \end{figure}
 
-
-  \begin{figure}[h]            % Terrain 256 OT Nodes Test Anim
-    \begin{center}
       \begin{tikzpicture}
         \begin{axis}[
             width=\linewidth, % Scale the plot to \linewidth
@@ -961,30 +965,146 @@ In general, for per-octree culling, the average culling ratio was $84.4\%$, and 
           \addplot[red, dotted, no marks, domain=0:1239, samples=50] {3832};
         \end{axis}
       \end{tikzpicture}
-      \caption{The amount of visible octree nodes over the course of the test animation shown in green for 
-      per-octree occlusion culling and in orange for per-meshlet occlusion culling. 
-      The average amount of visible octree nodes was \emph{8,207} for per-octree occlusion culling, which is 
-      marked as the blue dotted line, and \emph{3,832} for per-meshlet occlusion culling, which is marked in 
-      as the red dotted line.}
-      \label{plt:terrain-256-culling-res-nodes}
+
+      \caption{The amount of visible voxels over the course of the test animation shown in green for per-octree 
+      occlusion culling, and in orange for per-meshlet occlusion culling. The average amount of visible voxels 
+      was \emph{396,228} for per-octree occlusion culling, which is marked as the blue dotted line, and 
+      \emph{180,440} for per-meshlet occlusion culling, marked in red. Second: The amount of visible octree 
+      nodes over the course of the test animation shown in green for per-octree occlusion culling and in orange 
+      for per-meshlet occlusion culling. The average amount of visible octree nodes was \emph{8,207} for 
+      per-octree occlusion culling, which is marked as the blue dotted line, and \emph{3,832} for per-meshlet 
+      occlusion culling, which is marked in as the red dotted line. }
+      \label{plt:terrain-256-culling-res-voxels}
     \end{center}
   \end{figure}
 
 % ----------------------------------------------------------------------------------------
 
-
 \noindent
-The terrain model shows a rather stable occlusion over time, with a ratio of about $58.4\%$ culled voxels 
-using the per-octree culling configuration, and about $81.1\%$ voxels being culled in the per-meshlet 
-configuration. 
+The terrain model showed a rather stable occlusion over time, with a ratio of about $58.4\%$ culled voxels 
+using the per-octree culling configuration, and about $81.1\%$ voxels being culled on average in the per-meshlet 
+configuration. It was essential that the model in question has a minimal volume 
+
+\subsubsection*{CPU Performance Results} \label{subsubsec-cpu-performance-results-terrain}
+
+
+\begin{figure}[!htb]              % Terrain CPU times
+  \begin{center}
+    \begin{tikzpicture}
+      \begin{axis}[
+          width=\linewidth,
+          height=100px,
+          xlabel={Frames},
+          ylabel={Render Time (s)},
+          grid,
+          xmin=0,
+          xmax=1239,
+          ymin=0,
+          ymax=0.00005
+        ]
+        \addplot[green, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1239 / 1572, y=time]{./plotdata/cpu/terrain_256_updateTime_pooc.csv};
+        \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1239 / 1813, y=time]{./plotdata/cpu/terrain_256_updateTime.csv};
+      \end{axis}
+    \end{tikzpicture}
+    \begin{tikzpicture}
+      \begin{axis}[
+          width=\linewidth,
+          height=100px,
+          xlabel={Frames},
+          ylabel={Render Time (s)},
+          grid,
+          xmin=0,
+          xmax=1239,
+          ymin=0,
+          ymax=0.00025
+        ]
+        \addplot[green, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1239 / 1572, y=time]{./plotdata/cpu/terrain_256_renderTime_pooc.csv};
+        \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1239 / 1813, y=time]{./plotdata/cpu/terrain_256_renderTime.csv};
+      \end{axis}
+    \end{tikzpicture}
+    \caption{Overview of the render times over the course of the test animation. The upper graph shows the time 
+    each frame took to execute the \emph{Update()} function on the \ac{CPU}. The lower graph shows the time each 
+    frame took to execute the function \emph{Render()} on the \ac{CPU}. This includes the completion of the 
+    \ac{GPU} computations.}
+    \label{plt:torus-256-culling-cpu-time}
+  \end{center}
+\end{figure}
+
+\subsubsection*{GPU Performance Results} \label{subsubsec-gpu-performance-results-terrain}
+
+
+\begin{figure}[!htb]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+      xbar stacked,
+      xmin=0,
+      width=\textwidth,
+      height=4cm,
+      ytick=data,
+      bar width=8pt,
+      xlabel={Time ($\mu$s)},
+      symbolic y coords={TerrainOOC, TerrainMOC},
+      yticklabels={B, A},
+      ytick=data,
+      legend style={at={(0.5,1.05)}, anchor=south, legend columns=-1}
+    ]
+
+    \addplot [fill=green!80]  table [col sep=comma, x=DepthPrepass, y=Label]  {plotdata/gpu/terrain_gpu_profiling_frame.csv};
+    \addplot [fill=blue!60]   table [col sep=comma, x=DispatchMesh, y=Label]  {plotdata/gpu/terrain_gpu_profiling_frame.csv};
+    \addplot [fill=orange!60] table [col sep=comma, x=Misc,         y=Label]  {plotdata/gpu/terrain_gpu_profiling_frame.csv};
+
+    \legend{Depth Prepass, Dispatch Mesh, Miscellaneous}
+    \end{axis}
+  \end{tikzpicture}
+
+  \begin{tikzpicture}
+    \begin{axis}[
+      xbar stacked,
+      xmin=0,
+      width=\textwidth,
+      height=4cm,
+      ytick=data,
+      bar width=8pt,
+      xlabel={Time ($\mu$s)},
+      symbolic y coords={TerrainOOC, TerrainMOC},
+      yticklabels={B, A},
+      ytick=data,
+      legend style={at={(0.5,1.3)}, anchor=north, legend columns=-1}
+    ]
+
+    \addplot [fill=red!80]    table [col sep=comma, x=DispatchBestOccluders,  y=Label]  {plotdata/gpu/terrain_gpu_profiling_prepass.csv};
+    \addplot [fill=pink!60]   table [col sep=comma, x=CopyTex,                y=Label]  {plotdata/gpu/terrain_gpu_profiling_prepass.csv};
+    \addplot [fill=yellow!60] table [col sep=comma, x=GenMipChain,            y=Label]  {plotdata/gpu/terrain_gpu_profiling_prepass.csv};
+
+    \legend{Dispatch Best Occluders, Copy Depth Buffer, Generate HiZ-Pyramid}
+    \end{axis}
+  \end{tikzpicture}
+
+  \caption{First: The complete time measured on the \ac{GPU}. The \emph{Depth Prepass} is the extra overhead 
+  introduced by the \ac{HZB}. The \emph{Dispatch Mesh} is the drawing of the meshes, including the occlusion 
+  culling. \emph{Miscellaneous} includes a small amount of \emph{barriers} used for synchronisation and the 
+  rendering of some debug \ac{UI}. It is considered to be more or less static in computation time and is not 
+  part of the actual algorithm measured in this experiment. Second: The time measured in the \emph{Depth Prepass}. 
+  The \emph{Dispatch Best Occluders} is the drawing to the depth buffer. The \emph{Copy Depth Buffer} computation 
+  copies the depth buffers content into the final \ac{HiZ} resource. Finally, \emph{Generate HiZ-Pyramid} shows 
+  the \ac{HiZ} creation, which is done sequentially.}
+\end{figure}
+
+\clearpage
 
 
 
-\subsection*{Terrain - $256^3$}
 
+
+
+
+\subsection*{Hairball}
+
+\subsubsection*{Culling Results} \label{subsubsec-culling-results-hairball}
 % -------------------------------------- HAIRBALL 256 -------------------------------------
 
-\begin{figure}[h]              % Hairball 256 Voxels Test Anim
+\begin{figure}[!htb]              % Hairball 256 Voxels Test Anim
     \begin{center}
       \begin{tikzpicture}
         \begin{axis}[
@@ -1013,7 +1133,7 @@ configuration.
   \end{figure}
 
 
-  \begin{figure}[h]            % Hairball 256 OT Nodes Test Anim
+  \begin{figure}[!htb]            % Hairball 256 OT Nodes Test Anim
     \begin{center}
       \begin{tikzpicture}
         \begin{axis}[
@@ -1045,7 +1165,74 @@ configuration.
 % ----------------------------------------------------------------------------------------
 
 
-[@TODO: Remove other resolutions]
+\subsubsection*{CPU Performance Results} \label{subsubsec-cpu-performance-results-hariball}
+
+
+\begin{figure}[!htb]              % Hairball CPU times
+  \begin{center}
+    \begin{tikzpicture}
+      \begin{axis}[
+          width=\linewidth,
+          height=100px,
+          xlabel={Frames},
+          ylabel={Render Time (s)},
+          grid,
+          xmin=0,
+          xmax=940,
+          ymin=0,
+          ymax=0.00005
+        ]
+        \addplot[green, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 940 / 1421, y=time]{./plotdata/cpu/hairball_256_updateTime_pooc.csv};
+        \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 940 / 1446, y=time]{./plotdata/cpu/hairball_256_updateTime.csv};
+      \end{axis}
+    \end{tikzpicture}
+    \begin{tikzpicture}
+      \begin{axis}[
+          width=\linewidth,
+          height=100px,
+          xlabel={Frames},
+          ylabel={Render Time (s)},
+          grid,
+          xmin=0,
+          xmax=940,
+          ymin=0,
+          ymax=0.00025
+        ]
+        \addplot[green, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 940 / 1421, y=time]{./plotdata/cpu/hairball_256_renderTime_pooc.csv};
+        \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 940 / 1446, y=time]{./plotdata/cpu/hairball_256_renderTime.csv};
+      \end{axis}
+    \end{tikzpicture}
+    \caption{Overview of the render times over the course of the test animation. The upper graph shows the time 
+    each frame took to execute the \emph{Update()} function on the \ac{CPU}. The lower graph shows the time each 
+    frame took to execute the function \emph{Render()} on the \ac{CPU}. This includes the completion of the 
+    \ac{GPU} computations.}
+    \label{plt:torus-256-culling-cpu-time}
+  \end{center}
+\end{figure}
+
+
+\subsubsection*{GPU Performance Results} \label{subsubsec-gpu-performance-results-hariball}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 \noindent
 The torus model shows in particular how the amount of visible voxels is very dependent on the 
@@ -1085,6 +1272,20 @@ consistently cull a similar amount of voxels.
 \end{table}
 
 % Avg. Node Population is for the complete, non-culled model. The higher the more efficient the model can be culled
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 \section{Performance Results}
