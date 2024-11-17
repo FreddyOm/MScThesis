@@ -521,6 +521,7 @@ copying the depth buffer and computing the mip maps.
 
 
 
+
 \subsection*{Stanford Bunny}
 
 \subsubsection*{Culling Results} \label{subsubsec-culling-results-bunny}
@@ -769,13 +770,9 @@ best occluders was 5.1 times as high as the amount of best occluders in the \emp
       \end{tikzpicture}
 
       \caption{First: The amount of visible voxels over the course of the test animation shown in green for 
-      per-octree occlusion culling, and in orange for per-meshlet occlusion culling. The average amount of 
-      visible voxels was \emph{359,313} for per-octree occlusion culling, which is marked as the blue dotted 
-      line, and \emph{170,772} for per-meshlet occlusion culling, marked in red. Second: The amount of visible 
+      per-octree occlusion culling, and in orange for per-meshlet occlusion culling. Second: The amount of visible 
       octree nodes over the course of the test animation shown in green for per-octree occlusion culling and 
-      in orange for per-meshlet occlusion culling. The average amount of visible octree nodes was \emph{7,712} 
-      for per-octree occlusion culling, which is marked as the blue dotted line, and \emph{4,768} for per-meshlet 
-      occlusion culling, which is marked in as the red dotted line.}
+      in orange for per-meshlet occlusion culling.}
       \label{plt:torus-256-culling-res-voxels}
     \end{center}
   \end{figure}
@@ -917,9 +914,6 @@ using the per-meshlet occlusion culling configuration as shown in figure \ref{fi
 
 
 
-
-
-
 \subsection*{Terrain}
 
 \subsubsection*{Culling Results} \label{subsubsec-culling-results-terrain}
@@ -944,6 +938,7 @@ using the per-meshlet occlusion culling configuration as shown in figure \ref{fi
           \addplot[blue, dotted, no marks, domain=0:1239, samples=50] {396228};
           \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1239 / 1759, y=visible_voxels]{./plotdata/terrain_256_voxels_pmoc.csv};
           \addplot[red, dotted, no marks, domain=0:1239, samples=50] {180440};
+
         \end{axis}
       \end{tikzpicture}
 
@@ -967,13 +962,9 @@ using the per-meshlet occlusion culling configuration as shown in figure \ref{fi
       \end{tikzpicture}
 
       \caption{The amount of visible voxels over the course of the test animation shown in green for per-octree 
-      occlusion culling, and in orange for per-meshlet occlusion culling. The average amount of visible voxels 
-      was \emph{396,228} for per-octree occlusion culling, which is marked as the blue dotted line, and 
-      \emph{180,440} for per-meshlet occlusion culling, marked in red. Second: The amount of visible octree 
+      occlusion culling, and in orange for per-meshlet occlusion culling.  Second: The amount of visible octree 
       nodes over the course of the test animation shown in green for per-octree occlusion culling and in orange 
-      for per-meshlet occlusion culling. The average amount of visible octree nodes was \emph{8,207} for 
-      per-octree occlusion culling, which is marked as the blue dotted line, and \emph{3,832} for per-meshlet 
-      occlusion culling, which is marked in as the red dotted line. }
+      for per-meshlet occlusion culling.}
       \label{plt:terrain-256-culling-res-voxels}
     \end{center}
   \end{figure}
@@ -981,12 +972,23 @@ using the per-meshlet occlusion culling configuration as shown in figure \ref{fi
 % ----------------------------------------------------------------------------------------
 
 \noindent
-The terrain model showed a rather stable occlusion over time, with a ratio of about $58.4\%$ culled voxels 
+The \emph{Terrain} model showed a rather stable occlusion over time, with a ratio of about $58.4\%$ culled voxels 
 using the per-octree culling configuration, and about $81.1\%$ voxels being culled on average in the per-meshlet 
-configuration. It was essential that the model in question has a minimal volume 
+configuration. It was essential that the model in question had a minimal volume to it, so best occluders could be 
+found and computed. \\
+
+\noindent
+The average amount of visible voxels was \emph{396,228} for per-octree occlusion culling, which is marked as the 
+blue dotted line, and \emph{180,440} for per-meshlet occlusion culling, marked in red. The average amount of 
+visible octree nodes was \emph{8,207} for per-octree occlusion culling, which is marked as the blue dotted line, 
+and \emph{3,832} for per-meshlet occlusion culling, which is marked in as the red dotted line.
 
 \subsubsection*{CPU Performance Results} \label{subsubsec-cpu-performance-results-terrain}
 
+Figure \ref{plt:terrain-256-culling-cpu-time} shows the \ac{CPU} performance over time, which in general 
+resembles similar results as the other models discussed earlier. Again, there were a couple of frames, 
+which show differences in frame time, although this could not be reliably attributed to any of the differences 
+in the measured algorithm. 
 
 \begin{figure}[!htb]              % Terrain CPU times
   \begin{center}
@@ -1026,11 +1028,22 @@ configuration. It was essential that the model in question has a minimal volume
     each frame took to execute the \emph{Update()} function on the \ac{CPU}. The lower graph shows the time each 
     frame took to execute the function \emph{Render()} on the \ac{CPU}. This includes the completion of the 
     \ac{GPU} computations.}
-    \label{plt:torus-256-culling-cpu-time}
+    \label{plt:terrain-256-culling-cpu-time}
   \end{center}
 \end{figure}
 
 \subsubsection*{GPU Performance Results} \label{subsubsec-gpu-performance-results-terrain}
+
+Figure \ref{fig:terrain-gpu-times} shows the time spent on the \ac{GPU} for the \emph{Terrain model}.
+The model had a considerable amount of best occluders which resulted in a prepass, which was similar 
+in duration to other models with high best occluder counts, like the \emph{Bunny}. In contrast to 
+the models discussed before, this time the per-meshlet culling configuration's prepass terminated faster 
+than the per-octree node culling configuration. On average, the prepass execution time improved by 0.35 
+microseconds for this model. \\
+
+\noindent
+Overall, the \emph{Terrain} model achieved a reduction in computation time of $41.9\%$ in favor of per-meshlet 
+culling, while the depth prepass didn't change significantly.
 
 
 \begin{figure}[!htb]
@@ -1080,7 +1093,7 @@ configuration. It was essential that the model in question has a minimal volume
     \legend{Dispatch Best Occluders, Copy Depth Buffer, Generate HiZ-Pyramid}
     \end{axis}
   \end{tikzpicture}
-
+  \label{fig:terrain-gpu-times}
   \caption{First: The complete time measured on the \ac{GPU}. The \emph{Depth Prepass} is the extra overhead 
   introduced by the \ac{HZB}. The \emph{Dispatch Mesh} is the drawing of the meshes, including the occlusion 
   culling. \emph{Miscellaneous} includes a small amount of \emph{barriers} used for synchronisation and the 
@@ -1091,10 +1104,8 @@ configuration. It was essential that the model in question has a minimal volume
   the \ac{HiZ} creation, which is done sequentially.}
 \end{figure}
 
+
 \clearpage
-
-
-
 
 
 
@@ -1102,6 +1113,21 @@ configuration. It was essential that the model in question has a minimal volume
 \subsection*{Hairball}
 
 \subsubsection*{Culling Results} \label{subsubsec-culling-results-hairball}
+
+Figure \ref{plt:hairball-256-culling-res-voxels} shows the amount of culled voxels and octree nodes 
+over the course of the test animation for both occlusion culling configurations. The average culling 
+results are marked by the dotted lines in the graph. The hairball model was a particularly intersting 
+model because of its fine and thin geometry. It was specifically chosen to provide insights into the 
+limitations of the algorithm and to see, how it handles models which are not ideal for this use case.\\
+
+\noindent
+The results show that the gain in performance wasn't as good for this model as for the other models.
+First of, the amount of best occluders was lower than that of the \emph{Terrain} model, even though the 
+\emph{Terrain} model had less total voxels than the \emph{Hairball} model. This characteristic led to 
+a lower probability of octree nodes or meshlets being culled. When looking at the data, the amount of 
+voxels being culled on average was $57.8\%$ for per-octree occlusion culling and $64.8\%$ for per-meshlet 
+occlusion culling, which represented a rather low increase relative to the other models. 
+
 % -------------------------------------- HAIRBALL 256 -------------------------------------
 
 \begin{figure}[!htb]              % Hairball 256 Voxels Test Anim
@@ -1121,20 +1147,10 @@ configuration. It was essential that the model in question has a minimal volume
           \addplot[green, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 940 / 940, y=visible_voxels]{./plotdata/hairball_256_voxels.csv};
           \addplot[blue, dotted, no marks, domain=0:940, samples=50] {697549};
           \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 940 / 1187, y=visible_voxels]{./plotdata/hairball_256_voxels_pmoc.csv};
-          \addplot[red, dotted, no marks, domain=0:940, samples=50] {0};
+          \addplot[red, dotted, no marks, domain=0:940, samples=50] {581663};
         \end{axis}
       \end{tikzpicture}
-      \caption{The amount of visible voxels over the course of the test animation shown in green for 
-      per-octree occlusion culling, and in orange for per-meshlet occlusion culling. 
-      The average amount of visible voxels was \emph{697,549} for per-octree occlusion culling, which is 
-      marked as the blue dotted line, and \emph{0} for per-meshlet occlusion culling, marked in red.}
-      \label{plt:terrain-256-culling-res-voxels}
-    \end{center}
-  \end{figure}
 
-
-  \begin{figure}[!htb]            % Hairball 256 OT Nodes Test Anim
-    \begin{center}
       \begin{tikzpicture}
         \begin{axis}[
             width=\linewidth, % Scale the plot to \linewidth
@@ -1150,23 +1166,25 @@ configuration. It was essential that the model in question has a minimal volume
           \addplot[green, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 940 / 940, y=visible_nodes]{./plotdata/hairball_256_nodes.csv};
           \addplot[blue, dotted, no marks, domain=0:940, samples=50] {21229};
           \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 940 / 1187, y=visible_nodes]{./plotdata/hairball_256_nodes_pmoc.csv};
-          \addplot[red, dotted, no marks, domain=0:940, samples=50] {0};
+          \addplot[red, dotted, no marks, domain=0:940, samples=50] {18925};
         \end{axis}
       \end{tikzpicture}
-      \caption{The amount of visible octree nodes over the course of the test animation shown in green for 
-      per-octree occlusion culling and in orange for per-meshlet occlusion culling. 
-      The average amount of visible octree nodes was \emph{21,229} for per-octree occlusion culling, which is 
-      marked as the blue dotted line, and \emph{0} for per-meshlet occlusion culling, which is marked in 
-      as the red dotted line.}
-      \label{plt:terrain-256-culling-res-nodes}
+
+      \caption{First: The amount of visible voxels over the course of the test animation shown in green for 
+      per-octree occlusion culling, and in orange for per-meshlet occlusion culling. Second: The amount of 
+      visible octree nodes over the course of the test animation shown in green for per-octree occlusion 
+      culling and in orange for per-meshlet occlusion culling.}
+      \label{plt:hairball-256-culling-res-voxels}
     \end{center}
   \end{figure}
 
 % ----------------------------------------------------------------------------------------
 
-
 \subsubsection*{CPU Performance Results} \label{subsubsec-cpu-performance-results-hariball}
 
+[@TODO: Check: if Render() includes the GPU work, why no difference?]
+The \ac{CPU} performance was not significantly diverging and was therefore considered static for 
+both configurations. 
 
 \begin{figure}[!htb]              % Hairball CPU times
   \begin{center}
@@ -1213,42 +1231,80 @@ configuration. It was essential that the model in question has a minimal volume
 
 \subsubsection*{GPU Performance Results} \label{subsubsec-gpu-performance-results-hariball}
 
+\begin{figure}[!htb]
+  \label{fig:hairball-gpu-times}
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+      xbar stacked,
+      xmin=0,
+      width=\textwidth,
+      height=4cm,
+      ytick=data,
+      bar width=8pt,
+      xlabel={Time ($\mu$s)},
+      symbolic y coords={HairballOOC, HairballMOC},
+      yticklabels={B, A},
+      ytick=data,
+      legend style={at={(0.5,1.05)}, anchor=south, legend columns=-1}
+    ]
 
+    \addplot [fill=green!80]  table [col sep=comma, x=DepthPrepass, y=Label]  {plotdata/gpu/hairball_gpu_profiling_frame.csv};
+    \addplot [fill=blue!60]   table [col sep=comma, x=DispatchMesh, y=Label]  {plotdata/gpu/hairball_gpu_profiling_frame.csv};
+    \addplot [fill=orange!60] table [col sep=comma, x=Misc,         y=Label]  {plotdata/gpu/hairball_gpu_profiling_frame.csv};
 
+    \legend{Depth Prepass, Dispatch Mesh, Miscellaneous}
+    \end{axis}
+  \end{tikzpicture}
 
+  \begin{tikzpicture}
+    \begin{axis}[
+      xbar stacked,
+      xmin=0,
+      width=\textwidth,
+      height=4cm,
+      ytick=data,
+      bar width=8pt,
+      xlabel={Time ($\mu$s)},
+      symbolic y coords={HairballOOC, HairballMOC},
+      yticklabels={B, A},
+      ytick=data,
+      legend style={at={(0.5,1.3)}, anchor=north, legend columns=-1}
+    ]
 
+    \addplot [fill=red!80]    table [col sep=comma, x=DispatchBestOccluders,  y=Label]  {plotdata/gpu/hairball_gpu_profiling_prepass.csv};
+    \addplot [fill=pink!60]   table [col sep=comma, x=CopyTex,                y=Label]  {plotdata/gpu/hairball_gpu_profiling_prepass.csv};
+    \addplot [fill=yellow!60] table [col sep=comma, x=GenMipChain,            y=Label]  {plotdata/gpu/hairball_gpu_profiling_prepass.csv};
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    \legend{Dispatch Best Occluders, Copy Depth Buffer, Generate HiZ-Pyramid}
+    \end{axis}
+  \end{tikzpicture}
+  \caption{First: The complete time measured on the \ac{GPU}. The \emph{Depth Prepass} is the extra overhead 
+  introduced by the \ac{HZB}. The \emph{Dispatch Mesh} is the drawing of the meshes, including the occlusion 
+  culling. \emph{Miscellaneous} includes a small amount of \emph{Barriers} used for synchronisation and the 
+  rendering of some debug \ac{UI}. It is considered to be more or less static in computation time and is not 
+  part of the actual algorithm measured in this experiment. Second: The time measured in the \emph{Depth Prepass}. 
+  The \emph{Dispatch Best Occluders} is the drawing to the depth buffer. The \emph{Copy Depth Buffer} computation 
+  copies the depth buffers content into the final \ac{HiZ} resource. Finally, \emph{Generate HiZ-Pyramid} shows 
+  the \ac{HiZ} creation, which is done sequentially.}
+\end{figure}
 
 \noindent
-The torus model shows in particular how the amount of visible voxels is very dependent on the 
-viewing angle of the camera. In figures \ref{plt:torus-256-culling-res-voxels} and 
-\ref{plt:torus-256-culling-res-nodes} two immense drops in voxel and octree visibility can be noticed.
-They occured when the torus was visible from the side, hiding the hole in the middle and providing excellent 
-self-occlusion for the far end of the torus. Compared to the other meshes, the amount of visible voxels 
-varied the most on the torus, ranging from around $160,000$ to almost $430,000$ voxels. This is due to the 
-algorithm favoring solid models without holes in them. The torus is a great example for showing the limits of 
-the implementation, having a rather low volume, a completely round shape with no straight edges and significant 
-parts of the model being empty space. \\
+Figure \ref{fig:hairball-gpu-times} shows the 
 
-\noindent
-The results show that a model like the torus is not optimal for the use in actual performance agnostic applications.
-Because of its shape, the performance is assumed to rather unstable, as opposed to some of the other models, which 
-consistently cull a similar amount of voxels.
+
+
+
+
+
+
+
+
+\subsection*{Comparison} \label{subsec-comparison}
+
+
+
+
 
 
 [@TODO: Consider this table as one of the overall overviews]
@@ -1280,10 +1336,7 @@ consistently cull a similar amount of voxels.
 
 
 
-
-
-
-
+[@TODO: Ratio -> best occluders <-> voxel count]
 
 
 
