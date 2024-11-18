@@ -1417,9 +1417,9 @@ for moise. The average measurements are listed below. \\
     legend style={at={(0.5,-0.15)}, anchor=north, legend columns=-2}
   ]
 
-  \addplot [fill=green!80]  table [col sep=comma, x=DepthPrepass, y=Label]  {plotdata/gpu/gpu_profiling_frame_pooc.csv};
-  \addplot [fill=blue!60]   table [col sep=comma, x=DispatchMesh, y=Label]  {plotdata/gpu/gpu_profiling_frame_pooc.csv};
-  \addplot [fill=orange!60] table [col sep=comma, x=Misc,         y=Label]  {plotdata/gpu/gpu_profiling_frame_pooc.csv};
+  \addplot [fill=green!80]  table [col sep=comma, x=DepthPrepass, y=Label]  {plotdata/gpu/gpu_profiling_frame.csv};
+  \addplot [fill=blue!60]   table [col sep=comma, x=DispatchMesh, y=Label]  {plotdata/gpu/gpu_profiling_frame.csv};
+  \addplot [fill=orange!60] table [col sep=comma, x=Misc,         y=Label]  {plotdata/gpu/gpu_profiling_frame.csv};
   
   \legend{Depth Prepass, Dispatch Mesh, Miscellaneous}
   \end{axis}
