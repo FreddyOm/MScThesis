@@ -1228,7 +1228,6 @@ both configurations.
   \end{center}
 \end{figure}
 
-
 \subsubsection*{GPU Performance Results} \label{subsubsec-gpu-performance-results-hariball}
 
 \begin{figure}[!htb]
@@ -1290,7 +1289,11 @@ both configurations.
 \end{figure}
 
 \noindent
-Figure \ref{fig:hairball-gpu-times} shows the 
+Figure \ref{fig:hairball-gpu-times} shows the difference in \ac{GPU} timing, which was in favor of the 
+per-meshlet occlusion culling. Although the per-meshlet culling connfiguration still accelerated the \ac{GPU} 
+operations, the differences got smaller compared to the other models, yielding only a $14.9\%$ decrease in computation
+time on average. The depth prepass diverged by only 0.75 microseconds in favor of the per-meshlet occlusion culling 
+when comparing the average values.  
 
 
 
