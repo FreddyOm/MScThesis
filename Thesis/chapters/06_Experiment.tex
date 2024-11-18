@@ -204,8 +204,8 @@ the test setups are listed in table \ref{tbl:hardware-setup}. \\
 \begin{figure}[h]
   \centering
   \includegraphics[width=80px]{images/graphics/model-lucy.jpg}
-  \includegraphics[width=80px]{images/graphics/model-hairball.jpg}
   \includegraphics[width=80px]{images/graphics/model-bunny.jpg}
+  \includegraphics[width=80px]{images/graphics/model-hairball.jpg}
   \includegraphics[width=80px]{images/graphics/model-torus.jpg}
   \includegraphics[width=80px]{images/graphics/model-terrain.jpg}
   \caption{The models used for the experiment.}
@@ -224,16 +224,16 @@ self-occludes the voxels when viewed from different perspectives. It also has a 
 no best occluders are expected. \\
 
 \noindent
-For low resolutions, the \emph{Hairball} isn't voxelized enough to maintain all the thin and tiny details, 
-but for higher resolutions, the small structures were assumed to be not sufficient in density to completely
-fill octree nodes, resulting in an unfavorable data layout to test the limits of the mesh computations. \\
-
-\noindent
 The \emph{Stanford Bunny} is a large and dense model with a lot of voxels in any possible resolution.
 It also has different features to it, one of them being the curved surface resulting in a lot of octree 
 nodes not being filled completely. On the other hand, because of its large volume, the model is assumed 
 to be efficient when rendering the best occluders, aggregating a lot of smaller octree nodes to larger 
 approximations. \\ 
+
+\noindent
+For low resolutions, the \emph{Hairball} isn't voxelized enough to maintain all the thin and tiny details, 
+but for higher resolutions, the small structures were assumed to be not sufficient in density to completely
+fill octree nodes, resulting in an unfavorable data layout to test the limits of the mesh computations. \\
 
 \noindent
 The \emph{Torus} provides a higher voxel count and a hole in it, which created an area where the 
@@ -1096,7 +1096,7 @@ culling, while the depth prepass didn't change significantly.
   \label{fig:terrain-gpu-times}
   \caption{First: The complete time measured on the \ac{GPU}. The \emph{Depth Prepass} is the extra overhead 
   introduced by the \ac{HZB}. The \emph{Dispatch Mesh} is the drawing of the meshes, including the occlusion 
-  culling. \emph{Miscellaneous} includes a small amount of \emph{barriers} used for synchronisation and the 
+  culling. \emph{Miscellaneous} includes a small amount of \emph{Barriers} used for synchronisation and the 
   rendering of some debug \ac{UI}. It is considered to be more or less static in computation time and is not 
   part of the actual algorithm measured in this experiment. Second: The time measured in the \emph{Depth Prepass}. 
   The \emph{Dispatch Best Occluders} is the drawing to the depth buffer. The \emph{Copy Depth Buffer} computation 
@@ -1230,6 +1230,12 @@ both configurations.
 
 \subsubsection*{GPU Performance Results} \label{subsubsec-gpu-performance-results-hariball}
 
+Figure \ref{fig:hairball-gpu-times} shows the difference in \ac{GPU} timing, which was in favor of the 
+per-meshlet occlusion culling. Although the per-meshlet culling connfiguration still accelerated the \ac{GPU} 
+operations, the differences got smaller compared to the other models, yielding only a $14.9\%$ decrease in 
+computation time on average. The depth prepass diverged by only 0.75 microseconds in favor of the per-meshlet 
+occlusion culling when comparing the average values.  
+
 \begin{figure}[!htb]
   \label{fig:hairball-gpu-times}
   \centering
@@ -1289,46 +1295,73 @@ both configurations.
 \end{figure}
 
 \noindent
-Figure \ref{fig:hairball-gpu-times} shows the difference in \ac{GPU} timing, which was in favor of the 
-per-meshlet occlusion culling. Although the per-meshlet culling connfiguration still accelerated the \ac{GPU} 
-operations, the differences got smaller compared to the other models, yielding only a $14.9\%$ decrease in computation
-time on average. The depth prepass diverged by only 0.75 microseconds in favor of the per-meshlet occlusion culling 
-when comparing the average values.  
+The data clearly indicates that the \emph{Hairball} modelwasn't using the culling algorithm as efficiently as 
+the other models did. From this, it is possible to derive how the algorithm should ideally be applied and in 
+which use case the overhead is greater than the time saving.
 
 
 
 
+\subsection*{Culling Overview}
 
+After the analysis of each model, the data is now cross compared over all models to discuss the 
+overall results the measurments provided. Table \ref{tbl:culling-result-overview-pooc} shows an overview of 
+all models and some of the most interesting data points. 
 
-
-
-
-\subsection*{Comparison} \label{subsec-comparison}
-
-
-
-
-
-
-[@TODO: Consider this table as one of the overall overviews]
 \begin{table}[h]
+  \label{tbl:culling-result-overview-pooc}
   \begin{tabular}{|lccccc|}
   \hline
   \multicolumn{6}{|c|}{\textbf{Scene Resolution: $256^3$ - Per-Octree Occlusion Culling}}                                                                                                                                                                                         \\ \hline
   \multicolumn{1}{|l|}{}                          & \multicolumn{1}{|c|}{\textbf{Stanford Lucy}}  & \multicolumn{1}{c|}{\textbf{Stanford Bunny}}  & \multicolumn{1}{c|}{\textbf{Torus}}   & \multicolumn{1}{c|}{\textbf{Terrain}}     & \multicolumn{1}{c|}{\textbf{Hairball}}    \\ \hline
-  \multicolumn{1}{|l|}{Best Occluder Count}       & \multicolumn{1}{c|}{1600}                     & \multicolumn{1}{c|}{8256}                     & \multicolumn{1}{c|}{7168}             & \multicolumn{1}{c|}{6976}                 & \multicolumn{1}{c|}{5056}                 \\ \hline
+  \multicolumn{1}{|l|}{Best Occluder Count}       & \multicolumn{1}{c|}{1600}                     & \multicolumn{1}{c|}{8256}                     & \multicolumn{1}{c|}{7168}             & \multicolumn{1}{c|}{6976}                 & \multicolumn{1}{c|}{5056}                 \\ 
   \multicolumn{1}{|l|}{Total Voxel Count}         & \multicolumn{1}{c|}{331,254}                  & \multicolumn{1}{c|}{3,379,738}                & \multicolumn{1}{c|}{2,311,006}        & \multicolumn{1}{c|}{953,362}              & \multicolumn{1}{c|}{1,652,435}            \\
+  \multicolumn{1}{|l|}{Total Octree Nodes}        & \multicolumn{1}{c|}{6,830}                    & \multicolumn{1}{c|}{57,481}                   & \multicolumn{1}{c|}{39,794}           & \multicolumn{1}{c|}{18,465}               & \multicolumn{1}{c|}{39,591}               \\
+  \multicolumn{1}{|l|}{Avg. Node Population}      & \multicolumn{1}{c|}{\textbf{48.5 \%}}         & \multicolumn{1}{c|}{\textbf{91.9 \%}}         & \multicolumn{1}{c|}{\textbf{90.7 \%}} & \multicolumn{1}{c|}{\textbf{80.7 \%}}     & \multicolumn{1}{c|}{\textbf{65.2 \%}}     \\ \hline
   \multicolumn{1}{|l|}{Avg. Visible Voxels}       & \multicolumn{1}{c|}{140,842}                  & \multicolumn{1}{c|}{385,210}                  & \multicolumn{1}{c|}{359,313}          & \multicolumn{1}{c|}{396,228}              & \multicolumn{1}{c|}{697,549}              \\
   \multicolumn{1}{|l|}{Avg. Culled Voxels}        & \multicolumn{1}{c|}{190,412}                  & \multicolumn{1}{c|}{2,994,528}                & \multicolumn{1}{c|}{1,951,693}        & \multicolumn{1}{c|}{557,134}              & \multicolumn{1}{c|}{954,886}              \\
   \multicolumn{1}{|l|}{Avg. Culled Voxel Ratio}   & \multicolumn{1}{c|}{\textbf{57.5 \%}}         & \multicolumn{1}{c|}{\textbf{88.6 \%}}         & \multicolumn{1}{c|}{\textbf{84.5 \%}} & \multicolumn{1}{c|}{\textbf{58.4 \%}}     & \multicolumn{1}{c|}{\textbf{57.8 \%}}     \\ \hline
-  \multicolumn{1}{|l|}{Total Octree Nodes}        & \multicolumn{1}{c|}{6,830}                    & \multicolumn{1}{c|}{57,481}                   & \multicolumn{1}{c|}{39,794}           & \multicolumn{1}{c|}{18,465}               & \multicolumn{1}{c|}{39,591}               \\
   \multicolumn{1}{|l|}{Avg. Visible Nodes}        & \multicolumn{1}{c|}{3,460}                    & \multicolumn{1}{c|}{8,519}                    & \multicolumn{1}{c|}{7,712}            & \multicolumn{1}{c|}{8,207}                & \multicolumn{1}{c|}{21,229}               \\
   \multicolumn{1}{|l|}{Avg. Culled Nodes}         & \multicolumn{1}{c|}{3,370}                    & \multicolumn{1}{c|}{48,962}                   & \multicolumn{1}{c|}{32,082}           & \multicolumn{1}{c|}{10,258}               & \multicolumn{1}{c|}{18,362}               \\
   \multicolumn{1}{|l|}{Avg. Culled Node Ratio}    & \multicolumn{1}{c|}{\textbf{49.3 \%}}         & \multicolumn{1}{c|}{\textbf{85.2 \%}}         & \multicolumn{1}{c|}{\textbf{80.6 \%}} & \multicolumn{1}{c|}{\textbf{55.6 \%}}     & \multicolumn{1}{c|}{\textbf{46.4 \%}}     \\ \hline
-  \multicolumn{1}{|l|}{Avg. Node Population}      & \multicolumn{1}{c|}{\textbf{48.5 \%}}         & \multicolumn{1}{c|}{\textbf{91.9 \%}}         & \multicolumn{1}{c|}{\textbf{90.7 \%}} & \multicolumn{1}{c|}{\textbf{80.7 \%}}     & \multicolumn{1}{c|}{\textbf{65.2 \%}}     \\ \hline
   
   \end{tabular}
 \end{table}
+
+\noindent
+The table shows the average culling data for all models using the per-octree occlusion culling configuration.
+The row \emph{Average Node Population} is particularly interesting as it shows how the culling results related 
+to the degree to which the octree nodes were filled. The higher this value, the more the octree nodes were filled 
+on average. A high average fill indicates the existance of a lot of best occluders relative the amount of voxels 
+and octree nodes present in the scene. This measure strongly correlates with the average ratio of culled coxels and 
+octree nodes. \\
+
+
+
+\begin{table}[h]
+  \label{tbl:culling-result-overview-pmoc}
+  \begin{tabular}{|lccccc|}
+  \hline
+  \multicolumn{6}{|c|}{\textbf{Scene Resolution: $256^3$ - Per-Meshlet Occlusion Culling}}                                                                                                                                                                                        \\ \hline
+  \multicolumn{1}{|l|}{}                          & \multicolumn{1}{|c|}{\textbf{Stanford Lucy}}  & \multicolumn{1}{c|}{\textbf{Stanford Bunny}}  & \multicolumn{1}{c|}{\textbf{Torus}}   & \multicolumn{1}{c|}{\textbf{Terrain}}     & \multicolumn{1}{c|}{\textbf{Hairball}}    \\ \hline
+  \multicolumn{1}{|l|}{Best Occluder Count}       & \multicolumn{1}{c|}{1600}                     & \multicolumn{1}{c|}{8256}                     & \multicolumn{1}{c|}{7168}             & \multicolumn{1}{c|}{6976}                 & \multicolumn{1}{c|}{5056}                 \\ 
+  \multicolumn{1}{|l|}{Total Voxel Count}         & \multicolumn{1}{c|}{331,254}                  & \multicolumn{1}{c|}{3,379,738}                & \multicolumn{1}{c|}{2,311,006}        & \multicolumn{1}{c|}{953,362}              & \multicolumn{1}{c|}{1,652,435}            \\
+  \multicolumn{1}{|l|}{Total Octree Nodes}        & \multicolumn{1}{c|}{6,830}                    & \multicolumn{1}{c|}{57,481}                   & \multicolumn{1}{c|}{39,794}           & \multicolumn{1}{c|}{18,465}               & \multicolumn{1}{c|}{39,591}               \\
+  \multicolumn{1}{|l|}{Avg. Node Population}      & \multicolumn{1}{c|}{\textbf{48.5 \%}}         & \multicolumn{1}{c|}{\textbf{91.9 \%}}         & \multicolumn{1}{c|}{\textbf{90.7 \%}} & \multicolumn{1}{c|}{\textbf{80.7 \%}}     & \multicolumn{1}{c|}{\textbf{65.2 \%}}     \\ \hline
+  \multicolumn{1}{|l|}{Avg. Visible Voxels}       & \multicolumn{1}{c|}{84,082}                   & \multicolumn{1}{c|}{180,266}                  & \multicolumn{1}{c|}{170,772}          & \multicolumn{1}{c|}{180,440}              & \multicolumn{1}{c|}{581,663}              \\
+  \multicolumn{1}{|l|}{Avg. Culled Voxels}        & \multicolumn{1}{c|}{247,226}                  & \multicolumn{1}{c|}{3,199,472}                & \multicolumn{1}{c|}{2,140,234}        & \multicolumn{1}{c|}{772,922}              & \multicolumn{1}{c|}{1,070,722}            \\
+  \multicolumn{1}{|l|}{Avg. Culled Voxel Ratio}   & \multicolumn{1}{c|}{\textbf{74.6 \%}}         & \multicolumn{1}{c|}{\textbf{94.7 \%}}         & \multicolumn{1}{c|}{\textbf{92.6 \%}} & \multicolumn{1}{c|}{\textbf{81.1 \%}}     & \multicolumn{1}{c|}{\textbf{64.8 \%}}     \\ \hline
+  \multicolumn{1}{|l|}{Avg. Visible Nodes}        & \multicolumn{1}{c|}{2,483}                    & \multicolumn{1}{c|}{5,415}                    & \multicolumn{1}{c|}{4,768}            & \multicolumn{1}{c|}{3,832}                & \multicolumn{1}{c|}{18,925}               \\
+  \multicolumn{1}{|l|}{Avg. Culled Nodes}         & \multicolumn{1}{c|}{4,347}                    & \multicolumn{1}{c|}{52,066}                   & \multicolumn{1}{c|}{35,026}           & \multicolumn{1}{c|}{14,633}               & \multicolumn{1}{c|}{20,666}               \\
+  \multicolumn{1}{|l|}{Avg. Culled Node Ratio}    & \multicolumn{1}{c|}{\textbf{63.6 \%}}         & \multicolumn{1}{c|}{\textbf{90.6 \%}}         & \multicolumn{1}{c|}{\textbf{88.0 \%}} & \multicolumn{1}{c|}{\textbf{79.2 \%}}     & \multicolumn{1}{c|}{\textbf{52.2 \%}}     \\ \hline
+  
+  \end{tabular}
+\end{table}
+
+
+\noindent
+Table \ref{tbl:culling-result-overview-pmoc} shows the same measures for the per-meshlet occlusion culling 
+configuration. 
 
 % Avg. Node Population is for the complete, non-culled model. The higher the more efficient the model can be culled
 
