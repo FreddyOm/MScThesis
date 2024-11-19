@@ -1143,14 +1143,14 @@ culling, while the depth prepass didn't change significantly.
 
 \begin{figure}[!htb]
   \centering
-  \includegraphics[height=125px]{images/graphics/overdraw-hairball1-pooc.png}
-  \includegraphics[height=125px]{images/graphics/overdraw-hairball1-pmoc.png}
-  \includegraphics[height=125px]{images/graphics/overdraw-hairball1-diff.png}
-  \includegraphics[height=125px]{images/graphics/overdraw-hairball2-pooc.png}
-  \includegraphics[height=125px]{images/graphics/overdraw-hairball2-pmoc.png}
-  \includegraphics[height=125px]{images/graphics/overdraw-hairball2-diff.png}
+  \includegraphics[height=125px]{images/graphics/overdraw-terrain1-pooc.png}
+  \includegraphics[height=125px]{images/graphics/overdraw-terrain1-pmoc.png}
+  \includegraphics[height=125px]{images/graphics/overdraw-terrain1-diff.png}
+  \includegraphics[height=125px]{images/graphics/overdraw-terrain2-pooc.png}
+  \includegraphics[height=125px]{images/graphics/overdraw-terrain2-pmoc.png}
+  \includegraphics[height=125px]{images/graphics/overdraw-terrain2-diff.png}
   \caption{}
-  \label{fig:hairball-overdraw}
+  \label{fig:terrain-overdraw}
 \end{figure}
 
 \clearpage
@@ -1346,6 +1346,22 @@ occlusion culling when comparing the average values.
 The data clearly indicates that the \emph{Hairball} modelwasn't using the culling algorithm as efficiently as 
 the other models did. From this, it is possible to derive how the algorithm should ideally be applied and in 
 which use case the overhead is greater than the time saving.
+
+\subsubsection*{Overdraw}
+
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[height=125px]{images/graphics/overdraw-hairball1-pooc.png}
+  \includegraphics[height=125px]{images/graphics/overdraw-hairball1-pmoc.png}
+  \includegraphics[height=125px]{images/graphics/overdraw-hairball1-diff.png}
+  \includegraphics[height=125px]{images/graphics/overdraw-hairball2-pooc.png}
+  \includegraphics[height=125px]{images/graphics/overdraw-hairball2-pmoc.png}
+  \includegraphics[height=125px]{images/graphics/overdraw-hairball2-diff.png}
+  \caption{}
+  \label{fig:hairball-overdraw}
+\end{figure}
+
+\clearpage
 
 
 
