@@ -523,13 +523,22 @@ copying the depth buffer and computing the mip maps.
   \includegraphics[height=125px]{images/graphics/overdraw-lucy1-pooc.png}
   \includegraphics[height=125px]{images/graphics/overdraw-lucy1-pmoc.png}
   \includegraphics[height=125px]{images/graphics/overdraw-lucy1-diff.png}
+  \includegraphics[height=125px]{images/graphics/overdraw-lucy2-pooc.png}
+  \includegraphics[height=125px]{images/graphics/overdraw-lucy2-pmoc.png}
+  \includegraphics[height=125px]{images/graphics/overdraw-lucy2-diff.png}
   \caption{}
   \label{fig:lucy-overdraw}
 \end{figure}
 
+\noindent
+Figure \ref{fig:lucy-overdraw} shows that the per-octree occlusion culling had more 
+overdrawn pixels than the per-meshlet occlusion culling configuration. While the 
+per-octree occlusion culling resulted in a maximum overdraw of 38 draws per pixel, 
+the per-meshlet occlusion culling was able to reduce this to a maximum of 27 draws.
+The side view featured only a maximum of 7 draws per pixel in both configurations.
+
 
 \clearpage
-
 
 
 
@@ -730,8 +739,6 @@ Compared to the \emph{Lucy} model, the depth prepass took considerably longer to
 the longer dispatch of the best occluders, which took about three times as long. The \emph{Bunny}'s amount of 
 best occluders was 5.1 times as high as the amount of best occluders in the \emph{Lucy} model.
 
-\clearpage
-
 \subsubsection*{Overdraw} \label{subsubsec-overdraw-bunny}
 
 \begin{figure}[!htb]
@@ -739,9 +746,26 @@ best occluders was 5.1 times as high as the amount of best occluders in the \emp
   \includegraphics[width=125px]{images/graphics/overdraw-bunny1-pooc.png}
   \includegraphics[width=125px]{images/graphics/overdraw-bunny1-pmoc.png}
   \includegraphics[width=125px]{images/graphics/overdraw-bunny1-diff.png}
-  \caption{}
+  \includegraphics[width=125px]{images/graphics/overdraw-bunny2-pooc.png}
+  \includegraphics[width=125px]{images/graphics/overdraw-bunny2-pmoc.png}
+  \includegraphics[width=125px]{images/graphics/overdraw-bunny2-diff.png}
+  \caption{Overdraw of the pixels from two different camera angles. The left column 
+  shows the per-octree occlusion culling configuration, the middle column shows the 
+  per-meshlet occlusion culling configuration and the right column shows the difference 
+  of both configurations. The image values are enhanced for better visualization.}
   \label{fig:bunny-overdraw}
 \end{figure}
+
+\noindent
+Figure \ref{fig:bunny-overdraw} shows the overdraw of pixels from two different camera angles.
+Both rows show, that the per-octree occlusion culling had more overdrawn pixels than the 
+per-meshlet occlusion culling configuration. The difference is in favor of per-meshlet 
+culling, which had only a maximum of 43 draws to the same pixels as compared to 60 draws.
+The camera angle clearly made a difference here, as the top view increased the amount of 
+overdraw significantly. This is especially visible on the surface of the model where a lot 
+of rounded edges are present.
+
+\clearpage
 
 
 
@@ -940,9 +964,19 @@ using the per-meshlet occlusion culling configuration as shown in figure \ref{fi
   \includegraphics[height=125px]{images/graphics/overdraw-torus2-pooc.png}
   \includegraphics[height=125px]{images/graphics/overdraw-torus2-pmoc.png}
   \includegraphics[height=125px]{images/graphics/overdraw-torus2-diff.png}
-  \caption{}
+  \caption{Overdraw of the pixels from two different camera angles. The left column 
+  shows the per-octree occlusion culling configuration, the middle column shows the 
+  per-meshlet occlusion culling configuration and the right column shows the difference 
+  of both configurations. The image values are enhanced for better visualization.}
   \label{fig:torus-overdraw}
 \end{figure}
+
+\noindent
+Figure \ref{fig:torus-overdraw} shows the overdraw for the \emph{Torus} model from two 
+camera perspectives. Clearly, the per-meshlet occlusion culling configuration resulted 
+in less overdraw, especially when viewed from the sides. As the second row of figure 
+\ref{fig:torus-overdraw} shows, the edges were particularly overdrawn because of the 
+missing deoth information.
 
 \clearpage
 
@@ -1149,9 +1183,20 @@ culling, while the depth prepass didn't change significantly.
   \includegraphics[height=125px]{images/graphics/overdraw-terrain2-pooc.png}
   \includegraphics[height=125px]{images/graphics/overdraw-terrain2-pmoc.png}
   \includegraphics[height=125px]{images/graphics/overdraw-terrain2-diff.png}
-  \caption{}
+  \caption{Overdraw of the pixels from two different camera angles. The left column 
+  shows the per-octree occlusion culling configuration, the middle column shows the 
+  per-meshlet occlusion culling configuration and the right column shows the difference 
+  of both configurations. The image values are enhanced for better visualization.}
   \label{fig:terrain-overdraw}
 \end{figure}
+
+
+\noindent
+As shown in figure \ref{fig:terrain-overdraw}, the per-octree culling configuration clearly 
+featured more overdraw than the comparison configuration. In the first row, it is evident that 
+the left lower corner features a lot of overdraw which was decreased by switching to the 
+per-meshlet culling configuration. The maximum draws per pixel were 86 and 45 respectively, in 
+favor of the per-meshlet culling.
 
 \clearpage
 
@@ -1228,7 +1273,7 @@ occlusion culling, which represented a rather low increase relative to the other
 
 % ----------------------------------------------------------------------------------------
 
-\subsubsection*{CPU Performance Results} \label{subsubsec-cpu-performance-results-hariball}
+\subsubsection*{CPU Performance Results} \label{subsubsec-cpu-performance-results-hairball}
 
 [@TODO: Check: if Render() includes the GPU work, why no difference?]
 The \ac{CPU} performance was not significantly diverging and was therefore considered static for 
@@ -1276,7 +1321,7 @@ both configurations.
   \end{center}
 \end{figure}
 
-\subsubsection*{GPU Performance Results} \label{subsubsec-gpu-performance-results-hariball}
+\subsubsection*{GPU Performance Results} \label{subsubsec-gpu-performance-results-hairball}
 
 Figure \ref{fig:hairball-gpu-times} shows the difference in \ac{GPU} timing, which was in favor of the 
 per-meshlet occlusion culling. Although the per-meshlet culling connfiguration still accelerated the \ac{GPU} 
@@ -1357,9 +1402,21 @@ which use case the overhead is greater than the time saving.
   \includegraphics[height=125px]{images/graphics/overdraw-hairball2-pooc.png}
   \includegraphics[height=125px]{images/graphics/overdraw-hairball2-pmoc.png}
   \includegraphics[height=125px]{images/graphics/overdraw-hairball2-diff.png}
-  \caption{}
+  \caption{Overdraw of the pixels from two different camera angles. The left column 
+  shows the per-octree occlusion culling configuration, the middle column shows the 
+  per-meshlet occlusion culling configuration and the right column shows the difference 
+  of both configurations. The image values are enhanced for better visualization.}
   \label{fig:hairball-overdraw}
 \end{figure}
+
+\noindent
+Figure \ref{fig:hairball-overdraw} shows that the overdraw was similar for both configurations, 
+but still in favor of per-meshlet occlusion culling. The last column featuring the difference 
+values between both configurations shows this particularly well. There is only a small difference 
+between both measurements, which is also reflected in the maximum amount of overdraw. The 
+per-octree node culling resulted in a maximum of 54 draws to one pixel and the per-meshlet 
+culling configuration resulted in a maximum of 51 draws. Again, the top view resulted in more 
+overdraw than the front view.
 
 \clearpage
 
@@ -1369,8 +1426,8 @@ which use case the overhead is greater than the time saving.
 \subsection*{Measurment Overview}
 
 After the analysis of each model, the data is now cross compared over all models to discuss the 
-overall results the measurments provided. Table \ref{tbl:culling-result-overview-pooc} shows an overview of 
-all models and some of the most interesting data points. 
+overall results the measurments provided. Table \ref{tbl:culling-result-overview-pooc} shows an 
+overview of all models and some of the most interesting data points. 
 
 \begin{table}[!htb]
   \begin{tabular}{|lccccc|}
