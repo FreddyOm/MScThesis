@@ -518,7 +518,7 @@ copying the depth buffer and computing the mip maps.
 
 \subsubsection*{Overdraw}
 
-\begin{figure}[h]
+\begin{figure}[!htb]
   \centering
   \includegraphics[height=125px]{images/graphics/overdraw-lucy1-pooc.png}
   \includegraphics[height=125px]{images/graphics/overdraw-lucy1-pmoc.png}
@@ -734,7 +734,7 @@ best occluders was 5.1 times as high as the amount of best occluders in the \emp
 
 \subsubsection*{Overdraw} \label{subsubsec-overdraw-bunny}
 
-\begin{figure}[h]
+\begin{figure}[!htb]
   \centering
   \includegraphics[width=125px]{images/graphics/overdraw-bunny1-pooc.png}
   \includegraphics[width=125px]{images/graphics/overdraw-bunny1-pmoc.png}
@@ -742,6 +742,8 @@ best occluders was 5.1 times as high as the amount of best occluders in the \emp
   \caption{}
   \label{fig:bunny-overdraw}
 \end{figure}
+
+
 
 
 \subsection*{Torus}
@@ -928,6 +930,19 @@ using the per-meshlet occlusion culling configuration as shown in figure \ref{fi
   \label{fig:torus-gpu-results}
 \end{figure}
 
+\subsubsection*{Overdraw}
+
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[height=125px]{images/graphics/overdraw-torus1-pooc.png}
+  \includegraphics[height=125px]{images/graphics/overdraw-torus1-pmoc.png}
+  \includegraphics[height=125px]{images/graphics/overdraw-torus1-diff.png}
+  \includegraphics[height=125px]{images/graphics/overdraw-torus2-pooc.png}
+  \includegraphics[height=125px]{images/graphics/overdraw-torus2-pmoc.png}
+  \includegraphics[height=125px]{images/graphics/overdraw-torus2-diff.png}
+  \caption{}
+  \label{fig:torus-overdraw}
+\end{figure}
 
 \clearpage
 
@@ -1124,6 +1139,19 @@ culling, while the depth prepass didn't change significantly.
   \label{fig:terrain-gpu-times}
 \end{figure}
 
+\subsubsection*{Overdraw}
+
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[height=125px]{images/graphics/overdraw-hairball1-pooc.png}
+  \includegraphics[height=125px]{images/graphics/overdraw-hairball1-pmoc.png}
+  \includegraphics[height=125px]{images/graphics/overdraw-hairball1-diff.png}
+  \includegraphics[height=125px]{images/graphics/overdraw-hairball2-pooc.png}
+  \includegraphics[height=125px]{images/graphics/overdraw-hairball2-pmoc.png}
+  \includegraphics[height=125px]{images/graphics/overdraw-hairball2-diff.png}
+  \caption{}
+  \label{fig:hairball-overdraw}
+\end{figure}
 
 \clearpage
 
