@@ -12,8 +12,8 @@ pipeline discussion and in depth data visualization.
 - [x] Citation okay?
 - [x] Check title. Is it fitting? What is the second pass? If it is reprojection, then rename!!
 - [x] Kolloquium, Paper & Thesis -> Koll. Nach Abgabe 1h (~40-45 Präsi mit Live Demo); Paper zur gleichen Zeit wie MA
-- [ ] Games as related work?
-- [ ] Try implementing dynamic build up of models so the dynamic part can be shown here!
+- [x] Games as related work?
+- [x] Try implementing dynamic build up of models so the dynamic part can be shown here!
 - [x] How to structure plots (Systems, per octree vs meshlet oc, models, scene sizes, ...)
 
 
