@@ -1423,11 +1423,12 @@ overdraw than the front view.
 
 
 
-\subsection*{Measurment Overview}
+\section*{Measurment Overview}
 
-After the analysis of each model, the data is now cross compared over all models to discuss the 
-overall results the measurments provided. Table \ref{tbl:culling-result-overview-pooc} shows an 
-overview of all models and some of the most interesting data points. 
+Now that each model has been analyzed individually, the data is cross compared over all models to 
+discuss the overall results the measurments provided. Tables \ref{tbl:culling-result-overview-pooc} 
+and \ref{tbl:culling-result-overview-pmoc} show an overview of all models and some of the most 
+interesting data points. 
 
 \begin{table}[!htb]
   \begin{tabular}{|lccccc|}
@@ -1452,12 +1453,12 @@ overview of all models and some of the most interesting data points.
 \end{table}
   
 \noindent
-The table shows the average culling data for all models using the per-octree occlusion culling configuration.
-The row \emph{Average Node Population} is particularly interesting as it shows how the culling results related 
-to the degree to which the octree nodes were filled. The higher this value, the more the octree nodes were filled 
-on average. A high average fill indicates the existance of a lot of best occluders relative the amount of voxels 
-and octree nodes present in the scene. This measure strongly correlates with the average ratio of culled coxels and 
-octree nodes. \\
+Table ref{tbl:culling-result-overview-pooc} shows the average culling data for all models using the per-octree 
+occlusion culling configuration. The row \emph{Average Node Population} is particularly interesting as it shows 
+how the culling results related to the degree to which the octree nodes were filled. The higher this value, the 
+more the octree nodes were filled on average. A high average fill indicates the existance of a lot of best occluders 
+relative the amount of voxels and octree nodes present in the scene. This measure strongly correlates with the 
+average ratio of culled coxels and octree nodes. \\
 
 
 \begin{table}[!htb]
@@ -1481,9 +1482,8 @@ octree nodes. \\
   \label{tbl:culling-result-overview-pmoc}
 \end{table}
 
-
 \noindent
-Table \ref{tbl:culling-result-overview-pmoc} shows the same measures for the per-meshlet occlusion culling 
+Table \ref{tbl:culling-result-overview-pmoc} shows the same aspects for the per-meshlet occlusion culling 
 configuration. It shows that the occlusion culling algorithm was able to cull a greater amount of voxels 
 when using the per-meshlet culling configuration. Additionally, across all models, a higher amount of 
 best occluders consequently resulted in a higher culling ratio and the average node population correlated 
@@ -1518,42 +1518,25 @@ with the average voxel culling ratio.
 \end{figure}
 
 \noindent
-The measurements showed that the culling significantly benefitted the \ac{GPU} performance throughout all 
-models. Figure \ref{fig:gpu-performance-overview} shows and overview of all models comparing the time spent 
+The measurements show that the culling significantly benefitted the \ac{GPU} performance throughout all 
+models. Figure \ref{fig:gpu-performance-overview} shows an overview of all models comparing the time spent 
 on the \ac{GPU} between both tested configurations. The \ac{CPU} performance did not show any significant 
-differences that could reliably traced back to the tested approaches. Small differenes were usually in the 
+differences that could reliably traced back to the tested approaches. Small differences were usually in the 
 order of about 1-10 microseconds and could not be reliably attributed to either of the two culling 
 configurations. \\
 
-[@TODO: Add overdraw images and throughput data]
+
+\noindent
+The individual overdraw measurements indicate that the amount of overdraw significantly varies with the 
+change of the camera angle. It is evident that the overdraw could be reduced best using models with high 
+volumes and avoiding small and thin details. In general, the per-meshlet culling approach was able to 
+achieve better results in terms of overdraw, although it was highly dependant on camera angle and dense 
+best occluder coverage. Usually, outer edges of models with curved surfaces could not be covered very well 
+because of the lack of best occluders.\\
+ 
 
 
-
-
-
-
-
-% Avg. Node Population is for the complete, non-culled model. The higher the more efficient the model can be culled
-
-
-
-
-
-
-
-
-
-\section{Performance Results}
-
-The performance results were measured for specifc frames in the standardized camera animation cycle. For each 
-model, a couple of frames were located and further analyzed to gain more information about the rendering 
-process. The frames selected were usually the ones with the most respective the fewest voxels visible. Additionally,
-a few more frames were analyzed, which provided an average voxel count. All measurements were done for both 
-culling configurations (per-octree culling and per-meshlet culling) and were repeated multiple times to compensate 
-for moise. The average measurements are listed below. \\
-
-
-
+[@TODO: Add throughput data]
 
 
 
