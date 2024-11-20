@@ -21,26 +21,26 @@ overhead and the performance gains. \\
 
 \noindent
 First, the experiment is evaluated in how it shows the differences between the pipelines. In this context, various 
-factors are discussed and it is presented how these factors were taken into account during the experiment. AAfter 
+factors are discussed and it is presented how these factors were taken into account during the experiment. After 
 that, the tools that were used to perform the measurements are presented, as well as the models, which were tested.
-Finally, the results are discussed by presenting the measurements for each model. A brief summary of the results is 
-given in the end, aggregating average data from all the tests performed during the experiment.
+Finally, the results are discussed by presenting the measurements for each model. A summary of the most meaningful 
+results is given in the end, aggregating average data from all the tests performed during the experiment.
 
 \section{Experimental Evaluation} \label{sec-experimental-evaluation}
 
 To evaluate the key differences and the runtime performance in general, several aspects had to be considered.
-Unfortunatly, comparing the occlusion culling implementation to an alternative implementation was not within the 
+Unfortunately, comparing the occlusion culling implementation to an alternative implementation was not within the 
 scope of this work, so efforts were made in order to evaluate the pipeline and its performance from a conceptual 
 point of view and compared to the plain pipeline, without any occlusion culling at all. This includes two different 
-versions of occlusion culling, one based on culling octree node as it can be implemented without the use of the 
+versions of occlusion culling, one based on culling octree nodes, as it can be implemented without the use of the 
 Mesh Shading pipeline. The other one is based on per-meshlet occlusion culling, which makes use of the more parallel 
 computation capabilities of the \ac{GPU}. \\
 
-\noindent
-This sections highlights the major aspects which were considered for the experiment and were evaluated during the 
+\noindent [@TODO: Check if this is still true]
+This section highlights the major aspects that were considered for the experiment and were evaluated during the 
 test runs. All aspects aim to demonstrate how the occlusion culling affected the given test scene and how the 
-computations differ compared to the plain pipeline. Later, use cases are considered which can be compared to 
-alternative algorithms on a high level. However, keep in mind that it is up to future measurements to quantitavely 
+computations differ compared to the plain pipeline. Later, use cases are considered, which can be compared to 
+alternative algorithms on a high level. However, keep in mind that it is up to future measurements to quantitatively 
 compare the pipeline to alternative approaches. 
 
 
@@ -68,11 +68,11 @@ which are likely to behave very differently when viewed from above compared to w
 
 \noindent
 [@TODO: Consider replacing the last "algorithm" with the actual subelement of the algo (scene data / data dispatch / ...)] 
-Another aspect to consider is the model data structure. The voxel models are volumetric representations and thus, 
+Another aspect to consider is the model data structure. The voxel models are volumetric representations and thus 
 not hollow. This leaves a large portion of computation to be irrelevant and allows for the occlusion culling to 
 optimize the data flow. Different types of models were used to challenge the culling algorithm in different ways. 
 In concept, the culling should be optimal on large, dense models with even faces. Consequently, models with 
-slopes and holes were tested, to see how best occluders can be computed for diverse geometry. Smaller models might 
+slopes and holes were tested to see how best occluders can be computed for diverse geometry. Smaller models might 
 also pose a challenge for the optimization, especially when the octree nodes cannot be filled completely. Also, 
 different voxel resolutions were used to achieve different amounts of octree nodes in the scene. All these different 
 aspects aim to show the strengths and weaknesses of the algorithm and how it can be optimally used in practice. \\
@@ -80,13 +80,13 @@ aspects aim to show the strengths and weaknesses of the algorithm and how it can
 \noindent
 The resolution of the voxelization process played a central role in the experimentation process.
 For the experiment, the voxel scenes were constrained to be a power of two in length per axis, and a resolution 
-of $\emph{256} \times \emph{256} \times \emph{256}$ were used for the performance profiling, resulting in a maximum 
-of \emph{16.777.216} voxels. In practice, the maximum amount of voxels was limited by how the data is dispatched 
+of $\emph{256} \times \emph{256} \times \emph{256}$ was used for the performance profiling, resulting in a maximum 
+of \emph{16.777.216} voxels. In practice, the maximum amount of voxels was limited by how the data was dispatched 
 by the \ac{GPU}. In the implementation, the shader model used (HLSL Shader Model 6.6) was limited to a maximum 
 amount of 65.536 threadgroups. That means that the threadgroup size and the amount of constructed octree nodes 
 influenced the possible resolutions of the scenes. This limitation can be overcome by scheduling more than one draw 
 call, but for this experiment, only one draw call was used. Consequently, the actual maximum amount of voxels in the 
-scene was around 3 - 4 million voxels, which was considered enough for this experiment. \\
+scene was around 3-4 million voxels, which was considered enough for this experiment. \\
 
 \noindent
 For comparison of particular measures, some of the models were additionally tested using higher or lower resolutions.
@@ -97,24 +97,24 @@ Whenever the respective comparison is meaningful, it is highlighted as such.
 
 Ultimately, the time spent for various computations is relevant for the selection of the best algorithm. This is 
 a central tool to see how the implementation performs overall in the context of the framework used. The frame 
-time is the first measurment to be considered, but not necessarily the most meaningful in a complex pipeline. 
-Consequently, the timings for all major pipeline steps were considered, as well as the overall time spend on 
+time is the first measurement to be considered, but not necessarily the most meaningful in a complex pipeline. 
+Consequently, the timings for all major pipeline steps were considered, as well as the overall time spent on 
 \ac{CPU} and \ac{GPU} computations. 
 
 
 \subsection*{Visibility and Culling} \label{subsec-visibility-and-culling}
 
-In order to evaluate the general functionality and effectiveness of the pipeline, the voxel model was analysed 
+In order to evaluate the general functionality and effectiveness of the pipeline, the voxel model was analyzed 
 with and without the occlusion culling applied. The amount of culled voxels was compared to the total amount of 
-voxels resulting in an overview of how much geometry could be culled for different scene setups. The same is 
-valid for the amount of octree nodes. They could also be compared to the amount of best occluders. The more best 
+voxels, resulting in an overview of how much geometry could be culled for different scene setups. The same is 
+valid for the amount of octree nodes. They could also be compared to the number of best occluders. The more best 
 occluders present in a scene, the higher the probability to occlude other voxels or octree nodes. To evaluate 
-how much can be optimized during the depth pre pass, the amount of best occluders was compared to the amount 
+how much can be optimized during the depth prepass, the number of best occluders was compared to the number 
 of voxels representing the best occluders. \\
 
 \noindent
 Finally, the actual amount of processed triangles was considered in order to show the actual geometry processed 
-by the \ac{GPU}. This data indicates how much work is being scheduled for the vertex transformations, the rasterizer 
+by the \ac{GPU}. This data indicates how much work is being scheduled for the vertex transformations, the rasterizer, 
 and the pixel shader. Ultimately, it decides over the amount of overdraw and should therefore be kept at a minimum.
 
 
@@ -122,13 +122,13 @@ and the pixel shader. Ultimately, it decides over the amount of overdraw and sho
 
 [@TODO: Refresh sentence]
 The additional overhead needs to be evaluated compared to the gain in performance by the occlusion culling. 
-Because of that, the pipeline is analyzed and the timings are compared to a pipeline without the culling 
+Because of that, the pipeline is analyzed, and the timings are compared to a pipeline without the culling 
 algorithm. All per-frame computations are evaluated to see how much resources are spent on culling overhead. 
 The results are compared against the acceleration provided by the algorithm.\\
 
 \noindent
-To increase the significance of the data, the per-meshlet occlusion culling was compared against the 
-per-octree occlusion culling. The difference should be able to show, how the Mesh Shading pipeline 
+To increase the significance of the data, the per-meshlet occlusion culling was compared with the 
+per-octree occlusion culling. The difference should be able to show how the Mesh Shading pipeline 
 influences the culling algorithm. The per-meshlet culling was expected to be more precise and to cull 
 more voxels, since individual voxels within one octree can be culled, as opposed to per-octree node 
 culling, which either renders all voxels within an octree node or culls it completely. 
@@ -137,16 +137,16 @@ culling, which either renders all voxels within an octree node or culls it compl
 \subsection*{Measuring Tools} \label{subsec-measuring-tools}
 
 To measure timings and data precisely, a few external tools were used. All tools are part of the industry 
-standard and were therefore assumed to be mostly reliable. Still, measuring performance usally comes with 
-a minimal overhead which means that the results most likely vary in precision. Also, some of the tools 
+standard and were therefore assumed to be mostly reliable. Still, measuring performance usually comes with 
+a minimal overhead, which means that the results most likely vary in precision. Also, some of the tools 
 provided various ways of coming up with the data. Some data was measured while the profiled application 
 was running, and other data was acquired by replaying the command list of the \ac{GPU}. Consequently, all 
 measurements referring to one aspect of the application were compared against measurements using the same 
 tool and configuration, if not explicitly specified otherwise. \\
 
 \noindent
-For the collection of data output, \emph{RenderDoc} \cite{RenderDoc} was used. It is a free, MIT licensed 
-rendering debugger, widely used in the industy. For \emph{NVIDIA} specific \ac{GPU} profiling, \emph{NVIDIA NSight} 
+For the collection of data output, \emph{RenderDoc} \cite{RenderDoc} was used. It is a free, MIT-licensed 
+rendering debugger, widely used in the industry. For \emph{NVIDIA}-specific \ac{GPU} profiling, \emph{NVIDIA NSight} 
 \cite{NSight} was used, which is another industry standard profiling and debugging tool. It is only available for 
 inspection of \emph{NVIDIA} graphics card computations but provided valuable insights into the rendering pipeline 
 and hardware usage. The last tool used is \emph{Microsoft's PIX} \cite{PIX}, which is another performance debugging 
@@ -160,7 +160,7 @@ affected the amount of mips generated for the \ac{HiZ}-pyramid, so it was fixed 
 All of the aspects above were standardized for each model over all test runs.\\
 
 \noindent 
-The overall framerate of the application was artificially clamped to 30, 60 or 120 \emph{Hz} by \emph{Diligent Engine}, 
+The overall framerate of the application was artificially clamped to 30, 60, or 120 \emph{Hz} by \emph{Diligent Engine}, 
 which occasionally results in an abrupt change of frame times. This also means that the overall frame time is not 
 reliably showing the \ac{CPU} workload. However, measuring only the internal render and update routines provided 
 more reliable results, which are shown in the respective \ac{CPU} graphs. 
@@ -170,7 +170,7 @@ more reliable results, which are shown in the respective \ac{CPU} graphs.
 
 [@TODO: Rethink section title]
 For the experiment, different hardware setups were used to compare the runtime performance in different environments.
-Some more modern hardware was used to profile the best case computations, and older hardware was used for the results 
+Some more modern hardware was used to profile the best-case computations, and older hardware was used for the results 
 to different versions of hardware features and capabilities.
 
 \begin{table}[h]          % System setup table
@@ -193,7 +193,7 @@ to different versions of hardware features and capabilities.
 
 \noindent
 Note that the use of the Mesh Shading pipeline requires graphics cards that support the pipeline in the first place. 
-For \emph{NVIDIA} \ac{GPU}s this is the \emph{Turing} lineup (\emph{NVIDIA RTX 20 series}) and for \emph{AMD} cards 
+For \emph{NVIDIA} \ac{GPU}s, this is the \emph{Turing} lineup (\emph{NVIDIA RTX 20 series}), and for \emph{AMD} cards, 
 this would be the \emph{RDNA 2} lineup (\emph{AMD RX 6000 series}). \emph{Intel} \ac{GPU}s support the feature as 
 well, starting from their first installment in the dedicated desktop \ac{GPU} series \emph{Intel Arc}. The specs of 
 the test setups are listed in table \ref{tbl:hardware-setup}. \\
@@ -214,7 +214,7 @@ the test setups are listed in table \ref{tbl:hardware-setup}. \\
 
 \noindent
 The models that were used in the tests are \emph{Lucy} (Stanford 3D Scanning Repository), the \emph{Stanford Bunny} 
-(Stanford 3D Scanning Repository), the \emph{Hairball}, a \emph{Torus} and a \emph{Terrain} scene. All of 
+(Stanford 3D Scanning Repository), the \emph{Hairball}, a \emph{Torus}, and a \emph{Terrain} scene. All of 
 these models provide different characteristics, which tested the pipeline in a variety of ways. \\
 
 \noindent
@@ -225,7 +225,7 @@ no best occluders are expected. \\
 
 \noindent
 The \emph{Stanford Bunny} is a large and dense model with a lot of voxels in any possible resolution.
-It also has different features to it, one of them being the curved surface resulting in a lot of octree 
+It also has different features to it, one of them being the curved surface, resulting in a lot of octree 
 nodes not being filled completely. On the other hand, because of its large volume, the model is assumed 
 to be efficient when rendering the best occluders, aggregating a lot of smaller octree nodes to larger 
 approximations. \\ 
@@ -237,16 +237,16 @@ fill octree nodes, resulting in an unfavorable data layout to test the limits of
 
 \noindent
 The \emph{Torus} provides a higher voxel count and a hole in it, which created an area where the 
-octree isn't densly filled with voxels. This model was specifically used to test the algorithm's 
-capabilities of culling voxels, when the voxels were densly crowded in small parts of the scene, and 
+octree isn't densely filled with voxels. This model was specifically used to test the algorithm's 
+capabilities of culling voxels when the voxels were densely crowded in small parts of the scene and 
 at the same time provided areas with no voxels at all. Also, the \emph{Torus} is an inherently round 
 shape and therefore has a lot of partially filled octree nodes representing its surface. \\
 
 \noindent
 The \emph{Terrain} model aimed to replicate a relatively flat, open area that could be found in actual 
 games like \emph{Minecraft}. Its surface is setup in a way that allows for only a small amount of best 
-occluders to be formed. The terrain's hills are assumed to be occluders which again would help for rendering 
-such a scene in a game.
+occluders to be formed. The terrain's hills are assumed to be occluding a large part of the scene, 
+which again would help for rendering such a scene in a game.
 
 
 %- Compare:
@@ -288,7 +288,7 @@ such a scene in a game.
 
 \section{Experimental Results}
 
-In this section the experimental results are presented and discussed for each model tested.
+In this section, the experimental results are presented and discussed for each model tested.
 For each model, the culling results include data that isn't dependent on specific hardware. 
 After that, the profiling measurements are discussed, which relate to the hardware setup presented 
 in \ref{subsec-experimental-environment}. The data analysis is structured similarly for all models,
@@ -360,19 +360,19 @@ nodes for both the per-octree node occlusion culling (upper graph) and the per-m
 
 \noindent
 The average amount of visible voxels was \emph{140,842} for per-octree occlusion culling, which is marked 
-as the blue dotted line, and \emph{84,082} for per-meshlet occlusion culling, marked in red.
-The average amount of visible octree nodes was \emph{3,460} for per-octree occlusion culling, which is marked 
-as the blue dotted line, and \emph{2,483} for per-meshlet occlusion culling, which is marked in as the red 
-dotted line. \\
+as the blue dotted line, and \emph{84,082} for per-meshlet occlusion culling, marked in red. The average 
+amount of visible octree nodes was \emph{3,460} for per-octree occlusion culling, which is marked as the 
+blue dotted line, and \emph{2,483} for per-meshlet occlusion culling, which is marked as the red dotted 
+line. \\
 
 \noindent
 [@TODO: Consider moving explanations and further analysis to discussion part.]
 It is obvious that the per-meshlet culling significantly reduced the amount of dispatched voxels and octree nodes, 
 which lead to less load for the rasterizer and the pixel shader. The amount of octree nodes decreased when using 
-per-meshlet culling, because octree nodes could be culled, even when their corners were visible by the camera. 
+per-meshlet culling because octree nodes could be culled, even when their corners were visible by the camera. 
 For instance, when considering a node that holds just 5 voxels, which are all overlapped by a part of the model, 
 this octree node will be inherently culled when using per-meshlet culling. Contrary, when using per-octree culling, 
-the culling is dependant on the visibility of any of the octree nodes corners, which can result in a node being not 
+the culling is dependent on the visibility of any of the octree node's corners, which can result in a node being not 
 culled, even though all voxels within that node remain occluded. \\
 
 \noindent 
@@ -383,7 +383,7 @@ relatively even number of voxels when viewed from the side. \\
 
 \noindent
 Considering the average amount of visible voxels, the per-octree algorithm was able to cull $57.5\%$ of all 
-voxels. The per-meshlet culling even managed to ommit on average $74.6\%$ of all voxels. 
+voxels. On average, the per-meshlet culling even managed to omit $74.6\%$ of all voxels. 
 
 \subsubsection*{CPU Performance Results} \label{subsubsec-cpu-performance-results-lucy}
 
@@ -431,20 +431,20 @@ voxels. The per-meshlet culling even managed to ommit on average $74.6\%$ of all
 
 \noindent
 Figure \ref{plt:lucy-256-culling-cpu-time} shows the \ac{CPU} computations over the course of the test animation.
-The first graphs shows the computation of the \ac{CPU} \emph{Update()} function, which includes updatimg the camera's 
+The first graphs shows the computation of the \ac{CPU} \emph{Update()} function, which includes updating the camera's 
 view and projection matrices. This function was expected to be static in runtime, regardless of the culling configuration. 
 The graph shows that this is generally correct, as both are not significantly diverging.\\
 
 \noindent
 The second graph shows the isolated computation time of the \ac{CPU} \emph{Render()} function. It is a good indicator of 
-how the computation time changed and it includes the \ac{GPU} work that was called during the function, like 
+how the computation time changed, and it includes the \ac{GPU} work that was called during the function, like 
 \emph{DispatchMesh()} during the depth prepass and the final draw call. \\
 
 \noindent
-In general, the times spent on the most significant \ac{CPU} computations was pretty much static for this specific 
+In general, the time spent on the most significant \ac{CPU} computations was pretty much static for this specific 
 model. This result is as expected, as most of the work was executed on the \ac{GPU}, including the creation of the 
-voxel meshes. After all, this approach is \ac{GPU} driven at its core, so the bandwidth is small and the culling 
-completely happens on the \ac{GPU} end of the piepeline.
+voxel meshes. After all, this approach is \ac{GPU}-driven at its core, so the bandwidth is small and the culling 
+completely happens on the \ac{GPU} end of the pipeline.
 
 \subsubsection*{GPU Performance Results} \label{subsubsec-gpu-performance-results-lucy}
 
@@ -513,7 +513,7 @@ particular model.
 
 \noindent
 The comparison of the depth prepass shows a small difference in computation time. The per-octree node configuration 
-terminated faster by $1.93$ microseconds on average. In this case the difference was created by small deviations in 
+terminated faster by $1.93$ microseconds on average. In this case, the difference was created by small deviations in 
 copying the depth buffer and computing the mip maps. 
 
 \subsubsection*{Overdraw}
@@ -601,17 +601,17 @@ The side view featured only a maximum of 7 draws per pixel in both configuration
 \noindent
 Similar to the first model, the \emph{Stanford Bunny} also discarded a significant amount of 
 voxels in both of the applied culling configurations. The average culling ratio was $88.6\%$ 
-for the per-octree occlusion culling, and $94.6\%$ for the per-meshlet culling. This immense 
+for the per-octree occlusion culling and $94.6\%$ for the per-meshlet culling. This immense 
 amount of occlusion was due to the already large amount of \emph{3,379,738} total voxels in the 
-mesh and the large volume of the model, which provided a good basis for the generation of best 
-occluders. \\
+mesh and the large volume of the model, which provided a good basis for the generation of the 
+best occluders. \\
 
 
 \noindent
 The average amount of visible voxels was \emph{385,210} for per-octree occlusion culling, which is 
 marked as the blue dotted line, and \emph{180,266} for per-meshlet occlusion culling, marked in red.
-The average amount of visible octree nodes was \emph{8,519} for per-octree occlusion culling, which is 
-marked as the blue dotted line, and \emph{5,415} for per-meshlet occlusion culling, which is marked in 
+The average amount of visible octree nodes was \emph{8,519} for per-octree occlusion culling, which 
+is marked as the blue dotted line, and \emph{5,415} for per-meshlet occlusion culling, which is marked
 as the red dotted line.
 
 \subsubsection*{CPU Performance Results} \label{subsubsec-cpu-performance-results-bunny}
@@ -661,10 +661,10 @@ as the red dotted line.
 
 \noindent
 Like with the \emph{Lucy} model, the \emph{Bunny} showed no significant difference in \ac{CPU} computation time. 
-In figure \ref{plt:bunny-256-culling-cpu-time} the second graph shows a small amount of frames between frames 280 
-and 380, which seem to have been faster in execution using the per-meshlet occlusion culling, however, it is not 
+In figure \ref{plt:bunny-256-culling-cpu-time}, the second graph shows a small amount of frames between frames 280 
+and 380, which seem to have been faster in execution using the per-meshlet occlusion culling. However, it is not 
 obvious why there would be any difference here. Similarly, the first graph also shows small differences that are 
-not considered significant enough to make any assumptions about them. Therefore, for this particular model the 
+not considered significant enough to make any assumptions about them. Therefore, for this particular model, the 
 \ac{CPU} compute times are also considered to be static between both configurations.
 
 \subsubsection*{GPU Performance Results} \label{subsubsec-gpu-performance-results-bunny}
@@ -729,7 +729,7 @@ not considered significant enough to make any assumptions about them. Therefore,
 
 \noindent
 The \ac{GPU} performance shows a significant difference when comparing both configurations. The per-meshlet 
-occlusion culling was able to decrease the time spend on \emph{DispatchMesh} by $36.1\%$ on average as compared 
+occlusion culling was able to decrease the time spent on \emph{DispatchMesh} by $36.1\%$ on average as compared 
 to the per-octree node occlusion culling. On closer inspection, the depth prepass showed a minor difference 
 in runtime, similar to the prepass of the \emph{Lucy} model. The difference in runtime is 1.6 microseconds, 
 mostly due to differences in \ac{HiZ} dispatch and depth buffer copy. \\
@@ -758,11 +758,11 @@ best occluders was 5.1 times as high as the amount of best occluders in the \emp
 
 \noindent
 Figure \ref{fig:bunny-overdraw} shows the overdraw of pixels from two different camera angles.
-Both rows show, that the per-octree occlusion culling had more overdrawn pixels than the 
+Both rows show that the per-octree occlusion culling had more overdrawn pixels than the 
 per-meshlet occlusion culling configuration. The difference is in favor of per-meshlet 
 culling, which had only a maximum of 43 draws to the same pixels as compared to 60 draws.
 The camera angle clearly made a difference here, as the top view increased the amount of 
-overdraw significantly. This is especially visible on the surface of the model where a lot 
+overdraw significantly. This is especially visible on the surface of the model, where a lot 
 of rounded edges are present.
 
 \clearpage
@@ -830,7 +830,7 @@ of rounded edges are present.
 The \emph{Torus} model varied in culling efficiency depending on the view angle. As expected, the hole 
 in the mesh turned out to be inefficient for the culling algorithm. When considering the occlusion ratio, 
 both the per-octree occlusion culling and the oer-meshlet occlusion culling performed significantly better 
-when the torus was viewed from an angle, occluding the hole in the middle. The variation between the maxium 
+when the torus was viewed from an angle, occluding the hole in the middle. The variation between the maximum 
 amount of visible voxels and the minimum amount of voxels was the highest for the \emph{Torus} model, which 
 is remarkable compared to the other models. Using this particular experimental setup, the lowest amount of 
 visible voxels was $36.8\%$ of the maximum amount of visible voxels. This variation is also clearly evident 
@@ -842,7 +842,7 @@ In general, for per-octree culling, the average culling ratio was $84.4\%$, and 
 \subsubsection*{CPU Performance Results} \label{subsubsec-cpu-performance-results-torus}
 
 Similar to the other models, the \emph{Torus} showed very similar \ac{CPU} performances in both 
-occlusion culling configurations. The measurments confirmed what could already be shown for the 
+occlusion culling configurations. The measurements confirmed what could already be shown for the 
 \emph{Bunny}: The time spent on the depth prepass directly correlates to the amount of best occluders 
 for a given model.
 
@@ -1042,22 +1042,22 @@ missing deoth information.
 
 \noindent
 The \emph{Terrain} model showed a rather stable occlusion over time, with a ratio of about $58.4\%$ culled voxels 
-using the per-octree culling configuration, and about $81.1\%$ voxels being culled on average in the per-meshlet 
-configuration. It was essential that the model in question had a minimal volume to it, so best occluders could be 
-found and computed. \\
+using the per-octree culling configuration and about $81.1\%$ voxels being culled on average in the per-meshlet 
+configuration. It was essential that the model in question had a minimal volume to it so the best occluders could 
+be found and computed. \\
 
 \noindent
 The average amount of visible voxels was \emph{396,228} for per-octree occlusion culling, which is marked as the 
 blue dotted line, and \emph{180,440} for per-meshlet occlusion culling, marked in red. The average amount of 
 visible octree nodes was \emph{8,207} for per-octree occlusion culling, which is marked as the blue dotted line, 
-and \emph{3,832} for per-meshlet occlusion culling, which is marked in as the red dotted line.
+and \emph{3,832} for per-meshlet occlusion culling, which is marked as the red dotted line.
 
 \subsubsection*{CPU Performance Results} \label{subsubsec-cpu-performance-results-terrain}
 
 Figure \ref{plt:terrain-256-culling-cpu-time} shows the \ac{CPU} performance over time, which in general 
-resembles similar results as the other models discussed earlier. Again, there were a couple of frames, 
-which show differences in frame time, although this could not be reliably attributed to any of the differences 
-in the measured algorithm. 
+resembles similar results as the other models discussed earlier. Again, there were a couple of frames that 
+showed differences in frame time, although this could not be reliably attributed to any of the differences in 
+the measured algorithm. 
 
 \begin{figure}[!htb]              % Terrain CPU times
   \begin{center}
@@ -1104,7 +1104,7 @@ in the measured algorithm.
 \subsubsection*{GPU Performance Results} \label{subsubsec-gpu-performance-results-terrain}
 
 Figure \ref{fig:terrain-gpu-times} shows the time spent on the \ac{GPU} for the \emph{Terrain model}.
-The model had a considerable amount of best occluders which resulted in a prepass, which was similar 
+The model had a considerable amount of best occluders, which resulted in a prepass, which was similar 
 in duration to other models with high best occluder counts, like the \emph{Bunny}. In contrast to 
 the models discussed before, this time the per-meshlet culling configuration's prepass terminated faster 
 than the per-octree node culling configuration. On average, the prepass execution time improved by 0.35 
@@ -1194,8 +1194,8 @@ culling, while the depth prepass didn't change significantly.
 \noindent
 As shown in figure \ref{fig:terrain-overdraw}, the per-octree culling configuration clearly 
 featured more overdraw than the comparison configuration. In the first row, it is evident that 
-the left lower corner features a lot of overdraw which was decreased by switching to the 
-per-meshlet culling configuration. The maximum draws per pixel were 86 and 45 respectively, in 
+the left lower corner features a lot of overdraw, which was decreased by switching to the 
+per-meshlet culling configuration. The maximum draws per pixel were 86 and 45, respectively, in 
 favor of the per-meshlet culling.
 
 \clearpage
@@ -1209,14 +1209,14 @@ favor of the per-meshlet culling.
 
 Figure \ref{plt:hairball-256-culling-res-voxels} shows the amount of culled voxels and octree nodes 
 over the course of the test animation for both occlusion culling configurations. The average culling 
-results are marked by the dotted lines in the graph. The hairball model was a particularly intersting 
+results are marked by the dotted lines in the graph. The hairball model was a particularly interesting 
 model because of its fine and thin geometry. It was specifically chosen to provide insights into the 
-limitations of the algorithm and to see, how it handles models which are not ideal for this use case.\\
+limitations of the algorithm and to see how it handles models that are not ideal for this use case.\\
 
 \noindent
 The results show that the gain in performance wasn't as good for this model as for the other models.
-First of, the amount of best occluders was lower than that of the \emph{Terrain} model, even though the 
-\emph{Terrain} model had less total voxels than the \emph{Hairball} model. This characteristic led to 
+First of all, the number of best occluders was lower than that of the \emph{Terrain} model, even though the 
+\emph{Terrain} model had fewer total voxels than the \emph{Hairball} model. This characteristic led to 
 a lower probability of octree nodes or meshlets being culled. When looking at the data, the amount of 
 voxels being culled on average was $57.8\%$ for per-octree occlusion culling and $64.8\%$ for per-meshlet 
 occlusion culling, which represented a rather low increase relative to the other models. 
@@ -1324,7 +1324,7 @@ both configurations.
 \subsubsection*{GPU Performance Results} \label{subsubsec-gpu-performance-results-hairball}
 
 Figure \ref{fig:hairball-gpu-times} shows the difference in \ac{GPU} timing, which was in favor of the 
-per-meshlet occlusion culling. Although the per-meshlet culling connfiguration still accelerated the \ac{GPU} 
+per-meshlet occlusion culling. Although the per-meshlet culling configuration still accelerated the \ac{GPU} 
 operations, the differences got smaller compared to the other models, yielding only a $14.9\%$ decrease in 
 computation time on average. The depth prepass diverged by only 0.75 microseconds in favor of the per-meshlet 
 occlusion culling when comparing the average values.  
@@ -1388,7 +1388,7 @@ occlusion culling when comparing the average values.
 \end{figure}
 
 \noindent
-The data clearly indicates that the \emph{Hairball} modelwasn't using the culling algorithm as efficiently as 
+The data clearly indicates that the \emph{Hairball} model wasn't using the culling algorithm as efficiently as 
 the other models did. From this, it is possible to derive how the algorithm should ideally be applied and in 
 which use case the overhead is greater than the time saving.
 
@@ -1414,7 +1414,7 @@ Figure \ref{fig:hairball-overdraw} shows that the overdraw was similar for both 
 but still in favor of per-meshlet occlusion culling. The last column featuring the difference 
 values between both configurations shows this particularly well. There is only a small difference 
 between both measurements, which is also reflected in the maximum amount of overdraw. The 
-per-octree node culling resulted in a maximum of 54 draws to one pixel and the per-meshlet 
+per-octree node culling resulted in a maximum of 54 draws to one pixel, and the per-meshlet 
 culling configuration resulted in a maximum of 51 draws. Again, the top view resulted in more 
 overdraw than the front view.
 
@@ -1425,8 +1425,8 @@ overdraw than the front view.
 
 \section*{Measurment Overview}
 
-Now that each model has been analyzed individually, the data is cross compared over all models to 
-discuss the overall results the measurments provided. Tables \ref{tbl:culling-result-overview-pooc} 
+Now that each model has been analyzed individually, the data is cross-compared over all models to 
+discuss the overall results the measurements provided. Tables \ref{tbl:culling-result-overview-pooc} 
 and \ref{tbl:culling-result-overview-pmoc} show an overview of all models and some of the most 
 interesting data points. 
 
@@ -1453,10 +1453,10 @@ interesting data points.
 \end{table}
   
 \noindent
-Table ref{tbl:culling-result-overview-pooc} shows the average culling data for all models using the per-octree 
+Table \ref{tbl:culling-result-overview-pooc} shows the average culling data for all models using the per-octree 
 occlusion culling configuration. The row \emph{Average Node Population} is particularly interesting as it shows 
 how the culling results related to the degree to which the octree nodes were filled. The higher this value, the 
-more the octree nodes were filled on average. A high average fill indicates the existance of a lot of best occluders 
+more the octree nodes were filled on average. A high average fill indicates the existence of a lot of best occluders 
 relative the amount of voxels and octree nodes present in the scene. This measure strongly correlates with the 
 average ratio of culled coxels and octree nodes. \\
 
@@ -1486,7 +1486,7 @@ average ratio of culled coxels and octree nodes. \\
 Table \ref{tbl:culling-result-overview-pmoc} shows the same aspects for the per-meshlet occlusion culling 
 configuration. It shows that the occlusion culling algorithm was able to cull a greater amount of voxels 
 when using the per-meshlet culling configuration. Additionally, across all models, a higher amount of 
-best occluders consequently resulted in a higher culling ratio and the average node population correlated 
+best occluders consequently resulted in a higher culling ratio, and the average node population correlated 
 with the average voxel culling ratio.
 
 \begin{figure}    % GPU time overview
@@ -1505,15 +1505,16 @@ with the average voxel culling ratio.
       ytick=data,
     ytick distance=2,
     legend pos=south east
-  ]
+    ]
   
-  \addplot [fill=green!80]  table [col sep=comma, x=DepthPrepass, y=Label]  {plotdata/gpu/gpu_profiling_frame.csv};
-  \addplot [fill=blue!60]   table [col sep=comma, x=DispatchMesh, y=Label]  {plotdata/gpu/gpu_profiling_frame.csv};
-  \addplot [fill=orange!60] table [col sep=comma, x=Misc,         y=Label]  {plotdata/gpu/gpu_profiling_frame.csv};
+    \addplot [fill=green!80]  table [col sep=comma, x=DepthPrepass, y=Label]  {plotdata/gpu/gpu_profiling_frame.csv};
+    \addplot [fill=blue!60]   table [col sep=comma, x=DispatchMesh, y=Label]  {plotdata/gpu/gpu_profiling_frame.csv};
+    \addplot [fill=orange!60] table [col sep=comma, x=Misc,         y=Label]  {plotdata/gpu/gpu_profiling_frame.csv};
   
-  \legend{Depth Prepass, Dispatch Mesh, Miscellaneous}
-\end{axis}
+    \legend{Depth Prepass, Dispatch Mesh, Miscellaneous}
+    \end{axis}
   \end{tikzpicture}
+  \caption{An overview of the average \ac{GPU} timings.}
   \label{fig:gpu-performance-overview}
 \end{figure}
 
@@ -1521,7 +1522,7 @@ with the average voxel culling ratio.
 The measurements show that the culling significantly benefitted the \ac{GPU} performance throughout all 
 models. Figure \ref{fig:gpu-performance-overview} shows an overview of all models comparing the time spent 
 on the \ac{GPU} between both tested configurations. The \ac{CPU} performance did not show any significant 
-differences that could reliably traced back to the tested approaches. Small differences were usually in the 
+differences that could reliably be traced back to the tested approaches. Small differences were usually in the 
 order of about 1-10 microseconds and could not be reliably attributed to either of the two culling 
 configurations. \\
 
@@ -1530,10 +1531,10 @@ configurations. \\
 The individual overdraw measurements indicate that the amount of overdraw significantly varies with the 
 change of the camera angle. It is evident that the overdraw could be reduced best using models with high 
 volumes and avoiding small and thin details. In general, the per-meshlet culling approach was able to 
-achieve better results in terms of overdraw, although it was highly dependant on camera angle and dense 
+achieve better results in terms of overdraw, although it was highly dependent on camera angle and dense 
 best occluder coverage. Usually, outer edges of models with curved surfaces could not be covered very well 
 because of the lack of best occluders.\\
- 
+
 
 
 [@TODO: Add throughput data]
