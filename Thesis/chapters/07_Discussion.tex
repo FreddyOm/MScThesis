@@ -1,17 +1,69 @@
 \chapter{Discussion} \label{cpt-discussion}
 
-
-Finally, possible advantages and disadvantages of the proposed approach are discussed based on the data
-presented in chapter \ref{cpt-experiment}. Other occlusion culling algorithms can be considered for 
-qualitative comparison to this approach, although a final comparison would require quantitave data to 
-support any assumptions.\\
-
+This chapter discusses possible advantages and disadvantages of the proposed approach based on the data
+presented in chapter \ref{cpt-experiment}. The results are revisited and summarized before they are 
+interpreted and evaluated. In this context, other occlusion culling algorithms can be considered for 
+qualitative comparison to this approach, although a final comparison would require quantitative data to 
+support any assumptions. Finally, limitations of the approach are presented and discussed.
 
 \section{Summary of the Results}
+
+The experiment tested the ability of the \ac{TPOC} to be adapted to a new use case. The algorithm couldn't 
+be applied as is, since it relies on preprocessing large objects that are usually artist-picked. This 
+approach was generally used in applications that make use of triangle meshes with only a boundary representation. 
+This way, a lot of small objects can be occluded by one large occlder. \\
+
+\noindent
+This approach was adapted to fit the different circumstances found in volumetric voxel representations. The 
+uniform size of voxels made this approach rather inefficient in practice. This problem was shown to be 
+tackled by aggregating neighboring voxels to larger primitives, consequently decreasing computation time 
+of the depth prepass. This approach also shifted the use of the algorithm slightly. Traditionally, \ac{TPOC} 
+draws a handful of the best occluders to enable culling of other meshes. In the approach proposed in this work, 
+the best occluders are part of the occluded model, and the geometry contributing to their creation may 
+itself be occluded. \\
+
+\noindent
+Overall, the experiment showed that the \ac{TPOC} algorithm can be adapted to a volumetric voxel representation 
+using two different configurations: the per-octree node culling and the per-meshlet culling. Both configurations 
+were able to occlude a considerable amount of voxels while using a minimal amount of \ac{GPU} bandwidth. The 
+per-meshlet culling was able to cull more octree nodes and, consequently, more voxels than the per-octree culling. \\
+
+\noindent
+The \ac{CPU} times were found to be rather static, although both testing setups were not significantly reliant 
+on \ac{CPU} computations due to their \ac{GPU}-driven nature. However, the \ac{GPU} measurements were significantly 
+in favor of the per-meshlet occlusion culling configuration, which overall increased performance by $29.86\%$ on 
+average. \\
+
+\noindent
+The overdraw measurements showed varying overdraw values for both configurations, which resulted in a similar amount 
+of overdraw in the best case. In the worst case, the per-meshlet culling generally resulted in lower overdraw than 
+the per-octree node culling. The amount of overdraw reached up to a maximum of about 90 draws to one pixel for 
+per-octree culling and up to about 70 draws to one pixel for per-meshlet culling. It strongly correlated to the 
+camera angle and was considerably high in both configurations. \\ 
+
+\noindent
+The type of mesh used in the scene had a significant influence on both the culling efficiency and the computation time.
+Large, dense models were generally favored and resulted in a high best occluder count. In contrast, curved edges or 
+surfaces resulted in a low octree node occupation, which in turn led to high overdraw. Thin and detailed geometry or 
+models featuring a lot of holes and empty space in them were rather inefficient in computation. They generally resulted 
+in a lack of full octree nodes and therefore in a lower best occluder count and octree node occupation. Such models 
+were found to be very sensitive to different camera angles and could not cull voxels as efficiently compared to the 
+other models tested. Still, they would benefit from the culling algorithm in both configurations.
+
 \section{Interpretation of the Results}
+
+Both variations of the algorithm could be applied to the use case of voxel rendering, adapting the prior use 
+slightly.
+
+
+% Window scene as compared to other algos
+
 \section{Limitations}
 
 [@TODO: Mention that experiment was limited by directly using the highest resolution z buffer in cpt experiment!]
+[@TODO: Where do I write about the scaling of computation times with screen res / voxel count / ...?]
+
+
 
 
 %
@@ -20,6 +72,7 @@ support any assumptions.\\
 %    - Meshlet voxels are inherently AABBs which is quite helpful for intense intersection computations % @TODO: Check if there are even any intersection comps to be done
 %    - Cores of most models can be "removed"
 %    - New possibility of using occluders for occlusoin of the same "mesh"
+%    - PMOC allows for only 4 checks to be made, since if voxels are meshlets, subvoxel detail doesn't exist. 
 %- Con:
 %    - Depending on the voxel size, there might be a need for chunking the data effectively % @TODO: Check if this is still necessary with Meshlet Occlusion Culling enabled
 %    - Voxels as meshlets -> non-similar normals can be inefficient.. 
@@ -27,6 +80,7 @@ support any assumptions.\\
 %    node, leaving a significant amount of threads unused for scarcely populated octree nodes.
 %    - Memory bandwidth between CPU and GPU is not really changed. Only the scheduling of the draw calls is optimized.
 %    Works fine in practice but is very use case sensitive.
+%    - Doing this for all models present will scale the prepass with the amount of best occluders / models -> Chunking to only have a handful of models / best occluders around 
 %
 %Discussion points:
 %

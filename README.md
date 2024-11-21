@@ -26,3 +26,4 @@ pipeline discussion and in depth data visualization.
 
 - If I were do redo it Id focus on the aggregation of the best occluders as the central innovation
 and do experiments with dynamically updating and changing the voxel meshes.
+- Compare depth prepass with all voxels against depth prepass with aggregated best occluders
