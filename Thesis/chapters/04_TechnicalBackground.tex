@@ -424,7 +424,8 @@ specified  and groupshared memory can be allocated. This allows for highly paral
 memory usage. A key difference to the traditional pipeline is that the Task Shader can invoke other (Compute) shaders, 
 create new tasks, and dispatch none, one, or multiple Mesh Shader invocations. This makes the shader extremely flexible 
 and capable of providing the same results as the Geometry Shader does, but faster and more scalable. It is often used 
-for early culling, for efficient tesselation, or for \ac{LOD} decisions \cite{Kubisch2018}. \\
+for early culling, for efficient tesselation, or for \ac{LOD} decisions \cite{Kubisch2018}. The invocation of the 
+next stage is called using the \emph{DispatchMesh()} function, which invokes the Mesh Shader. \\
 
 \begin{figure}[h]
     \centering
