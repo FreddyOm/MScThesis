@@ -326,10 +326,8 @@ is presented that summarizes all the relevant data in a compact visualization.
           \legend{Per-Octree Occlsion Culling, Average Value, Per-Meshlet Occlusion Culling, Average Value}
         \end{axis}
       \end{tikzpicture}
-      \caption{First: The amount of visible voxels over the course of the test animation shown in green for 
-      per-octree occlusion culling, and in orange for per-meshlet occlusion culling. Second: The amount of 
-      visible octree nodes over the course of the test animation shown in green for per-octree occlusion 
-      culling and in orange for per-meshlet occlusion culling.}
+      \caption{First: The amount of visible voxels over the course of the test animation. 
+      Second: The amount of visible octree nodes over the course of the test animation.}
       \label{plt:lucy-256-culling-culling-results}
     \end{center}
   \end{figure}
@@ -576,10 +574,8 @@ The side view featured only a maximum of 7 draws per pixel in both configuration
         \end{axis}
       \end{tikzpicture}
 
-      \caption{First: The amount of visible voxels over the course of the test animation shown in green for 
-      per-octree occlusion culling, and in orange for per-meshlet occlusion culling. 
-      Second: The amount of visible octree nodes over the course of the test animation shown in green for 
-      per-octree occlusion culling and in orange for per-meshlet occlusion culling. }
+      \caption{First: The amount of visible voxels over the course of the test animation. 
+      Second: The amount of visible octree nodes over the course of the test animation.}
       \label{plt:bunny-256-culling-res-voxels}
     \end{center}
   \end{figure}
@@ -750,7 +746,13 @@ per-meshlet occlusion culling configuration. The difference is in favor of per-m
 culling, which had only a maximum of 43 draws to the same pixels as compared to 60 draws.
 The camera angle clearly made a difference here, as the top view increased the amount of 
 overdraw significantly. This is especially visible on the surface of the model, where a lot 
-of rounded edges are present.
+of rounded edges are present. \\
+
+\noindent
+The images also show how the per-octree node culling produces more overdraw on the surface than the 
+per-meshlet culling because a larger portion of the voxels on the outside of the mesh were being 
+culled. In figure \ref{fig:bunny-overdraw}, this is visible as the broader red outline around the 
+bunny.
 
 \clearpage
 
@@ -807,10 +809,8 @@ of rounded edges are present.
         \end{axis}
       \end{tikzpicture}
 
-      \caption{First: The amount of visible voxels over the course of the test animation shown in green for 
-      per-octree occlusion culling, and in orange for per-meshlet occlusion culling. Second: The amount of visible 
-      octree nodes over the course of the test animation shown in green for per-octree occlusion culling and 
-      in orange for per-meshlet occlusion culling.}
+      \caption{First: The amount of visible voxels over the course of the test animation. 
+      Second: The amount of visible octree nodes over the course of the test animation.}
       \label{plt:torus-256-culling-res-voxels}
     \end{center}
   \end{figure}
@@ -1026,10 +1026,8 @@ missing depth information.
         \end{axis}
       \end{tikzpicture}
 
-      \caption{The amount of visible voxels over the course of the test animation shown in green for per-octree 
-      occlusion culling, and in orange for per-meshlet occlusion culling.  Second: The amount of visible octree 
-      nodes over the course of the test animation shown in green for per-octree occlusion culling and in orange 
-      for per-meshlet occlusion culling.}
+      \caption{First: The amount of visible voxels over the course of the test animation. 
+      Second: The amount of visible octree nodes over the course of the test animation.}
       \label{plt:terrain-256-culling-res-voxels}
     \end{center}
   \end{figure}
@@ -1263,10 +1261,8 @@ occlusion culling, which represented a rather low increase relative to the other
         \end{axis}
       \end{tikzpicture}
 
-      \caption{First: The amount of visible voxels over the course of the test animation shown in green for 
-      per-octree occlusion culling, and in orange for per-meshlet occlusion culling. Second: The amount of 
-      visible octree nodes over the course of the test animation shown in green for per-octree occlusion 
-      culling and in orange for per-meshlet occlusion culling.}
+      \caption{First: The amount of visible voxels over the course of the test animation. 
+      Second: The amount of visible octree nodes over the course of the test animation.}
       \label{plt:hairball-256-culling-res-voxels}
     \end{center}
   \end{figure}
