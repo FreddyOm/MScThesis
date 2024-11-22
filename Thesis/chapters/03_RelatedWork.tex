@@ -47,11 +47,30 @@ cannot be confirmed finally and reliably. Nevertheless, many efforts towards bet
     \label{fig:teardown-raytracing}
 \end{figure}
 
-\subsection*{Sparse Voxel Octrees}
+\subsection*{Efficient Sparse Voxel Octrees}
+
+Laine and Karras \cite{Laine2010} analyze and implement a variation of the base Sparse Voxel Octree approach for 
+raytracing voxel models. In their work, contours are used to approximate octree nodes within a \ac{SVO}. If the 
+octree node is found to be apprixamted good enough, the subdivision to deeper levels in the octree node is terminated
+\cite{Kampe2013,Laine2010}. This way, \ac{SVO}s can be significantly reduced in size, which benefits the memory 
+footprint of the application. \\
+
+\noindent
+The efficient \ac{SVO}s feature a similar approach to this work in that octree nodes are approximated for faster 
+processing times. While Laine et al. use contours for their approximations, this work uses whole octree nodes 
+to approximate volumes. \\
+
+\noindent
+However, Laine et al. use their implementation for raytraced voxel rendering and the approximations are targeting 
+model boundaries only instead of volumes. Therefore, the approximation using contours is not aiming for the same 
+optimization than this work's approximation does. While the first one refers to optimizing ray casting, the latter 
+refers to optimizing a depth prepass computation.. Nevertheless, both approaches share the aspect of reducing 
+octree complexity by approximating parts of the tree hierarchy.
+
 
 \subsection*{Sparse Voxel Directed Acyclic Graphs}
 
-Kampe et al. \cite{Kampe2013} propose the use of their \emph{High-Resolution Sparse Voxel \ac{DAG}s}. This approach 
+Kämpe et al. \cite{Kampe2013} propose the use of their \emph{High-Resolution Sparse Voxel \ac{DAG}s}. This approach 
 is tailored to high voxel resolutions and data that might not fit into memory all at once. Their data structure can 
 be easily split up into several sub-trees, which in turn can be loaded individually. This approach seems promising 
 for large scenes and use cases, which require the streaming of data. They propose to structure the data in a way that 
