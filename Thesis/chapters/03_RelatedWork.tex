@@ -69,7 +69,14 @@ Sparse Voxel \ac{DAG}s are not commonly used in rasterized rendering pipelines a
 format instead of storing positional data. This introduces additional complexity to the pipeline, which might result in 
 better runtime performance but is also less intuitive when dealing with nodes and individual voxels. Sparse Voxel 
 \ac{DAG}s mainly aim to provide a smaller memory footprint for raytraced applications while maintaining high resolution 
-voxel meshes.
+voxel meshes. \\
+
+\noindent
+Compared to this work's approach, Sparse Voxels \ac{DAG}s are able to resolve voxel data more efficiently and is 
+better suited for higher resolution meshes that might exceed memory limits in a raw data format. However, their 
+primary usage is ray-traced rendering which is not what this work is concerned with. While Sparse Voxel \ac{DAG}s 
+could generally be applied to rasterized rendering, this work uses a custom Sparse Voxel Octree, optimized for 
+traversal and easy coordinate extraction. 
 
 
 \section{Occlusion Culling}

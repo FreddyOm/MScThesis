@@ -1,37 +1,39 @@
 \chapter{Experiment} \label{cpt-experiment}
 
-When considering occlusion culling algorithms that can be used in a given use case, the runtime 
+When considering occlusion culling algorithms that can be used in specific use cases, the runtime 
 performance is a critical aspect. But runtime performance is a multi-dimensional measure, in that 
 most algorithms provide results under specific circumstances and by setting several constraints.
-To be able to evaluate the strengths and weaknesses of the given implementation, an in-depth  
-experiment was conducted and evaluated, highlighting a diverse set of measured data. \\ 
+To be able to evaluate the strengths and weaknesses of this work's implementation, an in-depth  
+experiment was conducted and evaluated, highlighting a diverse set of measured data. \\
 
 \noindent
-The method of profiling performance was chosen because it allows for an in-depth analysis of the 
-pipeline steps. When accurately measuring the two configurations, per-meshlet culling and 
-per-octree culling, the difference between both can be evaluated by looking at various pipeline 
-steps and their timings. A cross-comparison between pipelines using different models can additionally 
-provide insights into why the computation times scale and how the complexity of the scene refers to 
-the scaling.\\
+To conduct the experiment, the method of profiling performance was chosen because it allows for 
+an in-depth analysis of the pipeline steps. When accurately measuring the two configurations, 
+per-meshlet culling and per-octree culling, the difference between both can be evaluated by looking 
+at the individual pipeline steps and their timings. A cross-comparison between pipelines using 
+different models provide additional insights into why the computation times scale and how the 
+complexity of the scene refers to the scaling. \\
 
 \noindent
-Ultimately, the two approaches \emph{per-octree node occlusion culling} and \emph{per-meshlet occlusion culling} 
-were compared in this experiment, both in terms of how many voxels could be culled and in terms of the respective 
-overhead and the performance gains. \\
+In the experiment, the two approaches \emph{per-octree node occlusion culling} and 
+\emph{per-meshlet occlusion culling} were compared, both in terms of how many voxels could be 
+culled and in terms of the respective overhead and the performance gains. \\
 
 \noindent
-First, the experiment is evaluated in how it shows the differences between the pipelines. In this context, various 
-factors are discussed and it is presented how these factors were taken into account during the experiment. After 
-that, the tools that were used to perform the measurements are presented, as well as the models, which were tested.
-Finally, the results are discussed by presenting the measurements for each model. A summary of the most meaningful 
-results is given in the end, aggregating average data from all the tests performed during the experiment.
+In this chapter, the experiment is first evaluated in how it shows the differences between the pipelines. 
+In this context, various factors are discussed and it is presented how these factors were taken into account 
+during the experiment. After that, the tools that were used to perform the measurements are presented, as 
+well as the models, which were tested. Finally, the results are discussed by presenting the measurements 
+for each model. A summary of the most meaningful results is given in the end, aggregating average data from 
+all the tests performed during the experiment.
 
 \section{Experimental Evaluation} \label{sec-experimental-evaluation}
 
+[@TODO: Fix this! Rewrite completely]
 To evaluate the key differences and the runtime performance in general, several aspects had to be considered.
 Unfortunately, comparing the occlusion culling implementation to an alternative implementation was not within the 
-scope of this work, so efforts were made in order to evaluate the pipeline and its performance from a conceptual 
-point of view and compared to the plain pipeline, without any occlusion culling at all. This includes two different 
+scope of this work, so efforts were made to evaluate the pipeline and its performance from a conceptual point of 
+view and compared to the plain pipeline, without any occlusion culling at all. This includes two different 
 versions of occlusion culling, one based on culling octree nodes, as it can be implemented without the use of the 
 Mesh Shading pipeline. The other one is based on per-meshlet occlusion culling, which makes use of the more parallel 
 computation capabilities of the \ac{GPU}. \\
@@ -46,10 +48,8 @@ compare the pipeline to alternative approaches.
 
 \subsection*{Scene Layout} \label{subsec-scene-layout}
 
-Every occlusion culling algorithm somehow relies on spatial information, be it in world space or sceen space. 
-Consequently, the scene layout and how the scene changes relative to the camera were important aspects to consider. 
-For this experimental setup, a moving camera was used in order to test the ability of the occlusion culling 
-algorithm to adapt to different angles of the scene. \\
+For the scene layout, two aspects were considered during the experiment. First of all, the spatial positioning 
+of the model was important, and secondly, the data structure and shape of the models were considered in particular. \\
 
 \noindent
 The data was sampled over time using a standardized camera animation, which was following a circular orbit 
@@ -69,7 +69,7 @@ which are likely to behave very differently when viewed from above compared to w
 \noindent
 [@TODO: Consider replacing the last "algorithm" with the actual subelement of the algo (scene data / data dispatch / ...)] 
 Another aspect to consider is the model data structure. The voxel models are volumetric representations and thus 
-not hollow. This leaves a large portion of computation to be irrelevant and allows for the occlusion culling to 
+not hollow. This leaves a large portion of the computation to be irrelevant and allows for the occlusion culling to 
 optimize the data flow. Different types of models were used to challenge the culling algorithm in different ways. 
 In concept, the culling should be optimal on large, dense models with even faces. Consequently, models with 
 slopes and holes were tested to see how best occluders can be computed for diverse geometry. Smaller models might 
@@ -86,20 +86,22 @@ by the \ac{GPU}. In the implementation, the shader model used (HLSL Shader Model
 amount of 65.536 threadgroups. That means that the threadgroup size and the amount of constructed octree nodes 
 influenced the possible resolutions of the scenes. This limitation can be overcome by scheduling more than one draw 
 call, but for this experiment, only one draw call was used. Consequently, the actual maximum amount of voxels in the 
-scene was around 3-4 million voxels, which was considered enough for this experiment. \\
-
-\noindent
-For comparison of particular measures, some of the models were additionally tested using higher or lower resolutions.
-Whenever the respective comparison is meaningful, it is highlighted as such.
+scene was around 3-4 million voxels, which was considered enough for this experiment.
 
 
 \subsection*{Timings} \label{subsec-timings}
 
-Ultimately, the time spent for various computations is relevant for the selection of the best algorithm. This is 
-a central tool to see how the implementation performs overall in the context of the framework used. The frame 
-time is the first measurement to be considered, but not necessarily the most meaningful in a complex pipeline. 
-Consequently, the timings for all major pipeline steps were considered, as well as the overall time spent on 
-\ac{CPU} and \ac{GPU} computations. 
+The time spent for various computations is relevant for the selection of the best algorithm. This is a central 
+tool to see how the implementation performs overall in the context of the framework used. Consequently, the 
+timingss for all major pipeline steps were conidered, as well as the overall time spent on \ac{CPU} and \ac{GPU} 
+computations. \\
+
+\noindent 
+The overall framerate of the application was artificially clamped to 30, 60, or 120 \emph{Hz} by \emph{Diligent Engine}, 
+depending on the connected monitor, which occasionally resulted in an abrupt changes of frame times. This also means 
+that the overall frame time was not reliably showing the \ac{CPU} workload. However, measuring only the internal render 
+and update routines provided more reliable results. This is why the overall frame time isn't used for further analysis, 
+but is listed in Appendix \ref{cpt-appendix}.
 
 
 \subsection*{Visibility and Culling} \label{subsec-visibility-and-culling}
@@ -118,29 +120,13 @@ by the \ac{GPU}. This data indicates how much work is being scheduled for the ve
 and the pixel shader. Ultimately, it decides over the amount of overdraw and should therefore be kept at a minimum.
 
 
-\subsection*{Additional Overhead} \label{subsec-additional-overhead}
-
-[@TODO: Refresh sentence]
-The additional overhead needs to be evaluated compared to the gain in performance by the occlusion culling. 
-Because of that, the pipeline is analyzed, and the timings are compared to a pipeline without the culling 
-algorithm. All per-frame computations are evaluated to see how much resources are spent on culling overhead. 
-The results are compared against the acceleration provided by the algorithm.\\
-
-\noindent
-To increase the significance of the data, the per-meshlet occlusion culling was compared with the 
-per-octree occlusion culling. The difference should be able to show how the Mesh Shading pipeline 
-influences the culling algorithm. The per-meshlet culling was expected to be more precise and to cull 
-more voxels, since individual voxels within one octree can be culled, as opposed to per-octree node 
-culling, which either renders all voxels within an octree node or culls it completely. 
-
-
 \subsection*{Measuring Tools} \label{subsec-measuring-tools}
 
 To measure timings and data precisely, a few external tools were used. All tools are part of the industry 
 standard and were therefore assumed to be mostly reliable. Still, measuring performance usually comes with 
 a minimal overhead, which means that the results most likely vary in precision. Also, some of the tools 
-provided various ways of coming up with the data. Some data was measured while the profiled application 
-was running, and other data was acquired by replaying the command list of the \ac{GPU}. Consequently, all 
+provided various ways of sampling the data. Some data was measured while the profiled application was 
+running, and other data was acquired by replaying the command list of the \ac{GPU}. Consequently, all 
 measurements referring to one aspect of the application were compared against measurements using the same 
 tool and configuration, if not explicitly specified otherwise. \\
 
@@ -157,13 +143,7 @@ The culling result measurements were directly sampled from the \emph{Task Shader
 animation, using \emph{RenderDoc} and emph{PIX}. They were generally independent from the hardware and rather 
 depended on the camera position and viewing angle as well as on model resolution. Also, the screen resolution 
 affected the amount of mips generated for the \ac{HiZ}-pyramid, so it was fixed to $1440 \times 900$ pixels. 
-All of the aspects above were standardized for each model over all test runs.\\
-
-\noindent 
-The overall framerate of the application was artificially clamped to 30, 60, or 120 \emph{Hz} by \emph{Diligent Engine}, 
-which occasionally results in an abrupt change of frame times. This also means that the overall frame time is not 
-reliably showing the \ac{CPU} workload. However, measuring only the internal render and update routines provided 
-more reliable results, which are shown in the respective \ac{CPU} graphs. 
+All of the aspects above were standardized for each model over all test runs.
 
 
 \subsection*{Experimental Environment} \label{subsec-experimental-environment}
@@ -285,6 +265,8 @@ which again would help for rendering such a scene in a game.
 %    - RTX 4090
 %    - Multiple devices
 
+[@TODO: Add memory footprint to data throughput]
+
 
 \section{Experimental Results}
 
@@ -314,15 +296,16 @@ is presented that summarizes all the relevant data in a compact visualization.
             xmin=0,
             xmax=2392,
             ymin=60000,
-            ymax=160000
+            ymax=160000,
+            legend style={at={(0.5,1.7)}, anchor=north, legend columns=2},
           ]
-          \addplot[green, no marks, solid] table[col sep=comma, x=frame, y=visible_voxels]{./plotdata/lucy_256_voxels.csv};
+          \addplot[blue, no marks, solid] table[col sep=comma, x=frame, y=visible_voxels]{./plotdata/lucy_256_voxels.csv};
           \addplot[blue, dotted, no marks, domain=0:2393, samples=50] {140842};
-          \addplot[orange, no marks, solid] table[col sep=comma, x=frame, y=visible_voxels]{./plotdata/lucy_256_voxels_pmoc.csv};
+          \addplot[red, no marks, solid] table[col sep=comma, x=frame, y=visible_voxels]{./plotdata/lucy_256_voxels_pmoc.csv};
           \addplot[red, dotted, no marks, domain=0:2393, samples=50] {84082};
+          \legend{Per-Octree Occlsion Culling, Average Value, Per-Meshlet Occlusion Culling, Average Value}
         \end{axis}
       \end{tikzpicture}
-
       \begin{tikzpicture}
         \begin{axis}[
             width=\linewidth, % Scale the plot to \linewidth
@@ -333,15 +316,16 @@ is presented that summarizes all the relevant data in a compact visualization.
             xmin=0,
             xmax=2392,
             ymin=1800,
-            ymax=4000
+            ymax=4000,
+            legend style={at={(0.5,1.7)}, anchor=north, legend columns=2},
           ]
-          \addplot[green, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 2392 / 2392, y=visible_nodes]{./plotdata/lucy_256_nodes.csv};
+          \addplot[blue, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 2392 / 2392, y=visible_nodes]{./plotdata/lucy_256_nodes.csv};
           \addplot[blue, dotted, no marks, domain=0:2393, samples=50] {3460};
-          \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 2392 / 2395, y=visible_nodes]{./plotdata/lucy_256_nodes_pmoc.csv};
+          \addplot[red, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 2392 / 2395, y=visible_nodes]{./plotdata/lucy_256_nodes_pmoc.csv};
           \addplot[red, dotted, no marks, domain=0:2393, samples=50] {2483};
+          \legend{Per-Octree Occlsion Culling, Average Value, Per-Meshlet Occlusion Culling, Average Value}
         \end{axis}
       \end{tikzpicture}
-
       \caption{First: The amount of visible voxels over the course of the test animation shown in green for 
       per-octree occlusion culling, and in orange for per-meshlet occlusion culling. Second: The amount of 
       visible octree nodes over the course of the test animation shown in green for per-octree occlusion 
@@ -350,7 +334,6 @@ is presented that summarizes all the relevant data in a compact visualization.
     \end{center}
   \end{figure}
 
-
 % ----------------------------------------------------------------------------------------
 
 \noindent
@@ -358,7 +341,7 @@ Figure \ref{plt:lucy-256-culling-culling-results} shows the amount of visible vo
 nodes for both the per-octree node occlusion culling (upper graph) and the per-meshlet occlusion culling 
 (lower graph) configuration. \\
 
-\noindent
+\noindent [@TODO: Fix plot color references]
 The average amount of visible voxels was \emph{140,842} for per-octree occlusion culling, which is marked 
 as the blue dotted line, and \emph{84,082} for per-meshlet occlusion culling, marked in red. The average 
 amount of visible octree nodes was \emph{3,460} for per-octree occlusion culling, which is marked as the 
@@ -399,10 +382,12 @@ voxels. On average, the per-meshlet culling even managed to omit $74.6\%$ of all
           xmin=0,
           xmax=2392,
           ymin=0,
-          ymax=0.00005
+          ymax=0.00005,
+          legend style={at={(0.5,1.7)}, anchor=north, legend columns=2},
         ]
-        \addplot[green, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 2392 / 1863, y=time]{./plotdata/cpu/lucy_256_updateTime_pooc.csv};
-        \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 2392 / 1867, y=time]{./plotdata/cpu/lucy_256_updateTime.csv};
+        \addplot[blue, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 2392 / 1863, y=time]{./plotdata/cpu/lucy_256_updateTime_pooc.csv};
+        \addplot[red, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 2392 / 1867, y=time]{./plotdata/cpu/lucy_256_updateTime.csv};
+        \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
       \end{axis}
     \end{tikzpicture}
     \begin{tikzpicture}
@@ -415,10 +400,12 @@ voxels. On average, the per-meshlet culling even managed to omit $74.6\%$ of all
           xmin=0,
           xmax=2392,
           ymin=0,
-          ymax=0.00025
+          ymax=0.00025,
+          legend style={at={(0.5,1.7)}, anchor=north, legend columns=2},
         ]
-        \addplot[green, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 2392 / 1863, y=time]{./plotdata/cpu/lucy_256_renderTime_pooc.csv};
-        \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 2392 / 1867, y=time]{./plotdata/cpu/lucy_256_renderTime.csv};
+        \addplot[blue, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 2392 / 1863, y=time]{./plotdata/cpu/lucy_256_renderTime_pooc.csv};
+        \addplot[red, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 2392 / 1867, y=time]{./plotdata/cpu/lucy_256_renderTime.csv};
+        \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
       \end{axis}
     \end{tikzpicture}
     \caption{Overview of the render times over the course of the test animation. The first graph shows the time 
@@ -458,18 +445,20 @@ particular model.
   \begin{tikzpicture}
     \begin{axis}[
         height=6cm,
-        width=12cm,
+        width=14cm,
         x tick label style={/pgf/number format/1000 sep=},
         ylabel={Time ($\mu$s)},
         legend style={at={(0.5,1.2)}, anchor=north, legend columns=-1},
         symbolic x coords={DepthPrepass, DispatchMesh, Misc},
         xtick=data,
         ybar=0.4,
-        bar width=15pt,
+        bar width=25pt,
         ymin=0,
+        nodes near coords,
+        enlargelimits=0.2,
     ]
-    \addplot+[bar shift=-12pt] coordinates {(DepthPrepass,49.57) (DispatchMesh,234.91) (Misc,30.42)};
-    \addplot+[bar shift=12pt] coordinates {(DepthPrepass,51.50) (DispatchMesh,139.55) (Misc,29.1476)};
+    \addplot+[bar shift=-15pt] coordinates {(DepthPrepass,49.57) (DispatchMesh,234.91) (Misc,30.42)};
+    \addplot+[bar shift=15pt] coordinates {(DepthPrepass,51.50) (DispatchMesh,139.55) (Misc,29.1476)};
     \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
     \end{axis}
   \end{tikzpicture}
@@ -477,18 +466,20 @@ particular model.
   \begin{tikzpicture}
     \begin{axis}[
         height=6cm,
-        width=12cm,
+        width=14cm,
         x tick label style={/pgf/number format/1000 sep=},
         ylabel={Time ($\mu$s)},
         legend style={at={(0.5,1.2)}, anchor=north, legend columns=-1},
         symbolic x coords={DispatchBestOccluders, CopyTex, GenMipChain},
         xtick=data,
         ybar=0.4,
-        bar width=15pt,
+        bar width=25pt,
         ymin=0,
+        nodes near coords,
+        enlargelimits=0.2,
     ]
-    \addplot+[bar shift=-12pt] coordinates {(DispatchBestOccluders,11.06) (CopyTex,2.46) (GenMipChain,34.48)};
-    \addplot+[bar shift=12pt] coordinates {(DispatchBestOccluders,11.06) (CopyTex,2.39) (GenMipChain,35.26)};
+    \addplot+[bar shift=-15pt] coordinates {(DispatchBestOccluders,11.06) (CopyTex,2.46) (GenMipChain,34.48)};
+    \addplot+[bar shift=15pt] coordinates {(DispatchBestOccluders,11.06) (CopyTex,2.39) (GenMipChain,35.26)};
     \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
     \end{axis}
   \end{tikzpicture}
@@ -553,12 +544,14 @@ The side view featured only a maximum of 7 draws per pixel in both configuration
             xmin=0,
             xmax=1186,
             ymin=100000,
-            ymax=500000
+            ymax=500000,
+            legend style={at={(0.5,1.7)}, anchor=north, legend columns=2},
           ]
-          \addplot[green, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1186 / 1186, y=visible_voxels]{plotdata/bunny_256_voxels.csv};
+          \addplot[blue, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1186 / 1186, y=visible_voxels]{plotdata/bunny_256_voxels.csv};
           \addplot[blue, dotted, no marks, domain=0:1186, samples=50] {385210};
-          \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1186 / 1490, y=visible_voxels]{plotdata/bunny_256_voxels_pmoc.csv};
+          \addplot[red, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1186 / 1490, y=visible_voxels]{plotdata/bunny_256_voxels_pmoc.csv};
           \addplot[red, dotted, no marks, domain=0:1186, samples=50] {180266};
+          \legend{Per-Octree Occlsion Culling, Average Value, Per-Meshlet Occlusion Culling, Average Value}
         \end{axis}
       \end{tikzpicture}
 
@@ -572,12 +565,14 @@ The side view featured only a maximum of 7 draws per pixel in both configuration
             xmin=0,
             xmax=1186,
             ymin=3000,
-            ymax=10000
+            ymax=10000,
+            legend style={at={(0.5,1.7)}, anchor=north, legend columns=2},
           ]
-          \addplot[green, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1186 / 1186, y=visible_nodes]{./plotdata/bunny_256_nodes.csv};
+          \addplot[blue, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1186 / 1186, y=visible_nodes]{./plotdata/bunny_256_nodes.csv};
           \addplot[blue, dotted, no marks, domain=0:1186, samples=50] {8519};
-          \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1186 / 1490, y=visible_nodes]{./plotdata/bunny_256_nodes_pmoc.csv};
+          \addplot[red, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1186 / 1490, y=visible_nodes]{./plotdata/bunny_256_nodes_pmoc.csv};
           \addplot[red, dotted, no marks, domain=0:1186, samples=50] {5415};
+          \legend{Per-Octree Occlsion Culling, Average Value, Per-Meshlet Occlusion Culling, Average Value}
         \end{axis}
       \end{tikzpicture}
 
@@ -620,10 +615,12 @@ as the red dotted line.
           xmin=0,
           xmax=1186,
           ymin=0,
-          ymax=0.00005
+          ymax=0.00005,
+          legend style={at={(0.5,1.7)}, anchor=north, legend columns=2},
         ]
-        \addplot[green, no marks, solid]  table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1186 / 1574, y=time]{./plotdata/cpu/bunny_256_updateTime_pooc.csv};
-        \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1186 / 1700, y=time]{./plotdata/cpu/bunny_256_updateTime.csv};
+        \addplot[blue, no marks, solid]  table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1186 / 1574, y=time]{./plotdata/cpu/bunny_256_updateTime_pooc.csv};
+        \addplot[red, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1186 / 1700, y=time]{./plotdata/cpu/bunny_256_updateTime.csv};
+        \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
       \end{axis}
     \end{tikzpicture}
     \begin{tikzpicture}
@@ -636,10 +633,12 @@ as the red dotted line.
           xmin=0,
           xmax=1186,
           ymin=0,
-          ymax=0.00025
+          ymax=0.00025,
+          legend style={at={(0.5,1.7)}, anchor=north, legend columns=2},
         ]
-        \addplot[green, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1186 / 1574, y=time]{./plotdata/cpu/bunny_256_renderTime_pooc.csv};
-        \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1186 / 1700, y=time]{./plotdata/cpu/bunny_256_renderTime.csv};
+        \addplot[blue, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1186 / 1574, y=time]{./plotdata/cpu/bunny_256_renderTime_pooc.csv};
+        \addplot[red, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1186 / 1700, y=time]{./plotdata/cpu/bunny_256_renderTime.csv};
+        \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
       \end{axis}
     \end{tikzpicture}
     \caption{Overview of the render times over the course of the test animation. The first graph shows the time 
@@ -666,18 +665,20 @@ not considered significant enough to make any assumptions about them. Therefore,
   \begin{tikzpicture}
     \begin{axis}[
         height=6cm,
-        width=12cm,
+        width=14cm,
         x tick label style={/pgf/number format/1000 sep=},
         ylabel={Time ($\mu$s)},
         legend style={at={(0.5,1.2)}, anchor=north, legend columns=-1},
         symbolic x coords={DepthPrepass, DispatchMesh, Misc},
         xtick=data,
         ybar=0.4,
-        bar width=15pt,
+        bar width=25pt,
         ymin=0,
+        nodes near coords,
+        enlargelimits=0.2,
     ]
-    \addplot+[bar shift=-12pt] coordinates {(DepthPrepass,74.22) (DispatchMesh,698.57) (Misc,30.12)};
-    \addplot+[bar shift=12pt] coordinates {(DepthPrepass,75.82) (DispatchMesh,404.89) (Misc,32.1526)};
+    \addplot+[bar shift=-15pt] coordinates {(DepthPrepass,74.22) (DispatchMesh,698.57) (Misc,30.12)};
+    \addplot+[bar shift=15pt] coordinates {(DepthPrepass,75.82) (DispatchMesh,404.89) (Misc,32.1526)};
     \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
     \end{axis}
   \end{tikzpicture}
@@ -685,18 +686,20 @@ not considered significant enough to make any assumptions about them. Therefore,
   \begin{tikzpicture}
     \begin{axis}[
         height=6cm,
-        width=12cm,
+        width=14cm,
         x tick label style={/pgf/number format/1000 sep=},
         ylabel={Time ($\mu$s)},
         legend style={at={(0.5,1.2)}, anchor=north, legend columns=-1},
         symbolic x coords={DispatchBestOccluders, CopyTex, GenMipChain},
         xtick=data,
         ybar=0.4,
-        bar width=15pt,
+        bar width=25pt,
         ymin=0,
+        nodes near coords,
+        enlargelimits=0.2,
     ]
-    \addplot+[bar shift=-12pt] coordinates {(DispatchBestOccluders,35.23) (CopyTex,1.89) (GenMipChain,34.35)};
-    \addplot+[bar shift=12pt] coordinates {(DispatchBestOccluders,36.12) (CopyTex,2.44) (GenMipChain,34.29)};
+    \addplot+[bar shift=-15pt] coordinates {(DispatchBestOccluders,35.23) (CopyTex,1.89) (GenMipChain,34.35)};
+    \addplot+[bar shift=15pt] coordinates {(DispatchBestOccluders,36.12) (CopyTex,2.44) (GenMipChain,34.29)};
     \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
     \end{axis}
   \end{tikzpicture}
@@ -772,12 +775,14 @@ of rounded edges are present.
             xmin=0,
             xmax=1087,
             ymin=70000,
-            ymax=500000
+            ymax=500000,
+            legend style={at={(0.5,1.7)}, anchor=north, legend columns=2},
           ]
-          \addplot[green, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1087 / 1087, y=visible_voxels]{./plotdata/torus_256_voxels.csv};
+          \addplot[blue, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1087 / 1087, y=visible_voxels]{./plotdata/torus_256_voxels.csv};
           \addplot[blue, dotted, no marks, domain=0:1087, samples=50] {359313};
-          \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1087 / 1845, y=visible_voxels]{./plotdata/torus_256_voxels_pmoc.csv};
+          \addplot[red, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1087 / 1845, y=visible_voxels]{./plotdata/torus_256_voxels_pmoc.csv};
           \addplot[red, dotted, no marks, domain=0:1087, samples=50] {170772};
+          \legend{Per-Octree Occlsion Culling, Average Value, Per-Meshlet Occlusion Culling, Average Value}
         \end{axis}
       \end{tikzpicture}
 
@@ -791,12 +796,14 @@ of rounded edges are present.
             xmin=0,
             xmax=1087,
             ymin=1000,
-            ymax=10000
+            ymax=10000,
+            legend style={at={(0.5,1.7)}, anchor=north, legend columns=2},
           ]
-          \addplot[green, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1087 / 1087, y=visible_nodes]{./plotdata/torus_256_nodes.csv};
+          \addplot[blue, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1087 / 1087, y=visible_nodes]{./plotdata/torus_256_nodes.csv};
           \addplot[blue, dotted, no marks, domain=0:1087, samples=50] {7712};
-          \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1087 / 1845, y=visible_nodes]{./plotdata/torus_256_nodes_pmoc.csv};
+          \addplot[red, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1087 / 1845, y=visible_nodes]{./plotdata/torus_256_nodes_pmoc.csv};
           \addplot[red, dotted, no marks, domain=0:1087, samples=50] {4768};
+          \legend{Per-Octree Occlsion Culling, Average Value, Per-Meshlet Occlusion Culling, Average Value}
         \end{axis}
       \end{tikzpicture}
 
@@ -813,12 +820,12 @@ of rounded edges are present.
 \noindent
 The \emph{Torus} model varied in culling efficiency depending on the view angle. As expected, the hole 
 in the mesh turned out to be inefficient for the culling algorithm. When considering the occlusion ratio, 
-both the per-octree occlusion culling and the oer-meshlet occlusion culling performed significantly better 
-when the torus was viewed from an angle, occluding the hole in the middle. The variation between the maximum 
-amount of visible voxels and the minimum amount of voxels was the highest for the \emph{Torus} model, which 
-is remarkable compared to the other models. Using this particular experimental setup, the lowest amount of 
-visible voxels was $36.8\%$ of the maximum amount of visible voxels. This variation is also clearly evident 
-in figure \ref{plt:torus-256-culling-res-voxels}. \\ 
+both the per-octree occlusion culling and the per-meshlet occlusion culling performed significantly better 
+when the torus was viewed from an angle, so the hole in the middle was occluded. The variation between 
+the maximum amount of visible voxels and the minimum amount of voxels was the highest for the \emph{Torus} 
+model, which is remarkable compared to the other models. Using this particular experimental setup, the 
+lowest amount of visible voxels was $36.8\%$ of the maximum amount of visible voxels. This variation is 
+also clearly evident in figure \ref{plt:torus-256-culling-res-voxels}. \\ 
 
 \noindent
 In general, for per-octree culling, the average culling ratio was $84.4\%$, and $92.6\%$ for per-meshlet culling. 
@@ -843,10 +850,12 @@ for a given model.
           xmin=0,
           xmax=1087,
           ymin=0,
-          ymax=0.00005
+          ymax=0.00005,
+          legend style={at={(0.5,1.7)}, anchor=north, legend columns=2},
         ]
-        \addplot[green, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1554 / 1863, y=time]{./plotdata/cpu/torus_256_updateTime_pooc.csv};
-        \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1087 / 1785, y=time]{./plotdata/cpu/torus_256_updateTime.csv};
+        \addplot[blue, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1554 / 1863, y=time]{./plotdata/cpu/torus_256_updateTime_pooc.csv};
+        \addplot[red, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1087 / 1785, y=time]{./plotdata/cpu/torus_256_updateTime.csv};
+        \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
       \end{axis}
     \end{tikzpicture}
     \begin{tikzpicture}
@@ -859,10 +868,12 @@ for a given model.
           xmin=0,
           xmax=1087,
           ymin=0,
-          ymax=0.00025
+          ymax=0.00025,
+          legend style={at={(0.5,1.7)}, anchor=north, legend columns=2},
         ]
-        \addplot[green, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1087 / 1554, y=time]{./plotdata/cpu/torus_256_renderTime_pooc.csv};
-        \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1087 / 1785, y=time]{./plotdata/cpu/torus_256_renderTime.csv};
+        \addplot[blue, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1087 / 1554, y=time]{./plotdata/cpu/torus_256_renderTime_pooc.csv};
+        \addplot[red, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1087 / 1785, y=time]{./plotdata/cpu/torus_256_renderTime.csv};
+        \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
       \end{axis}
     \end{tikzpicture}
     \caption{Overview of the render times over the course of the test animation. The upper graph shows the time 
@@ -885,18 +896,20 @@ using the per-meshlet occlusion culling configuration as shown in figure \ref{fi
   \begin{tikzpicture}
     \begin{axis}[
         height=6cm,
-        width=12cm,
+        width=14cm,
         x tick label style={/pgf/number format/1000 sep=},
         ylabel={Time ($\mu$s)},
         legend style={at={(0.5,1.2)}, anchor=north, legend columns=-1},
         symbolic x coords={DepthPrepass, DispatchMesh, Misc},
         xtick=data,
         ybar=0.4,
-        bar width=15pt,
+        bar width=25pt,
         ymin=0,
+        nodes near coords,
+        enlargelimits=0.2,
     ]
-    \addplot+[bar shift=-12pt] coordinates {(DepthPrepass,71.66) (DispatchMesh,562.18) (Misc,30.53)};
-    \addplot+[bar shift=12pt] coordinates {(DepthPrepass,72.20) (DispatchMesh,316.01) (Misc,31.4482)};
+    \addplot+[bar shift=-15pt] coordinates {(DepthPrepass,71.66) (DispatchMesh,562.18) (Misc,30.53)};
+    \addplot+[bar shift=15pt] coordinates {(DepthPrepass,72.20) (DispatchMesh,316.01) (Misc,31.4482)};
     \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
     \end{axis}
   \end{tikzpicture}
@@ -904,18 +917,20 @@ using the per-meshlet occlusion culling configuration as shown in figure \ref{fi
   \begin{tikzpicture}
     \begin{axis}[
         height=6cm,
-        width=12cm,
+        width=14cm,
         x tick label style={/pgf/number format/1000 sep=},
         ylabel={Time ($\mu$s)},
         legend style={at={(0.5,1.2)}, anchor=north, legend columns=-1},
         symbolic x coords={DispatchBestOccluders, CopyTex, GenMipChain},
         xtick=data,
         ybar=0.4,
-        bar width=15pt,
+        bar width=25pt,
         ymin=0,
+        nodes near coords,
+        enlargelimits=0.2,
     ]
-    \addplot+[bar shift=-12pt] coordinates {(DispatchBestOccluders,32.56) (CopyTex,2.29) (GenMipChain,33.71)};
-    \addplot+[bar shift=12pt] coordinates {(DispatchBestOccluders,33.18) (CopyTex,2.15) (GenMipChain,34.05)};
+    \addplot+[bar shift=-15pt] coordinates {(DispatchBestOccluders,32.56) (CopyTex,2.29) (GenMipChain,33.71)};
+    \addplot+[bar shift=15pt] coordinates {(DispatchBestOccluders,33.18) (CopyTex,2.15) (GenMipChain,34.05)};
     \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
     \end{axis}
   \end{tikzpicture}
@@ -952,7 +967,7 @@ Figure \ref{fig:torus-overdraw} shows the overdraw for the \emph{Torus} model fr
 camera perspectives. Clearly, the per-meshlet occlusion culling configuration resulted 
 in less overdraw, especially when viewed from the sides. As the second row of figure 
 \ref{fig:torus-overdraw} shows, the edges were particularly overdrawn because of the 
-missing deoth information.
+missing depth information.
 
 \clearpage
 
@@ -977,12 +992,14 @@ missing deoth information.
             xmin=0,
             xmax=1239,
             ymin=70000,
-            ymax=500000
+            ymax=500000,
+            legend style={at={(0.5,1.7)}, anchor=north, legend columns=2},
           ]
-          \addplot[green, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1239 / 1239, y=visible_voxels]{./plotdata/terrain_256_voxels.csv};
+          \addplot[blue, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1239 / 1239, y=visible_voxels]{./plotdata/terrain_256_voxels.csv};
           \addplot[blue, dotted, no marks, domain=0:1239, samples=50] {396228};
-          \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1239 / 1759, y=visible_voxels]{./plotdata/terrain_256_voxels_pmoc.csv};
+          \addplot[red, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1239 / 1759, y=visible_voxels]{./plotdata/terrain_256_voxels_pmoc.csv};
           \addplot[red, dotted, no marks, domain=0:1239, samples=50] {180440};
+          \legend{Per-Octree Occlsion Culling, Average Value, Per-Meshlet Occlusion Culling, Average Value}
 
         \end{axis}
       \end{tikzpicture}
@@ -997,12 +1014,15 @@ missing deoth information.
             xmin=0,
             xmax=1239,
             ymin=1000,
-            ymax=10000
+            ymax=10000,
+            legend style={at={(0.5,1.7)}, anchor=north, legend columns=2},
           ]
-          \addplot[green, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1239 / 1239, y=visible_nodes]{./plotdata/terrain_256_nodes.csv};
+          \addplot[blue, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1239 / 1239, y=visible_nodes]{./plotdata/terrain_256_nodes.csv};
           \addplot[blue, dotted, no marks, domain=0:1239, samples=50] {8207};
-          \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1239 / 1759, y=visible_nodes]{./plotdata/terrain_256_nodes_pmoc.csv};
+          \addplot[red, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1239 / 1759, y=visible_nodes]{./plotdata/terrain_256_nodes_pmoc.csv};
           \addplot[red, dotted, no marks, domain=0:1239, samples=50] {3832};
+          \legend{Per-Octree Occlsion Culling, Average Value, Per-Meshlet Occlusion Culling, Average Value}
+
         \end{axis}
       \end{tikzpicture}
 
@@ -1047,10 +1067,12 @@ the measured algorithm.
           xmin=0,
           xmax=1239,
           ymin=0,
-          ymax=0.00005
+          ymax=0.00005,
+          legend style={at={(0.5,1.7)}, anchor=north, legend columns=2},
         ]
-        \addplot[green, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1239 / 1572, y=time]{./plotdata/cpu/terrain_256_updateTime_pooc.csv};
-        \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1239 / 1813, y=time]{./plotdata/cpu/terrain_256_updateTime.csv};
+        \addplot[blue, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1239 / 1572, y=time]{./plotdata/cpu/terrain_256_updateTime_pooc.csv};
+        \addplot[red, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1239 / 1813, y=time]{./plotdata/cpu/terrain_256_updateTime.csv};
+        \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
       \end{axis}
     \end{tikzpicture}
     \begin{tikzpicture}
@@ -1063,10 +1085,12 @@ the measured algorithm.
           xmin=0,
           xmax=1239,
           ymin=0,
-          ymax=0.00025
+          ymax=0.00025,
+          legend style={at={(0.5,1.7)}, anchor=north, legend columns=2},
         ]
-        \addplot[green, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1239 / 1572, y=time]{./plotdata/cpu/terrain_256_renderTime_pooc.csv};
-        \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1239 / 1813, y=time]{./plotdata/cpu/terrain_256_renderTime.csv};
+        \addplot[blue, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1239 / 1572, y=time]{./plotdata/cpu/terrain_256_renderTime_pooc.csv};
+        \addplot[red, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1239 / 1813, y=time]{./plotdata/cpu/terrain_256_renderTime.csv};
+        \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
       \end{axis}
     \end{tikzpicture}
     \caption{Overview of the render times over the course of the test animation. The upper graph shows the time 
@@ -1096,18 +1120,20 @@ culling, while the depth prepass didn't change significantly.
   \begin{tikzpicture}
     \begin{axis}[
         height=6cm,
-        width=12cm,
+        width=14cm,
         x tick label style={/pgf/number format/1000 sep=},
         ylabel={Time ($\mu$s)},
         legend style={at={(0.5,1.2)}, anchor=north, legend columns=-1},
         symbolic x coords={DepthPrepass, DispatchMesh, Misc},
         xtick=data,
         ybar=0.4,
-        bar width=15pt,
+        bar width=25pt,
         ymin=0,
+        nodes near coords,
+        enlargelimits=0.2,
     ]
-    \addplot+[bar shift=-12pt] coordinates {(DepthPrepass,68.33) (DispatchMesh,607.64) (Misc,31.68)};
-    \addplot+[bar shift=12pt] coordinates {(DepthPrepass,68.68) (DispatchMesh,311.95) (Misc,29.9444)};
+    \addplot+[bar shift=-15pt] coordinates {(DepthPrepass,68.33) (DispatchMesh,607.64) (Misc,31.68)};
+    \addplot+[bar shift=15pt] coordinates {(DepthPrepass,68.68) (DispatchMesh,311.95) (Misc,29.9444)};
     \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
     \end{axis}
   \end{tikzpicture}
@@ -1115,18 +1141,20 @@ culling, while the depth prepass didn't change significantly.
   \begin{tikzpicture}
     \begin{axis}[
         height=6cm,
-        width=12cm,
+        width=14cm,
         x tick label style={/pgf/number format/1000 sep=},
         ylabel={Time ($\mu$s)},
         legend style={at={(0.5,1.2)}, anchor=north, legend columns=-1},
         symbolic x coords={DispatchBestOccluders, CopyTex, GenMipChain},
         xtick=data,
         ybar=0.4,
-        bar width=15pt,
+        bar width=25pt,
         ymin=0,
+        nodes near coords,
+        enlargelimits=0.2,
     ]
-    \addplot+[bar shift=-12pt] coordinates {(DispatchBestOccluders,29.49) (CopyTex,2.15) (GenMipChain,34.43)};
-    \addplot+[bar shift=12pt] coordinates {(DispatchBestOccluders,29.49) (CopyTex,2.33) (GenMipChain,33.66)};
+    \addplot+[bar shift=-15pt] coordinates {(DispatchBestOccluders,29.49) (CopyTex,2.15) (GenMipChain,34.43)};
+    \addplot+[bar shift=15pt] coordinates {(DispatchBestOccluders,29.49) (CopyTex,2.33) (GenMipChain,33.66)};
     \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
     \end{axis}
   \end{tikzpicture}
@@ -1203,12 +1231,14 @@ occlusion culling, which represented a rather low increase relative to the other
             xmin=0,
             xmax=940,
             ymin=450000,
-            ymax=850000
+            ymax=850000,
+            legend style={at={(0.5,1.7)}, anchor=north, legend columns=2},
           ]
-          \addplot[green, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 940 / 940, y=visible_voxels]{./plotdata/hairball_256_voxels.csv};
+          \addplot[blue, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 940 / 940, y=visible_voxels]{./plotdata/hairball_256_voxels.csv};
           \addplot[blue, dotted, no marks, domain=0:940, samples=50] {697549};
-          \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 940 / 1187, y=visible_voxels]{./plotdata/hairball_256_voxels_pmoc.csv};
+          \addplot[red, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 940 / 1187, y=visible_voxels]{./plotdata/hairball_256_voxels_pmoc.csv};
           \addplot[red, dotted, no marks, domain=0:940, samples=50] {581663};
+          \legend{Per-Octree Occlsion Culling, Average Value, Per-Meshlet Occlusion Culling, Average Value}
         \end{axis}
       \end{tikzpicture}
 
@@ -1222,12 +1252,14 @@ occlusion culling, which represented a rather low increase relative to the other
             xmin=0,
             xmax=940,
             ymin=15000,
-            ymax=25000
+            ymax=25000,
+            legend style={at={(0.5,1.7)}, anchor=north, legend columns=2},
           ]
-          \addplot[green, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 940 / 940, y=visible_nodes]{./plotdata/hairball_256_nodes.csv};
+          \addplot[blue, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 940 / 940, y=visible_nodes]{./plotdata/hairball_256_nodes.csv};
           \addplot[blue, dotted, no marks, domain=0:940, samples=50] {21229};
-          \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 940 / 1187, y=visible_nodes]{./plotdata/hairball_256_nodes_pmoc.csv};
+          \addplot[red, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 940 / 1187, y=visible_nodes]{./plotdata/hairball_256_nodes_pmoc.csv};
           \addplot[red, dotted, no marks, domain=0:940, samples=50] {18925};
+          \legend{Per-Octree Occlsion Culling, Average Value, Per-Meshlet Occlusion Culling, Average Value}
         \end{axis}
       \end{tikzpicture}
 
@@ -1259,10 +1291,12 @@ both configurations.
           xmin=0,
           xmax=940,
           ymin=0,
-          ymax=0.00005
+          ymax=0.00005,
+          legend style={at={(0.5,1.7)}, anchor=north, legend columns=2},
         ]
-        \addplot[green, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 940 / 1421, y=time]{./plotdata/cpu/hairball_256_updateTime_pooc.csv};
-        \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 940 / 1446, y=time]{./plotdata/cpu/hairball_256_updateTime.csv};
+        \addplot[blue, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 940 / 1421, y=time]{./plotdata/cpu/hairball_256_updateTime_pooc.csv};
+        \addplot[red, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 940 / 1446, y=time]{./plotdata/cpu/hairball_256_updateTime.csv};
+        \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
       \end{axis}
     \end{tikzpicture}
     \begin{tikzpicture}
@@ -1275,10 +1309,12 @@ both configurations.
           xmin=0,
           xmax=940,
           ymin=0,
-          ymax=0.00025
+          ymax=0.00025,
+          legend style={at={(0.5,1.7)}, anchor=north, legend columns=2},
         ]
-        \addplot[green, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 940 / 1421, y=time]{./plotdata/cpu/hairball_256_renderTime_pooc.csv};
-        \addplot[orange, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 940 / 1446, y=time]{./plotdata/cpu/hairball_256_renderTime.csv};
+        \addplot[blue, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 940 / 1421, y=time]{./plotdata/cpu/hairball_256_renderTime_pooc.csv};
+        \addplot[red, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 940 / 1446, y=time]{./plotdata/cpu/hairball_256_renderTime.csv};
+        \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
       \end{axis}
     \end{tikzpicture}
     \caption{Overview of the render times over the course of the test animation. The upper graph shows the time 
@@ -1302,18 +1338,20 @@ occlusion culling when comparing the average values.
   \begin{tikzpicture}
     \begin{axis}[
         height=6cm,
-        width=12cm,
+        width=14cm,
         x tick label style={/pgf/number format/1000 sep=},
         ylabel={Time ($\mu$s)},
         legend style={at={(0.5,1.2)}, anchor=north, legend columns=-1},
         symbolic x coords={DepthPrepass, DispatchMesh, Misc},
         xtick=data,
         ybar=0.4,
-        bar width=15pt,
+        bar width=25pt,
         ymin=0,
+        nodes near coords,
+        enlargelimits=0.2,
     ]
-    \addplot+[bar shift=-12pt] coordinates {(DepthPrepass,62.30) (DispatchMesh,1130.00) (Misc,31.68)};
-    \addplot+[bar shift=12pt] coordinates {(DepthPrepass,61.55) (DispatchMesh,948.44) (Misc,31.6354)};
+    \addplot+[bar shift=-15pt] coordinates {(DepthPrepass,62.30) (DispatchMesh,1130.00) (Misc,31.68)};
+    \addplot+[bar shift=15pt] coordinates {(DepthPrepass,61.55) (DispatchMesh,948.44) (Misc,31.6354)};
     \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
     \end{axis}
   \end{tikzpicture}
@@ -1321,18 +1359,20 @@ occlusion culling when comparing the average values.
   \begin{tikzpicture}
     \begin{axis}[
         height=6cm,
-        width=12cm,
+        width=14cm,
         x tick label style={/pgf/number format/1000 sep=},
         ylabel={Time ($\mu$s)},
         legend style={at={(0.5,1.2)}, anchor=north, legend columns=-1},
         symbolic x coords={DispatchBestOccluders, CopyTex, GenMipChain},
         xtick=data,
         ybar=0.4,
-        bar width=15pt,
+        bar width=25pt,
         ymin=0,
+        nodes near coords,
+        enlargelimits=0.2,
     ]
-    \addplot+[bar shift=-12pt] coordinates {(DispatchBestOccluders,23.14) (CopyTex,2.15) (GenMipChain,33.85)};
-    \addplot+[bar shift=12pt] coordinates {(DispatchBestOccluders,22.73) (CopyTex,2.34) (GenMipChain,33.87)};
+    \addplot+[bar shift=-15pt] coordinates {(DispatchBestOccluders,23.14) (CopyTex,2.15) (GenMipChain,33.85)};
+    \addplot+[bar shift=15pt] coordinates {(DispatchBestOccluders,22.73) (CopyTex,2.34) (GenMipChain,33.87)};
     \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
     \end{axis}
   \end{tikzpicture}
