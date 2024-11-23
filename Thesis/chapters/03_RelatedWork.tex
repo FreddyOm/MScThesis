@@ -5,7 +5,7 @@ around for quite some time. It is of great interest to explore related work, whi
 context for use cases and highlight additional techniques that can be adopted additionally. 
 This chapter highlights related work addressing \emph{Voxel Rendering}, \emph{Occlusion Culling}, 
 and \emph{Mesh Shading}, on which the proposed implementation is based. The most important of 
-the highlighted concepts are revisited and discussed in more detail in chapter 
+the highlighted concepts are revisited and discussed in more detail in Chapter 
 \ref{cpt-technical-background}. 
 
 [@TODO: Find scientific papers for voxel representations]
@@ -25,7 +25,7 @@ Voxel Rendering has had huge success in sandbox and highly dynamic games like \e
 to preserve some volumetric information for the dynamic environment to be manipulated in real-time. \emph{Minecraft} 
 generates a procedural environment based on complex parameters. This way, they can easily generate nearly infinite 
 worlds with interesting biomes and landmarks. This huge world is split into chunks of size 16×384×16, to be able to 
-stream the world dynamically and allow for quick traversal in any direction, shown in figure \ref{fig:minecraft-chunks}.
+stream the world dynamically and allow for quick traversal in any direction, shown in Figure \ref{fig:minecraft-chunks}.
 Each chunk maintains its own three-dimensional grid, with the voxel data being highly compressed. Non-existing voxels 
 are not being stored, and block states, textures, and other information is stored in per-chunk buffers or as global 
 data in a global buffer. This way, using a texture atlas, up to 256 different texture variants can be easily stored 

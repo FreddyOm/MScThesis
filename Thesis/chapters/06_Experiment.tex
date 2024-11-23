@@ -53,7 +53,7 @@ of the model was important, and secondly, the data structure and shape of the mo
 
 \noindent
 The data was sampled over time using a standardized camera animation, which was following a circular orbit 
-around the model, visualized in figure \ref{fig:test-anim-camera-path}. A vertical offset was added to the orbit, 
+around the model, visualized in Figure \ref{fig:test-anim-camera-path}. A vertical offset was added to the orbit, 
 so the model could be drawn from various angles. This was especially important for models like the \emph{Torus}, 
 which are likely to behave very differently when viewed from above compared to when viewed from the side.
 
@@ -648,7 +648,7 @@ as the red dotted line.
 
 \noindent
 Like with the \emph{Lucy} model, the \emph{Bunny} showed no significant difference in \ac{CPU} computation time. 
-In figure \ref{plt:bunny-256-culling-cpu-time}, the second graph shows a small amount of frames between frames 280 
+In Figure \ref{plt:bunny-256-culling-cpu-time}, the second graph shows a small amount of frames between frames 280 
 and 380, which seem to have been faster in execution using the per-meshlet occlusion culling. However, it is not 
 obvious why there would be any difference here. Similarly, the first graph also shows small differences that are 
 not considered significant enough to make any assumptions about them. Therefore, for this particular model, the 
@@ -751,7 +751,7 @@ of rounded edges are present. \\
 \noindent
 The images also show how the per-octree node culling produces more overdraw on the surface than the 
 per-meshlet culling because a larger portion of the voxels on the outside of the mesh were being 
-culled. In figure \ref{fig:bunny-overdraw}, this is visible as the broader red outline around the 
+culled. In Figure \ref{fig:bunny-overdraw}, this is visible as the broader red outline around the 
 bunny.
 
 \clearpage
@@ -825,7 +825,7 @@ when the torus was viewed from an angle, so the hole in the middle was occluded.
 the maximum amount of visible voxels and the minimum amount of voxels was the highest for the \emph{Torus} 
 model, which is remarkable compared to the other models. Using this particular experimental setup, the 
 lowest amount of visible voxels was $36.8\%$ of the maximum amount of visible voxels. This variation is 
-also clearly evident in figure \ref{plt:torus-256-culling-res-voxels}. \\ 
+also clearly evident in Figure \ref{plt:torus-256-culling-res-voxels}. \\ 
 
 \noindent
 In general, for per-octree culling, the average culling ratio was $84.4\%$, and $92.6\%$ for per-meshlet culling. 
@@ -889,7 +889,7 @@ for a given model.
 The \ac{GPU} performance for the \emph{Torus} model was considerably better using the per-meshlet 
 occlusion culling approach. While the depth prepass differed by only 0.54 microseconds in favor of the 
 per-octree node occlusion culling, the complete time spent on the \ac{GPU} was decreased by $36.8\%$ 
-using the per-meshlet occlusion culling configuration as shown in figure \ref{fig:torus-gpu-results}.
+using the per-meshlet occlusion culling configuration as shown in Figure \ref{fig:torus-gpu-results}.
 
 \begin{figure}[!htb]              % Torus GPU times
   \centering
@@ -1186,7 +1186,7 @@ culling, while the depth prepass didn't change significantly.
 
 
 \noindent
-As shown in figure \ref{fig:terrain-overdraw}, the per-octree culling configuration clearly 
+As shown in Figure \ref{fig:terrain-overdraw}, the per-octree culling configuration clearly 
 featured more overdraw than the comparison configuration. In the first row, it is evident that 
 the left lower corner features a lot of overdraw, which was decreased by switching to the 
 per-meshlet culling configuration. The maximum draws per pixel were 86 and 45, respectively, in 
@@ -1516,3 +1516,4 @@ because of the lack of best occluders. \\
 
 
 [@TODO: Add throughput data]
+[@TODO: Where do I write about the scaling of computation times with screen res / voxel count / ...?]

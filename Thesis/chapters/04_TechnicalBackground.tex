@@ -81,7 +81,7 @@ the nodes from root to leaf node. Since voxels can be encoded as either being pr
 voxels can be ignored, the data can be significantly reduced in size. Furthermore, equal child node masks 
 can simply be shared between different parent nodes instead of being duplicated. Kämpe et al. \cite{Kampe2013} 
 suggest a bottom-up approach to remove redundant nodes and replace whole sub-trees of the octree by pointing to one 
-instance of the same pattern within the tree, which is shown in figure \ref{fig:sparse-voxel-dag-creation}. 
+instance of the same pattern within the tree, which is shown in Figure \ref{fig:sparse-voxel-dag-creation}. 
 This optimization can be recursively done to each layer in the tree hierarchy, resulting in an optimized version 
 of the data structure. The resulting structure is a more general hierarchical data structure, namely a \ac{DAG}.
 
@@ -94,7 +94,7 @@ of the data structure. The resulting structure is a more general hierarchical da
 
 \noindent
 This approach seems to be the best solution for reading, storing, and optimizing octree data, although the work
-presented in chapter \ref{cpt-implementation} uses a more basic approach in the implementation. Nevertheless, 
+presented in Chapter \ref{cpt-implementation} uses a more basic approach in the implementation. Nevertheless, 
 this concept of optimizing voxel data is compatible with the use case presented here, and is highly recommended.
 
 
@@ -140,7 +140,7 @@ applied to rasterized voxel rendering, they can be of interest for this work's a
 \end{figure}
 
 \noindent
-Tuxedo Labs' \emph{Teardown} (figure \ref{fig:teardown}) uses ray traced lighting, which is affordable due 
+Tuxedo Labs' \emph{Teardown} (Figure \ref{fig:teardown}) uses ray traced lighting, which is affordable due 
 to the voxel scene representation \cite{TuxedoLabs2022}. Additionally, it makes use of highly dynamic physics 
 operations, which are relatively efficient using the voxel representation. In its base layout, a cubical 
 voxel is an \ac{AABB}, which allows for trivial collision tests. When rotated around any axis, a voxel is 
@@ -203,9 +203,9 @@ Backface culling algorithms can also be applied to clusters of triangles. As Shi
 propose, multiple triangles can be culled at once considering a common normal cone, constructed by the normals 
 of all the triangles within the cluster. "Shirmun and Abi-Ezzi \cite{Shirmun1993} prove that if the viewer is 
 located in [a] frontfacing cone, then all faces in the cone are frontfacing, and similarly for the backfacing 
-cone" \cite{AkenineMoeller2018}. As mentioned in chapter \ref{subsubsec-meshlet-backface-culling}, this approach 
+cone" \cite{AkenineMoeller2018}. As mentioned in Chapter \ref{subsubsec-meshlet-backface-culling}, this approach 
 can be used for more parallelized backface culling using an updated rendering pipeline in current graphics 
-\ac{API}s. A visual representation is provided in figure \ref{fig:cluster-backface-culling}.
+\ac{API}s. A visual representation is provided in Figure \ref{fig:cluster-backface-culling}.
 
 
 \subsection*{View Frustum Culling} \label{subsec-view-frustum-culling}
@@ -288,7 +288,7 @@ low resolution and small mip-map on the other end of the mip-level. An exemplary
 \noindent
 In contrast to the classic generation of mip-maps, the computation of the values in the \emph{z-pyramid} works in a 
 very specific way. "[...] [E]ach z-value is the farthest z in the corresponding 2 \begin{math}\times\end{math} 2 window 
-of the adjacent finer level" \cite{AkenineMoeller2018}. This process is shown in figure \ref{fig:hiz-value-computation}, 
+of the adjacent finer level" \cite{AkenineMoeller2018}. This process is shown in Figure \ref{fig:hiz-value-computation}, 
 showing how the farthest value of each texel window is inserted into adjacent levels.\\
 
 \begin{figure}[!]
@@ -350,7 +350,7 @@ example, has a large open world in a city with many large buildings. A rather la
 expected to be occluded by some of the buildings at any given moment. \emph{Assassin's Creed Unity's} \ac{TPOC} 
 implementation uses artist-picked \emph{best occluders} for \ac{HZB} computation. During runtime, the best occluders are 
 drawn to depth buffer in a dedicated depth pre-pass and then used as described in the next section. 
-The output of the depth buffer pre-pass is shown in figure \ref{fig:depth-buffer-ac-unity}. Depth passes can be done 
+The output of the depth buffer pre-pass is shown in Figure \ref{fig:depth-buffer-ac-unity}. Depth passes can be done 
 quite efficiently, especially if they only contain a handful of instances to draw. Additionally, because of the advances 
 in \ac{GPU}-driven rendering, the \ac{HiZ} pyramid can be computed by a \emph{compute shader}, which leverages the 
 highly parallel computation capabilities of the \ac{GPU}. \\
@@ -437,7 +437,7 @@ next stage is called using the \emph{DispatchMesh()} function, which invokes the
 
 \noindent
 The Mesh Shader output can be defined by the user and is usually configured to be a small patch consisting of a small 
-number of triangles, called \emph{Meshlet}, which is shown in figure \ref{fig:bunny-meshlet}. This new approach 
+number of triangles, called \emph{Meshlet}, which is shown in Figure \ref{fig:bunny-meshlet}. This new approach 
 to operating on vertices allows for a new interpretation of mesh data. The primitive topology is not anymore constrained 
 to triangles, triangle fans, and triangle strips but can be individually specified by the developers.
 Meshlets are computed by threadgroups, which usually fetch the mesh data from the given vertex and index buffers and 
@@ -470,7 +470,7 @@ can be adapted for the Mesh Shading pipeline.
 
 \paragraph*{Meshlet Backface Culling} \label{subsubsec-meshlet-backface-culling}
 
-As shown in chapter \ref{subsec-backface-culling}, there are backface culling algorithms, which can be applied to 
+As shown in Chapter \ref{subsec-backface-culling}, there are backface culling algorithms, which can be applied to 
 triangle clusters as well. For instance, the normal cone approach by Shirmun et al. \cite{Shirmun1993} can be used 
 in the Mesh Shading pipeline as well. In fact, having hardware and software support for the computation of triangle 
 clusters provided by the Mesh Shading pipeline makes this approach even more efficient. Clusters are evaluated in 

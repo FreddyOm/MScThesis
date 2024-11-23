@@ -70,7 +70,7 @@ operations introduced a solution for this problem. Over the years, more and more
 rendering pipeline were offloaded to the \ac{GPU}, which in turn resulted in a lot of new effects, 
 games with higher triangle density and new lighting technology. As mentioned before, the \emph{NVIDIA 
 GeForce 256} introduced cube mapping to the pipeline featuring real-time reflections, which is 
-shown in figure \ref{fig:bubble-reflection-demo} \cite{Battaglia2024}.
+shown in Figure \ref{fig:bubble-reflection-demo} \cite{Battaglia2024}.
 
 
 \subsection*{Rendering Pipeline} \label{subsec-rendering-pipeline}
@@ -203,7 +203,7 @@ in a \ac{GPU}-friendly way, representing data relationships in a way that can be
 This trend gained attention with the rise of the \ac{GPGPU} and the better support for the more generalized 
 \emph{compute shaders}. The definition for when applications are \ac{GPU} driven or not is blurred, but one 
 of the earlier games to make heavy use of \ac{GPUDR} is \emph{Assassin's Creed Unity} (\emph{Ubisoft} 
-\cite{Ubisoft2014}, 2014), shown in figure \ref{fig:assassins-creed-unity-gameplay}. In 2015, Aaltonen et al. 
+\cite{Ubisoft2014}, 2014), shown in Figure \ref{fig:assassins-creed-unity-gameplay}. In 2015, Aaltonen et al. 
 \cite{Aaltonen2015} presented approaches for \ac{GPUDR}, which included \emph{Occlusion Culling},
 \emph{Deferred Texturing}, and the clustering of geometry. The proposed technology allowed for a densely populated, 
 dynamic, open world. Some of the technology used would only be seen in other games almost a decade later, when 
@@ -233,7 +233,7 @@ allows developers to output geometrical primitives in any way they like and brea
 Each cluster can be computed individually by using the compute shaders. This way, geometry can be manipulated more 
 precisely than before, and the processing of the primitives additionally benefits from the highly efficient compute 
 architecture, providing groupshared memory, fewer limitations, and a more flexible way of operating on geometry.
-The pipeline is discussed in more detail in chapter \ref{sec-mesh-shading} and is a central part of modern games 
+The pipeline is discussed in more detail in Chapter \ref{sec-mesh-shading} and is a central part of modern games 
 such as \emph{Remedy's} Alan Wake 2 (\emph{Remedy Entertainment} \cite{AlanWake22023}, 2023) or even 
 \emph{Epic Games'} \emph{Unreal Engine 5} \cite{Karis2021}. 
 
@@ -263,17 +263,17 @@ improve voxel rendering. An ideal culling would only draw visible voxels and ign
 not contributing to the visible and gameplay relevant scene. Therefore, an initial idea involved 
 the culling of individual voxels for large three dimensional scenes. The use of the new mesh shading 
 pipeline in combination with efficient culling could drastically improve frame times. However, as will be 
-pointed out in chapter \ref{subsubsec-two-pass-occlusion-culling}, for current occlusion culling 
+pointed out in Chapter \ref{subsubsec-two-pass-occlusion-culling}, for current occlusion culling 
 algorithms to work, objects of different sizes are used to cull smaller instances or even primitives.
 Since voxels are always of the same size, this algorithm cannot be applied as is. The proposed approach 
 relies on preprocessing data and applying approximations to the scene layout, so a variation of a 
 common occlusion culling algorithm can be applied. \\
 
 \noindent
-In the next chapter \ref{cpt-related-work} related work is discussed before an in-depth technical foundation 
-is laid out in chapter \ref{cpt-technical-background}. Subsequently, the actual implementation is discussed 
-in detail in chapter \ref{cpt-implementation}, which is followed by an experiment in chapter \ref{cpt-experiment} 
+In the next Chapter \ref{cpt-related-work} related work is discussed before an in-depth technical foundation 
+is laid out in Chapter \ref{cpt-technical-background}. Subsequently, the actual implementation is discussed 
+in detail in Chapter \ref{cpt-implementation}, which is followed by an experiment in Chapter \ref{cpt-experiment} 
 that aims to evaluate the differences between two culling approaches within the pipeline. With the use of the data, 
 a qualitative evaluation can highlight conceptual differences to the use of similar approaches within a different 
-use case, like non-volumetric representations. The results are discussed in chapter \ref{cpt-discussion} before 
-future work is identified and highlighted in chapter \ref{cpt-prospect}. 
+use case, like non-volumetric representations. The results are discussed in Chapter \ref{cpt-discussion} before 
+future work is identified and highlighted in Chapter \ref{cpt-prospect}. 

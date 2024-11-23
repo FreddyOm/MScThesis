@@ -1,16 +1,54 @@
-\chapter{Prospect} \label{cpt-prospect}
+\chapter{Future work} \label{cpt-future-work}
 
+Considering the results and limitations presented, there are a few aspects that benefit from further 
+research and experimentation. Some of them couldn't be consider in this work due to limitations in 
+scope, others are direct consequences from the results in this work. The aspects considered for 
+future work are discussed below. \\
 
+\noindent
+It might be beneficial to consider some optimizations for the implementation of the whole pipeline that 
+optimize the stages even further. First of all, the voxel data layout can be optimized by using a different
+approach to storing the voxel data. Instead of a position buffer and a regular grid, which were used due to 
+their simplicity, Sparse Voxel \ac{DAG}s or similar scene representations could be used for optimizing 
+memory usage. The efficient way of storing data, and how they implicitly manage voxel data without the 
+need for a seperate position buffer, can possibly increase the performance, especially when using high 
+resolution voxel models. Another optimization is the use of indirect draw calls and command lists for 
+more efficient playback of \ac{GPU} commands and the possible optimization towards a completely 
+\ac{GPU}-driven pipeline. In this work's implementation, there is a small number of \ac{CPU} operations 
+between the depth prepass and the actual draw call, which can potentially be eliminated by using indirect 
+draw calls and command lists. Finally, depth reprojection could be applied to this implementation as an 
+additional optimization. Comparing the results of the adapted \ac{TPOC} with and without depth reprojection 
+might provide valuable insights into the optimization potential of this approach. \\
 
-\section{Future work}
+\noindent
+Another aspect to consider is a further inspection of configuration values for this work's implementation. 
+For example, the threadgroup size in combination with the scene resolution and minimum octree node size 
+can provide different results. A higher threadgroup size allows more voxels to be present within one octree 
+node and subsequently within the whole scene. This might also change the way, how efficiently \ac{GPU} 
+threads are used and can ultimately impact the overall performance in either direction. Further measurements 
+can provide insights into optimal relations between the amount of \ac{GPU} threads, octree nodes and node 
+sizes. \\
 
-- Use every thread in threadgroup and do not leave threadgroups idle when rejecting nodes (View Frustum Culling or frustum culling)
-- Use Sparse Voxel DAGs and better data compression
-- Use meshlet backface culling technique
-- The construction of the \ac{HiZ}-pyramid can possibly be further optimized by computing values for all mip levels 
-  in parallel, instead of sequentially writing and reading the values to or from a given mip level. 
-- Test runtime performance when updating the best occluders dynamically. E.g. apply physics operations to voxels models.
-- Use raster occlusion approach \cite{NVIDIAGLOC2016} instead of \ac{HiZ}.
-- Optimize relation \emph{GPU threads <-> Meshlets <-> Octree Nodes}
-- Depth reprojection
-- Indirect draw calls to fix CPU "readback"
+\noindent
+The \ac{HiZ} pyramid is created sequentially in the given implementation, which means that one mip level is 
+created by the compute shader before the next higher mip level is created. The \ac{HiZ} creation can therefore 
+be optimized by creating all mip levels in parallel or in a small number of batches, without the need to wait 
+for one compute dispatch to finish. Given this adaption of the \ac{HiZ} creation, the depth prepass might be 
+even faster and less dependent on the screen resolution. \\
+
+\noindent
+The provided implementation features some visual glitches during occlusion culling as long as higher mip levels 
+are used for the deoth prepass. This issue led to the assumption that the hierarchy isn't actually obligatory 
+for per-meshlet culling, since no sub-voxel detail is present anyway. This assumption needs to be tested in 
+order to be finally validated. If the assumption holds true, the \ac{HZB} could be made completely redundant and 
+the occlusion culling algorithm can be simmplified further. \\
+
+\noindent
+Finally, the most important experiment to be done in the future is dynamically updating the voxel data and therefore 
+altering the best occluders at runtime. As the experiment showed, the occlusion culling algorithm was not only 
+capable of reducing the amount of meshes computed by the rendering pipeline, it was almost completely executed 
+on the \ac{GPU}. This leaves some more \ac{CPU} resources for updating voxel data and \ac{GPU} buffers. In order 
+to update the best occluders efficiently, the implementation would benefit from adding chunks to the scene structure. 
+A future experiment could test the performance of this approach within a chunked scene, implementing physics operations 
+that manipulate voxel data in realtime. 
+
