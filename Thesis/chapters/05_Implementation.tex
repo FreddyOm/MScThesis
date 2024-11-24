@@ -157,10 +157,8 @@ long as all eight child nodes satisfy the requirements of being a best occluder.
 During the depth pre-pass, the best occluders are drawn as "large voxels", which are the size of the respective 
 best occluder node. This can be achieved by simply reusing the mesh shader used in the normal draw call and 
 inputting the node's position and bounds. This way, a whole node gets drawn instead of the individual voxels, 
-reducing the computation cost for the best occluders by at least \emph{n} times, with \emph{n} being the maximum 
-amount of voxels per node. The best occluders are stored in a separate buffer so they can be dispatched efficiently. \\
-
-%[@TODO: Add data structure diagram of best occluder buffer]
+reducing the computation cost for drawing the best occluders considerably. The best occluders are stored in a 
+separate buffer so they can be dispatched efficiently. \\
 
 \noindent
 This concludes the initialization of the pipeline. When changes are applied to the voxel data, the voxel buffer,
