@@ -154,7 +154,7 @@ long as all eight child nodes satisfy the requirements of being a best occluder.
 \end{figure}
 
 \noindent
-During the depth pre-pass, the best occluders are drawn as "large voxels", which are the size of the respective 
+During the depth prepass, the best occluders are drawn as "large voxels", which are the size of the respective 
 best occluder node. This can be achieved by simply reusing the mesh shader used in the normal draw call and 
 inputting the node's position and bounds. This way, a whole node gets drawn instead of the individual voxels, 
 reducing the computation cost for drawing the best occluders considerably. The best occluders are stored in a 
@@ -182,13 +182,13 @@ no runtime alternation are assumed for this work, a static, pre-calculated buffe
 \end{figure}
 
 \noindent
-The rendering loop consists of three main steps: The depth pre-pass including \ac{HiZ} generation, the 
+The rendering loop consists of three main steps: The depth prepass including \ac{HiZ} generation, the 
 task shader, and the mesh shader. The different stages consume and generate various data buffers 
 and textures, as shown in Figure \ref{fig:pipeline-loop}. 
 
 \subsection*{Depth Pre-Pass} \label{subsec-depth-prepass}
 
-The frame computation starts by computing the depth pre-pass, which is the custom render pass central 
+The frame computation starts by computing the depth prepass, which is the custom render pass central 
 to the occlusion culling. In this pass, a compute shader is invoked that takes the best occluders and 
 draws them to the depth buffer. This depth pass does not draw to the back buffer, making the computation 
 relatively efficient. To get a better understanding of what this means, Figure \ref{fig:best-occluder-viz} 

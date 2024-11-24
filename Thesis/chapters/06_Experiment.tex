@@ -726,12 +726,14 @@ best occluders was 5.1 times as high as the amount of best occluders in the \emp
 
 \begin{figure}[!htb]
   \centering
-  \includegraphics[width=125px]{images/graphics/overdraw-bunny1-pooc.png}
-  \includegraphics[width=125px]{images/graphics/overdraw-bunny1-pmoc.png}
-  \includegraphics[width=125px]{images/graphics/overdraw-bunny1-diff.png}
-  \includegraphics[width=125px]{images/graphics/overdraw-bunny2-pooc.png}
-  \includegraphics[width=125px]{images/graphics/overdraw-bunny2-pmoc.png}
-  \includegraphics[width=125px]{images/graphics/overdraw-bunny2-diff.png}
+  \includegraphics[width=100px]{images/graphics/overdraw-bunny1-nocull.png}
+  \includegraphics[width=100px]{images/graphics/overdraw-bunny1-pooc.png}
+  \includegraphics[width=100px]{images/graphics/overdraw-bunny1-pmoc.png}
+  \includegraphics[width=100px]{images/graphics/overdraw-bunny1-diff.png}
+  \includegraphics[width=100px]{images/graphics/overdraw-bunny2-nocull.png}
+  \includegraphics[width=100px]{images/graphics/overdraw-bunny2-pooc.png}
+  \includegraphics[width=100px]{images/graphics/overdraw-bunny2-pmoc.png}
+  \includegraphics[width=100px]{images/graphics/overdraw-bunny2-diff.png}
   \caption{Overdraw of the pixels from two different camera angles. The left column 
   shows the per-octree occlusion culling configuration, the middle column shows the 
   per-meshlet occlusion culling configuration and the right column shows the difference 
@@ -743,7 +745,8 @@ best occluders was 5.1 times as high as the amount of best occluders in the \emp
 Figure \ref{fig:bunny-overdraw} shows the overdraw of pixels from two different camera angles.
 Both rows show that the per-octree occlusion culling had more overdrawn pixels than the 
 per-meshlet occlusion culling configuration. The difference is in favor of per-meshlet 
-culling, which had only a maximum of 43 draws to the same pixels as compared to 60 draws.
+culling, which had only a maximum of 43 draws to the same pixels as compared to 60 draws. Without 
+the culling activated, the maximum amount of overdraw was measured to be 111 draws to the same pixel.
 The camera angle clearly made a difference here, as the top view increased the amount of 
 overdraw significantly. This is especially visible on the surface of the model, where a lot 
 of rounded edges are present. \\

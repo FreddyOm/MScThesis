@@ -22,6 +22,10 @@ pipeline discussion and in depth data visualization.
 - [x] Shader invocation limit at 65536 -> Multiple Batches? -> Not a problem after occlusion culling? -> Multiple passes?
 
 
+## TODO: 
+- [] Measure CPU and GPU times for non-oc pipeline without depth prepass
+- [] Measure Best Occluder selecting times
+
 ## Kolloquium
 
 - If I were do redo it Id focus on the aggregation of the best occluders as the central innovation
