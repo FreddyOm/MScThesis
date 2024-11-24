@@ -501,12 +501,14 @@ copying the depth buffer and computing the mip maps.
 
 \begin{figure}[!htb]
   \centering
-  \includegraphics[height=125px]{images/graphics/overdraw-lucy1-pooc.png}
-  \includegraphics[height=125px]{images/graphics/overdraw-lucy1-pmoc.png}
-  \includegraphics[height=125px]{images/graphics/overdraw-lucy1-diff.png}
-  \includegraphics[height=125px]{images/graphics/overdraw-lucy2-pooc.png}
-  \includegraphics[height=125px]{images/graphics/overdraw-lucy2-pmoc.png}
-  \includegraphics[height=125px]{images/graphics/overdraw-lucy2-diff.png}
+  \includegraphics[height=100px]{images/graphics/overdraw-lucy1-nocull.png}
+  \includegraphics[height=100px]{images/graphics/overdraw-lucy1-pooc.png}
+  \includegraphics[height=100px]{images/graphics/overdraw-lucy1-pmoc.png}
+  \includegraphics[height=100px]{images/graphics/overdraw-lucy1-diff.png}
+  \includegraphics[height=100px]{images/graphics/overdraw-lucy2-nocull.png}
+  \includegraphics[height=100px]{images/graphics/overdraw-lucy2-pooc.png}
+  \includegraphics[height=100px]{images/graphics/overdraw-lucy2-pmoc.png}
+  \includegraphics[height=100px]{images/graphics/overdraw-lucy2-diff.png}
   \caption{}
   \label{fig:lucy-overdraw}
 \end{figure}
@@ -516,6 +518,7 @@ Figure \ref{fig:lucy-overdraw} shows that the per-octree occlusion culling had m
 overdrawn pixels than the per-meshlet occlusion culling configuration. While the 
 per-octree occlusion culling resulted in a maximum overdraw of 38 draws per pixel, 
 the per-meshlet occlusion culling was able to reduce this to a maximum of 27 draws.
+The comparison measurement without culling applied resulted in a maximum of 78 draws. 
 The side view featured only a maximum of 7 draws per pixel in both configurations.
 
 
