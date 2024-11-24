@@ -505,11 +505,30 @@ copying the depth buffer and computing the mip maps.
   \includegraphics[height=100px]{images/graphics/overdraw-lucy1-pooc.png}
   \includegraphics[height=100px]{images/graphics/overdraw-lucy1-pmoc.png}
   \includegraphics[height=100px]{images/graphics/overdraw-lucy1-diff.png}
-  \includegraphics[height=100px]{images/graphics/overdraw-lucy2-nocull.png}
-  \includegraphics[height=100px]{images/graphics/overdraw-lucy2-pooc.png}
-  \includegraphics[height=100px]{images/graphics/overdraw-lucy2-pmoc.png}
-  \includegraphics[height=100px]{images/graphics/overdraw-lucy2-diff.png}
-  \caption{}
+
+  \begin{subfigure}{100px}
+    \includegraphics[height=100px]{images/graphics/overdraw-lucy2-nocull.png}
+    \caption{}
+    \parbox{\linewidth}{\centering\footnotesize No Occlusion\\Culling}
+  \end{subfigure}
+  \begin{subfigure}{100px}
+    \includegraphics[height=100px]{images/graphics/overdraw-lucy2-pooc.png}
+    \caption{}
+    \parbox{\linewidth}{\centering\footnotesize Per-Octree Node\\Occlusion Culling}
+  \end{subfigure}
+  \begin{subfigure}{100px}
+    \includegraphics[height=100px]{images/graphics/overdraw-lucy2-pmoc.png}
+    \caption{}
+    \parbox{\linewidth}{\centering\footnotesize Per-Meshlet\\Occlusion Culling}
+  \end{subfigure}
+  \begin{subfigure}{100px}
+    \includegraphics[height=100px]{images/graphics/overdraw-lucy2-diff.png}
+    \caption{}
+    \parbox{\linewidth}{\centering\footnotesize Difference\\(b) vs. (c)}
+  \end{subfigure}
+
+  \caption{Overdraw of the pixels from two different camera angles. 
+  The image values are enhanced for better visualization.}
   \label{fig:lucy-overdraw}
 \end{figure}
 
@@ -733,14 +752,30 @@ best occluders was 5.1 times as high as the amount of best occluders in the \emp
   \includegraphics[width=100px]{images/graphics/overdraw-bunny1-pooc.png}
   \includegraphics[width=100px]{images/graphics/overdraw-bunny1-pmoc.png}
   \includegraphics[width=100px]{images/graphics/overdraw-bunny1-diff.png}
-  \includegraphics[width=100px]{images/graphics/overdraw-bunny2-nocull.png}
-  \includegraphics[width=100px]{images/graphics/overdraw-bunny2-pooc.png}
-  \includegraphics[width=100px]{images/graphics/overdraw-bunny2-pmoc.png}
-  \includegraphics[width=100px]{images/graphics/overdraw-bunny2-diff.png}
-  \caption{Overdraw of the pixels from two different camera angles. The left column 
-  shows the per-octree occlusion culling configuration, the middle column shows the 
-  per-meshlet occlusion culling configuration and the right column shows the difference 
-  of both configurations. The image values are enhanced for better visualization.}
+
+  \begin{subfigure}{100px}
+    \includegraphics[width=100px]{images/graphics/overdraw-bunny2-nocull.png}
+    \caption{}
+    \parbox{\linewidth}{\centering\footnotesize No Occlusion\\Culling}
+  \end{subfigure}
+  \begin{subfigure}{100px}
+    \includegraphics[width=100px]{images/graphics/overdraw-bunny2-pooc.png}
+    \caption{}
+    \parbox{\linewidth}{\centering\footnotesize Per-Octree Node\\Occlusion Culling}
+  \end{subfigure}
+  \begin{subfigure}{100px}
+    \includegraphics[width=100px]{images/graphics/overdraw-bunny2-pmoc.png}
+    \caption{}
+    \parbox{\linewidth}{\centering\footnotesize Per-Meshlet\\Occlusion Culling}
+  \end{subfigure}
+  \begin{subfigure}{100px}
+    \includegraphics[width=100px]{images/graphics/overdraw-bunny2-diff.png}
+    \caption{}
+    \parbox{\linewidth}{\centering\footnotesize Difference\\(b) vs. (c)}
+  \end{subfigure}
+
+  \caption{Overdraw of the pixels from two different camera angles. 
+  The image values are enhanced for better visualization.}
   \label{fig:bunny-overdraw}
 \end{figure}
 
@@ -955,16 +990,34 @@ using the per-meshlet occlusion culling configuration as shown in Figure \ref{fi
 
 \begin{figure}[!htb]
   \centering
-  \includegraphics[height=125px]{images/graphics/overdraw-torus1-pooc.png}
-  \includegraphics[height=125px]{images/graphics/overdraw-torus1-pmoc.png}
-  \includegraphics[height=125px]{images/graphics/overdraw-torus1-diff.png}
-  \includegraphics[height=125px]{images/graphics/overdraw-torus2-pooc.png}
-  \includegraphics[height=125px]{images/graphics/overdraw-torus2-pmoc.png}
-  \includegraphics[height=125px]{images/graphics/overdraw-torus2-diff.png}
-  \caption{Overdraw of the pixels from two different camera angles. The left column 
-  shows the per-octree occlusion culling configuration, the middle column shows the 
-  per-meshlet occlusion culling configuration and the right column shows the difference 
-  of both configurations. The image values are enhanced for better visualization.}
+  \includegraphics[height=100px]{images/graphics/overdraw-torus1-nocull.png}
+  \includegraphics[height=100px]{images/graphics/overdraw-torus1-pooc.png}
+  \includegraphics[height=100px]{images/graphics/overdraw-torus1-pmoc.png}
+  \includegraphics[height=100px]{images/graphics/overdraw-torus1-diff.png}
+
+  \begin{subfigure}{100px}
+    \includegraphics[height=100px]{images/graphics/overdraw-torus1-nocull.png}
+    \caption{}
+    \parbox{\linewidth}{\centering\footnotesize No Occlusion\\Culling}
+  \end{subfigure}
+  \begin{subfigure}{100px}
+    \includegraphics[height=100px]{images/graphics/overdraw-torus2-pooc.png}
+    \caption{}
+    \parbox{\linewidth}{\centering\footnotesize Per-Octree Node\\Occlusion Culling}
+  \end{subfigure}
+  \begin{subfigure}{100px}
+    \includegraphics[height=100px]{images/graphics/overdraw-torus2-pmoc.png}
+    \caption{}
+    \parbox{\linewidth}{\centering\footnotesize Per-Meshlet\\Occlusion Culling}
+  \end{subfigure}
+  \begin{subfigure}{100px}
+    \includegraphics[height=100px]{images/graphics/overdraw-torus2-diff.png}
+    \caption{}
+    \parbox{\linewidth}{\centering\footnotesize Difference\\(b) vs. (c)}
+  \end{subfigure}
+
+  \caption{Overdraw of the pixels from two different camera angles. 
+  The image values are enhanced for better visualization.}
   \label{fig:torus-overdraw}
 \end{figure}
 
@@ -973,7 +1026,8 @@ Figure \ref{fig:torus-overdraw} shows the overdraw for the \emph{Torus} model fr
 camera perspectives. Clearly, the per-meshlet occlusion culling configuration resulted 
 in less overdraw, especially when viewed from the sides. As the second row of figure 
 \ref{fig:torus-overdraw} shows, the edges were particularly overdrawn because of the 
-missing depth information.
+missing depth information. Without culling, the maximum amount of overdraw was measured 
+to be 267 draws to one pixel.
 
 \clearpage
 
@@ -1177,16 +1231,34 @@ culling, while the depth prepass didn't change significantly.
 
 \begin{figure}[!htb]
   \centering
-  \includegraphics[height=125px]{images/graphics/overdraw-terrain1-pooc.png}
-  \includegraphics[height=125px]{images/graphics/overdraw-terrain1-pmoc.png}
-  \includegraphics[height=125px]{images/graphics/overdraw-terrain1-diff.png}
-  \includegraphics[height=125px]{images/graphics/overdraw-terrain2-pooc.png}
-  \includegraphics[height=125px]{images/graphics/overdraw-terrain2-pmoc.png}
-  \includegraphics[height=125px]{images/graphics/overdraw-terrain2-diff.png}
-  \caption{Overdraw of the pixels from two different camera angles. The left column 
-  shows the per-octree occlusion culling configuration, the middle column shows the 
-  per-meshlet occlusion culling configuration and the right column shows the difference 
-  of both configurations. The image values are enhanced for better visualization.}
+  \includegraphics[height=100px]{images/graphics/overdraw-terrain1-nocull.png}
+  \includegraphics[height=100px]{images/graphics/overdraw-terrain1-pooc.png}
+  \includegraphics[height=100px]{images/graphics/overdraw-terrain1-pmoc.png}
+  \includegraphics[height=100px]{images/graphics/overdraw-terrain1-diff.png}
+
+  \begin{subfigure}{100px}
+    \includegraphics[height=100px]{images/graphics/overdraw-terrain2-nocull.png}
+    \caption{}
+    \parbox{\linewidth}{\centering\footnotesize No Occlusion\\Culling}
+  \end{subfigure}
+  \begin{subfigure}{100px}
+    \includegraphics[height=100px]{images/graphics/overdraw-terrain2-pooc.png}
+    \caption{}
+    \parbox{\linewidth}{\centering\footnotesize Per-Octree Node\\Occlusion Culling}
+  \end{subfigure}
+  \begin{subfigure}{100px}
+    \includegraphics[height=100px]{images/graphics/overdraw-terrain2-pmoc.png}
+    \caption{}
+    \parbox{\linewidth}{\centering\footnotesize Per-Meshlet\\Occlusion Culling}
+  \end{subfigure}
+  \begin{subfigure}{100px}
+    \includegraphics[height=100px]{images/graphics/overdraw-terrain2-diff.png}
+    \caption{}
+    \parbox{\linewidth}{\centering\footnotesize Difference\\(b) vs. (c)}
+  \end{subfigure}
+
+  \caption{Overdraw of the pixels from two different camera angles. 
+  The image values are enhanced for better visualization.}
   \label{fig:terrain-overdraw}
 \end{figure}
 
@@ -1196,7 +1268,7 @@ As shown in Figure \ref{fig:terrain-overdraw}, the per-octree culling configurat
 featured more overdraw than the comparison configuration. In the first row, it is evident that 
 the left lower corner features a lot of overdraw, which was decreased by switching to the 
 per-meshlet culling configuration. The maximum draws per pixel were 86 and 45, respectively, in 
-favor of the per-meshlet culling.
+favor of the per-meshlet culling. Without culling, the overdraw was 298 draws per pixel.
 
 \clearpage
 
@@ -1397,17 +1469,35 @@ which use case the overhead is greater than the time saving.
 \subsubsection*{Overdraw}
 
 \begin{figure}[!htb]
-  \centering
-  \includegraphics[height=125px]{images/graphics/overdraw-hairball1-pooc.png}
-  \includegraphics[height=125px]{images/graphics/overdraw-hairball1-pmoc.png}
-  \includegraphics[height=125px]{images/graphics/overdraw-hairball1-diff.png}
-  \includegraphics[height=125px]{images/graphics/overdraw-hairball2-pooc.png}
-  \includegraphics[height=125px]{images/graphics/overdraw-hairball2-pmoc.png}
-  \includegraphics[height=125px]{images/graphics/overdraw-hairball2-diff.png}
-  \caption{Overdraw of the pixels from two different camera angles. The left column 
-  shows the per-octree occlusion culling configuration, the middle column shows the 
-  per-meshlet occlusion culling configuration and the right column shows the difference 
-  of both configurations. The image values are enhanced for better visualization.}
+  \centering  
+  \includegraphics[height=100px]{images/graphics/overdraw-hairball1-nocull.png}
+  \includegraphics[height=100px]{images/graphics/overdraw-hairball1-pooc.png}
+  \includegraphics[height=100px]{images/graphics/overdraw-hairball1-pmoc.png}
+  \includegraphics[height=100px]{images/graphics/overdraw-hairball1-diff.png}
+
+  \begin{subfigure}{100px}
+    \includegraphics[height=100px]{images/graphics/overdraw-hairball2-nocull.png}
+    \caption{}
+    \parbox{\linewidth}{\centering\footnotesize No Occlusion\\Culling}
+  \end{subfigure}
+  \begin{subfigure}{100px}
+    \includegraphics[height=100px]{images/graphics/overdraw-hairball2-pooc.png}
+    \caption{}
+    \parbox{\linewidth}{\centering\footnotesize Per-Octree Node\\Occlusion Culling}
+  \end{subfigure}
+  \begin{subfigure}{100px}
+    \includegraphics[height=100px]{images/graphics/overdraw-hairball2-pmoc.png}
+    \caption{}
+    \parbox{\linewidth}{\centering\footnotesize Per-Meshlet\\Occlusion Culling}
+  \end{subfigure}
+  \begin{subfigure}{100px}
+    \includegraphics[height=100px]{images/graphics/overdraw-hairball2-diff.png}
+    \caption{}
+    \parbox{\linewidth}{\centering\footnotesize Difference\\(b) vs. (c)}
+  \end{subfigure}
+
+  \caption{Overdraw of the pixels from two different camera angles. 
+  The image values are enhanced for better visualization.}
   \label{fig:hairball-overdraw}
 \end{figure}
 
@@ -1417,7 +1507,10 @@ but still in favor of per-meshlet occlusion culling. The last column featuring t
 values between both configurations shows this particularly well. There is only a small difference 
 between both measurements, which is also reflected in the maximum amount of overdraw. The 
 per-octree node culling resulted in a maximum of 54 draws to one pixel, and the per-meshlet 
-culling configuration resulted in a maximum of 51 draws. Again, the top view resulted in more 
+culling configuration resulted in a maximum of 51 draws. Without occlusion culling, the overdraw 
+reached its maximum at 117 draws to one pixel. 
+
+Again, the top view resulted in more 
 overdraw than the front view.
 
 \clearpage
