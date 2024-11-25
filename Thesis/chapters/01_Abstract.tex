@@ -16,7 +16,17 @@ Deutsche Kurzfassung hier.
 \chapter*{Abstract}
 \addcontentsline{toc}{chapter}{Abstract}
 
-Add the english abstract here.
+The Hierarchical Z-Buffering algorithm recently gained popularity because of its ability to 
+efficiently cull occluded geometry using a GPU-driven approach. This algorithm has not been 
+available for voxel-based volumetric rendering in its original form. Here, a GPU-driven 
+approach to Hierarchical Z-Buffering is presented, for use in voxel-based volumetric scenes 
+by approximating the scene's volume with larger geometry. The approach uses an octree to 
+efficiently schedule voxel data with respect to their spatial characteristics and replaces 
+full octree nodes with larger geometry for fast computation of the Hierarchical Z-Buffer. 
+This not only allows the application of Hierarchical Z-Buffering to a dynamic voxel scene, 
+but also results in a performance increase compared to a rendering pipeline without occlusion 
+culling. This work shows that the use of the modern mesh shading pipeline improves computations 
+and leads to even better culling efficiency and overall performance.
 
 \vfill
 \noindent\textbf{Keywords:} Mesh Shading, Real-Time Rendering, Voxel Graphics
