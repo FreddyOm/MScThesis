@@ -291,7 +291,7 @@ is presented that summarizes all the relevant data in a compact visualization.
             width=\linewidth, % Scale the plot to \linewidth
             height=100px,
             xlabel={Frames},
-            ylabel={Visible Voxels},
+            ylabel={VComputed Voxels},
             grid,
             xmin=0,
             xmax=2392,
@@ -303,7 +303,7 @@ is presented that summarizes all the relevant data in a compact visualization.
           \addplot[blue, dotted, no marks, domain=0:2393, samples=50] {140842};
           \addplot[red, no marks, solid] table[col sep=comma, x=frame, y=visible_voxels]{./plotdata/lucy_256_voxels_pmoc.csv};
           \addplot[red, dotted, no marks, domain=0:2393, samples=50] {84082};
-          \legend{Per-Octree Occlsion Culling, Average Value, Per-Meshlet Occlusion Culling, Average Value}
+          \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
         \end{axis}
       \end{tikzpicture}
       \begin{tikzpicture}
@@ -311,7 +311,7 @@ is presented that summarizes all the relevant data in a compact visualization.
             width=\linewidth, % Scale the plot to \linewidth
             height=100px,
             xlabel={Frames},
-            ylabel={Visible Nodes},
+            ylabel={Computed Nodes},
             grid,
             xmin=0,
             xmax=2392,
@@ -323,7 +323,7 @@ is presented that summarizes all the relevant data in a compact visualization.
           \addplot[blue, dotted, no marks, domain=0:2393, samples=50] {3460};
           \addplot[red, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 2392 / 2395, y=visible_nodes]{./plotdata/lucy_256_nodes_pmoc.csv};
           \addplot[red, dotted, no marks, domain=0:2393, samples=50] {2483};
-          \legend{Per-Octree Occlsion Culling, Average Value, Per-Meshlet Occlusion Culling, Average Value}
+          \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
         \end{axis}
       \end{tikzpicture}
       \caption{First: The amount of visible voxels over the course of the test animation. 
@@ -383,9 +383,10 @@ voxels. On average, the per-meshlet culling even managed to omit $74.6\%$ of all
           ymax=0.00005,
           legend style={at={(0.5,1.7)}, anchor=north, legend columns=2},
         ]
+        \addplot[brown!60, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 2392 / 1648, y=time]{./plotdata/cpu/lucy_256_updateTime_nocull.csv};
         \addplot[blue, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 2392 / 1863, y=time]{./plotdata/cpu/lucy_256_updateTime_pooc.csv};
         \addplot[red, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 2392 / 1867, y=time]{./plotdata/cpu/lucy_256_updateTime.csv};
-        \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
+        \legend{No Occlusion Culling, Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
       \end{axis}
     \end{tikzpicture}
     \begin{tikzpicture}
@@ -401,9 +402,10 @@ voxels. On average, the per-meshlet culling even managed to omit $74.6\%$ of all
           ymax=0.00025,
           legend style={at={(0.5,1.7)}, anchor=north, legend columns=2},
         ]
+        \addplot[brown!60, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 2392 / 1648, y=time]{./plotdata/cpu/lucy_256_renderTime_nocull.csv};
         \addplot[blue, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 2392 / 1863, y=time]{./plotdata/cpu/lucy_256_renderTime_pooc.csv};
         \addplot[red, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 2392 / 1867, y=time]{./plotdata/cpu/lucy_256_renderTime.csv};
-        \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
+        \legend{No Occlusion Culling, Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
       \end{axis}
     \end{tikzpicture}
     \caption{Overview of the render times over the course of the test animation. The first graph shows the time 
@@ -455,9 +457,10 @@ particular model.
         nodes near coords,
         enlargelimits=0.2,
     ]
-    \addplot+[bar shift=-15pt] coordinates {(DepthPrepass,49.57) (DispatchMesh,234.91) (Misc,30.42)};
-    \addplot+[bar shift=15pt] coordinates {(DepthPrepass,51.50) (DispatchMesh,139.55) (Misc,29.1476)};
-    \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
+    \addplot+[bar shift=-30pt] coordinates {(DepthPrepass,49.57) (DispatchMesh,234.91) (Misc,30.42)};
+    \addplot+[bar shift=0pt] coordinates {(DepthPrepass,51.50) (DispatchMesh,139.55) (Misc,29.1476)};
+    \addplot+[bar shift=30pt] coordinates {(DepthPrepass,0) (DispatchMesh,548.86) (Misc,33.45)};
+    \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling, No Occlusion Culling}
     \end{axis}
   \end{tikzpicture}
 
@@ -559,7 +562,7 @@ The side view featured only a maximum of 7 draws per pixel in both configuration
             width=\linewidth, % Scale the plot to \linewidth
             height=100px,
             xlabel={Frames},
-            ylabel={Visible Voxels},
+            ylabel={VComputed Voxels},
             grid,
             xmin=0,
             xmax=1186,
@@ -571,7 +574,7 @@ The side view featured only a maximum of 7 draws per pixel in both configuration
           \addplot[blue, dotted, no marks, domain=0:1186, samples=50] {385210};
           \addplot[red, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1186 / 1490, y=visible_voxels]{plotdata/bunny_256_voxels_pmoc.csv};
           \addplot[red, dotted, no marks, domain=0:1186, samples=50] {180266};
-          \legend{Per-Octree Occlsion Culling, Average Value, Per-Meshlet Occlusion Culling, Average Value}
+          \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
         \end{axis}
       \end{tikzpicture}
 
@@ -580,7 +583,7 @@ The side view featured only a maximum of 7 draws per pixel in both configuration
             width=\linewidth, % Scale the plot to \linewidth
             height=100px,
             xlabel={Frames},
-            ylabel={Visible Nodes},
+            ylabel={Computed Nodes},
             grid,
             xmin=0,
             xmax=1186,
@@ -592,7 +595,7 @@ The side view featured only a maximum of 7 draws per pixel in both configuration
           \addplot[blue, dotted, no marks, domain=0:1186, samples=50] {8519};
           \addplot[red, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1186 / 1490, y=visible_nodes]{./plotdata/bunny_256_nodes_pmoc.csv};
           \addplot[red, dotted, no marks, domain=0:1186, samples=50] {5415};
-          \legend{Per-Octree Occlsion Culling, Average Value, Per-Meshlet Occlusion Culling, Average Value}
+          \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
         \end{axis}
       \end{tikzpicture}
 
@@ -636,9 +639,10 @@ as the red dotted line.
           ymax=0.00005,
           legend style={at={(0.5,1.7)}, anchor=north, legend columns=2},
         ]
+        \addplot[brown!60, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1186 / 1236, y=time]{./plotdata/cpu/bunny_256_updateTime_nocull.csv};
         \addplot[blue, no marks, solid]  table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1186 / 1574, y=time]{./plotdata/cpu/bunny_256_updateTime_pooc.csv};
         \addplot[red, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1186 / 1700, y=time]{./plotdata/cpu/bunny_256_updateTime.csv};
-        \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
+        \legend{No Occlusion Culling, Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
       \end{axis}
     \end{tikzpicture}
     \begin{tikzpicture}
@@ -654,9 +658,10 @@ as the red dotted line.
           ymax=0.00025,
           legend style={at={(0.5,1.7)}, anchor=north, legend columns=2},
         ]
+        \addplot[brown!60, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1186 / 1236, y=time]{./plotdata/cpu/bunny_256_renderTime_nocull.csv};
         \addplot[blue, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1186 / 1574, y=time]{./plotdata/cpu/bunny_256_renderTime_pooc.csv};
         \addplot[red, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1186 / 1700, y=time]{./plotdata/cpu/bunny_256_renderTime.csv};
-        \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
+        \legend{No Occlusion Culling, Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
       \end{axis}
     \end{tikzpicture}
     \caption{Overview of the render times over the course of the test animation. The first graph shows the time 
@@ -695,9 +700,10 @@ not considered significant enough to make any assumptions about them. Therefore,
         nodes near coords,
         enlargelimits=0.2,
     ]
-    \addplot+[bar shift=-15pt] coordinates {(DepthPrepass,74.22) (DispatchMesh,698.57) (Misc,30.12)};
-    \addplot+[bar shift=15pt] coordinates {(DepthPrepass,75.82) (DispatchMesh,404.89) (Misc,32.1526)};
-    \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
+    \addplot+[bar shift=-30pt] coordinates {(DepthPrepass,74.22) (DispatchMesh,698.57) (Misc,30.12)};
+    \addplot+[bar shift=0pt] coordinates {(DepthPrepass,75.82) (DispatchMesh,404.89) (Misc,32.1526)};
+    \addplot+[bar shift=30pt] coordinates {(DepthPrepass,0) (DispatchMesh,5492.00) (Misc,38.0522)};
+    \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling, No Occlusion Culling}
     \end{axis}
   \end{tikzpicture}
 
@@ -813,7 +819,7 @@ bunny.
             width=\linewidth, % Scale the plot to \linewidth
             height=100px,
             xlabel={Frames},
-            ylabel={Visible Voxels},
+            ylabel={VComputed Voxels},
             grid,
             xmin=0,
             xmax=1087,
@@ -825,7 +831,7 @@ bunny.
           \addplot[blue, dotted, no marks, domain=0:1087, samples=50] {359313};
           \addplot[red, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1087 / 1845, y=visible_voxels]{./plotdata/torus_256_voxels_pmoc.csv};
           \addplot[red, dotted, no marks, domain=0:1087, samples=50] {170772};
-          \legend{Per-Octree Occlsion Culling, Average Value, Per-Meshlet Occlusion Culling, Average Value}
+          \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
         \end{axis}
       \end{tikzpicture}
 
@@ -834,7 +840,7 @@ bunny.
             width=\linewidth, % Scale the plot to \linewidth
             height=100px,
             xlabel={Frames},
-            ylabel={Visible Nodes},
+            ylabel={Computed Nodes},
             grid,
             xmin=0,
             xmax=1087,
@@ -846,7 +852,7 @@ bunny.
           \addplot[blue, dotted, no marks, domain=0:1087, samples=50] {7712};
           \addplot[red, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1087 / 1845, y=visible_nodes]{./plotdata/torus_256_nodes_pmoc.csv};
           \addplot[red, dotted, no marks, domain=0:1087, samples=50] {4768};
-          \legend{Per-Octree Occlsion Culling, Average Value, Per-Meshlet Occlusion Culling, Average Value}
+          \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
         \end{axis}
       \end{tikzpicture}
 
@@ -894,9 +900,10 @@ for a given model.
           ymax=0.00005,
           legend style={at={(0.5,1.7)}, anchor=north, legend columns=2},
         ]
+        \addplot[brown!60, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1087 / 1262, y=time]{./plotdata/cpu/torus_256_updateTime_nocull.csv};
         \addplot[blue, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1554 / 1863, y=time]{./plotdata/cpu/torus_256_updateTime_pooc.csv};
         \addplot[red, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1087 / 1785, y=time]{./plotdata/cpu/torus_256_updateTime.csv};
-        \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
+        \legend{No Occlusion Culling, Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
       \end{axis}
     \end{tikzpicture}
     \begin{tikzpicture}
@@ -912,9 +919,10 @@ for a given model.
           ymax=0.00025,
           legend style={at={(0.5,1.7)}, anchor=north, legend columns=2},
         ]
+        \addplot[brown!60, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1087 / 1262, y=time]{./plotdata/cpu/torus_256_renderTime_nocull.csv};
         \addplot[blue, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1087 / 1554, y=time]{./plotdata/cpu/torus_256_renderTime_pooc.csv};
         \addplot[red, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1087 / 1785, y=time]{./plotdata/cpu/torus_256_renderTime.csv};
-        \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
+        \legend{No Occlusion Culling, Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
       \end{axis}
     \end{tikzpicture}
     \caption{Overview of the render times over the course of the test animation. The upper graph shows the time 
@@ -949,9 +957,10 @@ using the per-meshlet occlusion culling configuration as shown in Figure \ref{fi
         nodes near coords,
         enlargelimits=0.2,
     ]
-    \addplot+[bar shift=-15pt] coordinates {(DepthPrepass,71.66) (DispatchMesh,562.18) (Misc,30.53)};
-    \addplot+[bar shift=15pt] coordinates {(DepthPrepass,72.20) (DispatchMesh,316.01) (Misc,31.4482)};
-    \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
+    \addplot+[bar shift=-30pt] coordinates {(DepthPrepass,71.66) (DispatchMesh,562.18) (Misc,30.53)};
+    \addplot+[bar shift=0pt] coordinates {(DepthPrepass,72.20) (DispatchMesh,316.01) (Misc,31.4482)};
+    \addplot+[bar shift=30pt] coordinates {(DepthPrepass,0) (DispatchMesh,3864.0) (Misc,40.31696)};
+    \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling, No Occlusion Culling}
     \end{axis}
   \end{tikzpicture}
 
@@ -1028,7 +1037,7 @@ in less overdraw, especially when viewed from the sides. As the second row of fi
 \ref{fig:torus-overdraw} shows, the edges were particularly overdrawn because of the 
 missing depth information. Without culling, the maximum amount of overdraw was measured 
 to be 267 draws to one pixel.
-
+[@TODO: Fix overdraw image for nocull]
 \clearpage
 
 
@@ -1047,7 +1056,7 @@ to be 267 draws to one pixel.
             width=\linewidth, % Scale the plot to \linewidth
             height=100px,
             xlabel={Frames},
-            ylabel={Visible Voxels},
+            ylabel={VComputed Voxels},
             grid,
             xmin=0,
             xmax=1239,
@@ -1059,7 +1068,7 @@ to be 267 draws to one pixel.
           \addplot[blue, dotted, no marks, domain=0:1239, samples=50] {396228};
           \addplot[red, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1239 / 1759, y=visible_voxels]{./plotdata/terrain_256_voxels_pmoc.csv};
           \addplot[red, dotted, no marks, domain=0:1239, samples=50] {180440};
-          \legend{Per-Octree Occlsion Culling, Average Value, Per-Meshlet Occlusion Culling, Average Value}
+          \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
 
         \end{axis}
       \end{tikzpicture}
@@ -1069,7 +1078,7 @@ to be 267 draws to one pixel.
             width=\linewidth, % Scale the plot to \linewidth
             height=100px,
             xlabel={Frames},
-            ylabel={Visible Nodes},
+            ylabel={Computed Nodes},
             grid,
             xmin=0,
             xmax=1239,
@@ -1081,7 +1090,7 @@ to be 267 draws to one pixel.
           \addplot[blue, dotted, no marks, domain=0:1239, samples=50] {8207};
           \addplot[red, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1239 / 1759, y=visible_nodes]{./plotdata/terrain_256_nodes_pmoc.csv};
           \addplot[red, dotted, no marks, domain=0:1239, samples=50] {3832};
-          \legend{Per-Octree Occlsion Culling, Average Value, Per-Meshlet Occlusion Culling, Average Value}
+          \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
 
         \end{axis}
       \end{tikzpicture}
@@ -1128,9 +1137,10 @@ the measured algorithm.
           ymax=0.00005,
           legend style={at={(0.5,1.7)}, anchor=north, legend columns=2},
         ]
+        \addplot[brown!60, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1239 / 1381, y=time]{./plotdata/cpu/terrain_256_updateTime_nocull.csv};
         \addplot[blue, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1239 / 1572, y=time]{./plotdata/cpu/terrain_256_updateTime_pooc.csv};
         \addplot[red, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1239 / 1813, y=time]{./plotdata/cpu/terrain_256_updateTime.csv};
-        \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
+        \legend{No Occlusion Culling, Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
       \end{axis}
     \end{tikzpicture}
     \begin{tikzpicture}
@@ -1146,9 +1156,10 @@ the measured algorithm.
           ymax=0.00025,
           legend style={at={(0.5,1.7)}, anchor=north, legend columns=2},
         ]
+        \addplot[brown!60, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1239 / 1381, y=time]{./plotdata/cpu/terrain_256_renderTime_nocull.csv};
         \addplot[blue, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1239 / 1572, y=time]{./plotdata/cpu/terrain_256_renderTime_pooc.csv};
         \addplot[red, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1239 / 1813, y=time]{./plotdata/cpu/terrain_256_renderTime.csv};
-        \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
+        \legend{No Occlusion Culling, Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
       \end{axis}
     \end{tikzpicture}
     \caption{Overview of the render times over the course of the test animation. The upper graph shows the time 
@@ -1190,9 +1201,10 @@ culling, while the depth prepass didn't change significantly.
         nodes near coords,
         enlargelimits=0.2,
     ]
-    \addplot+[bar shift=-15pt] coordinates {(DepthPrepass,68.33) (DispatchMesh,607.64) (Misc,31.68)};
-    \addplot+[bar shift=15pt] coordinates {(DepthPrepass,68.68) (DispatchMesh,311.95) (Misc,29.9444)};
-    \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
+    \addplot+[bar shift=-30pt] coordinates {(DepthPrepass,68.33) (DispatchMesh,607.64) (Misc,31.68)};
+    \addplot+[bar shift=0pt] coordinates {(DepthPrepass,68.68) (DispatchMesh,311.95) (Misc,29.9444)};
+    \addplot+[bar shift=30pt] coordinates {(DepthPrepass,0) (DispatchMesh,1550.00) (Misc,36.6748)};
+    \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling, No Occlusion Culling}
     \end{axis}
   \end{tikzpicture}
 
@@ -1307,14 +1319,14 @@ occlusion culling, which represented a rather low increase relative to the other
             xmin=0,
             xmax=940,
             ymin=450000,
-            ymax=850000,
+            ymax=800000,
             legend style={at={(0.5,1.7)}, anchor=north, legend columns=2},
           ]
           \addplot[blue, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 940 / 940, y=visible_voxels]{./plotdata/hairball_256_voxels.csv};
           \addplot[blue, dotted, no marks, domain=0:940, samples=50] {697549};
           \addplot[red, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 940 / 1187, y=visible_voxels]{./plotdata/hairball_256_voxels_pmoc.csv};
           \addplot[red, dotted, no marks, domain=0:940, samples=50] {581663};
-          \legend{Per-Octree Occlsion Culling, Average Value, Per-Meshlet Occlusion Culling, Average Value}
+          \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
         \end{axis}
       \end{tikzpicture}
 
@@ -1323,7 +1335,7 @@ occlusion culling, which represented a rather low increase relative to the other
             width=\linewidth, % Scale the plot to \linewidth
             height=100px,
             xlabel={Frames},
-            ylabel={Visible Nodes},
+            ylabel={Computed Nodes},
             grid,
             xmin=0,
             xmax=940,
@@ -1335,7 +1347,7 @@ occlusion culling, which represented a rather low increase relative to the other
           \addplot[blue, dotted, no marks, domain=0:940, samples=50] {21229};
           \addplot[red, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 940 / 1187, y=visible_nodes]{./plotdata/hairball_256_nodes_pmoc.csv};
           \addplot[red, dotted, no marks, domain=0:940, samples=50] {18925};
-          \legend{Per-Octree Occlsion Culling, Average Value, Per-Meshlet Occlusion Culling, Average Value}
+          \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
         \end{axis}
       \end{tikzpicture}
 
@@ -1368,9 +1380,10 @@ both configurations.
           ymax=0.00005,
           legend style={at={(0.5,1.7)}, anchor=north, legend columns=2},
         ]
+        \addplot[brown!60, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 940 / 1301, y=time]{./plotdata/cpu/hairball_256_updateTime_nocull.csv};
         \addplot[blue, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 940 / 1421, y=time]{./plotdata/cpu/hairball_256_updateTime_pooc.csv};
         \addplot[red, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 940 / 1446, y=time]{./plotdata/cpu/hairball_256_updateTime.csv};
-        \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
+        \legend{No Occlusion Culling, Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
       \end{axis}
     \end{tikzpicture}
     \begin{tikzpicture}
@@ -1386,9 +1399,10 @@ both configurations.
           ymax=0.00025,
           legend style={at={(0.5,1.7)}, anchor=north, legend columns=2},
         ]
+        \addplot[brown!60, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 940 / 1301, y=time]{./plotdata/cpu/hairball_256_renderTime_nocull.csv};
         \addplot[blue, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 940 / 1421, y=time]{./plotdata/cpu/hairball_256_renderTime_pooc.csv};
         \addplot[red, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 940 / 1446, y=time]{./plotdata/cpu/hairball_256_renderTime.csv};
-        \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
+        \legend{No Occlusion Culling, Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
       \end{axis}
     \end{tikzpicture}
     \caption{Overview of the render times over the course of the test animation. The upper graph shows the time 
@@ -1424,9 +1438,10 @@ occlusion culling when comparing the average values.
         nodes near coords,
         enlargelimits=0.2,
     ]
-    \addplot+[bar shift=-15pt] coordinates {(DepthPrepass,62.30) (DispatchMesh,1130.00) (Misc,31.68)};
-    \addplot+[bar shift=15pt] coordinates {(DepthPrepass,61.55) (DispatchMesh,948.44) (Misc,31.6354)};
-    \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
+    \addplot+[bar shift=-30pt] coordinates {(DepthPrepass,62.30) (DispatchMesh,1130.00) (Misc,31.68)};
+    \addplot+[bar shift=0pt] coordinates {(DepthPrepass,61.55) (DispatchMesh,948.44) (Misc,31.6354)};
+    \addplot+[bar shift=30pt] coordinates {(DepthPrepass,0) (DispatchMesh,2652.00) (Misc,33.8856)};
+    \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling, No Occlusion Culling}
     \end{axis}
   \end{tikzpicture}
 
@@ -1573,21 +1588,22 @@ higher culling ratio, and the average node population correlated with the averag
     \begin{tikzpicture}
       \begin{axis}[
           height=6cm,
-          width=14cm,
+          width=15cm,
           x tick label style={/pgf/number format/1000 sep=},
-          ylabel={Time ($\mu$s)},
+          ylabel={Time (ms)},
           legend style={at={(0.5,1.2)}, anchor=north, legend columns=-1},
           symbolic x coords={Lucy, Bunny, Torus, Terrain, Hairball},
           xtick=data,
           ybar=0.4,
-          bar width=25pt,
+          bar width=17pt,
           ymin=0,
           nodes near coords,
           enlargelimits=0.2,
       ]
-      \addplot+[bar shift=-15pt] coordinates {(Lucy,314.9) (Bunny,802.91) (Torus,664.36) (Terrain,707.65) (Hairball,1224)};
-      \addplot+[bar shift=15pt] coordinates {(Lucy,220.2036) (Bunny,512.8592) (Torus,419.6544) (Terrain,410.5716) (Hairball,1042)};
-      \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
+      \addplot+[bar shift=-20pt] coordinates {(Lucy,0.32) (Bunny,0.80) (Torus,0.66) (Terrain,0.71) (Hairball,1.22)};
+      \addplot+[bar shift=0pt] coordinates {(Lucy,0.22) (Bunny,0.51) (Torus,0.42) (Terrain,0.41) (Hairball,1.04)};
+      \addplot+[bar shift=20pt] coordinates {(Lucy,0.58) (Bunny,5.53) (Torus,3.90) (Terrain,1.59) (Hairball,2.69)};
+      \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling, No Occlusion Culling}
       \end{axis}
     \end{tikzpicture}
   \end{center}

@@ -23,8 +23,8 @@ pipeline discussion and in depth data visualization.
 
 
 ## TODO: 
-- [] Measure CPU and GPU times for non-oc pipeline without depth prepass
-- [] Measure Best Occluder selecting times
+- [x] Measure CPU and GPU times for non-oc pipeline without depth prepass
+- [x] Measure Best Occluder selecting times
 
 ## Kolloquium
 
