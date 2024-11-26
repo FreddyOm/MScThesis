@@ -3,7 +3,7 @@
 In order to put this work in context, some basic knowledge about computer graphics is expected.
 The reader is assumed to be familiar with the basic rendering pipeline and how 3D data is 
 transformed into a projected 2D image. Techniques like \emph{z-buffering}, \emph{mipmapping}, 
-the use of \emph{textures}, basic \emph{transformations}, and \emph{compute shaders} are mentioned, 
+the use of \emph{textures}, basic \emph{transformations}, and \emph{compute shaders} are mentioned 
 but not explained in further detail. Beyond that, a more in-depth discussion of related topics and 
 techniques this work builds upon is presented below.
 
@@ -43,7 +43,7 @@ Another approach is to use a spatial container to optimize traversal. The use of
 incorporates the relevant scene space and subdivides it into smaller child nodes. When inserting data 
 into the octree, the position is evaluated, and the data is being stored as a \emph{payload} in 
 a node, which includes the given position. If a node holds more payload instances than a specified threshold 
-allows, it is split into eight child nodes and the payload originally present in the node is 
+allows, it is split into eight child nodes, and the payload originally present in the node is 
 distributed onto the child nodes. This process is repeated until all data is finally inserted 
 into the octree. The resulting octree maintains all the relevant payload data, having a deeper tree 
 hierarchy where more data is present and a shallow hierarchy where (almost) no data is present.
@@ -64,7 +64,7 @@ separately from the tree hierarchy description. Such an approach would maintain 
 unordered traversal of all octree nodes. [@TODO: find appropriate sources]\\
 
 \noindent
-When using hierarchical data structures, dedicated vertex positions can be omitted and instead, 
+When using hierarchical data structures, dedicated vertex positions can be omitted, and instead, 
 the voxel position in space can be implicitly calculated from the hierarchy and the root node's bounds. 
 This allows for improvement of memory occupation, which is vital for loading and storing high-resolution 
 voxel scenes. A voxel's state can be encoded into either visible (1) or empty (0). A bitwise representation 
@@ -81,7 +81,7 @@ leaf nodes. Next, they make use of the fact that an octree node's position is un
 the nodes from root to leaf node. Since voxels can be encoded as either being present or not, and non-present 
 voxels can be ignored, the data can be significantly reduced in size. Furthermore, equal child node masks 
 can simply be shared between different parent nodes instead of being duplicated. Kämpe et al. \cite{Kampe2013} 
-suggest a bottom-up approach to remove redundant nodes and replace whole sub-trees of the octree by pointing to one 
+suggest a bottom-up approach to remove redundant nodes and replace whole subtrees of the octree by pointing to one 
 instance of the same pattern within the tree, which is shown in Figure \ref{fig:sparse-voxel-dag-creation}. 
 This optimization can be recursively done to each layer in the tree hierarchy, resulting in an optimized version 
 of the data structure. The resulting structure is a more general hierarchical data structure, namely a \ac{DAG}.
@@ -96,12 +96,13 @@ of the data structure. The resulting structure is a more general hierarchical da
 \noindent
 This approach seems to be the best solution for reading, storing, and optimizing octree data, although the work
 presented in Chapter \ref{cpt-implementation} uses a more basic approach in the implementation. Nevertheless, 
-this concept of optimizing voxel data is compatible with the use case presented here, and is highly recommended.
+this concept of optimizing voxel data is compatible with the use case presented here and is highly recommended.
 
 
 \section{Voxel Rendering} \label{sec-voxel-rendering}
 [@TODO: Redundant]
 
+\noindent
 \emph{Voxel Rendering} (\emph{voxel} = \emph{volumetric pixel}) refers to the use of primitive objects to 
 represent data elements in a three-dimensional grid. It is used to approximate 3D volumes analogous to how 
 2D pixels approximate shapes, lines, or areas in a two-dimensional grid \cite{MegaVoxels2023}. Commonly, 
@@ -142,13 +143,13 @@ applied to rasterized voxel rendering, they can be of interest for this work's a
 \end{figure}
 
 \noindent
-Tuxedo Labs' \emph{Teardown} (Figure \ref{fig:teardown}) uses ray traced lighting, which is affordable due 
-to the voxel scene representation \cite{TuxedoLabs2022}. Additionally, it makes use of highly dynamic physics 
-operations, which are relatively efficient using the voxel representation. In its base layout, a cubical 
-voxel is an \ac{AABB}, which allows for trivial collision tests. When rotated around any axis, a voxel is 
-still an \ac{OBB}, making collision tests more expensive than when using \ac{AABB}, but still rather efficient. 
-These characteristics make voxels excellent candidates for dynamic physics calculations. Also, storing voxels in 
-a spatial container helps keep collision checks to a minimum. \\
+Tuxedo Labs' \emph{Teardown} (\cite{TeardownSteam2022}, 2022) (Figure \ref{fig:teardown}) uses ray-traced 
+lighting, which is affordable due to the voxel scene representation \cite{TuxedoLabs2022}. Additionally, 
+it makes use of highly dynamic physics operations, which are relatively efficient using the voxel representation. 
+In its base layout, a cubical voxel is an \ac{AABB}, which allows for trivial collision tests. When rotated 
+around any axis, a voxel is still an \ac{OBB}, making collision tests more expensive than when using an \ac{AABB}, 
+but still rather efficient. These characteristics make voxels excellent candidates for dynamic physics 
+calculations. Also, storing voxels in a spatial container helps keep collision checks to a minimum. \\
 
 \noindent
 Although voxel physics is not considered for this work, it is very suitable for this approach as it basically 
@@ -241,7 +242,7 @@ cubical octree bounding volumes.
 When considering highly populated scenes, there might be cases of meshes occluding other meshes. This results 
 in overdraw when rasterizing the final projection, which means that multiple color values will be calculated 
 for the same pixel before the final color is determined. In general, overdraw should be avoided where possible. 
-Having a lot overdraw within the rendering process means that visibility determination of instances is deferred 
+Having a lot of overdraw within the rendering process means that visibility determination of instances is deferred 
 to the last possible point in the rendering pipeline. Often, it is better to pre-determine visibility and sample 
 only visible instances. To achieve this, algorithms can be used to select and omit occluded instances. \\
 
@@ -254,9 +255,9 @@ only visible instances. To achieve this, algorithms can be used to select and om
 
 \noindent
 Different occlusion culling algorithms can be applied depending on scene layout, object characteristics, and other 
-factors. Algorithms have been proposed, which operate in \emph{image space}, \emph{object space} or \emph{ray space}, 
+factors. Algorithms have been proposed that operate in \emph{image space}, \emph{object space}, or \emph{ray space}, 
 with image space occlusion culling being most widely adopted in real-time rendering \cite{AkenineMoeller2018}. 
-These algorithms operate on a projected 2D image to consider the visibility of different instances. As it is the case 
+These algorithms operate on a projected 2D image to consider the visibility of different instances. As is the case 
 with culling algorithms in general, occlusion culling algorithms usually rely on bounding volumes to approximate 
 object positions and scale in space. Figure \ref{fig:bounding-volumes} shows how different bounding volumes can be 
 used to support faster computation or more accurate volume approximation.
@@ -266,7 +267,7 @@ used to support faster computation or more accurate volume approximation.
 
 \emph{\ac{HiZ} Buffering} is a technique first introduced for \ac{CPU} computation by Ned Greene et al. 
 \cite{Greene93,Greene95}. Since then, it "has had significant influence on occlusion culling research" 
-\cite{AkenineMoeller2018} and plays a central role in this thesis. \\
+\cite{AkenineMoeller2018} and plays a central role in this work. \\
 
 \begin{figure}[h]
     \centering
@@ -278,17 +279,17 @@ used to support faster computation or more accurate volume approximation.
 
 \noindent
 \ac{HZB} is computed in image space and relies on two main components. An octree scene representation and a 
-\emph{z-buffer} pyramid. The octree contains all instances present in the scene. The \emph{z-pyramid} is a set of 
+\emph{z-buffer} pyramid. The octree contains all instances present in the scene. The \ac{HiZ} pyramid is a set of 
 z-buffer mip-maps, with every map reducing in size relative to the previous mip-map. It is empty in the beginning 
-and is gradually filled after the depth buffer is populated. Each mip level of the \emph{z-pyramid} is computed by 
+and is gradually filled after the depth buffer is populated. Each mip level of the \ac{HiZ} pyramid is computed by 
 aggregating values from 4 texels (texture pixels) within the previous mip-map and writing the output value into one 
 texel of the new mip level. This way, both axes (u and v) are scaled to be half the length of the previous level. 
-The resulting texture resource then has the full resolution z-buffer as the highest resolution mip-map and a very 
-low resolution and small mip-map on the other end of the mip-level. An exemplary z-pyramid is shown in figure 
+The resulting texture resource then has the full-resolution z-buffer as the highest-resolution mip-map and a very 
+low-resolution and small mip-map on the other end of the mip chain. An exemplary \ac{HiZ} pyramid is shown in figure 
 \ref{fig:hiz-mip-chain}.\\
 
 \noindent
-In contrast to the classic generation of mip-maps, the computation of the values in the \emph{z-pyramid} works in a 
+In contrast to the classic generation of mip-maps, the computation of the values in the \ac{HiZ} pyramid works in a 
 very specific way. "[...] [E]ach z-value is the farthest z in the corresponding 2 \begin{math}\times\end{math} 2 window 
 of the adjacent finer level" \cite{AkenineMoeller2018}. This process is shown in Figure \ref{fig:hiz-value-computation}, 
 showing how the farthest value of each texel window is inserted into adjacent levels.\\
@@ -296,35 +297,35 @@ showing how the farthest value of each texel window is inserted into adjacent le
 \begin{figure}[!]
     \centering
     \includegraphics[width=200px]{images/graphics/hiz-buf-values.jpg}
-    \caption{The calculation of a \ac{HiZ} buffer computes the farthest value of each texel window, 
+    \caption{The calculation of a \ac{HiZ} pyramid computes the farthest value of each texel window, 
     resulting in a new texel value for adjacent mip levels \cite{AkenineMoeller2018}.}
     \label{fig:hiz-value-computation}
 \end{figure}
 
 \noindent
-A visibility test against this z-pyramid is computed as follows: The octree is traversed and each octree node 
+A visibility test against this \ac{HiZ} pyramid is computed as follows: The octree is traversed, and each octree node 
 is transformed into image space, essentially projecting the bounding volume of the node onto the view plane. Now, 
 the projected bounding volume overlaps a specific region of the view plane, which is then tested against the lowest 
-resolution z-pyramid texel group, containing this volume projection. The nearest z value of the bounding volume is 
+resolution \ac{HiZ} pyramid texel group, containing this volume projection. The nearest z value of the bounding volume is 
 compared to the texel group's farthest value entry. If the bounding volume's z happens to be farther than the 
 texel group value, it is consequently occluded. If the comparison yields the opposite result, the test "is continued 
-recursively down the z-pyramid until the [bounding volume] is found to be occluded, or until the bottom level of the 
-z-pyramid is reached, at which point the box is known to be visible" \cite{AkenineMoeller2018}. Visible octree nodes 
+recursively down the \ac{HiZ} pyramid until the [bounding volume] is found to be occluded, or until the bottom level of the 
+\ac{HiZ} pyramid is reached, at which point the box is known to be visible" \cite{AkenineMoeller2018}. Visible octree nodes 
 are then drawn to the depth buffer, meaning all the geometry contained within the node is drawn to the depth buffer 
 for testing against during the computation of the following octree nodes.\\
 
 \noindent
-This works because the \emph{z-pyramid} encodes the closest objects depth for each pixel, and, by hierarchically 
-aggregating the depth values, approximating the depth for larger and larger groups of pixels. Checking bouding boxes 
-against the lowest resolution mip-map in the \emph{z-pyramid} requires less samples than checking the same bouding 
-box against a higher resolution mip-map. Consequently, objects, which are relatively far behind a potential occluder 
+This works because the \ac{HiZ} pyramid encodes the closest object's depth for each pixel, and, by hierarchically 
+aggregating the depth values, approximating the depth for larger and larger groups of pixels. Checking bounding boxes 
+against the lowest resolution mip-map in the \ac{HiZ} pyramid requires fewer samples than checking the same bounding 
+box against a higher resolution mip-map. Consequently, objects that are relatively far behind a potential occluder 
 can be determined very efficiently. \\
 
 \noindent 
 As Akenine-Möller et al. \cite{AkenineMoeller2018} point out, this algorithm is not used in its original form. 
 Modern variations of this algorithm evolved from the work of Greene et al. \cite{Greene93} and are widely adopted in 
 modern real-time computer graphics. As will be shown next, the concept of an octree representation used for 
-hierarchical culling and a z-pyramid used as an occlusion representation (\cite{AkenineMoeller2018}) can be elegantly 
+hierarchical culling and a \ac{HiZ} pyramid used as an occlusion representation (\cite{AkenineMoeller2018}) can be elegantly 
 leveraged on the \ac{GPU} side for efficient occlusion culling.
 
 
@@ -336,22 +337,22 @@ leveraged on the \ac{GPU} side for efficient occlusion culling.
     \includegraphics[width=200px]{images/graphics/final-frame-ac-unity.jpg}
     \caption{The depth buffer (left) and the final back buffer (right) of \emph{Assassin's Creed Unity} (\emph{Ubisoft}, 2014 \cite{Ubisoft2014}). 
     The hand-picked \emph{best occluders} were already drawn to the depth buffer in a depth pre-pass.
-    While rendering all the geometry to the back buffer, each instance can be checked against the z-pyramid \cite{Kruskonja2022}.}
+    While rendering all the geometry to the back buffer, each instance can be checked against the \ac{HiZ} pyramid \cite{Kruskonja2022}.}
     \label{fig:depth-buffer-ac-unity}
 \end{figure}
 
 \noindent
 \emph{\ac{TPOC}} is an adaptation of the \ac{HZB} algorithm. One of the most renowned examples of this algorithm is 
 present in the 2014 title \emph{Assassin's Creed Unity} by \emph{Ubisoft} \cite{Ubisoft2014}. One year later, Ulrich 
-Haar and Sebastian Aaltonen presented their approach on SIGGRAPH 2015 \cite{Aaltonen2015}. Their implementation 
-inspired other developers like \emph{Epic Games} for \emph{Unreal Engine 5} to adopt similar techniques \cite{Karis2021}.
+Haar and Sebastian Aaltonen presented their approach at SIGGRAPH 2015 \cite{Aaltonen2015}. Their implementation 
+inspired other developers, like \emph{Epic Games} for \emph{Unreal Engine 5}, to adopt similar techniques \cite{Karis2021}. \\
 
 \noindent
-Some use cases are especially well suited for the application of occlusion culling, \emph{Assassin's Creed Unity}, for 
+Some use cases are especially well suited for the application of occlusion culling. \emph{Assassin's Creed Unity}, for 
 example, has a large open world in a city with many large buildings. A rather large amount of instances can therefore be 
 expected to be occluded by some of the buildings at any given moment. \emph{Assassin's Creed Unity's} \ac{TPOC} 
 implementation uses artist-picked \emph{best occluders} for \ac{HZB} computation. During runtime, the best occluders are 
-drawn to depth buffer in a dedicated depth pre-pass and then used as described in the next section. 
+drawn to the depth buffer in a dedicated depth pre-pass and then used as described in the next section. 
 The output of the depth buffer pre-pass is shown in Figure \ref{fig:depth-buffer-ac-unity}. Depth passes can be done 
 quite efficiently, especially if they only contain a handful of instances to draw. Additionally, because of the advances 
 in \ac{GPU}-driven rendering, the \ac{HiZ} pyramid can be computed by a \emph{compute shader}, which leverages the 
@@ -359,39 +360,39 @@ highly parallel computation capabilities of the \ac{GPU}. \\
 
 \noindent
 In contrast to the basic \ac{HZB}, this approach relies on the heavy use of \ac{GPU} computation and the 
-pre-determination of best occluders. This way, the scene doesn't have to be reversed in a front-to-back order 
-and not necessarily needs to incorporate an octree, as long as object bounds can be computed efficiently enough.
-Aaltonen et al. \cite{Aaltonen2015} also mention the addition of \emph{Depth Reprojection}, which is compatible 
-with \ac{TPOC}, to further optimize the occlusion culling technique.
+pre-determination of the best occluders. This way, the scene doesn't have to be reversed in a front-to-back order 
+and does not necessarily need to incorporate an octree, as long as object bounds can be computed efficiently enough.
+Aaltonen et al. \cite{Aaltonen2015} also mention the addition of depth reprojection, which is compatible with 
+\ac{TPOC}, to further optimize the occlusion culling technique.
 
 
 \paragraph*{Depth Reprojection} \label{subsubsec-depth-reprojection}
 
-\emph{Depth Reprojection} makes use of the temporal coherence of the z-buffer. The assumption is made that 
-between two consecutive frames most of the visible content remains the same. It is obvious that this will 
+\emph{Depth reprojection} makes use of the temporal coherence of the z-buffer. The assumption is made that 
+between two consecutive frames, most of the visible content remains the same. It is obvious that this will 
 hold true for the most part when the camera's rotation and position aren't changed in between frames. In 
 this case, the last frame's depth, color, and visibility information would remain nearly identical. The only 
 differences would be introduced by animation or physics simulation, which could move instances independently 
 from the camera movement. But even with the camera moving over frames, a large part of the scene - static 
 parts like buildings or terrain in particular - would retain a lot of its information. This means that there 
-will be a significant coherence in visibility between frames, which Depth Reprojection makes use of.\\
+will be a significant coherence in visibility between frames, which depth reprojection makes use of.\\
 
 \noindent
 The algorithm stores the last frame's depth information and "reprojects" it onto the new frame. In the best case, 
 most instances that were previously visible remain visible in this new frame, and instances that were invisible 
 in the previous frame remain invisible in the new frame as well. The new camera transformations and a 
-\emph{Velocity Vector Buffer} are used to calculate the delta relative to the previous frame and create an 
+\emph{velocity vector buffer} are used to calculate the delta relative to the previous frame and create an 
 approximation of the new depth buffer. Because the reprojected depth buffer is only an approximation, visibility 
-and depth calculations can be inprecise because the result is non-conservative. This means that the reprojection 
+and depth calculations can be imprecise because the result is non-conservative. This means that the reprojection 
 process sometimes fails to compute the correct depth values for objects, especially if they move relative to the 
-camera. Another problem occurs in use cases, where the camera moves very fast relative to the environment. In such 
-a case, the camera might cover a too large distance so that none of the visible instances in a given frame were 
-visible during the previous frame. \cite{Kruskonja2022} \\
+camera. Another problem occurs in use cases where the camera moves very fast relative to the environment. In such 
+a case, the camera might cover too large a distance so that none of the visible instances in a given frame were 
+visible during the previous frame \cite{Kruskonja2022}. \\
 
 
 \section{Mesh Shading}  \label{sec-mesh-shading}
 
-Mesh Shaders were first introduced to NVIDIA Turing \ac{GPU}s in 2018 as a part of "a new programmable 
+Mesh shaders were first introduced to NVIDIA Turing \ac{GPU}s in 2018 as a part of "a new programmable 
 geometric shading pipeline" and built upon the compute programming pipeline \cite{Kubisch2018}. 
 Therefore, they aim to optimize work by using the available hardware more efficiently. Compared to the 
 traditional vertex shading pipeline, mesh shading introduces a more holistic and parallel processing of 
@@ -410,72 +411,74 @@ feature \emph{Nanite} \cite{Karis2021}.\\
 \end{figure}
 
 \noindent
-The \emph{Mesh Shading Rendering Pipeline} is a rendering pipeline optimized for scenes with complicated 
-geometry. It shares the Rasterizer and the Pixel Shader stages with the Vertex Shading Pipeline but 
-introduces two new stages, which aim to replace the Vertex Shader, Geometry Shader, and Tesselation stage.
-The new stages are called \emph{Task Shader} (or \emph{Amplification Shader}) and \emph{Mesh Shader}. Both 
-are fully programmable and are based on the Compute Shaders architecture. Therefore, they are inherently different 
-from the traditional Vertex Shader stage, even though they both can be used for vertex transformations.
-Figure \ref{fig:mesh-rendering-pipeline} shows the pipeline stages and the order they are executed in. \\
+The \emph{mesh shading rendering pipeline} is a rendering pipeline optimized for scenes with complicated 
+geometry. It shares the rasterizer and the pixel shader stages with the vertex shading pipeline but 
+introduces two new stages, which aim to replace the vertex shader, geometry shader, and tesselation stage.
+The new stages are called \emph{task shader} (or \emph{amplification shader}) and \emph{mesh shader}. Both 
+are fully programmable and are based on the compute shaders architecture. Therefore, they are inherently 
+different from the traditional vertex shader stage, even though they both can be used for vertex 
+transformations. Figure \ref{fig:mesh-rendering-pipeline} shows the pipeline stages and the order they are 
+executed in. \\
 
 \noindent
-The Task Shader serves as a precomputational stage, which is optional and invokes the Mesh Shader.
-It can take any arbitrary data as input and operates on the provided data to produce output data, which is then 
-scheduled for further computation. Since both shaders are based on Compute Shaders, a threadgroup size can be 
-specified  and groupshared memory can be allocated. This allows for highly parallelized execution and optimized 
-memory usage. A key difference to the traditional pipeline is that the Task Shader can invoke other (Compute) shaders, 
-create new tasks, and dispatch none, one, or multiple Mesh Shader invocations. This makes the shader extremely flexible 
-and capable of providing the same results as the Geometry Shader does, but faster and more scalable. It is often used 
-for early culling, for efficient tesselation, or for \ac{LOD} decisions \cite{Kubisch2018}. The invocation of the 
-next stage is called using the \emph{DispatchMesh()} function, which invokes the Mesh Shader. \\
+The task shader serves as a precomputational stage, which is optional and invokes the mesh shader. It can 
+take any arbitrary data as input and can operate on the provided data to produce output data, which is then 
+scheduled for further computation. Since both shaders are based on compute shaders, a thread group size can 
+be specified, and group-shared memory can be allocated. This allows for highly parallelized execution and 
+optimized memory usage. A key difference to the traditional pipeline is that the Task Shader can invoke other 
+(compute) shaders, create new tasks, and dispatch none, one, or multiple mesh shader invocations. This makes 
+the shader extremely flexible and capable of providing the same results as the geometry shader does, but 
+faster and more scalable. It is often used for early culling, for efficient tessellation, or for \ac{LOD} 
+decisions \cite{Kubisch2018}. The invocation of the next stage is called using the \emph{DispatchMesh()} 
+function, which invokes the mesh shader. \\
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=300px]{images/graphics/bunny-meshlet.jpg}
-    \caption{The \emph{Stanford Bunny} mesh geometry split into Meshlets. Each Meshlet is represented by a single color, 
+    \caption{The \emph{Stanford Bunny} mesh geometry split into meshlets. Each meshlet is represented by a single color, 
     and consists of multiple triangles \cite{Oberberger2024}.}
     \label{fig:bunny-meshlet}
 \end{figure}
 
 \noindent
-The Mesh Shader output can be defined by the user and is usually configured to be a small patch consisting of a small 
-number of triangles, called \emph{Meshlet}, which is shown in Figure \ref{fig:bunny-meshlet}. This new approach 
+The mesh shader output can be defined by the user and is usually configured to be a small patch consisting of a small 
+number of triangles, called a \emph{meshlet}, which is shown in Figure \ref{fig:bunny-meshlet}. This new approach 
 to operating on vertices allows for a new interpretation of mesh data. The primitive topology is not anymore constrained 
 to triangles, triangle fans, and triangle strips but can be individually specified by the developers.
-Meshlets are computed by threadgroups, which usually fetch the mesh data from the given vertex and index buffers and 
+Meshlets are computed by thread groups, which usually fetch the mesh data from the given vertex and index buffers and 
 apply transformations and arbitrary operations. This new way of processing geometry is not only more efficient in many 
-cases and reduces the memory bandwidth, but also allows for per-Meshlet operations \cite{Kubisch2020}. This is a key 
+cases and reduces the memory bandwidth, but also allows for per-meshlet operations \cite{Kubisch2020}. This is a key 
 advantage, since the geometry of a complete mesh can now be processed in parallel and still be individually discarded 
-or post-processed. There are several other advantages over the traditional Vertex Shaded Pipeline, which will not be 
+or post-processed. There are several other advantages over the traditional vertex shader pipeline, which will not be 
 listed to the full degree. More details are provided in the blog post by NVIDIA \cite{Kubisch2020}.\\
 
 
 \subsection*{Meshlet Culling} \label{subsec-meshlet-culling}
 
-One major innovation that is enabled by the use of Mesh Shading is to cull on a per-primitive (per-meshlet) basis. 
-This allows for more granular culling of high density geometry even within whole meshes. Prior to the implementation 
+One major innovation that is enabled by the use of mesh shading is to cull on a per-primitive (per-meshlet) basis. 
+This allows for more granular culling of high-density geometry even within whole meshes. Prior to the implementation 
 of meshlets, culling usually was done on a per-mesh (also referred to as \emph{per-instance}) basis (or for backface 
 culling on a per-triangle basis), omitting whole meshes depending on their position in space or their visibility from 
 the point of view of the camera.\\
 
 \noindent
-Although the Mesh Shading Pipeline was first introduced in 2018, the idea of triangle clusters goes back even further.
-Aaltonen et al. \cite{Aaltonen2015} provide an overview over multiple cluster-related optimization techniques, implementing 
-a highly parallelized rendering pipeline before Mesh Shading became part of the official rendering \ac{API}s.
+Although the mesh shading pipeline was first introduced in 2018, the idea of triangle clusters goes back even further.
+Aaltonen et al. \cite{Aaltonen2015} provide an overview of multiple cluster-related optimization techniques, implementing 
+a highly parallelized rendering pipeline before mesh shading became part of the official rendering \ac{API}s.
 For their \ac{GPU} culling algorithms, they refer to the prior work of Hill \cite{Hill11} and Greene \cite{Greene93}, which 
 provides the basis for some of the implementation in this work's approach. Most of the culling algorithms discussed in chapter 
 \ref{sec-culling-techniques} can be adopted to use meshlet culling. The algorithms can usually be applied to triangle clusters 
 without the need of changing a lot of the algorithm. Bounding volumes can be calculated for meshlets, too, and meshlets do also 
 consist of triangles themselves. In this chapter, the basic culling algorithms are briefly revisited in order to show how they 
-can be adapted for the Mesh Shading pipeline.
+can be adapted for the mesh shading pipeline.
 
 
 \paragraph*{Meshlet Backface Culling} \label{subsubsec-meshlet-backface-culling}
 
 As shown in Chapter \ref{subsec-backface-culling}, there are backface culling algorithms, which can be applied to 
 triangle clusters as well. For instance, the normal cone approach by Shirmun et al. \cite{Shirmun1993} can be used 
-in the Mesh Shading pipeline as well. In fact, having hardware and software support for the computation of triangle 
-clusters provided by the Mesh Shading pipeline makes this approach even more efficient. Clusters are evaluated in 
+in the mesh shading pipeline as well. In fact, having hardware and software support for the computation of triangle 
+clusters provided by the mesh shading pipeline makes this approach even more efficient. Clusters are evaluated in 
 parallel, making a normal cone backface culling algorithm very fast. For static meshes, surface characteristics can 
 also be precomputed for fast access at runtime. [@TODO: Maybe remove because it is not really relevant to the content]
 
@@ -487,29 +490,29 @@ technique remains the same but is applied to triangle clusters (meshlets) rather
 implement this, meshlet bounding volumes need to be computed. The same principles apply to meshlet bounding volumes 
 as to instance bounding volumes, so spherical volumes are usually fast and cheap to calculate. If the meshlets are 
 pre-calculated, the bounding volumes can be precalculated as well, since they will not change over time. Then, frustum 
-culling is as simple as using any existing frustum culling algorithm (see \ref{subsec-view-frustum-culling}) and 
+culling is as simple as using any existing frustum culling algorithm (see Chapter \ref{subsec-view-frustum-culling}) and 
 applying it to the meshlets. \\
 
 \noindent
-Since this can be done in the Task Shader, the culling can be computed in parallel, and culled meshlets can 
+Since this can be done in the task shader, the culling can be computed in parallel, and culled meshlets can 
 be discarded early. This includes parts of single instances, which allows for even better optimization. In 
-the traditional Vertex Shading pipeline, instances had to be completely outside of the view frustum in order 
-to be culled. If an instance is partially visible in the Mesh Shading pipeline, the meshlets inside the frustum 
-can be drawn and the meshlets outside of the frustum can be discarded.
+the traditional vertex shading pipeline, instances had to be completely outside of the view frustum in order 
+to be culled. If an instance is partially visible in the mesh shading pipeline, the meshlets inside the frustum 
+can be drawn, and the meshlets outside of the frustum can be discarded.
 
 
 \paragraph*{Meshlet Occlusion Culling} \label{subsubsec-meshlet-occlusion-culling}
 
 Meshlet occlusion culling refers to the process of culling meshlets, which are occluded by any other meshlet, by a 
-group of meshlets or another instance. Aaltonen et al. \cite{Aaltonen2015} used what they call \emph{Cluster Culling} 
+group of meshlets or another instance. Aaltonen et al. \cite{Aaltonen2015} used what they call \emph{cluster culling} 
 in \emph{Assassin's Creed Unity} (\emph{Ubisoft} \cite{Ubisoft2014}, 2014). Meshlet occlusion culling can be 
 implemented in various ways, analogous to similar \ac{GPU}-based occlusion culling algorithms. Often, this implies 
 the use of a \ac{BVH} like an octree to make visibility checks easier. \ac{HZB} can also be applied to the new pipeline, 
-and meshlets can be checked for occlusion using the highly parallel Mesh Shading pipeline. Consequently, \ac{TPOC} 
+and meshlets can be checked for occlusion using the highly parallel mesh shading pipeline. Consequently, \ac{TPOC} 
 is also applied to individual meshlets, as seen in Alan Wake 2 (Remedy Entertainment \cite{Remedy2023}, 2023) or 
 \emph{Epic Games'} \emph{Unreal Engine 5} and \emph{Nanite} \cite{Karis2021}.\\
 
 \noindent
 It is assumed that this new way of culling single meshes can generate new innovation in the field of computer graphics.
-This is why the proposed approach is implemented using the Mesh Shading pipeline, which, when used carefully, is more 
-efficient than comparable methods like the use of Geometry Shaders or Instancing.
+This is why the proposed approach is implemented using the mesh shading pipeline, which, when used carefully, is more 
+efficient than comparable methods like the use of geometry shaders or instancing.
