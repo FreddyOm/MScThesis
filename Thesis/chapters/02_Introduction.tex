@@ -3,9 +3,9 @@
 Ever since the early days of computer graphics, both hardware and software have rapidly evolved
 alongside the creative and challenging use cases provided by developers, scientists, and others.
 Many technical increments relied on innovation, especially the advent of new capable hardware.
-One example is the \ac{GPU} itself, which is now considered the heart of modern graphics 
-processing and is widely used in fields like science, artificial intelligence, games, and pretty 
-much all graphics-related applications. \\
+One example is the \ac{GPU}, which is now considered the heart of modern graphics 
+processing and is widely used in fields like science, artificial intelligence, games, and almost  
+all graphics-related applications. \\
 
 \noindent
 The year 2024 marks the 25th anniversary of what is considered to be the first consumer grade PC 
@@ -28,8 +28,8 @@ consumer graphics" \cite{Singer2023}. Dedicated and affordable \ac{GPU}s for con
 their large breakthrough during the 1990s. With the introduction of the \emph{NVIDIA GeForce 256}, 
 efficient transformations and lighting computations found their way into private \ac{PC}s 
 \cite{Fenno2024}. Back then, this new hardware created a multitude of new possibilities. Some of the 
-major innovations featured \emph{cube mapping}, \emph{per-pixel light calculations}, and a 
-\emph{standardized vertex buffer} \cite{NVIDIA1999, Battaglia2024}. [@TODO: Re-check vertex buffer] \\
+major innovations featured \emph{cube mapping} and \emph{per-pixel light calculations} 
+\cite{NVIDIA1999, Battaglia2024}.\\
 
 \noindent
 Although it was mostly used for graphics processing - hence the name - nowadays, \ac{GPU}s are used 
@@ -38,7 +38,7 @@ have tremendously increased. Today, a \ac{GPU} is often referred to as a \ac{GPG
 evolution towards a multi-purpose tool. \\
 
 \noindent
-Nevertheless, \ac{GPU} architecture is still under a strong influence of the entertainment 
+Nevertheless, \ac{GPU} architecture is still strongly influenced by the entertainment 
 industry, first and foremost the games industry. Some of the latest changes to \ac{GPU} 
 hardware and \ac{API} design correlate to the ongoing demand for higher output resolutions, 
 higher geometric density, and additionaly technology for \emph{Deep Learning} algorithms. 
@@ -50,7 +50,6 @@ the past decades, and especially the last years, is given.
 
 
 \section{Evolution of Real-Time-Rendering} \label{sec-evolution-of-real-time-rendering}
-[@TODO: double check games]
 
 \begin{figure}[h]
     \centering
@@ -67,10 +66,10 @@ visual fidelity. Games needed to get bigger, more photorealistic, and provide mo
 geometry. Increasing the amount of triangles rendered ultimately led to worse runtime 
 performance. The advent of a dedicated, massively parallel chip to perform a large amount of 
 operations introduced a solution for this problem. Over the years, more and more stages of the 
-rendering pipeline were offloaded to the \ac{GPU}, which in turn resulted in a lot of new effects, 
-games with higher triangle density and new lighting technology. As mentioned before, the \emph{NVIDIA 
-GeForce 256} introduced cube mapping to the pipeline featuring real-time reflections, which is 
-shown in Figure \ref{fig:bubble-reflection-demo} \cite{Battaglia2024}.
+rendering pipeline were offloaded to the \ac{GPU}, which in turn resulted in a lot of new visual 
+effects, games with higher triangle density, new lighting technology, and cube mapping, which 
+was introduced to the pipeline featuring real-time reflections shown in  Figure 
+\ref{fig:bubble-reflection-demo} \cite{Battaglia2024}.
 
 
 \subsection*{Rendering Pipeline} \label{subsec-rendering-pipeline}
@@ -79,8 +78,8 @@ The standardization of the graphics hardware, as pioneered by \emph{NVIDIA}, in 
 graphics \ac{API}s like \emph{Direct3D} or \emph{OpenGL} kick-started huge graphical improvements in 
 games and computer graphics. The heavily parallelized transformations allowed for a lot more triangles 
 in games, and the hardware-accelerated lighting computations made for even more realistic lighting 
-throughout the rendered scenes. One significant advantage: The \ac{GPU} could operate on a large amount 
-of data while not stalling the \ac{CPU} \cite{Fenno2024}.\\
+throughout the rendered scenes. One significant advantage that the \ac{GPU} offered was that it could 
+operate on a large amount of data, while not stalling the \ac{CPU} \cite{Fenno2024}.\\
 
 \noindent
 The new rendering pipeline was to be seen in a lot of games, some of the first being \emph{Epic Games'} 
@@ -88,7 +87,8 @@ The new rendering pipeline was to be seen in a lot of games, some of the first b
 Quake3Arena}. \emph{Microsoft's} multimedia \ac{API} \emph{DirectX 7} added support for the new \ac{TL} 
 features of \ac{GPU}s. During the following years, more and more features were added, slowly evolving the 
 standard towards the "modern" rendering pipeline that is used nowadays. Between the years 1999 and 2009,
-20 new minor versions of \emph{DirectX} were released \cite{WikiDirectX}.
+20 new minor versions of \emph{DirectX} were released, constantly updating the \ac{API} and adding new 
+features \cite{WikiDirectX}.
 
 \begin{figure}[h]
     \centering
@@ -124,10 +124,10 @@ the \ac{GPU} instead of sequential computations by the \ac{CPU}. Over the years,
 \emph{Geometry Shader} stage were added, and the stages were expanded to be programmable - or at least configurable. \\
 
 \noindent
-Today, this is still considered the "standard rendering pipeline", although current advances in hardware and software 
-introduced additions to the pipeline or even offered replacement technology for computing three-dimensional data.
-Nevertheless, these new innovations increase the programmability and customization capabilities of the pipeline,   
-following a trend that began decades ago.
+Today, these stages are still considered the "standard rendering pipeline", although current advances in hardware 
+and software introduced additions to the pipeline or even offered replacement technology for computing 
+three-dimensional data. Nevertheless, these new innovations increase the programmability and customization capabilities 
+of the pipeline, following a trend that began decades ago.
 
 
 \subsection*{Deferred Shading} \label{subsec-deferred-rendering}
@@ -178,6 +178,7 @@ still used today for state-of-the-art game development. Dispatching work for the
 data layouts for most efficient computation has contributed to \ac{GPUDR} to become one of the latest trends in real-time 
 rendering.
 
+
 \subsection*{GPU Driven Rendering}
 
 \begin{figure}[h]
@@ -188,16 +189,16 @@ rendering.
     \label{fig:assassins-creed-unity-gameplay}
 \end{figure}
 
-\noindent [@TODO: Sources]
 Over a decade after the first \ac{GPU} was introduced, hardware acceleration was the de facto standard in 
 computer graphics, and the rendering pipeline got more and more loaded with features, innovations, and data. 
 This led to a new bottleneck: the memory bandwith between the \ac{CPU} and \ac{GPU}. Soon, a new trend was 
 developed: \emph{\ac{GPUDR}}. The goal of \ac{GPUDR} is to minimize bandwidth between \ac{CPU} and \ac{GPU}. 
 An ideal \ac{GPU} driven application would only update the camera-related data (view and projection matrices) 
 within a frame. All computations would be issued by the \ac{GPU} itself, potentially leading to new computations 
-issued directly on the \ac{GPU}. This way, no synchronization between \ac{CPU} and \ac{GPU} is necessary, and the 
-complete scene can be rendered in a single \ac{CPU} draw call. However, for this to work, data has to be laid out 
-in a \ac{GPU}-friendly way, representing data relationships in a way that can be processed by shaders efficiently. \\
+being issued directly on the \ac{GPU}. This way, no synchronization between \ac{CPU} and \ac{GPU} is necessary, 
+and the complete scene can be rendered in a single \ac{CPU} instruction. However, for this to work, data has to 
+be laid out in a \ac{GPU}-friendly way, representing data relationships in a way that can be processed 
+efficiently by shaders \cite{VKGuide2020}. \\
 
 \noindent
 This trend gained attention with the rise of the \ac{GPGPU} and the better support for the more generalized 
@@ -247,15 +248,19 @@ over the years are visible in the latest technology. But there are still plenty 
 not yet living up to their full potential, considering modern hardware and software solutions.\\
 
 \noindent
-One of those use cases is \emph{voxel rendering}, i.e. the use of primitive geometry to provide a 
+One of those use cases is \emph{voxel rendering}, i.e., the use of primitive geometry to provide a 
 volumetric description of a three-dimensional scene. This technique is well known for using 
 cubical voxels (\emph{volumetric pixels}), which is the form of voxel rendering this work is 
-focusing on. Although there are ongoing efforts to improve voxel rendering performance, there are 
+focusing on. Although there are already ongoing efforts to improve voxel rendering performance, there are 
 reasons to believe that new innovations can be applied to this field of computer graphics. For years, 
 voxel rendering has been using \ac{CPU} and \ac{GPU} optimization techniques in order to minimize 
 the data computed by the \ac{GPU}. Many of these techniques refer to culling triangles or whole voxels. 
 \ac{CPU} algorithms can make use of the regularity of the grid and reduce the amount of triangles sent 
-over to the \ac{GPU}. [@TODO: Add sources for gpu acceleration in voxel rendering and write a bit more] \\
+over to the \ac{GPU}. \emph{Minecraft} (Mojang \cite{Mojang2024}, 2011) for example used hardware 
+occlusion queries in order to resolve visibility of chunks, especially for caves located "under" the 
+terrain. While this technique can already make use of \ac{GPU} hardware, it still needs to write back 
+query results to \ac{CPU} memory, which makes this technique not ideal for use in higher resolution 
+scenes \cite{TommosBlog2014}. \\
 
 \noindent
 This poses the question, if advanced culling techniques using modern, \ac{GPU} driven techniques can 
@@ -263,14 +268,19 @@ improve voxel rendering. An ideal culling would only draw visible voxels and ign
 not contributing to the visible and gameplay relevant scene. Therefore, an initial idea involved 
 the culling of individual voxels for large three dimensional scenes. The use of the new mesh shading 
 pipeline in combination with efficient culling could drastically improve frame times. However, as will be 
-pointed out in Chapter \ref{subsubsec-two-pass-occlusion-culling}, for current occlusion culling 
-algorithms to work, objects of different sizes are used to cull smaller instances or even primitives.
-Since voxels are always of the same size, this algorithm cannot be applied as is. The proposed approach 
-relies on preprocessing data and applying approximations to the scene layout, so a variation of a 
-common occlusion culling algorithm can be applied. \\
+pointed out in Chapter \ref{subsubsec-two-pass-occlusion-culling}, modern occlusion culling algorithms 
+often make use of depth buffer information and use objects of different sizes to cull smaller instances 
+or even primitives. Since voxels are always of the same size, this algorithm cannot be applied as is. 
+The proposed approach relies on preprocessing data and applying approximations to the scene layout, 
+so a variation of a common occlusion culling algorithm can be applied. \\
 
 \noindent
-In the next Chapter \ref{cpt-related-work} related work is discussed before an in-depth technical foundation 
+The proposed approach additionally aims to maintain runtime interactibility. Some of the related approaches 
+use a predetermined set of objects for visibility testing, which is not viable in a voxel rendering pipeline, 
+since often such voxel scenes allow runtime manipulation of the environment or simulate physical interactions. 
+
+\noindent
+In Chapter \ref{cpt-related-work} related work is discussed before an in-depth technical foundation 
 is laid out in Chapter \ref{cpt-technical-background}. Subsequently, the actual implementation is discussed 
 in detail in Chapter \ref{cpt-implementation}, which is followed by an experiment in Chapter \ref{cpt-experiment} 
 that aims to evaluate the differences between two culling approaches within the pipeline. With the use of the data, 

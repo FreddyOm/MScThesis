@@ -5,10 +5,21 @@
 \chapter*{Kurzfassung}
 \addcontentsline{toc}{chapter}{Kurzfassung}
 
-Deutsche Kurzfassung hier.
+Der Hierarchical Z-Buffering Algorithmus hat innerhalb der letzten Jahre an Popularität gewonnen, 
+da er verdeckte Geometrie mit Hilfe eines GPU-basierten Ansatzes effizient verwerfen kann. Dieser 
+Algorithmus war für voxelbasiertes volumetrisches Rendering in seiner ursprünglichen Form nicht 
+verfügbar. In dieser Arbeit wird ein GPU-basierter Ansatz für Hierarchical Z-Buffering vorgestellt, 
+der in voxelbasierten volumetrischen Szenen verwendet werden kann, indem das Volumen der Szene durch 
+größere Geometrie approximiert wird. Der Ansatz verwendet einen Octree, um Voxeldaten in Bezug auf 
+ihre räumlichen Eigenschaften effizient zu verarbeiten, und ersetzt volle Octree-Nodes durch größere 
+Geometrie für eine schnelle Berechnung des Hierarchical Z-Buffering. Dies ermöglicht nicht nur die 
+Anwendung von Hierarchical Z-Buffering in dynamischen Voxelszenen, sondern führt auch zu einer 
+Leistungssteigerung im Vergleich zu einer Rendering-Pipeline ohne Occlusion Culling. Diese Arbeit 
+zeigt, dass die Verwendung der modernen Mesh-Shading-Pipeline die Berechnungen verbessert und zu 
+einer noch besseren Culling-Effizienz und einer gesteigerten Gesamtleistung führt.
 
 \vfill
-\noindent\textbf{Stichwörter:} Mesh Shading, Real-Time Rendering, Voxel Graphics
+\noindent\textbf{Stichwörter:} Mesh Shading, Real-Time Rendering, Voxel Graphics, Occlusion Culling
 \vfill
 \end{otherlanguage}
 % Then continue with the english one.
@@ -16,7 +27,7 @@ Deutsche Kurzfassung hier.
 \chapter*{Abstract}
 \addcontentsline{toc}{chapter}{Abstract}
 
-The hierarchical z-buffering algorithm has recently gained popularity due to of its ability to 
+The hierarchical z-buffering algorithm has recently gained popularity due to its ability to 
 efficiently cull occluded geometry using a GPU-driven approach. This algorithm has not been 
 available in its original form for voxel-based volumetric rendering. Here, a GPU-driven 
 approach to hierarchical z-buffering is presented, for use in voxel-based volumetric scenes 
@@ -29,6 +40,6 @@ culling. This work shows that the use of the modern mesh shading pipeline improv
 and leads to even better culling efficiency and overall performance.
 
 \vfill
-\noindent\textbf{Keywords:} Mesh Shading, Real-Time Rendering, Voxel Graphics
+\noindent\textbf{Keywords:} mesh shading, real-time rendering, voxel graphics, occlusion culling
 \vfill
 \end{otherlanguage}

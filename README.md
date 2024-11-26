@@ -11,7 +11,7 @@ The thesis LaTeX project for the master's thesis "Optimizing Voxel Rendering usi
 pipeline discussion and in depth data visualization.
 - [x] Citation okay?
 - [x] Check title. Is it fitting? What is the second pass? If it is reprojection, then rename!!
-- [x] Kolloquium, Paper & Thesis -> Koll. Nach Abgabe 1h (~40-45 Präsi mit Live Demo); Paper zur gleichen Zeit wie MA
+- [x] Kolloquium, Paper & Thesis -> Koll. Nach Abgabe 1h (~40-45 Präsi mit Live Demo); 
 - [x] Games as related work?
 - [x] Try implementing dynamic build up of models so the dynamic part can be shown here!
 - [x] How to structure plots (Systems, per octree vs meshlet oc, models, scene sizes, ...)
@@ -22,9 +22,11 @@ pipeline discussion and in depth data visualization.
 - [x] Shader invocation limit at 65536 -> Multiple Batches? -> Not a problem after occlusion culling? -> Multiple passes?
 
 
-## TODO: 
-- [x] Measure CPU and GPU times for non-oc pipeline without depth prepass
-- [x] Measure Best Occluder selecting times
+## TODO Thesis: 
+- [] Incorporate latest feedback
+- [x] Add nocull overdraw for torus
+- [] Add mew measurements into thesis (Best occluder creation)
+- [] Fix capitalization of words
 
 ## Kolloquium
 
