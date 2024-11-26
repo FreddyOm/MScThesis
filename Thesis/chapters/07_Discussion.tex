@@ -38,7 +38,7 @@ implement. \\
 \noindent
 The \ac{CPU} times were found to be rather static, although both testing setups were not significantly reliant 
 on \ac{CPU} computations due to their \ac{GPU}-driven nature. However, the \ac{GPU} measurements were significantly 
-in favor of the per-meshlet occlusion culling configuration, which overall increased performance by $29.86\%$ on 
+in favor of the \ac{PMOC} configuration, which overall increased performance by $29.86\%$ on 
 average. \\
 
 \noindent
@@ -189,7 +189,7 @@ there is a more efficient way to computing the voxels using the Mesh Shading pie
 
 \noindent
 As mentioned before, a major limitation is the overdraw within the pipeline. Although it could be shown that the 
-computation time can be reduced compared to the per-octree node occlusion culling, the maximum overdraw is still 
+computation time can be reduced compared to the \ac{PONOC}, the maximum overdraw is still 
 very high. This is due to the best occluders which are not able to cull all occluded voxels but will rather cull 
 most of the occluded voxels. It is up to further inspection if the amount of overdraw is bearable for a given use 
 case, or if it is too much overdraw. \\
