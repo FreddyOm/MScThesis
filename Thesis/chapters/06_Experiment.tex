@@ -15,8 +15,8 @@ different models provide additional insights into why the computation times scal
 complexity of the scene refers to the scaling. \\
 
 \noindent
-In the experiment, the two approaches \emph{per-octree node occlusion culling} and 
-\emph{per-meshlet occlusion culling} were compared, both in terms of how many voxels could be 
+In the experiment, the two approaches \emph{\ac{PONOC}} and 
+\emph{\ac{PMOC}} were compared, both in terms of how many voxels could be 
 culled and in terms of the respective overhead and the performance gains. \\
 
 \noindent
@@ -35,7 +35,7 @@ Unfortunately, comparing the occlusion culling implementation to an alternative 
 scope of this work, so efforts were made to evaluate the pipeline and its performance from a conceptual point of 
 view and to compare it to the plain pipeline, without any occlusion culling at all. This includes two different 
 versions of occlusion culling, one based on culling octree nodes, as it can be implemented without the use of the 
-Mesh Shading pipeline. The other one is based on per-meshlet occlusion culling, which makes use of the more parallel 
+Mesh Shading pipeline. The other one is based on \ac{PMOC}, which makes use of the more parallel 
 computation capabilities of the \ac{GPU}. \\
 
 \noindent [@TODO: Check if this is still true] [@TODO: Parts of this are redundant. Rewrite and restructure to be more like the paper!]
@@ -279,14 +279,14 @@ no best occluders are expected.
 
 \noindent
 Figure \ref{plt:lucy-256-culling-culling-results} shows the amount of visible voxels and visible octree 
-nodes for both the per-octree node occlusion culling (upper graph) and the per-meshlet occlusion culling 
+nodes for both the \ac{PONOC} (upper graph) and the \ac{PMOC} 
 (lower graph) configuration. \\
 
 \noindent [@TODO: Fix plot color references]
-The average amount of visible voxels was \emph{140,842} for per-octree occlusion culling, which is marked 
-as the blue dotted line, and \emph{84,082} for per-meshlet occlusion culling, marked in red. The average 
-amount of visible octree nodes was \emph{3,460} for per-octree occlusion culling, which is marked as the 
-blue dotted line, and \emph{2,483} for per-meshlet occlusion culling, which is marked as the red dotted 
+The average amount of visible voxels was \emph{140,842} for \ac{PONOC}, which is marked 
+as the blue dotted line, and \emph{84,082} for \ac{PMOC}, marked in red. The average 
+amount of visible octree nodes was \emph{3,460} for \ac{PONOC}, which is marked as the 
+blue dotted line, and \emph{2,483} for \ac{PMOC}, which is marked as the red dotted 
 line. \\
 
 \noindent
@@ -378,7 +378,7 @@ completely happens on the \ac{GPU} end of the pipeline.
 
 \subsubsection*{GPU Performance Results} \label{subsubsec-gpu-performance-results-lucy}
 
-On the \ac{GPU}, the per-meshlet occlusion culling turned out to be faster in computation. As the occlusion 
+On the \ac{GPU}, the \ac{PMOC} turned out to be faster in computation. As the occlusion 
 culling algorithm intended, the time spent drawing the meshes could be reduced by $30\%$ on average for this 
 particular model.
 
@@ -478,10 +478,10 @@ copying the depth buffer and computing the mip maps.
 \end{figure}
 
 \noindent
-Figure \ref{fig:lucy-overdraw} shows that the per-octree occlusion culling had more 
-overdrawn pixels than the per-meshlet occlusion culling configuration. While the 
-per-octree occlusion culling resulted in a maximum overdraw of 38 draws per pixel, 
-the per-meshlet occlusion culling was able to reduce this to a maximum of 27 draws.
+Figure \ref{fig:lucy-overdraw} shows that the \ac{PONOC} had more 
+overdrawn pixels than the \ac{PMOC} configuration. While the 
+\ac{PONOC} resulted in a maximum overdraw of 38 draws per pixel, 
+the \ac{PMOC} was able to reduce this to a maximum of 27 draws.
 The comparison measurement without culling applied resulted in a maximum of 78 draws. 
 The side view featured only a maximum of 7 draws per pixel in both configurations.
 
@@ -557,17 +557,17 @@ approximations.
 \noindent
 Similar to the first model, the \emph{Stanford Bunny} also discarded a significant amount of 
 voxels in both of the applied culling configurations. The average culling ratio was $88.6\%$ 
-for the per-octree occlusion culling and $94.6\%$ for the per-meshlet culling. This immense 
+for the \ac{PONOC} and $94.6\%$ for the per-meshlet culling. This immense 
 amount of occlusion was due to the already large amount of \emph{3,379,738} total voxels in the 
 mesh and the large volume of the model, which provided a good basis for the generation of the 
 best occluders. \\
 
 
 \noindent
-The average amount of visible voxels was \emph{385,210} for per-octree occlusion culling, which is 
-marked as the blue dotted line, and \emph{180,266} for per-meshlet occlusion culling, marked in red.
-The average amount of visible octree nodes was \emph{8,519} for per-octree occlusion culling, which 
-is marked as the blue dotted line, and \emph{5,415} for per-meshlet occlusion culling, which is marked
+The average amount of visible voxels was \emph{385,210} for \ac{PONOC}, which is 
+marked as the blue dotted line, and \emph{180,266} for \ac{PMOC}, marked in red.
+The average amount of visible octree nodes was \emph{8,519} for \ac{PONOC}, which 
+is marked as the blue dotted line, and \emph{5,415} for \ac{PMOC}, which is marked
 as the red dotted line.
 
 \subsubsection*{CPU Performance Results} \label{subsubsec-cpu-performance-results-bunny}
@@ -624,7 +624,7 @@ as the red dotted line.
 \noindent
 Like with the \emph{Lucy} model, the \emph{Bunny} showed no significant difference in \ac{CPU} computation time. 
 In Figure \ref{plt:bunny-256-culling-cpu-time}, the second graph shows a small amount of frames between frames 280 
-and 380, which seem to have been faster in execution using the per-meshlet occlusion culling. However, it is not 
+and 380, which seem to have been faster in execution using the \ac{PMOC}. However, it is not 
 obvious why there would be any difference here. Similarly, the first graph also shows small differences that are 
 not considered significant enough to make any assumptions about them. Therefore, for this particular model, the 
 \ac{CPU} compute times are also considered to be static between both configurations.
@@ -689,7 +689,7 @@ not considered significant enough to make any assumptions about them. Therefore,
 \noindent
 The \ac{GPU} performance shows a significant difference when comparing both configurations. The per-meshlet 
 occlusion culling was able to decrease the time spent on \emph{DispatchMesh} by $36.1\%$ on average as compared 
-to the per-octree node occlusion culling. On closer inspection, the depth prepass showed a minor difference 
+to the \ac{PONOC}. On closer inspection, the depth prepass showed a minor difference 
 in runtime, similar to the prepass of the \emph{Lucy} model. The difference in runtime is 1.6 microseconds, 
 mostly due to differences in \ac{HiZ} dispatch and depth buffer copy. \\
 
@@ -735,8 +735,8 @@ best occluders was 5.1 times as high as the amount of best occluders in the \emp
 
 \noindent
 Figure \ref{fig:bunny-overdraw} shows the overdraw of pixels from two different camera angles.
-Both rows show that the per-octree occlusion culling had more overdrawn pixels than the 
-per-meshlet occlusion culling configuration. The difference is in favor of per-meshlet 
+Both rows show that the \ac{PONOC} had more overdrawn pixels than the 
+\ac{PMOC} configuration. The difference is in favor of per-meshlet 
 culling, which had only a maximum of 43 draws to the same pixels as compared to 60 draws. Without 
 the culling activated, the maximum amount of overdraw was measured to be 111 draws to the same pixel.
 The camera angle clearly made a difference here, as the top view increased the amount of 
@@ -821,7 +821,7 @@ shape and therefore has a lot of partially filled octree nodes representing its 
 \noindent
 The \emph{Torus} model varied in culling efficiency depending on the view angle. As expected, the hole 
 in the mesh turned out to be inefficient for the culling algorithm. When considering the occlusion ratio, 
-both the per-octree occlusion culling and the per-meshlet occlusion culling performed significantly better 
+both the \ac{PONOC} and the \ac{PMOC} performed significantly better 
 when the torus was viewed from an angle, so the hole in the middle was occluded. The variation between 
 the maximum amount of visible voxels and the minimum amount of voxels was the highest for the \emph{Torus} 
 model, which is remarkable compared to the other models. Using this particular experimental setup, the 
@@ -891,8 +891,8 @@ for a given model.
 
 The \ac{GPU} performance for the \emph{Torus} model was considerably better using the per-meshlet 
 occlusion culling approach. While the depth prepass differed by only 0.54 microseconds in favor of the 
-per-octree node occlusion culling, the complete time spent on the \ac{GPU} was decreased by $36.8\%$ 
-using the per-meshlet occlusion culling configuration as shown in Figure \ref{fig:torus-gpu-results}.
+\ac{PONOC}, the complete time spent on the \ac{GPU} was decreased by $36.8\%$ 
+using the \ac{PMOC} configuration as shown in Figure \ref{fig:torus-gpu-results}.
 
 \begin{figure}[!htb]              % Torus GPU times
   \centering
@@ -986,7 +986,7 @@ using the per-meshlet occlusion culling configuration as shown in Figure \ref{fi
 
 \noindent
 Figure \ref{fig:torus-overdraw} shows the overdraw for the \emph{Torus} model from two 
-camera perspectives. Clearly, the per-meshlet occlusion culling configuration resulted 
+camera perspectives. Clearly, the \ac{PMOC} configuration resulted 
 in less overdraw, especially when viewed from the sides. As the second row of figure 
 \ref{fig:torus-overdraw} shows, the edges were particularly overdrawn because of the 
 missing depth information. Without culling, the maximum amount of overdraw was measured 
@@ -1070,10 +1070,10 @@ configuration. It was essential that the model in question had a minimal volume 
 be found and computed. \\
 
 \noindent
-The average amount of visible voxels was \emph{396,228} for per-octree occlusion culling, which is marked as the 
-blue dotted line, and \emph{180,440} for per-meshlet occlusion culling, marked in red. The average amount of 
-visible octree nodes was \emph{8,207} for per-octree occlusion culling, which is marked as the blue dotted line, 
-and \emph{3,832} for per-meshlet occlusion culling, which is marked as the red dotted line.
+The average amount of visible voxels was \emph{396,228} for \ac{PONOC}, which is marked as the 
+blue dotted line, and \emph{180,440} for \ac{PMOC}, marked in red. The average amount of 
+visible octree nodes was \emph{8,207} for \ac{PONOC}, which is marked as the blue dotted line, 
+and \emph{3,832} for \ac{PMOC}, which is marked as the red dotted line.
 
 \subsubsection*{CPU Performance Results} \label{subsubsec-cpu-performance-results-terrain}
 
@@ -1266,7 +1266,7 @@ The results show that the gain in performance wasn't as good for this model as f
 First of all, the number of best occluders was lower than that of the \emph{Terrain} model, even though the 
 \emph{Terrain} model had fewer total voxels than the \emph{Hairball} model. This characteristic led to 
 a lower probability of octree nodes or meshlets being culled. When looking at the data, the amount of 
-voxels being culled on average was $57.8\%$ for per-octree occlusion culling and $64.8\%$ for per-meshlet 
+voxels being culled on average was $57.8\%$ for \ac{PONOC} and $64.8\%$ for per-meshlet 
 occlusion culling, which represented a rather low increase relative to the other models. 
 
 % -------------------------------------- HAIRBALL 256 -------------------------------------
@@ -1380,7 +1380,7 @@ both configurations.
 \subsubsection*{GPU Performance Results} \label{subsubsec-gpu-performance-results-hairball}
 
 Figure \ref{fig:hairball-gpu-times} shows the difference in \ac{GPU} timing, which was in favor of the 
-per-meshlet occlusion culling. Although the per-meshlet culling configuration still accelerated the \ac{GPU} 
+\ac{PMOC}. Although the per-meshlet culling configuration still accelerated the \ac{GPU} 
 operations, the differences got smaller compared to the other models, yielding only a $14.9\%$ decrease in 
 computation time on average. The depth prepass diverged by only 0.75 microseconds in favor of the per-meshlet 
 occlusion culling when comparing the average values.  
@@ -1482,7 +1482,7 @@ which use case the overhead is greater than the time saving.
 
 \noindent
 Figure \ref{fig:hairball-overdraw} shows that the overdraw was similar for both configurations, 
-but still in favor of per-meshlet occlusion culling. The last column featuring the difference 
+but still in favor of \ac{PMOC}. The last column featuring the difference 
 values between both configurations shows this particularly well. There is only a small difference 
 between both measurements, which is also reflected in the maximum amount of overdraw. The 
 per-octree node culling resulted in a maximum of 54 draws to one pixel, and the per-meshlet 
@@ -1528,8 +1528,8 @@ an overview of all models and some of the most interesting data points.
     
   \end{tabular}
   \caption{An overview comparing the most significant measures for all models. 
-  The table shows results for the per-octree node occlusion culling configuration and below for the 
-  per-meshlet occlusion culling configuration.}
+  The table shows results for the \ac{PONOC} configuration and below for the 
+  \ac{PMOC} configuration.}
   \label{tbl:culling-result-overview}
 \end{table}
   
@@ -1542,7 +1542,7 @@ octree nodes present in the scene. This measure strongly correlates with the ave
 coxels and octree nodes. \\
 
 \noindent
-The table also shows the same aspects for the per-meshlet occlusion culling configuration. It shows that the 
+The table also shows the same aspects for the \ac{PMOC} configuration. It shows that the 
 occlusion culling algorithm was able to cull a greater amount of voxels when using the per-meshlet culling 
 configuration. Additionally, across all models, a higher amount of best occluders consequently resulted in a 
 higher culling ratio, and the average node population correlated with the average voxel culling ratio.

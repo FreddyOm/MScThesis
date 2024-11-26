@@ -28,7 +28,7 @@ pipeline discussion and in depth data visualization.
 - [] Add mew measurements into thesis (Best occluder creation)
 - [] Fix capitalization of words
 - [] Write Conclusion
-- [] Move model descriptions down to individual model results
+- [x] Move model descriptions down to individual model results
 
 ## Kolloquium
 
