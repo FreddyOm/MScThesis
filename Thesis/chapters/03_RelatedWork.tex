@@ -12,11 +12,12 @@ are revisited and discussed in more detail in Chapter \ref{cpt-technical-backgro
 
 There are several ways to represent volumetric data. The simplest version includes a regular 
 grid with grid indices representing unique positions within the grid. The presence of a voxel 
-can be encoded as a binary value, which results in an efficient way of storing volumetric occupation.
-However, empty spaces are stored in the same resolution as crowded spaces, which led to the 
-introduction of octrees for volumetric voxel representations. The term \ac{SVO} relates to an 
-octree that does not store any child data for empty sub-branches of the hierarchy. Most modern 
-implementations rely on some of these basic encodings of voxel data. 
+(\emph{voxel} = \emph{volumetric pixel}) can be encoded as a binary value, which results in 
+an efficient way of storing volumetric occupation. However, empty spaces are stored in the 
+same resolution as crowded spaces, which led to the introduction of octrees for volumetric 
+voxel representations. The term \ac{SVO} relates to an octree that does not store any child 
+data for empty sub-branches of the hierarchy. Most modern implementations rely on some of 
+these basic encodings of voxel data. 
 
 
 \subsection*{Efficient Sparse Voxel Octrees}

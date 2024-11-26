@@ -23,10 +23,11 @@ pipeline discussion and in depth data visualization.
 
 
 ## TODO Thesis: 
-- [] Incorporate latest feedback
+- [x] Incorporate latest feedback
 - [x] Add nocull overdraw for torus
 - [] Add mew measurements into thesis (Best occluder creation)
 - [] Fix capitalization of words
+- [] Write Conclusion
 
 ## Kolloquium
 
