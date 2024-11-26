@@ -1,12 +1,11 @@
 \chapter{Related Work} \label{cpt-related-work}
 
-The proposed approach is an aggregation of a lot of ideas and implementations that have been 
+The proposed approach is an aggregation of various ideas and implementations that have been 
 around for quite some time. It is of great interest to explore related work, which can provide 
 context for use cases and highlight additional techniques that can be adopted additionally. 
-This chapter highlights related work addressing \emph{Voxel Rendering}, \emph{Occlusion Culling}, 
-and \emph{Mesh Shading}, on which the proposed implementation is based. The most important of 
-the highlighted concepts are revisited and discussed in more detail in Chapter 
-\ref{cpt-technical-background}. 
+This chapter focuses on related work addressing \emph{voxel rendering}, \emph{occlusion culling}, 
+and \emph{mesh shading}, on which the proposed implementation is based. The most relevant concepts 
+are revisited and discussed in more detail in Chapter \ref{cpt-technical-background}. 
 
 
 \section{Voxel Representation} \label{sec-voxel-representation}
@@ -34,11 +33,11 @@ processing times. While Laine et al. use contours for their approximations, this
 to approximate volumes. \\
 
 \noindent
-However, Laine et al. use their implementation for raytraced voxel rendering and the approximations are targeting 
-model boundaries only instead of volumes. Therefore, the approximation using contours is not aiming for the same 
-optimization than this work's approximation does. While the first one refers to optimizing ray casting, the latter 
-refers to optimizing a depth prepass computation.. Nevertheless, both approaches share the aspect of reducing 
-octree complexity by approximating parts of the tree hierarchy.
+However, Laine et al. use their implementation for raytraced voxel rendering and the approximations are only 
+targeting model boundaries instead of volumes. Therefore, the approximation using contours is not aiming for the 
+same optimization than the approximation in this work do. While the first one refers to optimizing ray casting, 
+the latter refers to optimizing a depth prepass computation. Nevertheless, both approaches share the aspect of 
+reducing octree complexity by approximating parts of the tree hierarchy.
 
 
 \subsection*{Sparse Voxel Directed Acyclic Graphs}
@@ -53,8 +52,8 @@ hierarchy and reducing the amount of used memory immensely. \\
 \noindent
 This approach relates to this implementation in how large voxelized scenes can be efficiently loaded and stored in 
 memory. Although this work doesn't explicitly rely on Sparse Voxel \ac{DAG}s, Sparse Voxel octrees are used in the 
-provided implementation. Additionally, the proposed implementation can be optimized in the future to be working 
-with Sparse Voxel \ac{DAG}s, enabling the handling of meshes with even higher resolution. \\
+provided implementation. Additionally, the proposed implementation can be optimized in the future by implementing 
+Sparse Voxel \ac{DAG}s, enabling the handling of meshes with even higher resolution. \\
 
 \noindent
 Sparse Voxel \ac{DAG}s are not commonly used in rasterized rendering pipelines and store voxlumetric data in a binary 
@@ -164,7 +163,7 @@ memory footprint. \\
 \noindent
 The work of Hasselgren et al. relates to this work's implementation in the general concept of occlusion culling, making 
 use of projected bounding boxes, and a comparison of minimal z values. Their work shows that such an algorithm can be 
-optimized for \ac{CPU} execution using \ac{SIMD} and effective use of data structures. \\
+optimized for \ac{CPU} execution using \ac{SIMD} and effective data structures. \\
 
 \noindent 
 In contrast to this work, Hasselgren et al. use their algorithm for non-volumetric triangle meshes. This means that 
@@ -176,21 +175,15 @@ to the last possible stage of the pipeline, making the application of \ac{CPU} a
 
 \subsection*{Per-Meshlet Two-Pass Occlusion Culling}
 
-Similar to \emph{Assassin's Creed Unity}, the game \emph{Alan Wake 2} (2023) and engine \emph{Unreal Engine 5} also 
-implement \ac{HZB} and depth reprojection. Both implementations are directly based on the approach of Aaltonen et 
-al. \cite{Aaltonen2015}, but this time, making use of the new \emph{Mesh Shading} pipeline. The difference being the 
-now provided hardware integration of clustering geometry \cite{Remedy2023,Karis2021}. \\
-
-\noindent
-Karis et al. and Remedy Entertainment find that using \ac{HZB} can provide great runtime performance for open, 
-highly dense scenes. Both combine the \ac{HZB} with depth reprojection to further optimize the computation of the 
-depth buffer. Using the Mesh Shading pipeline, this concept can be applied to meshlets, enabling per-meshlet culling. 
-That means that small parts of the geometry can be culled, even if other parts of the same mesh are still visible. 
-This optimizes the culling further so scenes can be more densely populated with meshes. \\
+Karis et al. \cite{Karis2021} and Remedy Entertainment \cite{Remedy2023} find that using \ac{HZB} can provide great 
+runtime performance for open and highly dense scenes. Both combine the \ac{HZB} with depth reprojection to further optimize 
+the computation of the depth buffer. Using the mesh shading pipeline, this concept can be applied to meshlets, enabling 
+per-meshlet culling. That means that small parts of the geometry can be culled, even if other parts of the same mesh are 
+still visible. This optimizes the culling further so scenes can be more densely populated with meshes. \\
 
 \noindent
 The findings of Karis et al. and Remedy Entertainment are adapted for this work's implementation, which also relies on 
-the use of the Mesh Shading pipeline. While the implementations of Karis et al. and Remedy Entertainment are based on 
+the use of the mesh shading pipeline. While the implementations of Karis et al. and Remedy Entertainment are based on 
 a boundary representation and do not require the use of a spatial container for the culling algorithm, this 
 implementation aims for a different use case. Contrary to boundary representations, the spatial properties of voxels 
 can be used to approximate volumetric coverage by less complex geometry, making it more efficient to select and draw 
