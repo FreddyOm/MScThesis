@@ -12,20 +12,20 @@ are revisited and discussed in more detail in Chapter \ref{cpt-technical-backgro
 
 There are several ways to represent volumetric data. The simplest version includes a regular 
 grid with grid indices representing unique positions within the grid. The presence of a voxel 
-can be encoded as a binary value, which results in an efficent way of storing volumetric occupation.
+can be encoded as a binary value, which results in an efficient way of storing volumetric occupation.
 However, empty spaces are stored in the same resolution as crowded spaces, which led to the 
 introduction of octrees for volumetric voxel representations. The term \ac{SVO} relates to an 
-octree that does not store any child data for empty sub branches of the hierarchy. Most modern 
-implementation rely on some of these basic encodings of voxel data.  
+octree that does not store any child data for empty sub-branches of the hierarchy. Most modern 
+implementations rely on some of these basic encodings of voxel data. 
 
 
 \subsection*{Efficient Sparse Voxel Octrees}
 
-Laine and Karras \cite{Laine2010} analyze and implement a variation of the base Sparse Voxel Octree approach for 
-efficiently raytracing voxel models. In their work, contours are used to approximate octree nodes within a \ac{SVO}. If the 
-octree node is found to be apprixamted good enough, the subdivision to deeper levels in the octree node is terminated
-\cite{Kampe2013,Laine2010}. This way, \ac{SVO}s can be significantly reduced in size, which benefits the memory 
-footprint of the application. \\
+Laine and Karras \cite{Laine2010} analyze and implement a variation of the base sparse voxel Octree approach for 
+efficiently raytracing voxel models. In their work, contours are used to approximate octree nodes within an \ac{SVO}. 
+If the octree node is found to be approximated good enough, the subdivision to deeper levels in the octree node is 
+terminated \cite{Kampe2013,Laine2010}. This way, \ac{SVO}s can be significantly reduced in size, which benefits 
+the memory footprint of the application. \\
 
 \noindent
 The efficient \ac{SVO}s feature a similar approach to this work in that octree nodes are approximated for faster 
@@ -33,40 +33,40 @@ processing times. While Laine et al. use contours for their approximations, this
 to approximate volumes. \\
 
 \noindent
-However, Laine et al. use their implementation for raytraced voxel rendering and the approximations are only 
+However, Laine et al. use their implementation for raytraced voxel rendering, and the approximations are only 
 targeting model boundaries instead of volumes. Therefore, the approximation using contours is not aiming for the 
-same optimization than the approximation in this work do. While the first one refers to optimizing ray casting, 
+same optimization that the approximation in this work does. While the first one refers to optimizing ray casting, 
 the latter refers to optimizing a depth prepass computation. Nevertheless, both approaches share the aspect of 
 reducing octree complexity by approximating parts of the tree hierarchy.
 
 
 \subsection*{Sparse Voxel Directed Acyclic Graphs}
 
-Kämpe et al. \cite{Kampe2013} propose the use of their \emph{High-Resolution Sparse Voxel \ac{DAG}s}. This approach 
+Kämpe et al. \cite{Kampe2013} propose the use of their \emph{high-resolution sparse voxel \ac{DAG}}. This approach 
 is tailored to high voxel resolutions and data that might not fit into memory all at once. Their data structure can 
-be easily split up into several sub-trees, which in turn can be loaded individually. This approach seems promising 
+be easily split up into several subtrees, which in turn can be loaded individually. This approach seems promising 
 for large scenes and use cases, which require the streaming of data. They propose to structure the data in a way that 
 enables equal nodes of an octree hierarchy to be reduced to only one instance, eliminating redundant parts of the 
 hierarchy and reducing the amount of used memory immensely. \\
 
 \noindent
 This approach relates to this implementation in how large voxelized scenes can be efficiently loaded and stored in 
-memory. Although this work doesn't explicitly rely on Sparse Voxel \ac{DAG}s, Sparse Voxel octrees are used in the 
+memory. Although this work doesn't explicitly rely on sparse voxel \ac{DAG}s, sparse voxel octrees are used in the 
 provided implementation. Additionally, the proposed implementation can be optimized in the future by implementing 
-Sparse Voxel \ac{DAG}s, enabling the handling of meshes with even higher resolution. \\
+sparse voxel \ac{DAG}s, enabling the handling of meshes with even higher resolution. \\
 
 \noindent
-Sparse Voxel \ac{DAG}s are not commonly used in rasterized rendering pipelines and store voxlumetric data in a binary 
+Sparse voxel \ac{DAG}s are not commonly used in rasterized rendering pipelines and store volumetric data in a binary 
 format instead of storing positional data. This introduces additional complexity to the pipeline, which might result in 
-better runtime performance but is also less intuitive when dealing with nodes and individual voxels. Sparse Voxel 
-\ac{DAG}s mainly aim to provide a smaller memory footprint for raytraced applications while maintaining high resolution 
+better runtime performance but is also less intuitive when dealing with nodes and individual voxels. Sparse voxel 
+\ac{DAG}s mainly aim to provide a smaller memory footprint for raytraced applications while maintaining high-resolution 
 voxel meshes. \\
 
 \noindent
-Compared to this work's approach, Sparse Voxels \ac{DAG}s are able to resolve voxel data more efficiently and is 
+Compared to this work's approach, sparse voxel \ac{DAG}s are able to resolve voxel data more efficiently and are 
 better suited for higher resolution meshes that might exceed memory limits in a raw data format. However, their 
-primary usage is ray-traced rendering which is not what this work is concerned with. While Sparse Voxel \ac{DAG}s 
-could generally be applied to rasterized rendering, this work uses a custom Sparse Voxel Octree, optimized for 
+primary usage is ray-traced rendering, which is not what this work is concerned with. While sparse voxel \ac{DAG}s 
+could generally be applied to rasterized rendering, this work uses a custom sparse voxel octree optimized for 
 traversal and easy coordinate extraction. 
 
 
@@ -80,24 +80,24 @@ although recent approaches more often rely on \ac{GPU}-based algorithms for reas
 \subsection*{Hierarchical Z-Buffering}
 
 Greene et al. \cite{Greene93,Greene95} proposed the first \ac{HZB} algorithm with the capability to use screen space 
-data to cull meshes in large and densely populated scenes. The idea originated in the context of a forward rendered 
+data to cull meshes in large and densely populated scenes. The idea originated in the context of a forward-rendered 
 pipeline, making use of the \ac{CPU} for culling instances. They propose to use a spatial container like an octree to 
 enable drawing the scene in a rough front-to-back order. Each mesh is individually drawn to a depth buffer resource, 
 starting with an empty one in the beginning and populating it as more meshes are drawn. The buffer resource also 
-maintains a mip chain that is updated when the full resolution depth buffer is updated. Each time a mesh is rendered 
+maintains a mip chain that is updated when the full-resolution depth buffer is updated. Each time a mesh is rendered 
 to the depth buffer, it is checked against the depth hierarchy, starting with the coarsest mip level. This way, near 
 and big objects are likely to occlude small, far objects, resulting in an efficient way to reject invisible meshes.\\
 
 \noindent
 Although this technique was intended for use on the \ac{CPU}, it can be easily adapted to work on \ac{GPU} resources 
 without the need of a write-back to expose the data to \ac{CPU} memory. The approach by Greene et al. is the basis for 
-modern \ac{GPU} based algorithms and a major influence for the work at hand. It uses the same principle of hierarchical 
+modern \ac{GPU}-based algorithms and a major influence for the work at hand. It uses the same principle of hierarchical 
 visibility testing and maintaining a depth buffer. \\
 
 \noindent
-However, more modern approaches are used to adapt this algorithm for \ac{GPU} friendly design, like computing the depth 
-in a pre-pass, using only best occluders instead of all possible meshes, and disabling color writes completely. This also 
-limits the amount of recomputations of the mip-chain since all occluders are only drawn to the depth buffer once per 
+However, more modern approaches are used to adapt this algorithm for \ac{GPU}-friendly design, like computing the depth 
+in a pre-pass, using only the best occluders instead of all possible meshes, and disabling color writes completely. This 
+also limits the amount of recomputations of the mip-chain since all occluders are only drawn to the depth buffer once per 
 frame instead of scaling with the number of visible meshes.
 
 
@@ -129,30 +129,30 @@ not satisfy the requirement of dynamically adapting to a changing environment at
 
 \subsection*{Two-Pass Occlusion Culling}
 
-Aaltonen et al. \cite{Aaltonen2015} present a \ac{GPU} based two-pass occlusion culling technique based on 
+Aaltonen et al. \cite{Aaltonen2015} present a \ac{GPU}-based two-pass occlusion culling technique based on 
 the \ac{HZB} approach proposed by Greene et al. \cite{Greene93,Greene95}. This technique additionally features 
 depth reprojection, which makes for a good occlusion culling technique in games with large occluders or interiors. 
-First, artist picked \emph{best occluders} are drawn to the depth buffer in a depth pre-pass. Then, projected 
+First, artist-picked \emph{best occluders} are drawn to the depth buffer in a depth pre-pass. Then, projected 
 bounding boxes can be used to test the visibility of smaller objects in the scene. A hierarchical z-buffer is 
-used to accelerate this testing, as proposed by Greene et al. . Finally, the depth buffer of the last frame can 
+used to accelerate this testing, as proposed by Greene et al. Finally, the depth buffer of the last frame can 
 be reprojected to further minimize computations. This technique allows developers to push for huge draw distances 
 and densely crowded environments. \\
 
 \noindent
 Similar to this work, the game uses advanced technology in its implementation, clustering geometry, and allowing 
-for a \ac{GPU} centric approach to occlusion culling. However, the game doesn't use a volumetric representation 
+for a \ac{GPU}-centric approach to occlusion culling. However, the game doesn't use a volumetric representation 
 but the standard boundary representation for its world. Furthermore, the best occluders are provided in different 
 ways. Aaltonen et al. \cite{Aaltonen2015} propose the use of a hand-picked set of large, static meshes, while this 
 work relies on a simple approximation of the voxel layout. This way, the latter implementation can dynamically 
-provide best occluders during runtime, adapting the occlusion capabilities with the addition or removal of voxels 
-in the scene.
+provide the best occluders during runtime, adapting the occlusion capabilities with the addition or removal of 
+voxels in the scene.
 
 
 \subsection*{Masked Software Occlusion Culling}
 
 Hasselgren et al. \cite{Hasselgren2016} present a novel way of implementing occlusion culling relying on hardware 
 occlusion queries while optimizing the queries using \ac{CPU} \ac{SIMD} acceleration. The basic algorithm is very 
-similar to common \ac{CPU} or \ac{GPU} computed \ac{HZB}, with two major alterations to the implementation. First, 
+similar to common \ac{CPU}- or \ac{GPU}-computed \ac{HZB}, with two major alterations to the implementation. First, 
 they make use of Intel's \ac{AVX} to compute depth values for tiles of 256 texels in parallel. The second difference 
 is the way they store depth and coverage data. In contrast to a "normal" \ac{HiZ} mip-chain, Hasselgren et al. 
 decouple depth and coverage data by storing a coverage mask for \begin{math}32 \times 8\end{math} pixel tiles, 
@@ -168,9 +168,9 @@ optimized for \ac{CPU} execution using \ac{SIMD} and effective data structures. 
 \noindent 
 In contrast to this work, Hasselgren et al. use their algorithm for non-volumetric triangle meshes. This means that 
 they make heavy use of raster occlusion queries, making rendering CPU-bound. While still efficient and possibly faster 
-than \ac{HZB}, Masked Software Occlusion Culling lacks the \ac{GPU} driven basis for this work's implementation. This 
+than \ac{HZB}, masked software occlusion culling lacks the \ac{GPU}-driven basis for this work's implementation. This 
 work's approach does not work with geometry on the \ac{CPU} side at all but leaves all of the triangle computations up 
-to the last possible stage of the pipeline, making the application of \ac{CPU} accelerated occlusion queries impractical.
+to the last possible stage of the pipeline, making the application of \ac{CPU}-accelerated occlusion queries impractical.
 
 
 \subsection*{Per-Meshlet Two-Pass Occlusion Culling}
@@ -186,7 +186,7 @@ The findings of Karis et al. and Remedy Entertainment are adapted for this work'
 the use of the mesh shading pipeline. While the implementations of Karis et al. and Remedy Entertainment are based on 
 a boundary representation and do not require the use of a spatial container for the culling algorithm, this 
 implementation aims for a different use case. Contrary to boundary representations, the spatial properties of voxels 
-can be used to approximate volumetric coverage by less complex geometry, making it more efficient to select and draw 
+can be used to approximate volumetric coverage by less complex geometry, making it more efficient to select and draw the 
 best occluders. Also, this work uses the best occluders not only to occlude meshlets, which are behind the best occluders, 
-but it can additionally be used to occlude parts of the best occluders itself. This poses a new way of applying occluders 
+but it can additionally be used to occlude parts of the best occluders themselves. This poses a new way of applying occluders 
 in the context of rendering volumetric scenes.
