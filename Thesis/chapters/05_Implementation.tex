@@ -56,7 +56,7 @@ The main resource is therefore a buffer filled with all the voxel positions as \
 resources usually have to be aligned, 4 bytes of extra space can be used to store the voxel size alongside the position.
 It can be used to vary the size of the visible mesh or, for instance, to calculate bounding boxes separately. \\
 
-\noindent [@TODO: Double check because of comparison between both possible implementations]
+\noindent
 The voxel positions are already sufficient to render the voxel mesh by making each voxel one meshlet. This means that 
 individual voxels can be culled based on various meshlet culling techniques outlined in chapter 
 \ref{subsec-meshlet-culling}. Each \ac{GPU} thread generates one voxel, or none if the voxel is found to be culled. 
