@@ -28,9 +28,11 @@ pipeline discussion and in depth data visualization.
 - [] Add mew measurements into thesis (Best occluder creation)
 - [] Fix capitalization of words
 - [] Write Conclusion
+- [] Move model descriptions down to individual model results
 
 ## Kolloquium
 
 - If I were do redo it Id focus on the aggregation of the best occluders as the central innovation
 and do experiments with dynamically updating and changing the voxel meshes.
 - Compare depth prepass with all voxels against depth prepass with aggregated best occluders
+- Would have liked to fix visual errors 

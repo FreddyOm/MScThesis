@@ -33,17 +33,16 @@ all the tests performed during the experiment.
 To evaluate the key differences and the runtime performance in general, several aspects had to be considered.
 Unfortunately, comparing the occlusion culling implementation to an alternative implementation was not within the 
 scope of this work, so efforts were made to evaluate the pipeline and its performance from a conceptual point of 
-view and compared to the plain pipeline, without any occlusion culling at all. This includes two different 
+view and to compare it to the plain pipeline, without any occlusion culling at all. This includes two different 
 versions of occlusion culling, one based on culling octree nodes, as it can be implemented without the use of the 
 Mesh Shading pipeline. The other one is based on per-meshlet occlusion culling, which makes use of the more parallel 
 computation capabilities of the \ac{GPU}. \\
 
-\noindent [@TODO: Check if this is still true]
+\noindent [@TODO: Check if this is still true] [@TODO: Parts of this are redundant. Rewrite and restructure to be more like the paper!]
 This section highlights the major aspects that were considered for the experiment and were evaluated during the 
 test runs. All aspects aim to demonstrate how the occlusion culling affected the given test scene and how the 
-computations differ compared to the plain pipeline. Later, use cases are considered, which can be compared to 
-alternative algorithms on a high level. However, keep in mind that it is up to future measurements to quantitatively 
-compare the pipeline to alternative approaches. 
+computations differ compared to the plain pipeline without any occlusion culling. Furthermore, two different 
+occlusion culling configurations are evaluated, \ac{PONOC} and \ac{PMOC}. They are compared to consider 
 
 
 \subsection*{Scene Layout} \label{subsec-scene-layout}
@@ -193,77 +192,15 @@ the test setups are listed in table \ref{tbl:hardware-setup}. \\
 \end{figure}
 
 \noindent
-The models that were used in the tests are \emph{Lucy} (Stanford 3D Scanning Repository), the \emph{Stanford Bunny} 
-(Stanford 3D Scanning Repository), the \emph{Hairball}, a \emph{Torus}, and a \emph{Terrain} scene. All of 
-these models provide different characteristics, which tested the pipeline in a variety of ways. \\
+The models that were used in the tests are \emph{Lucy} (Stanford 3D Scanning Repository), the 
+\emph{Stanford Bunny} (Stanford 3D Scanning Repository), the \emph{Hairball}, a \emph{Torus}, 
+and a \emph{Terrain} scene. All of these models provide different characteristics, which tested 
+the pipeline in a variety of ways. They were voxelized to a scene size of $256^3$ and occupy 
+different amounts of space in the scene.
 
-\noindent
-The \emph{Lucy} model is tall and slim, which means that its volume is distributed more over one axis 
-than over the other two axis. This is assumed to provide interesting insights into how such an object 
-self-occludes the voxels when viewed from different perspectives. It also has a few narrow parts where 
-no best occluders are expected. \\
-
-\noindent
-The \emph{Stanford Bunny} is a large and dense model with a lot of voxels in any possible resolution.
-It also has different features to it, one of them being the curved surface, resulting in a lot of octree 
-nodes not being filled completely. On the other hand, because of its large volume, the model is assumed 
-to be efficient when rendering the best occluders, aggregating a lot of smaller octree nodes to larger 
-approximations. \\ 
-
-\noindent
-For low resolutions, the \emph{Hairball} isn't voxelized enough to maintain all the thin and tiny details, 
-but for higher resolutions, the small structures were assumed to be not sufficient in density to completely
-fill octree nodes, resulting in an unfavorable data layout to test the limits of the mesh computations. \\
-
-\noindent
-The \emph{Torus} provides a higher voxel count and a hole in it, which created an area where the 
-octree isn't densely filled with voxels. This model was specifically used to test the algorithm's 
-capabilities of culling voxels when the voxels were densely crowded in small parts of the scene and 
-at the same time provided areas with no voxels at all. Also, the \emph{Torus} is an inherently round 
-shape and therefore has a lot of partially filled octree nodes representing its surface. \\
-
-\noindent
-The \emph{Terrain} model aimed to replicate a relatively flat, open area that could be found in actual 
-games like \emph{Minecraft}. Its surface is setup in a way that allows for only a small amount of best 
-occluders to be formed. The terrain's hills are assumed to be occluding a large part of the scene, 
-which again would help for rendering such a scene in a game.
+[@TODO: Write a bit more here.]
 
 
-%- Compare:
-%    - Model turntable rendered without OC
-%    - Model turntable rendered with OC
-%(   - Model turntable rendered with different OC implementation (? -> hard))
-%
-%
-%- Criteria: 
-%    - Frame time
-%    - Dispatch numbers (?)
-%    - Duration of depth pre-pass
-%        - Draw best occluders to depth buffer
-%        - Duration of depth hierarchy creation
-%    - Visible cubes
-%    - Visible octree nodes
-%    - Triangle count
-%    - Amount of best occluders
-%    - CPU time
-%    - GPU time
-%    - Amount of overdraw (heatmap if possible)
-%
-%
-%- Model variations:
-%    - Lucy
-%    - Stanford Bunny
-%    - Torus (for when objects have "holes")
-%    - Some large, wide scenery
-%    - Sponza        -> Ehrlich sein und T
-%    - ...
-%
-%
-%- Machines:
-%    - Laptop
-%    - RTX 2080 Ti
-%    - RTX 4090
-%    - Multiple devices
 
 [@TODO: Add memory footprint to data throughput]
 
@@ -274,11 +211,17 @@ In this section, the experimental results are presented and discussed for each m
 For each model, the culling results include data that isn't dependent on specific hardware. 
 After that, the profiling measurements are discussed, which relate to the hardware setup presented 
 in \ref{subsec-experimental-environment}. The data analysis is structured similarly for all models,
-comparing the per-octree node configuration to the per-meshlet configuration. Finally, an overview 
+comparing the \ac{PONOC} configuration to the \ac{PMOC} configuration. Finally, an overview 
 is presented that summarizes all the relevant data in a compact visualization.
 
+[@TODO: Update (Prepass) Labels (like Generate HiZ Pyramid instead of GenMipChain)]
 
 \subsection*{Stanford Lucy}
+
+The \emph{Lucy} model is tall and slim, which means that its volume is distributed more over one axis 
+than over the other two axis. This is assumed to provide interesting insights into how such an object 
+self-occludes the voxels when viewed from different perspectives. It also has a few narrow parts where 
+no best occluders are expected.
 
 \subsubsection*{Culling Results} \label{subsubsec-culling-results-lucy}
 
@@ -490,7 +433,7 @@ particular model.
   rendering of some debug \ac{UI}. It is considered to be more or less static in computation time and is not 
   part of the actual algorithm measured in this experiment. Second: The time measured in the \emph{Depth Prepass}. 
   The \emph{Dispatch Best Occluders} is the drawing to the depth buffer. The \emph{Copy Depth Buffer} computation 
-  copies the depth buffers content into the final \ac{HiZ} resource. Finally, \emph{Generate HiZ-Pyramid} shows 
+  copies the depth buffers content into the final \ac{HiZ} resource. Finally, \emph{Generate HiZ Pyramid} shows 
   the \ac{HiZ} creation, which is done sequentially.}
 \end{figure}
 
@@ -549,6 +492,12 @@ The side view featured only a maximum of 7 draws per pixel in both configuration
 
 
 \subsection*{Stanford Bunny}
+
+The \emph{Stanford Bunny} is a large and dense model with a lot of voxels in any possible resolution.
+It also has different features to it, one of them being the curved surface, resulting in a lot of octree 
+nodes not being filled completely. On the other hand, because of its large volume, the model is assumed 
+to be efficient when rendering the best occluders, aggregating a lot of smaller octree nodes to larger 
+approximations.
 
 \subsubsection*{Culling Results} \label{subsubsec-culling-results-bunny}
 
@@ -733,7 +682,7 @@ not considered significant enough to make any assumptions about them. Therefore,
   rendering of some debug \ac{UI}. It is considered to be more or less static in computation time and is not 
   part of the actual algorithm measured in this experiment. Second: The time measured in the \emph{Depth Prepass}. 
   The \emph{Dispatch Best Occluders} is the drawing to the depth buffer. The \emph{Copy Depth Buffer} computation 
-  copies the depth buffers content into the final \ac{HiZ} resource. Finally, \emph{Generate HiZ-Pyramid} 
+  copies the depth buffers content into the final \ac{HiZ} resource. Finally, \emph{Generate HiZ Pyramid} 
   shows the \ac{HiZ} creation, which is done sequentially.}
 \end{figure}
 
@@ -806,6 +755,12 @@ bunny.
 
 
 \subsection*{Torus}
+
+The \emph{Torus} provides a higher voxel count and a hole in it, which created an area where the 
+octree isn't densely filled with voxels. This model was specifically used to test the algorithm's 
+capabilities of culling voxels when the voxels were densely crowded in small parts of the scene and 
+at the same time provided areas with no voxels at all. Also, the \emph{Torus} is an inherently round 
+shape and therefore has a lot of partially filled octree nodes representing its surface. 
 
 \subsubsection*{Culling Results} \label{subsubsec-culling-results-torus}
 
@@ -989,7 +944,7 @@ using the per-meshlet occlusion culling configuration as shown in Figure \ref{fi
   rendering of some debug \ac{UI}. It is considered to be more or less static in computation time and is not 
   part of the actual algorithm measured in this experiment. Second: The time measured in the \emph{Depth Prepass}. 
   The \emph{Dispatch Best Occluders} is the drawing to the depth buffer. The \emph{Copy Depth Buffer} computation 
-  copies the depth buffers content into the final \ac{HiZ} resource. Finally, \emph{Generate HiZ-Pyramid} shows 
+  copies the depth buffers content into the final \ac{HiZ} resource. Finally, \emph{Generate HiZ Pyramid} shows 
   the \ac{HiZ} creation, which is done sequentially.}
   \label{fig:torus-gpu-results}
 \end{figure}
@@ -1044,6 +999,11 @@ to be 267 draws to one pixel.
 
 
 \subsection*{Terrain}
+
+The \emph{Terrain} model aimed to replicate a relatively flat, open area that could be found in actual 
+games like \emph{Minecraft}. Its surface is setup in a way that allows for only a small amount of best 
+occluders to be formed. The terrain's hills are assumed to be occluding a large part of the scene, 
+which again would help for rendering such a scene in a game.
 
 \subsubsection*{Culling Results} \label{subsubsec-culling-results-terrain}
 
@@ -1234,7 +1194,7 @@ culling, while the depth prepass didn't change significantly.
   rendering of some debug \ac{UI}. It is considered to be more or less static in computation time and is not 
   part of the actual algorithm measured in this experiment. Second: The time measured in the \emph{Depth Prepass}. 
   The \emph{Dispatch Best Occluders} is the drawing to the depth buffer. The \emph{Copy Depth Buffer} computation 
-  copies the depth buffers content into the final \ac{HiZ} resource. Finally, \emph{Generate HiZ-Pyramid} shows 
+  copies the depth buffers content into the final \ac{HiZ} resource. Finally, \emph{Generate HiZ Pyramid} shows 
   the \ac{HiZ} creation, which is done sequentially.}
   \label{fig:terrain-gpu-times}
 \end{figure}
@@ -1288,6 +1248,10 @@ favor of the per-meshlet culling. Without culling, the overdraw was 298 draws pe
 
 
 \subsection*{Hairball}
+
+For low resolutions, the \emph{Hairball} is an inherently complex scene to render. It featuresa lot of 
+tiny details, which were assumed to be not sufficient in density to completely fill octree nodes, 
+resulting in an unfavorable data layout to test the limits of the occlusion culling algorithm.
 
 \subsubsection*{Culling Results} \label{subsubsec-culling-results-hairball}
 
@@ -1471,7 +1435,7 @@ occlusion culling when comparing the average values.
   rendering of some debug \ac{UI}. It is considered to be more or less static in computation time and is not 
   part of the actual algorithm measured in this experiment. Second: The time measured in the \emph{Depth Prepass}. 
   The \emph{Dispatch Best Occluders} is the drawing to the depth buffer. The \emph{Copy Depth Buffer} computation 
-  copies the depth buffers content into the final \ac{HiZ} resource. Finally, \emph{Generate HiZ-Pyramid} shows 
+  copies the depth buffers content into the final \ac{HiZ} resource. Finally, \emph{Generate HiZ Pyramid} shows 
   the \ac{HiZ} creation, which is done sequentially.}
   \label{fig:hairball-gpu-times}
 \end{figure}
