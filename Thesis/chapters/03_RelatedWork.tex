@@ -8,46 +8,17 @@ and \emph{Mesh Shading}, on which the proposed implementation is based. The most
 the highlighted concepts are revisited and discussed in more detail in Chapter 
 \ref{cpt-technical-background}. 
 
-[@TODO: Find scientific papers for voxel representations]
 
 \section{Voxel Representation} \label{sec-voxel-representation}
 
-[@TODO: Add small explanation for voxel rep (SVO) in this part before discussing related work]
+There are several ways to represent volumetric data. The simplest version includes a regular 
+grid with grid indices representing unique positions within the grid. The presence of a voxel 
+can be encoded as a binary value, which results in an efficent way of storing volumetric occupation.
+However, empty spaces are stored in the same resolution as crowded spaces, which led to the 
+introduction of octrees for volumetric voxel representations. The term \ac{SVO} relates to an 
+octree that does not store any child data for empty sub branches of the hierarchy. Most modern 
+implementation rely on some of these basic encodings of voxel data.  
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=300px]{images/graphics/minecraft-chunks.jpg}
-    \caption{A screenshot from \emph{Minecraft}, with a debug visualization of the voxel chunks \cite{Palm2022}.}
-    \label{fig:minecraft-chunks}
-\end{figure}
-
-\noindent
-Voxel Rendering has had huge success in sandbox and highly dynamic games like \emph{Minecraft} (Mojang 
-\cite{Mojang2024}, 2011) or \emph{Teardown} (Tuxedo Labs \cite{TuxedoLabs2022}, 2022). Usually these games try 
-to preserve some volumetric information for the dynamic environment to be manipulated in real-time. \emph{Minecraft} 
-generates a procedural environment based on complex parameters. This way, they can easily generate nearly infinite 
-worlds with interesting biomes and landmarks. This huge world is split into chunks of size 16×384×16, to be able to 
-stream the world dynamically and allow for quick traversal in any direction, shown in Figure \ref{fig:minecraft-chunks}.
-Each chunk maintains its own three-dimensional grid, with the voxel data being highly compressed. Non-existing voxels 
-are not being stored, and block states, textures, and other information is stored in per-chunk buffers or as global 
-data in a global buffer. This way, using a texture atlas, up to 256 different texture variants can be easily stored 
-per voxel by only one byte \cite{Bergensten2012, MinecraftFandom2021}. \\
-
-\noindent
-Many other games have made use of voxel rendering, adapting these principles of data compression and data streaming. 
-Most optimizations rely on culling voxels, which are not visible, e. g. faces that touch other faces.
-Frustum culling and occlusion queries are also part of the optimization process and partially used in \emph{Minecraft} 
-as well, though the existence of frustum culling or the specific occlusion culling algorithm added in version 1.5 
-cannot be confirmed finally and reliably. Nevertheless, many efforts towards better performance have been made on the 
-\ac{CPU} side. Lately, \ac{GPU}-driven approaches have been implemented by various individual developers. 
-[@TODO: Find specific optimizations and sources!]  \\
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=300px]{images/graphics/teardown-ray-tracing.jpg}
-    \caption{A screenshot from \emph{Teardown}, showcasing raytraced lighting \cite{TeardownSteam2022}.}
-    \label{fig:teardown-raytracing}
-\end{figure}
 
 \subsection*{Efficient Sparse Voxel Octrees}
 
@@ -102,6 +73,10 @@ traversal and easy coordinate extraction.
 
 \section{Occlusion Culling}
 
+The goal in occlusion culling is to remove objects from the rendering pipeline that are invisible due to 
+occlusion. Traditionally, a lot of occlusion culling algorithms rely on \ac{CPU} computation of visibility, 
+although recent approaches more often rely on \ac{GPU}-based algorithms for reasons of performance. 
+
 
 \subsection*{Hierarchical Z-Buffering}
 
@@ -126,41 +101,43 @@ in a pre-pass, using only best occluders instead of all possible meshes, and dis
 limits the amount of recomputations of the mip-chain since all occluders are only drawn to the depth buffer once per 
 frame instead of scaling with the number of visible meshes.
 
-\subsection*{Umbra}
 
-In the past, occlusion culling in games has been heavily influenced by \emph{Umbra} \cite{Umbra2024}, a company 
-specializing in 3D occlusion culling solutions. \emph{Umbra} has been used by a lot of games such as 
-\emph{Call of Duty: Ghosts} (2013), \emph{Killzone: Shadow Fall} (2013), \emph{Alan Wake} (2012), and many more 
-\cite{UmbraWiki,CallOfDutyGhostsCredits,KillzoneUmbra,AlanWakeUmbra}. \\
+\subsection*{Portal- and Cell-Based Occlusion Culling}
+
+Luebke et al. \cite{Luebke1995} present a less exact but much simpler approach to the determination
+of a \ac{PVS}. Their approach relies on subdividing space into cells, which are interconnected by 
+portals. The portals are represented by boundary boxes, which are projected into screen space to 
+create a distinct testing boundary for objects in the adjacent cell. If the object's boundaries 
+intersect with the portal's boundaries in screen space, they are potentially visible. If they do 
+not intersect whatsoever, the object can be safely culled. This way, potentially visible meshes can 
+be determined dynamically and at runtime, enabling the culling of large parts of the scene. \\
 
 \noindent
-\emph{Umbra} voxelizes the game world and proceeds to process the data further, merging voxels into cells. 
-A runtime hierarchy of the meshes inside the voxelgrid is created and subsequently, using the camera position, 
-the cells can be queried for occlusion. As long as there are large occluders, this process can reduce the number 
-of instances and therefore the number of triangles to draw. \emph{Umbra} also keeps a simplified depth buffer in 
-memory in order to quickly determine visibility \cite{Medium2018}. \\
+Like similar approaches before, this cell-based technique can be used to coarsely evaluate visibility 
+for large and complex scenes without complex overhead. The underlying concept was also used by 
+\emph{Umbra} \cite{Umbra2024}, an occlusion culling tool used by a lot of games, such as 
+\emph{Call of Duty: Ghosts} (2013), \emph{Killzone: Shadow Fall} (2013), \emph{Alan Wake} (2012), 
+and many more \cite{UmbraWiki,CallOfDutyGhostsCredits,KillzoneUmbra,AlanWakeUmbra}. \\
 
-\noindent 
-The approach is similar to the approach provided  in this work, in that both use a depth buffer and a scene hierarchy 
-for computing visibility early in the pipeline. Both approaches rely on screen-space bounding comparisons, although 
-\emph{Umbra} uses a \emph{Portals and Cell} structure to manage visibility testing for a given camera position 
-\cite{Medium2018}. Furthermore, \emph{Umbra} is usually applied in triangle mesh scene representations instead 
-of volumetric, voxel-based scene representations. \emph{Umbra} uses runtime data structures for efficient visibility 
-optimizations based on static scene meshes, while this work uses octree queries to dynamically determine possible 
-occluders during runtime - or as a one-time pre-computation for voxel models that are known to be static. \\
+\noindent
+While \emph{Umbra} additionally makes use of a simplified depth buffer, similar to this work, the approach 
+presented by Luebke et al. does not use depth information for visibility testing. However, projecting a 
+bounding box to screen space has similarities to this work. A cell and portal occlusion culling algorithm 
+can potentially be used in both voxel scenes and traditional non-voxel scenes but requires a 
+predetermination of portals, which connect different areas of the scene. This means that the approach would 
+not satisfy the requirement of dynamically adapting to a changing environment at run time. \\
 
 
 \subsection*{Two-Pass Occlusion Culling}
 
-\noindent [@TODO: Remove AC Unity and only focus on Aaltonen]
-\emph{Assassin's Creed Unity} (2014) uses a \ac{GPU} based two-pass occlusion culling technique as presented by 
-Aaltonen et al. \cite{Aaltonen2015}. This technique involves both \ac{HZB} and depth reprojection. Both make for 
-a good occlusion culling technique in games with large occluders or interiors. First, artist picked 
-\emph{best occluders} are drawn to the depth buffer in a depth pre-pass. Then, projected bounding boxes can be 
-used to test the visibility of smaller objects in the scene. A hierarchical z-buffer is used to accelerate this 
-testing, as proposed by Greene et al. \cite{Greene93,Greene95}. Finally, the depth buffer of the last frame can be 
-reprojected to further minimize computations. This technique allows developers to push for huge draw distances and 
-densely crowded environments.\\
+Aaltonen et al. \cite{Aaltonen2015} present a \ac{GPU} based two-pass occlusion culling technique based on 
+the \ac{HZB} approach proposed by Greene et al. \cite{Greene93,Greene95}. This technique additionally features 
+depth reprojection, which makes for a good occlusion culling technique in games with large occluders or interiors. 
+First, artist picked \emph{best occluders} are drawn to the depth buffer in a depth pre-pass. Then, projected 
+bounding boxes can be used to test the visibility of smaller objects in the scene. A hierarchical z-buffer is 
+used to accelerate this testing, as proposed by Greene et al. . Finally, the depth buffer of the last frame can 
+be reprojected to further minimize computations. This technique allows developers to push for huge draw distances 
+and densely crowded environments. \\
 
 \noindent
 Similar to this work, the game uses advanced technology in its implementation, clustering geometry, and allowing 
@@ -202,14 +179,14 @@ to the last possible stage of the pipeline, making the application of \ac{CPU} a
 Similar to \emph{Assassin's Creed Unity}, the game \emph{Alan Wake 2} (2023) and engine \emph{Unreal Engine 5} also 
 implement \ac{HZB} and depth reprojection. Both implementations are directly based on the approach of Aaltonen et 
 al. \cite{Aaltonen2015}, but this time, making use of the new \emph{Mesh Shading} pipeline. The difference being the 
-now provided hardware integration of clustering geometry \cite{Remedy2023,Karis2021}.  \\
+now provided hardware integration of clustering geometry \cite{Remedy2023,Karis2021}. \\
 
 \noindent
 Karis et al. and Remedy Entertainment find that using \ac{HZB} can provide great runtime performance for open, 
 highly dense scenes. Both combine the \ac{HZB} with depth reprojection to further optimize the computation of the 
 depth buffer. Using the Mesh Shading pipeline, this concept can be applied to meshlets, enabling per-meshlet culling. 
 That means that small parts of the geometry can be culled, even if other parts of the same mesh are still visible. 
-This optimizes the culling further so scenes can be more densely populated with meshes.\\
+This optimizes the culling further so scenes can be more densely populated with meshes. \\
 
 \noindent
 The findings of Karis et al. and Remedy Entertainment are adapted for this work's implementation, which also relies on 

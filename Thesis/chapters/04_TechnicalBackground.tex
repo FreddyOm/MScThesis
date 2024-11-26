@@ -2,22 +2,23 @@
 
 In order to put this work in context, some basic knowledge about computer graphics is expected.
 The reader is assumed to be familiar with the basic rendering pipeline and how 3D data is 
-transformed into a projected 2D image. Techniques like \emph{z-buffering}, \emph{mip-mapping}, 
-the use of \emph{textures}, basic \emph{transformations}, and \emph{compute shaders} are mentioned 
+transformed into a projected 2D image. Techniques like \emph{z-buffering}, \emph{mipmapping}, 
+the use of \emph{textures}, basic \emph{transformations}, and \emph{compute shaders} are mentioned, 
 but not explained in further detail. Beyond that, a more in-depth discussion of related topics and 
-techniques this work builds upon is discussed below.
+techniques this work builds upon is presented below.
 
+[@TODO: Consider removing this section completely as it is only repeating the related work]
 
 \section{Voxel Scene Layout} \label{sec-voxel-scene-layout}
 
 The voxel rendering in this work relies on a volumetric representation of the scene.
 It is particularly important that the voxel model not only includes the surface but also 
 the space within the model. This constraint is often used in interactable use cases, where 
-the model is split, cut, or manipulated in any given way. \emph{Minecraft} \cite{Mojang2024}
-lets the player take full control over the sandbox environment and allows adding or subtracting 
-voxels as they wish. Essentially, the voxel data of every possible voxel within the playable 
-space needs to be somehow present or encoded in memory, even though just a fraction of the 
-voxels are actually drawn to the screen.
+the model is split, cut, or manipulated in any given way. \emph{Minecraft} (Mojang \cite{Mojang2024}, 
+2011) lets the player take full control over the sandbox environment and allows adding or 
+subtracting voxels as they wish. Essentially, the voxel data of every possible voxel within 
+the playable space needs to be somehow present or encoded in memory, even though just a 
+fraction of the voxels are actually drawn to the screen.
 
 
 \subsection*{Three Dimensional Grid} \label{subsec-three-dimensional-grid}
@@ -99,6 +100,7 @@ this concept of optimizing voxel data is compatible with the use case presented 
 
 
 \section{Voxel Rendering} \label{sec-voxel-rendering}
+[@TODO: Redundant]
 
 \emph{Voxel Rendering} (\emph{voxel} = \emph{volumetric pixel}) refers to the use of primitive objects to 
 represent data elements in a three-dimensional grid. It is used to approximate 3D volumes analogous to how 
