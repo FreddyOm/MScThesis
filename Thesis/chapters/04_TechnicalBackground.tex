@@ -83,16 +83,19 @@ rendering optimizations to improve frame times. Using rasterized voxel rendering
 in concept and can be implemented for existing \ac{API}s, making use of hardware acceleration, i.e., 
 the \ac{GPU}. The voxel representation allows for easy computation since geometry is laid out 
 uniformly. Lighting calculations, as well as physics operations, can be further optimized to be 
-even more efficient. The most significant characteristic is the ability to dynamically enable or 
-disable voxels within the scene layout, or, in general, to update voxels and their corresponding 
-data efficiently. Since voxels are uniform shapes, they can be easily generated on the \ac{GPU}, 
+even more efficient. Since voxels are uniform shapes, they can be easily generated on the \ac{GPU}, 
 eliminating the need to transfer geometry from the \ac{CPU} to the \ac{GPU}. \\
 
 \noindent
-Due to their uniform nature, voxels are often used for real-time ray tracing. Although ray tracing 
-is not considered for this work, there are still acceleration techniques and approaches for voxel 
-data layouts, which are used in ray traced voxel rendering. As long as these techniques can be 
-applied to rasterized voxel rendering, they are of interest for this work's approach.
+Voxels are commonly used in games that emphasize free interaction with the environment. Their ability 
+to efficiently represent volumetric data and handle frequent updates makes them ideal for large, 
+interactive game environments where players can dynamically alter or interact with the voxel-based 
+surroundings.
+
+\noindent
+While voxels are also widely utilized in real-time ray tracing due to their uniform structure, this work does 
+not consider ray tracing. However, acceleration structures and voxel data layouts developed for ray-traced 
+rendering are of interest if they can be adapted to rasterized rendering pipelines.
 
 
 \subsection*{Voxel Physics} \label{subsec-voxel-physics}
