@@ -137,7 +137,7 @@ reaching to the top end of the octree, instead of the sides. \\
 [@TODO: Consider replacing the last "algorithm" with the actual subelement of the algo (scene data / data dispatch / ...)] 
 Another aspect to consider is the model data structure. The voxel models are volumetric representations and thus 
 not hollow. This leaves a large portion of the computation to be irrelevant and allows for the occlusion culling to 
-optimize the data flow. Different types of models were used to challenge the culling algorithm in different ways. 
+optimize the data flow. Different types of models were used to challenge the culling algorithm in various ways. 
 In concept, the culling should be optimal on large, dense models with even faces. Consequently, models with 
 slopes and holes were tested to see how the best occluders can be computed for diverse geometry. Smaller models might 
 also pose a challenge for the optimization, especially when the octree nodes cannot be filled completely. All these 
@@ -154,7 +154,7 @@ in Chapter \ref{sec-implementation-limitations}.
 \subsection*{Timings} \label{subsec-timings}
 
 The time spent for various computations is relevant for the selection of the best algorithm. This is a central 
-tool to see how the implementation performs overall in the context of the framework used. Consequently, the 
+tool to see how the implementation performs overall in the context of the used framework. Consequently, the 
 timings for all major pipeline steps were considered, as well as the overall time spent on \ac{CPU} and \ac{GPU} 
 computations. \\
 
@@ -184,13 +184,13 @@ and the pixel shader. Ultimately, it decides over the amount of overdraw and sho
 
 \subsection*{Measuring Tools} \label{subsec-measuring-tools}
 
-To measure timings and data precisely, a few external tools were used. All tools are part of the 
-industry-standard and were therefore assumed to be mostly reliable. Still, measuring performance usually 
-comes with a minimal overhead, which means that the results most likely vary in precision. Also, some of 
-the tools provided various ways of sampling the data. Some data was measured while the profiled application 
-was running, and other data was acquired by replaying the command list of the \ac{GPU}. Consequently, all 
-measurements referring to one aspect of the application were compared against measurements using the same 
-tool and configuration, if not explicitly specified otherwise. \\
+To measure timings and data precisely, a few external tools were used. All tools are up of industry-standard 
+and were therefore assumed to be mostly reliable. Still, measuring performance usually comes with a minimal 
+overhead, which means that the results most likely vary in precision. Also, some of the tools provided 
+various ways of sampling the data. Some data was measured while the profiled application was running, and 
+other data was acquired by replaying the command list of the \ac{GPU}. Consequently, all measurements 
+referring to one aspect of the application were compared against measurements using the same tool and 
+configuration. \\
 
 \noindent
 For the collection of data output, \emph{RenderDoc} \cite{RenderDoc} was used. It is a free, MIT-licensed 
@@ -202,7 +202,7 @@ and profiling tool for \emph{Windows} platforms using \emph{Microsoft's DirectX}
 
 \noindent
 The culling result measurements were directly sampled from the \emph{task shader} over the course of the testing 
-animation, using \emph{RenderDoc} and emph{PIX}. They were generally independent from the hardware and rather 
+animation, using \emph{RenderDoc} and \emph{PIX}. They were generally independent from the hardware and rather 
 depended on the camera position and viewing angle as well as on model resolution. Also, the screen resolution 
 affected the amount of mip maps generated for the \ac{HiZ} pyramid, so it was fixed to $1280 \times 900$ pixels. 
 All of the aspects above were standardized for each model over all test runs.
@@ -257,8 +257,8 @@ is presented that summarizes all the relevant data in a compact visualization.
 To evaluate the best occluder selection, all models were tested in terms of the octree's 
 query for the best occluders. This is a essential measure for evaluating the capability 
 of the occlusion culling approach to work in dynamic scenes that change their voxel 
-data in between frames. For an evaluation, a time budget of approximately 16.6 ms per 
-frame can be used as a reference budget, which is used to reach a framerate of 60 \emph{Hz} 
+data in between frames. For the evaluation, a time budget of approximately 16.6 ms per 
+frame is used as a reference budget, which is used to reach a framerate of 60 \emph{Hz} 
 at runtime. The measured values for each tested scene is presented in Table \ref{tab:best-occluder-query}. 
 
 \begin{table}[htbp]
@@ -281,6 +281,9 @@ at runtime. The measured values for each tested scene is presented in Table \ref
   \end{center}
 \end{table}
 
+\noindent
+The measurement show that each scene was processed in significantly less than 16.6 ms. The 
+computation times clearly scale with the amount of voxels.
 
 \subsection*{Stanford Lucy}
 
