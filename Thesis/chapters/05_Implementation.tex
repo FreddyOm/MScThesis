@@ -74,6 +74,10 @@ information that can be used for octree node-based culling.
 
 \subsection*{Octree Creation} \label{subsec-octree-creation}
 
+\noindent
+Figure \ref{fig:voxel-octree-viz} shows that the voxels are grouped into octree nodes, which are visualized by distinct 
+random colors. \\
+
 \begin{figure}[h]
     \centering
     \includegraphics[width=151.5px]{images/graphics/lucy-voxel-octree-viz.jpg}
@@ -108,10 +112,6 @@ located adjacent to one another. The additional "flat" \emph{octree node buffer}
 and a \emph{voxel count} to represent the octree node. Additionally, the octree node's bounds are stored alongside the 
 \emph{start index} and the \emph{voxel count}, so octree node-based computations can be executed on the \ac{GPU} side. \\
 
-\noindent
-Figure \ref{fig:voxel-octree-viz} shows that the voxels are grouped into octree nodes, which are visualized by distinct 
-random colors. 
-
 
 \subsection*{Best Occluder Selection} \label{subsec-best-occluder-selection}
 
@@ -120,13 +120,10 @@ The next step in the initialization procedure is to precompute the best occluder
 of the scene. This process is only possible if the models are static in the sense that they do not change in size or 
 shape. Although a change in position or rotation is not technically a problem, the best occluders are usually inherently 
 static. Changes to the properties of the occluder could result in inefficient occlusion queries or even the elimination 
-of occluders altogether. \\
-
-\noindent
-In the context of volumetric scene representations, this can be a problem since voxel models are often a target of 
-manipulation by players or physical interactions. So a predetermination of the best occluders is not possible in the 
-way it is for static models. This specific scenario is what the presented approach aims for and why the next step in 
-the pipeline preprocesses the best occluders. \\
+of occluders altogether. In the context of volumetric scene representations, this can be a problem since voxel models 
+are often a target of manipulation by players or physical interactions. So a predetermination of the best occluders is 
+not possible in the way it is for static models. This specific scenario is what the presented approach aims for and why 
+the next step in the pipeline preprocesses the best occluders. \\
 
 \noindent
 Note that this implementation does not include an update of the best occluders. It only serves as an experiment of 
@@ -165,13 +162,13 @@ reducing the computation cost for drawing the best occluders considerably. The b
 separate buffer so they can be dispatched efficiently. \\
 
 \noindent
-This concludes the initialization of the pipeline. When changes are applied to the voxel data, the voxel buffer,
-the octree node buffer, and the best occluder buffer need to be updated accordingly. Alternatively, the best 
-occluders can be implicitly calculated on the basis of the octree node buffer. This would make the best 
-occluder buffer redundant but would result in a higher dispatch count with a lot of discarded nodes, 
-where the criteria for the best occluders are not met. Since all computations are more or less in parallel, this 
-will not affect frametimes for a moderate amount of octree nodes. Nevertheless, since only static voxel models with 
-no runtime alternation are assumed for this work, a static, pre-calculated buffer for best occluders can be used.
+This concludes the initialization of the pipeline. When changes are applied to the scene,then the voxel buffer,
+the octree node buffer, and the best occluder buffer need to be updated accordingly to reflect those changes. 
+Alternatively, the best occluders can be implicitly calculated on the basis of the octree node buffer. This 
+would make the best occluder buffer redundant but would result in a higher dispatch count with a lot of discarded 
+nodes, where the criteria for the best occluders are not met. Since all computations are more or less in parallel, 
+this will not affect frametimes for a moderate amount of octree nodes. Nevertheless, since only static voxel models 
+with no runtime alternation are assumed for this work, a static, pre-calculated buffer for best occluders can be used.
 
 
 \section{Rendering Loop} \label{sec-rendering-loop}
@@ -337,8 +334,8 @@ that should in fact be visible. \\
 
 \noindent
 The complete occlusion culling routine computes the bounding box corners as \emph{UV} coordinates, so it is independent 
-from the mip level the depth values are checked against. In the best case, the visibility can be determined by using 
-the coarsest mip level. In the worst case, all mip levels up to the full resolution depth buffer need to be checked.
+from the mip level, which the depth values are checked against. In the best case, the visibility can be determined by 
+using the coarsest mip level. In the worst case, all mip levels up to the full resolution depth buffer need to be checked.
 The routine is shown in Listing \ref{lst:occlusion-culling-algo} as pseudocode.
 
 \fbox{
@@ -391,7 +388,7 @@ The routine is shown in Listing \ref{lst:occlusion-culling-algo} as pseudocode.
 
 \section{Implementation Limitations} \label{sec-implementation-limitations}
 
-The implementation features some limitations that need to be considered for the experimental setup 
+The implementation has some limitations that need to be considered for the experimental setup 
 in the following chapter.\\
 
 \noindent
