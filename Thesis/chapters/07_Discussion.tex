@@ -184,8 +184,8 @@ generally confirmed, the computation of the prepass would reduce to only the dep
 No matter how the prepass is executed, the measurements show that the highly parallelized way of computing the occlusion test does not lead to 
 the per-meshlet culling being slower than the per-octree culling. This can be explained by the massive amount of parallelization that is 
 possible in modern hardware and how the more fine-grained culling removes more geometry than the per-octree node culling does. This in turn leads 
-to a lower dispatch count of Mesh Shaders and subsequently to a lower load on rasterizer and Pixel Shader computations. However, this relation 
-is expected to be only valid for a reasonable amount of dispatches by the Task Shader, since a higher amount could ultimately lead to an inefficient 
+to a lower dispatch count of mesh shaders and subsequently to a lower load on rasterizer and pixel shader computations. However, this relation 
+is expected to be only valid for a reasonable amount of dispatches by the task shader, since a higher amount could ultimately lead to an inefficient 
 usage of \ac{GPU} threads. \\
 
 \noindent
