@@ -285,6 +285,16 @@ This precomputational step is used for visibility checking, i.e., view frustum c
 Since the task shader is based on the compute architecture, this pipeline step is realized using a standard 
 compute-like code structure. \\
 
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\linewidth]{images/graphics/screen_space_occlusion_test.jpg}
+    \caption{The occlusion test is done in screen space using the \emph{min} and \emph{max} boundaries. The octree node 
+    is shown in blue, and the respective \emph{min} and \emph{max} values are traced by the dotted red lines. The green 
+    line represents the rectangle as viewed from above (left). The same rectangle is shown from a front view as a 
+    representation of the octree nodes screen space occupancy (right).}
+    \label{fig:screen-space-occlusion-test}
+\end{figure}
+
 \noindent
 To check for visibility, projected bounding boxes need to be constructed and checked against the 
 \ac{HiZ} pyramid. This step can be highly parallelized by using one \ac{GPU} thread per bounding box 
@@ -308,32 +318,22 @@ This way, as long as any corner of the rectangle is located \emph{in front} of t
 the rectangle are located \emph{behind} the best occluder, the rectangle must be completely occluded. A visualization of 
 this process is shown in Figure \ref{fig:screen-space-occlusion-test}.
 
-\begin{figure}[h]
+\begin{figure}[htbp]
     \centering
-    \includegraphics[width=\linewidth]{images/graphics/screen_space_occlusion_test.jpg}
-    \caption{The occlusion test is done in screen space using the \emph{min} and \emph{max} boundaries. The octree node 
-    is shown in blue, and the respective \emph{min} and \emph{max} values are traced by the dotted red lines. The green 
-    line represents the rectangle as viewed from above (left). The same rectangle is shown from a front view as a 
-    representation of the octree nodes screen space occupancy (right).}
-    \label{fig:screen-space-occlusion-test}
-\end{figure}
-
-\noindent
-Now the hierarchy is traversed until the node is found to be fully occluded or until the hierarchy is fully traversed 
-and the node is found to be visible. Note that the area that is checked is not perfectly congruent with the actual 
-projected boundary box. This can lead to edge cases, where a few octree nodes are drawn, although they are actually 
-completely occluded. Still, this algorithm is completely conservative, meaning that it does not occlude any geometry 
-that should in fact be visible.
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=\linewidth]{images/graphics/visibility-hiz-sampling.jpg}
+    \includegraphics[width=200px]{images/graphics/visibility-hiz-sampling.jpg}
     \caption{The \ac{HiZ} pyramid is being sampled using the corners of the screen-space rectangle, shown in green. 
     The dotted yellow line resembles the border between different depth values in the buffer. Sampling the four 
     corners can provide up to four different depth values. The smallest one being the "nearest" occluder.}
     \label{fig:visibility-hiz-sampling}
 \end{figure}
 
+
+\noindent
+Now the hierarchy is traversed until the node is found to be fully occluded or until the hierarchy is fully traversed 
+and the node is found to be visible. Note that the area that is checked is not perfectly congruent with the actual 
+projected boundary box. This can lead to edge cases, where a few octree nodes are drawn, although they are actually 
+completely occluded. Still, this algorithm is completely conservative, meaning that it does not occlude any geometry 
+that should in fact be visible. \\
 
 \noindent
 The complete occlusion culling routine computes the bounding box corners as \emph{UV} coordinates, so it is independent 

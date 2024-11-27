@@ -1,36 +1,36 @@
 \chapter{Conclusions} \label{cpt-conclusion}
 
-This work has presented a implementation for a \ac{GPU}-driven implementation of 
+This work has presented an implementation for a \ac{GPU}-driven implementation of 
 \ac{HZB} for voxel-based volumetric rendering. A spatial data structure is 
-used to approximate the scenes inner volume and replace vast amount of voxels 
+used to approximate the scene's inner volume and replace vast amounts of voxels 
 with a small amount of cubical geometry. This way, a set of best occluders can 
 be used for computing a depth prepass, which in turn is used for efficient 
-occlusion culling on the \ac{GPU}. An examplary voxel scene with over 3 million 
+occlusion culling on the \ac{GPU}. An exemplary voxel scene with over 3 million 
 voxels has been approximated by only 8256 larger voxels.  \\
 
 \noindent
-The measurments have shown the capability of the modern mesh shading rendering 
+The measurements have shown the capability of the modern mesh shading rendering 
 pipeline to increase culling efficiency by culling individual meshlets, which in 
 turn leads to a lower computational load for the rasterizer and pixel shader 
 stages. The \ac{GPU} experiment has provided a precise measurement that indicates a 
 performance increase of about $29 \%$ when using the \ac{PMOC} configuration 
 of the algorithm as compared to the more general \ac{PONOC} configuration. 
-Compared to the base pipeline without occlusion culling apllied to the scene, the 
+Compared to the base pipeline without occlusion culling applied to the scene, the 
 performance increase ranged from $61.3 \%$ for the highly complex and irregular 
 \emph{Hairball} scene up to $90.7 \%$ for the \emph{Bunny} scene. \\
 
 \noindent
-The measurments have provided an overview of culling efficiency depending on several aspects 
-of the algorithm's configuration. The model's characteristics have a significantly 
+The measurements have provided an overview of culling efficiency depending on several aspects 
+of the algorithm's configuration. The model's characteristics have a significant 
 effect on the culling efficiency, which increases for models with high volumes and flat 
-surfaces, and decreases for small, thin, and detailed geometry with holes or empty spaces 
-within the model. The approach is therefore suggested for scenes that are dense and tight, 
+surfaces and decreases for small, thin, and detailed geometry with holes or empty spaces 
+within the model. The approach is therefore suggested for scenes that are dense and tight 
 and can be expected to provide at least a reasonable amount of full octree nodes. Conversely, 
 low voxel resolutions even tend to result in worse performance for this algorithm because of 
 the lower probability of featuring full octree nodes. \\
 
 \noindent
-Although several million voxels were computed by the pipeline each frame, the fast and 
+Although several million voxels were computed by the pipeline for each frame, the fast and 
 \ac{GPU}-driven algorithm scales with the amount of visible voxels and partially scales 
 with screen resolution. A considerable part of the overhead is static in its computation 
 and can be easily compared to the performance gain. Consequently, the approach can be 
@@ -41,31 +41,31 @@ load simultaneously. \\
 \noindent
 Furthermore, the pixel shader overdraw was shown to be considerably reduced by using 
 the \ac{PMOC} as compared to no occlusion culling at all or even the \ac{PONOC} 
-configuration. Oversraw is mostly present on the surface of the scene, while being 
-greatly reduced for otherwise ineffecient camera angles. \\
+configuration. Overdraw is mostly present on the surface of the scene, while being 
+greatly reduced for otherwise inefficient camera angles. \\
 
 \noindent
-The measurments for querying the best occluders have also shown that the approach can 
+The measurements for querying the best occluders have also shown that the approach can 
 generally be used to update the voxel data dynamically in real time. This is a key 
 requirement for the use of the algorithm in real-time voxel-rendered games since 
 manipulating the voxel data arbitrarily is a common feature in such games. The 
 measurements have shown that the \ac{CPU} computations required for querying the 
-best occluders is within reasonable time budgets. The computations are expected to 
+best occluders are within reasonable time budgets. The computations are expected to 
 be further optimized by chunking voxel data and using multithreaded computations for 
-the update and query. Nevertheless, it is up to future work to do an in-depth evaluation.
+the update and query. Nevertheless, it is up to future work to do an in-depth evaluation. \\
 
 \noindent
 Ultimately, this work has shown that voxel rendering can benefit from the latest advances 
 in real-time rendering and that the use of the proposed occlusion culling algorithm 
 using modern mesh shading can optimize the runtime performance as compared to a similar 
-per-octree culling approach, or compared to not using any occlusion culling at all. \\
+per-octree culling approach or compared to not using any occlusion culling at all. \\
 
 \noindent
 The approach could be used in large voxel scenes, which are meant to feature both a 
-high-resolution voxel scene, and a dynamic environment capable of complex player or 
+high-resolution voxel scene and a dynamic environment capable of complex player or 
 physical interaction. It is also possible to use it to animate high-resolution voxel 
 models or even to compute virtualized geometry. The latter case could feature a 
-continously adapting geometrical resolution depending on the camera distance and 
+continuously adapting geometrical resolution depending on the camera distance and 
 could provide similar results to Unreal Engine's \emph{Nanite virtualized geometry} 
 system \cite{Karis2021}. In their presentation, Karis et al. mention that they 
-considered to approach virtualized geometry by using voxels. 
+considered approaching virtualized geometry by using voxels. 

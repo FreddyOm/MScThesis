@@ -88,7 +88,6 @@ it should only be impacted by a change of the screen resolution. This assumption
 creation is implemented. Consequently, the final performance of both tested configurations is expected to vary based on the amount 
 of completely filled octree nodes. \\
 
-\noindent [@TODO: Add graph which plots culling efficiency against total voxel count]
 The data indicates that a higher average occupation has the tendency to result in better overall culling performance and subsequently 
 in better \ac{GPU} performance as well. It can also be derived that the average culling efficiency increases with the increase of 
 voxels in the scene. But this is only true to an extent, since the \emph{Hairball} model showed a decrease in average culling efficiency 
@@ -96,6 +95,7 @@ compared to the \emph{Lucy} model while having almost 5 times the voxel count. T
 that are similarly dense in structure and do not contain holes or other challenging features.\\
 
 \begin{figure}[!htb]
+    \centering
     \begin{tikzpicture}
         \begin{axis}[
             width=12cm,
@@ -195,25 +195,7 @@ computations, like updating the voxel data dynamically. When using the approach 
 to optimize volumetric voxel rendering further. Particularly if the proposed implementation is even further optimized to fit the given use case, 
 for example, by using command lists to avoid a write-back to \ac{CPU} memory before dispatching the meshes for the final draw call. \\
 
-%- Main Constraints
 
-%- Models, resolutions and Scaling of individual parts of the pipeline (which are static, which scale with the pixel res, which scale with voxel count, ...)
-
-%- Approximate best occluders for prepass
-
-
-
-
-%- Advantage of algo using screen space (vgl. window scene)
-
-%- Perspective: Culling best occluder with "itself"
-
-%- Confirmed sub-model culling using mesh shading 
-%- Per-Meshlet culling has no sub-meshlet detail, only 4 checks are necessary for accurate occlusion checks -> could be possible to omit HiZ pyramid
-
-%- Highly parallel way of scheduling mesh data makes this possible and not significantly slower than culling complete octree nodes (as long as node count is reasonably low)
-
-%- On-chip creation of voxels leaves room for different CPU computations and Occlusion culling can be implemented in suitable scenes while moving occlusion culling computations almost entirely to the GPU
 
 \section{Limitations}
 
