@@ -27,8 +27,10 @@ pipeline discussion and in depth data visualization.
 - [x] Add nocull overdraw for torus
 - [x] Move model descriptions down to individual model results
 - [x] Add mew measurements into thesis (Best occluder creation)
-- [] Fix capitalization of words
+- [x] Fix capitalization of words
 - [x] Write Conclusion
+- [] Evaluate memory footprint in discussion?
+- [] Paper: Memory occupation of models also into paper?
 
 ## Kolloquium
 

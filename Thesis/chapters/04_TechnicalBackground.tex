@@ -1,6 +1,6 @@
 \chapter{Technical Background} \label{cpt-technical-background}
 
-In order to put this work in context, some basic knowledge about computer graphics is expected.
+To provide context for this work, some basic knowledge about computer graphics is expected.
 The reader is assumed to be familiar with the basic rendering pipeline and how 3D data is 
 transformed into a projected 2D image. Techniques like \emph{z-buffering}, \emph{mipmapping}, 
 the use of \emph{textures}, basic \emph{transformations}, and \emph{compute shaders} are mentioned 
@@ -42,9 +42,9 @@ shallow hierarchy where (almost) no data is present.
 \noindent
 Octrees like this can vary in their specific implementation, especially in how they maintain the 
 payload. Some might store it right next to the octree node description, others might want to separate 
-octree and payload data. Octree nodes could also be appended to a dedicated buffer and therefore be stored 
-separately from the tree hierarchy description. Such an approach would maintain cache coherency during an 
-unordered traversal of all octree nodes.\\
+octree and payload data. Octree nodes could also be appended to a dedicated buffer and therefore 
+be stored separately from the tree hierarchy description. Such an approach would maintain cache 
+coherency during an unordered traversal of all octree nodes.\\
 
 \noindent
 When using hierarchical data structures, dedicated vertex positions can be omitted, and instead, 
@@ -53,45 +53,25 @@ This allows for improvement of memory occupation, which is vital for loading and
 voxel scenes. A voxel's state can be encoded into either visible (1) or empty (0). A bitwise representation 
 of voxels can significantly decrease the memory footprint, which is a techniqe the next approach expands on.
 
-[@TODO: Maybe shorten due to redundancy]
 \subsection*{High Resolution Sparse Voxel Directed Acyclic Graphs} \label{subsec-highres-svo-dags}
 
-Kämpe et al. \cite{Kampe2013} use data redundancy to further generalize and optimize high-resolution 
-\ac{SVO}s. In their implementation, the octree data structure relies on bitmasks to encode the existence of child 
-nodes. This way, empty nodes are ignored, and the information can be easily stored within one byte. This child node 
-mask uniquely identifies the layout of the nodes below and can also be used to store the voxel occupation of the 
-leaf nodes. Next, they make use of the fact that an octree node's position is uniquely identified by the path along 
-the nodes from root to leaf node. Since voxels can be encoded as either being present or not, and non-present 
-voxels can be ignored, the data can be significantly reduced in size. Furthermore, equal child node masks 
-can simply be shared between different parent nodes instead of being duplicated. Kämpe et al. \cite{Kampe2013} 
-suggest a bottom-up approach to remove redundant nodes and replace whole subtrees of the octree by pointing to one 
-instance of the same pattern within the tree, which is shown in Figure \ref{fig:sparse-voxel-dag-creation}. 
-This optimization can be recursively done to each layer in the tree hierarchy, resulting in an optimized version 
-of the data structure. The resulting structure is a more general hierarchical data structure, namely a \ac{DAG}.
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=\linewidth]{images/graphics/highres-sv-dag.jpg}
-    \caption{Reducing a \ac{SVO} using the approach of Kämpe et al. \cite{Kampe2013}.}
-    \label{fig:sparse-voxel-dag-creation}
-\end{figure}
-
-\noindent
-This approach seems to be the best solution for reading, storing, and optimizing octree data, although the work
-presented in Chapter \ref{cpt-implementation} uses a more basic approach in the implementation. Nevertheless, 
-this concept of optimizing voxel data is compatible with the use case presented here and is highly recommended.
+High-resolution sparse voxel \ac{DAG}s proposed by Kämpe et al. \cite{Kampe2013} use data redundancy to further 
+generalize and optimize high-resolution \ac{SVO}s. It is a favourable approach for an implementation like 
+the one described in this work because it uses a highly efficient way of storing spatial data, reduces redundancies, 
+and can be easily transferred to \ac{GPU} memory. It seems to be a very good solution for reading, storing, and 
+optimizing octree data, although the work presented in Chapter \ref{cpt-implementation} uses a more basic 
+approach in the implementation for reasons of simplicity. 
 
 
 \section{Voxel Rendering} \label{sec-voxel-rendering}
-[@TODO: Redundant]
 
 \noindent
 \emph{Voxel Rendering} refers to the use of primitive objects to represent data elements in a three-dimensional 
 grid. It is used to approximate 3D volumes analogous to how 2D pixels approximate shapes, lines, or areas in a 
 two-dimensional grid \cite{MegaVoxels2023}. Commonly, uniform cubes are used to represent the data in space, 
 which results in a distinct, blocky look, depending on the size of the primitives. Games like \emph{Minecraft} 
-(Mojang \cite{Mojang2024}, 2011) popularized this technique for games, which is often used because of its simplicity and low 
-memory footprint. Voxels have been used in a lot of ways, some of which are presented below.
+(Mojang \cite{Mojang2024}, 2011) popularized this technique for games, which is often used because of its 
+simplicity and low memory footprint. Voxels have been used in a lot of ways, some of which are presented below.
 
 
 \subsection*{Rasterized Voxel Rendering} \label{subsec-rasterized-voxel-rendering}
@@ -136,7 +116,7 @@ calculations. Also, storing voxels in a spatial container helps keep collision c
 \noindent
 Although voxel physics is not considered for this work, it is very suitable for this approach as it basically 
 allows dynamic operations like physics or simulations. The performance of the proposed concept under dynamic 
-conditions needs to be tested in future experiments to see if it can support physics interactions.
+conditions needs to be tested in future experiments to see if it can support physics interactions. 
 
 
 \section{Culling Techniques} \label{sec-culling-techniques}

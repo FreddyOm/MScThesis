@@ -320,7 +320,7 @@ this process is shown in Figure \ref{fig:screen-space-occlusion-test}.
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=200px]{images/graphics/visibility-hiz-sampling.jpg}
+    \includegraphics[width=300px]{images/graphics/visibility-hiz-sampling.jpg}
     \caption{The \ac{HiZ} pyramid is being sampled using the corners of the screen-space rectangle, shown in green. 
     The dotted yellow line resembles the border between different depth values in the buffer. Sampling the four 
     corners can provide up to four different depth values. The smallest one being the "nearest" occluder.}
@@ -389,7 +389,7 @@ The routine is shown in Listing \ref{lst:occlusion-culling-algo} as pseudocode.
 \vspace{0.5cm}
 
 
-\section{Implementation Limitations}
+\section{Implementation Limitations} \label{sec-implementation-limitations}
 
 The implementation features some limitations that need to be considered for the experimental setup 
 in the following chapter.\\

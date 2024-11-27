@@ -32,32 +32,29 @@ all the tests performed during the experiment.
 
 \section{Experimental Evaluation} \label{sec-experimental-evaluation}
 
-[@TODO: Fix this! Rewrite completely]
-To evaluate the key differences and the runtime performance in general, several aspects had to be considered.
-Unfortunately, comparing the occlusion culling implementation to an alternative implementation was not within the 
-scope of this work, so efforts were made to evaluate the pipeline and its performance from a conceptual point of 
-view and to compare it to the plain pipeline, without any occlusion culling at all. This includes two different 
-versions of occlusion culling, one based on culling octree nodes, as it can be implemented without the use of the 
-mesh shading pipeline. The other one is based on \ac{PMOC}, which makes use of the more parallel 
-computation capabilities of the \ac{GPU}. \\
-
-\noindent [@TODO: Check if this is still true] [@TODO: Parts of this are redundant. Rewrite and restructure to be more like the paper!]
-This section highlights the major aspects that were considered for the experiment and were evaluated during the 
-test runs. All aspects aim to demonstrate how the occlusion culling affected the given test scene and how the 
-computations differ compared to the plain pipeline without any occlusion culling. Furthermore, two different 
-occlusion culling configurations are evaluated, \ac{PONOC} and \ac{PMOC}. They are compared to consider 
+The experiment aimed to evaluate the tested scenes in respect to the above mentioned aspects. To do this, 
+various characteristics have been selected, which are outlined below. All aspects aim to demonstrate how 
+the occlusion culling affected the given test scene and how the computations differed compared to the plain 
+pipeline without any occlusion culling. 
 
 
 \subsection*{Scene Layout} \label{subsec-scene-layout}
 
-For the scene layout, two aspects were considered during the experiment. First of all, the spatial positioning 
-of the model was important, and secondly, the data structure and shape of the models were considered in particular. \\
+For the scene layout, the spatial positioning of the model was important, and the data structure and shape 
+of the models was considered in particular. \\
 
 \noindent
 The data was sampled over time using a standardized camera animation, which was following a circular orbit 
 around the model, visualized in Figure \ref{fig:test-anim-camera-path}. A vertical offset was added to the orbit 
 so the model could be drawn from various angles. This was especially important for models like the \emph{Torus}, 
-which are likely to behave very differently when viewed from above compared to when viewed from the side.
+which are likely to behave very differently when viewed from above compared to when viewed from the side. \\
+
+\noindent
+Some of the scenes were filled up to the borders, others only occupied a small portion of the overall scene. 
+Since the octree had always taken up the entire space of the scene, the overall scene layout was additionally 
+challenged by different models. The \emph{Terrain} model, for example, only occupied the lower part of the 
+scene but reached to each end of the sides while the \emph{Lucy} model occupied only one quarter of the scene, 
+reaching to the top end of the octree, instead of the sides. \\
 
 \begin{figure}[h]
     \centering
@@ -75,20 +72,15 @@ not hollow. This leaves a large portion of the computation to be irrelevant and 
 optimize the data flow. Different types of models were used to challenge the culling algorithm in different ways. 
 In concept, the culling should be optimal on large, dense models with even faces. Consequently, models with 
 slopes and holes were tested to see how the best occluders can be computed for diverse geometry. Smaller models might 
-also pose a challenge for the optimization, especially when the octree nodes cannot be filled completely. Also, 
-different voxel resolutions were used to achieve different amounts of octree nodes in the scene. All these different 
-aspects aim to show the strengths and weaknesses of the algorithm and how it can be optimally used in practice. \\
+also pose a challenge for the optimization, especially when the octree nodes cannot be filled completely. All these 
+different aspects aim to show the strengths and weaknesses of the algorithm and how it can be optimally used in practice. \\
 
 \noindent
 The resolution of the voxelization process played a central role in the experimentation process.
 For the experiment, the voxel scenes were constrained to be a power of two in length per axis, and a resolution 
 of $\emph{256} \times \emph{256} \times \emph{256}$ was used for the performance profiling, resulting in a maximum 
-of 16,777,216 voxels. In practice, the maximum amount of voxels was limited by how the data was dispatched 
-by the \ac{GPU}. In the implementation, the shader model used (HLSL Shader Model 6.6) was limited to a maximum 
-amount of 65,536 thread groups. That means that the thread group size and the amount of constructed octree nodes 
-influenced the possible resolutions of the scenes. This limitation can be overcome by scheduling more than one draw 
-call, but for this experiment, only one draw call was used. Consequently, the actual maximum amount of voxels in the 
-scene was around 3-4 million voxels, which was considered enough for this experiment.
+of 16,777,216 voxels. In practice, the maximum amount of voxels was limited by the data dispatch limitation mentioned 
+in Chapter \ref{sec-implementation-limitations}.
 
 
 \subsection*{Timings} \label{subsec-timings}
@@ -150,10 +142,8 @@ All of the aspects above were standardized for each model over all test runs.
 
 \subsection*{Experimental Environment} \label{subsec-experimental-environment}
 
-[@TODO: Rethink section title] [@TODO: Check what is not applicable anymore]
-For the experiment, different hardware setups were used to compare the runtime performance in different environments.
-Some more modern hardware was used to profile the best-case computations, and older hardware was used for the results 
-of different versions of hardware features and capabilities.
+For the experiment, a modern hardware setup was used for performance profiling. All performance related 
+measurement were performed on Setup 1, outlined in Table \ref{tbl:hardware-setup}.
 
 \begin{table}[h]          % System setup table
     \begin{tabular}{|lll|}
@@ -182,7 +172,6 @@ the test setups are listed in table \ref{tbl:hardware-setup}. \\
 
 
 \subsection*{Models} \label{subsec-models}
-
 
 \begin{figure*}[!htb]
   \begin{subfigure}{80px}
@@ -219,16 +208,35 @@ the test setups are listed in table \ref{tbl:hardware-setup}. \\
 \noindent
 The models that were used in the tests are \emph{Lucy} (Stanford 3D Scanning Repository), the 
 \emph{Stanford Bunny} (Stanford 3D Scanning Repository), the \emph{Hairball}, a \emph{Torus}, 
-and a \emph{Terrain} scene. All of these models feature different characteristics, which tested 
+and a \emph{Terrain} model. All of these models feature different characteristics, which tested 
 the pipeline in a variety of ways. They were voxelized to a scene size of $256^3$ and occupy 
-different amounts of space in the scene.
-
-[@TODO: Write a bit more here.]
-
+different amounts of space within the scene. The models are listed in Figure 
+\ref{fig:experiment-models}. \\
 
 
-[@TODO: Add memory footprint to data throughput]
+\begin{table}[htbp]
+  \begin{center}
+    \begin{tabular}{|c|c|c|c|}
+      \hline
+      \textbf{}&\multicolumn{3}{|c|}{\textbf{Scene Memory Footprint - $256^3$}} \\
+      \cline{2-4} 
+      \textbf{Scene} & \textbf{\textit{Voxel Data (KiB)}}& \textbf{\textit{Octree Node Buffer (KiB)}} & \textbf{\textit{Best Occluder Buffer (KiB)}} \\
+      \hline
+      Lucy        & 5,176   & 321   & 50  \\
+      Bunny       & 52,808  & 2,697 & 258 \\
+      Torus       & 36,109  & 1,866 & 224 \\
+      Terrain     & 14,896  & 867   & 218 \\
+      Hairball    & 25,819  & 1,857 & 158 \\
+      \hline
+    \end{tabular}
+  \end{center}
+  \caption{Memory footprint of the tested scenes.}
+  \label{tbl:scene-data-size}
+\end{table}
 
+\noindent
+Table \ref{tab:scene-data-size} shows the memory footprint of the necessary data structures for each scene. 
+Adding all three buffers together results in the total memory dedicated to the scene geometry.
 
 \section{Experimental Results}
 
@@ -278,6 +286,7 @@ than over the other two axes. This is assumed to provide interesting insights in
 self-occludes the voxels when viewed from different perspectives. It also has a few narrow parts where 
 no best occluders are expected.
 
+
 \subsubsection*{Culling Results} \label{subsubsec-culling-results-lucy}
 
 % --------------------------------------- LUCY 256 ---------------------------------------
@@ -324,8 +333,8 @@ no best occluders are expected.
           \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
         \end{axis}
       \end{tikzpicture}
-      \caption{First: The amount of visible voxels over the course of the test animation. 
-      Second: The amount of visible octree nodes over the course of the test animation.}
+      \caption{\textbf{First:} The amount of visible voxels over the course of the test animation. 
+      \textbf{Second:} The amount of visible octree nodes over the course of the test animation.}
       \label{plt:lucy-256-culling-culling-results}
     \end{center}
   \end{figure}
@@ -337,6 +346,7 @@ Figure \ref{plt:lucy-256-culling-culling-results} shows the amount of visible vo
 nodes for both the \ac{PONOC} (upper graph) and the \ac{PMOC} (lower graph) configurations. \\
 
 \noindent [@TODO: Fix plot color references]
+
 The average amount of visible voxels was \emph{140,842} for \ac{PONOC}, which is marked 
 as the blue dotted line, and \emph{84,082} for \ac{PMOC}, marked in red. The average 
 amount of visible octree nodes was \emph{3,460} for \ac{PONOC}, which is marked as the 
@@ -378,7 +388,7 @@ voxels. On average, the \ac{PMOC} even managed to omit $74.6\%$ of all voxels.
           xmax=2392,
           ymin=0,
           ymax=0.00005,
-          legend style={at={(0.5,1.7)}, anchor=north, legend columns=2},
+          legend style={at={(0.5,1.8)}, anchor=north, legend columns=2},
         ]
         \addplot[brown!60, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 2392 / 1648, y=time]{./plotdata/cpu/lucy_256_updateTime_nocull.csv};
         \addplot[blue, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 2392 / 1863, y=time]{./plotdata/cpu/lucy_256_updateTime_pooc.csv};
@@ -397,7 +407,7 @@ voxels. On average, the \ac{PMOC} even managed to omit $74.6\%$ of all voxels.
           xmax=2392,
           ymin=0,
           ymax=0.00025,
-          legend style={at={(0.5,1.7)}, anchor=north, legend columns=2},
+          legend style={at={(0.5,1.8)}, anchor=north, legend columns=2},
         ]
         \addplot[brown!60, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 2392 / 1648, y=time]{./plotdata/cpu/lucy_256_renderTime_nocull.csv};
         \addplot[blue, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 2392 / 1863, y=time]{./plotdata/cpu/lucy_256_renderTime_pooc.csv};
@@ -432,11 +442,7 @@ completely happens on the \ac{GPU} end of the pipeline.
 
 \subsubsection*{GPU Performance Results} \label{subsubsec-gpu-performance-results-lucy}
 
-On the \ac{GPU}, the \ac{PMOC} turned out to be faster in computation. As the occlusion 
-culling algorithm intended, the time spent drawing the meshes could be reduced by $30\%$ on average for this 
-particular model.
-
-\begin{figure}[!htb]      % Lucy GPU Results
+\begin{figure}[!htbp]      % Lucy GPU Results
   \centering
   \begin{tikzpicture}
     \begin{axis}[
@@ -446,6 +452,7 @@ particular model.
         ylabel={Time ($\mu$s)},
         legend style={at={(0.5,1.2)}, anchor=north, legend columns=-1},
         symbolic x coords={DepthPrepass, DispatchMesh, Misc},
+        xticklabels={Depth Prepass, Dispatch Mesh, Miscellaneous},
         xtick=data,
         ybar=0.4,
         bar width=25pt,
@@ -468,6 +475,7 @@ particular model.
         ylabel={Time ($\mu$s)},
         legend style={at={(0.5,1.2)}, anchor=north, legend columns=-1},
         symbolic x coords={DispatchBestOccluders, CopyTex, GenMipChain},
+        xticklabels={Dispatch Best Occluders, Copy Depth Buffer, Generate \ac{HiZ} Pyramid},
         xtick=data,
         ybar=0.4,
         bar width=25pt,
@@ -481,15 +489,21 @@ particular model.
     \end{axis}
   \end{tikzpicture}
 
-  \caption{First: The complete time measured on the \ac{GPU}. The \emph{Depth Prepass} is the extra overhead 
+  \caption{\textbf{First:} The complete time measured on the \ac{GPU}. The \emph{Depth Prepass} is the extra overhead 
   introduced by the \ac{HZB}. The \emph{Dispatch Mesh} is the drawing of the meshes, including the occlusion 
   culling. \emph{Miscellaneous} includes a small amount of \emph{Barriers} used for synchronization and the 
   rendering of some debug \ac{UI}. It is considered to be more or less static in computation time and is not 
-  part of the actual algorithm measured in this experiment. Second: The time measured in the \emph{Depth Prepass}. 
+  part of the actual algorithm measured in this experiment. \textbf{Second:} The time measured in the \emph{Depth Prepass}. 
   The \emph{Dispatch Best Occluders} is the drawing to the depth buffer. The \emph{Copy Depth Buffer} computation 
   copies the depth buffers content into the final \ac{HiZ} resource. Finally, \emph{Generate HiZ Pyramid} shows 
   the \ac{HiZ} creation, which is done sequentially.}
 \end{figure}
+
+\noindent
+On the \ac{GPU}, the \ac{PMOC} turned out to be faster in computation. As the occlusion 
+culling algorithm intended, the time spent drawing the meshes could be reduced by $30\%$ on average for this 
+particular model. Compared to the base pipeline featuring no culling, the performance on the \ac{GPU} side 
+was increased by $58.2 \%$ using \ac{PONOC} and $74.6\%$ using \ac{PMOC}. \\
 
 \noindent
 The comparison of the depth prepass shows a small difference in computation time. The per-octree node configuration 
@@ -498,7 +512,7 @@ copying the depth buffer and computing the mip maps.
 
 \subsubsection*{Overdraw}
 
-\begin{figure}[!htb]
+\begin{figure}[!htbp]
   \centering
   \includegraphics[height=100px]{images/graphics/overdraw-lucy1-nocull.png}
   \includegraphics[height=100px]{images/graphics/overdraw-lucy1-pooc.png}
@@ -532,12 +546,10 @@ copying the depth buffer and computing the mip maps.
 \end{figure}
 
 \noindent
-Figure \ref{fig:lucy-overdraw} shows that the \ac{PONOC} had more 
-overdrawn pixels than the \ac{PMOC} configuration. While the 
-\ac{PONOC} resulted in a maximum overdraw of 38 draws per pixel, 
-the \ac{PMOC} was able to reduce this to a maximum of 27 draws.
-The comparison measurement without culling applied resulted in a maximum of 78 draws. 
-The side view featured only a maximum of 7 draws per pixel in both configurations.
+Figure \ref{fig:lucy-overdraw} shows that the \ac{PONOC} had more overdrawn pixels than the \ac{PMOC} configuration. 
+While the \ac{PONOC} resulted in a maximum overdraw of 38 draws per pixel, the \ac{PMOC} was able to reduce this to 
+a maximum of 27 draws. The comparison measurement without culling applied resulted in a maximum of 78 draws. The 
+side view featured only a maximum of 7 draws per pixel in both configurations. 
 
 
 \clearpage
@@ -600,8 +612,8 @@ approximations.
         \end{axis}
       \end{tikzpicture}
 
-      \caption{First: The amount of visible voxels over the course of the test animation. 
-      Second: The amount of visible octree nodes over the course of the test animation.}
+      \caption{\textbf{First:} The amount of visible voxels over the course of the test animation. 
+      \textbf{Second:} The amount of visible octree nodes over the course of the test animation.}
       \label{plt:bunny-256-culling-res-voxels}
     \end{center}
   \end{figure}
@@ -638,7 +650,7 @@ as the red dotted line.
           xmax=1186,
           ymin=0,
           ymax=0.00005,
-          legend style={at={(0.5,1.7)}, anchor=north, legend columns=2},
+          legend style={at={(0.5,1.8)}, anchor=north, legend columns=2},
         ]
         \addplot[brown!60, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1186 / 1236, y=time]{./plotdata/cpu/bunny_256_updateTime_nocull.csv};
         \addplot[blue, no marks, solid]  table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1186 / 1574, y=time]{./plotdata/cpu/bunny_256_updateTime_pooc.csv};
@@ -657,7 +669,7 @@ as the red dotted line.
           xmax=1186,
           ymin=0,
           ymax=0.00025,
-          legend style={at={(0.5,1.7)}, anchor=north, legend columns=2},
+          legend style={at={(0.5,1.8)}, anchor=north, legend columns=2},
         ]
         \addplot[brown!60, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1186 / 1236, y=time]{./plotdata/cpu/bunny_256_renderTime_nocull.csv};
         \addplot[blue, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1186 / 1574, y=time]{./plotdata/cpu/bunny_256_renderTime_pooc.csv};
@@ -694,6 +706,7 @@ not considered significant enough to make any assumptions about them. Therefore,
         ylabel={Time ($\mu$s)},
         legend style={at={(0.5,1.2)}, anchor=north, legend columns=-1},
         symbolic x coords={DepthPrepass, DispatchMesh, Misc},
+        xticklabels={Depth Prepass, Dispatch Mesh, Miscellaneous},
         xtick=data,
         ybar=0.4,
         bar width=25pt,
@@ -716,6 +729,7 @@ not considered significant enough to make any assumptions about them. Therefore,
         ylabel={Time ($\mu$s)},
         legend style={at={(0.5,1.2)}, anchor=north, legend columns=-1},
         symbolic x coords={DispatchBestOccluders, CopyTex, GenMipChain},
+        xticklabels={Dispatch Best Occluders, Copy Depth Buffer, Generate \ac{HiZ} Pyramid},
         xtick=data,
         ybar=0.4,
         bar width=25pt,
@@ -729,14 +743,14 @@ not considered significant enough to make any assumptions about them. Therefore,
     \end{axis}
   \end{tikzpicture}
 
-  \caption{First: The complete time measured on the \ac{GPU}. The \emph{Depth Prepass} is the extra overhead 
-  introduced by the \ac{HZB}. The \emph{Dispatch Mesh} is the drawing of the meshes, including the occlusion 
-  culling. \emph{Miscellaneous} includes a small amount of \emph{Barriers} used for synchronization and the 
-  rendering of some debug \ac{UI}. It is considered to be more or less static in computation time and is not 
-  part of the actual algorithm measured in this experiment. Second: The time measured in the \emph{Depth Prepass}. 
-  The \emph{Dispatch Best Occluders} is the drawing to the depth buffer. The \emph{Copy Depth Buffer} computation 
-  copies the depth buffers content into the final \ac{HiZ} resource. Finally, \emph{Generate HiZ Pyramid} 
-  shows the \ac{HiZ} creation, which is done sequentially.}
+  \caption{\textbf{First:} The complete time measured on the \ac{GPU}. The \emph{Depth Prepass} is the extra 
+  overhead introduced by the \ac{HZB}. The \emph{Dispatch Mesh} is the drawing of the meshes, including the 
+  occlusion culling. \emph{Miscellaneous} includes a small amount of \emph{Barriers} used for synchronization 
+  and the rendering of some debug \ac{UI}. It is considered to be more or less static in computation time and 
+  is not part of the actual algorithm measured in this experiment. \textbf{Second:} The time measured in the 
+  \emph{Depth Prepass}. The \emph{Dispatch Best Occluders} is the drawing to the depth buffer. The 
+  \emph{Copy Depth Buffer} computation copies the depth buffers content into the final \ac{HiZ} resource. 
+  Finally, \emph{Generate HiZ Pyramid} shows the \ac{HiZ} creation, which is done sequentially.}
 \end{figure}
 
 \noindent
@@ -862,8 +876,8 @@ shape and therefore has a lot of partially filled octree nodes representing its 
         \end{axis}
       \end{tikzpicture}
 
-      \caption{First: The amount of visible voxels over the course of the test animation. 
-      Second: The amount of visible octree nodes over the course of the test animation.}
+      \caption{\textbf{First:} The amount of visible voxels over the course of the test animation. 
+      \textbf{Second:} The amount of visible octree nodes over the course of the test animation.}
       \label{plt:torus-256-culling-res-voxels}
     \end{center}
   \end{figure}
@@ -904,7 +918,7 @@ for a given model.
           xmax=1087,
           ymin=0,
           ymax=0.00005,
-          legend style={at={(0.5,1.7)}, anchor=north, legend columns=2},
+          legend style={at={(0.5,1.8)}, anchor=north, legend columns=2},
         ]
         \addplot[brown!60, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1087 / 1262, y=time]{./plotdata/cpu/torus_256_updateTime_nocull.csv};
         \addplot[blue, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1554 / 1863, y=time]{./plotdata/cpu/torus_256_updateTime_pooc.csv};
@@ -923,7 +937,7 @@ for a given model.
           xmax=1087,
           ymin=0,
           ymax=0.00025,
-          legend style={at={(0.5,1.7)}, anchor=north, legend columns=2},
+          legend style={at={(0.5,1.8)}, anchor=north, legend columns=2},
         ]
         \addplot[brown!60, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1087 / 1262, y=time]{./plotdata/cpu/torus_256_renderTime_nocull.csv};
         \addplot[blue, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1087 / 1554, y=time]{./plotdata/cpu/torus_256_renderTime_pooc.csv};
@@ -956,6 +970,7 @@ using the \ac{PMOC} configuration as shown in Figure \ref{fig:torus-gpu-results}
         ylabel={Time ($\mu$s)},
         legend style={at={(0.5,1.2)}, anchor=north, legend columns=-1},
         symbolic x coords={DepthPrepass, DispatchMesh, Misc},
+        xticklabels={Depth Prepass, Dispatch Mesh, Miscellaneous},
         xtick=data,
         ybar=0.4,
         bar width=25pt,
@@ -978,6 +993,7 @@ using the \ac{PMOC} configuration as shown in Figure \ref{fig:torus-gpu-results}
         ylabel={Time ($\mu$s)},
         legend style={at={(0.5,1.2)}, anchor=north, legend columns=-1},
         symbolic x coords={DispatchBestOccluders, CopyTex, GenMipChain},
+        xticklabels={Dispatch Best Occluders, Copy Depth Buffer, Generate \ac{HiZ} Pyramid},
         xtick=data,
         ybar=0.4,
         bar width=25pt,
@@ -990,14 +1006,14 @@ using the \ac{PMOC} configuration as shown in Figure \ref{fig:torus-gpu-results}
     \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
     \end{axis}
   \end{tikzpicture}
-  \caption{First: The complete time measured on the \ac{GPU}. The \emph{Depth Prepass} is the extra overhead 
-  introduced by the \ac{HZB}. The \emph{Dispatch Mesh} is the drawing of the meshes, including the occlusion 
-  culling. \emph{Miscellaneous} includes a small amount of \emph{Barriers} used for synchronization and the 
-  rendering of some debug \ac{UI}. It is considered to be more or less static in computation time and is not 
-  part of the actual algorithm measured in this experiment. Second: The time measured in the \emph{Depth Prepass}. 
-  The \emph{Dispatch Best Occluders} is the drawing to the depth buffer. The \emph{Copy Depth Buffer} computation 
-  copies the depth buffers content into the final \ac{HiZ} resource. Finally, \emph{Generate HiZ Pyramid} shows 
-  the \ac{HiZ} creation, which is done sequentially.}
+  \caption{\textbf{First:} The complete time measured on the \ac{GPU}. The \emph{Depth Prepass} is the extra 
+  overhead introduced by the \ac{HZB}. The \emph{Dispatch Mesh} is the drawing of the meshes, including the 
+  occlusion culling. \emph{Miscellaneous} includes a small amount of \emph{Barriers} used for synchronization 
+  and the rendering of some debug \ac{UI}. It is considered to be more or less static in computation time and 
+  is not part of the actual algorithm measured in this experiment. \textbf{Second:} The time measured in the 
+  \emph{Depth Prepass}. The \emph{Dispatch Best Occluders} is the drawing to the depth buffer. The 
+  \emph{Copy Depth Buffer} computation copies the depth buffers content into the final \ac{HiZ} resource. Finally, 
+  \emph{Generate HiZ Pyramid} shows the \ac{HiZ} creation, which is done sequentially.}
   \label{fig:torus-gpu-results}
 \end{figure}
 
@@ -1106,8 +1122,8 @@ which again would help for rendering such a scene in a game.
         \end{axis}
       \end{tikzpicture}
 
-      \caption{First: The amount of visible voxels over the course of the test animation. 
-      Second: The amount of visible octree nodes over the course of the test animation.}
+      \caption{\textbf{First:} The amount of visible voxels over the course of the test animation. 
+      \textbf{Second:} The amount of visible octree nodes over the course of the test animation.}
       \label{plt:terrain-256-culling-res-voxels}
     \end{center}
   \end{figure}
@@ -1146,7 +1162,7 @@ the measured algorithm.
           xmax=1239,
           ymin=0,
           ymax=0.00005,
-          legend style={at={(0.5,1.7)}, anchor=north, legend columns=2},
+          legend style={at={(0.5,1.8)}, anchor=north, legend columns=2},
         ]
         \addplot[brown!60, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1239 / 1381, y=time]{./plotdata/cpu/terrain_256_updateTime_nocull.csv};
         \addplot[blue, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1239 / 1572, y=time]{./plotdata/cpu/terrain_256_updateTime_pooc.csv};
@@ -1165,7 +1181,7 @@ the measured algorithm.
           xmax=1239,
           ymin=0,
           ymax=0.00025,
-          legend style={at={(0.5,1.7)}, anchor=north, legend columns=2},
+          legend style={at={(0.5,1.8)}, anchor=north, legend columns=2},
         ]
         \addplot[brown!60, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1239 / 1381, y=time]{./plotdata/cpu/terrain_256_renderTime_nocull.csv};
         \addplot[blue, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1239 / 1572, y=time]{./plotdata/cpu/terrain_256_renderTime_pooc.csv};
@@ -1191,8 +1207,8 @@ than the \ac{PONOC} configuration. On average, the prepass execution time improv
 microseconds for this model. \\
 
 \noindent
-Overall, the \emph{Terrain} model achieved a reduction in computation time of $41.9\%$ in favor of per-meshlet 
-culling, while the depth prepass didn't change significantly.
+Overall, the \emph{Terrain} model achieved a reduction in computation time of $41.9\%$ in favor of 
+\ac{PMOC}, while the depth prepass didn't change significantly.
 
 
 \begin{figure}[!htb]
@@ -1205,6 +1221,7 @@ culling, while the depth prepass didn't change significantly.
         ylabel={Time ($\mu$s)},
         legend style={at={(0.5,1.2)}, anchor=north, legend columns=-1},
         symbolic x coords={DepthPrepass, DispatchMesh, Misc},
+        xticklabels={Depth Prepass, Dispatch Mesh, Miscellaneous},
         xtick=data,
         ybar=0.4,
         bar width=25pt,
@@ -1227,6 +1244,7 @@ culling, while the depth prepass didn't change significantly.
         ylabel={Time ($\mu$s)},
         legend style={at={(0.5,1.2)}, anchor=north, legend columns=-1},
         symbolic x coords={DispatchBestOccluders, CopyTex, GenMipChain},
+        xticklabels={Dispatch Best Occluders, Copy Depth Buffer, Generate \ac{HiZ} Pyramid},
         xtick=data,
         ybar=0.4,
         bar width=25pt,
@@ -1239,14 +1257,14 @@ culling, while the depth prepass didn't change significantly.
     \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
     \end{axis}
   \end{tikzpicture}
-  \caption{First: The complete time measured on the \ac{GPU}. The \emph{Depth Prepass} is the extra overhead 
-  introduced by the \ac{HZB}. The \emph{Dispatch Mesh} is the drawing of the meshes, including the occlusion 
-  culling. \emph{Miscellaneous} includes a small amount of \emph{Barriers} used for synchronization and the 
-  rendering of some debug \ac{UI}. It is considered to be more or less static in computation time and is not 
-  part of the actual algorithm measured in this experiment. Second: The time measured in the \emph{Depth Prepass}. 
-  The \emph{Dispatch Best Occluders} is the drawing to the depth buffer. The \emph{Copy Depth Buffer} computation 
-  copies the depth buffers content into the final \ac{HiZ} resource. Finally, \emph{Generate HiZ Pyramid} shows 
-  the \ac{HiZ} creation, which is done sequentially.}
+  \caption{\textbf{First:} The complete time measured on the \ac{GPU}. The \emph{Depth Prepass} is the extra 
+  overhead introduced by the \ac{HZB}. The \emph{Dispatch Mesh} is the drawing of the meshes, including the 
+  occlusion culling. \emph{Miscellaneous} includes a small amount of \emph{Barriers} used for synchronization 
+  and the rendering of some debug \ac{UI}. It is considered to be more or less static in computation time and 
+  is not part of the actual algorithm measured in this experiment. \textbf{Second:} The time measured in the 
+  \emph{Depth Prepass}. The \emph{Dispatch Best Occluders} is the drawing to the depth buffer. The 
+  \emph{Copy Depth Buffer} computation copies the depth buffers content into the final \ac{HiZ} resource. 
+  Finally, \emph{Generate HiZ Pyramid} shows the \ac{HiZ} creation, which is done sequentially.}
   \label{fig:terrain-gpu-times}
 \end{figure}
 
@@ -1299,25 +1317,11 @@ favor of the \ac{PMOC}. Without culling, the overdraw was 298 draws per pixel.
 
 \subsection*{Hairball}
 
-For low resolutions, the \emph{Hairball} is an inherently complex scene to render. It featuresa lot of 
+For low resolutions, the \emph{Hairball} is an inherently complex scene to render. It features a lot of 
 tiny details, which were assumed to be not sufficient in density to completely fill octree nodes, 
 resulting in an unfavorable data layout to test the limits of the occlusion culling algorithm.
 
 \subsubsection*{Culling Results} \label{subsubsec-culling-results-hairball}
-
-Figure \ref{plt:hairball-256-culling-res-voxels} shows the amount of culled voxels and octree nodes 
-over the course of the test animation for both occlusion culling configurations. The average culling 
-results are marked by the dotted lines in the graph. The hairball model was a particularly interesting 
-model because of its fine and thin geometry. It was specifically chosen to provide insights into the 
-limitations of the algorithm and to see how it handles models that are not ideal for this use case.\\
-
-\noindent
-The results show that the gain in performance wasn't as good for this model as for the other models.
-First of all, the number of best occluders was lower than that of the \emph{Terrain} model, even though the 
-\emph{Terrain} model had fewer total voxels than the \emph{Hairball} model. This characteristic led to 
-a lower probability of octree nodes or meshlets being culled. When looking at the data, the amount of 
-voxels being culled on average was $57.8\%$ for \ac{PONOC} and $64.8\%$ for per-meshlet 
-occlusion culling, which represented a rather low increase relative to the other models. 
 
 % -------------------------------------- HAIRBALL 256 -------------------------------------
 
@@ -1365,13 +1369,27 @@ occlusion culling, which represented a rather low increase relative to the other
         \end{axis}
       \end{tikzpicture}
 
-      \caption{First: The amount of visible voxels over the course of the test animation. 
-      Second: The amount of visible octree nodes over the course of the test animation.}
+      \caption{\textbf{First:} The amount of visible voxels over the course of the test animation. 
+      \textbf{Second:} The amount of visible octree nodes over the course of the test animation.}
       \label{plt:hairball-256-culling-res-voxels}
     \end{center}
   \end{figure}
 
 % ----------------------------------------------------------------------------------------
+\noindent
+Figure \ref{plt:hairball-256-culling-res-voxels} shows the amount of culled voxels and octree nodes 
+over the course of the test animation for both occlusion culling configurations. The average culling 
+results are marked by the dotted lines in the graph. The hairball model was a particularly interesting 
+model because of its fine and thin geometry. It was specifically chosen to provide insights into the 
+limitations of the algorithm and to see how it handles models that are not ideal for this use case.\\
+
+\noindent
+The results show that the gain in performance wasn't as good for this model as for the other models.
+First of all, the number of best occluders was lower than that of the \emph{Terrain} model, even though the 
+\emph{Terrain} model had fewer total voxels than the \emph{Hairball} model. This characteristic led to 
+a lower probability of octree nodes or meshlets being culled. When looking at the data, the amount of 
+voxels being culled on average was $57.8\%$ for \ac{PONOC} and $64.8\%$ for per-meshlet 
+occlusion culling, which represented a rather low increase relative to the other models. 
 
 \subsubsection*{CPU Performance Results} \label{subsubsec-cpu-performance-results-hairball}
 
@@ -1392,7 +1410,7 @@ both configurations.
           xmax=940,
           ymin=0,
           ymax=0.00005,
-          legend style={at={(0.5,1.7)}, anchor=north, legend columns=2},
+          legend style={at={(0.5,1.8)}, anchor=north, legend columns=2},
         ]
         \addplot[brown!60, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 940 / 1301, y=time]{./plotdata/cpu/hairball_256_updateTime_nocull.csv};
         \addplot[blue, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 940 / 1421, y=time]{./plotdata/cpu/hairball_256_updateTime_pooc.csv};
@@ -1411,7 +1429,7 @@ both configurations.
           xmax=940,
           ymin=0,
           ymax=0.00025,
-          legend style={at={(0.5,1.7)}, anchor=north, legend columns=2},
+          legend style={at={(0.5,1.8)}, anchor=north, legend columns=2},
         ]
         \addplot[brown!60, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 940 / 1301, y=time]{./plotdata/cpu/hairball_256_renderTime_nocull.csv};
         \addplot[blue, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 940 / 1421, y=time]{./plotdata/cpu/hairball_256_renderTime_pooc.csv};
@@ -1445,6 +1463,7 @@ occlusion culling when comparing the average values.
         ylabel={Time ($\mu$s)},
         legend style={at={(0.5,1.2)}, anchor=north, legend columns=-1},
         symbolic x coords={DepthPrepass, DispatchMesh, Misc},
+        xticklabels={Depth Prepass, Dispatch Mesh, Miscellaneous},
         xtick=data,
         ybar=0.4,
         bar width=25pt,
@@ -1467,6 +1486,7 @@ occlusion culling when comparing the average values.
         ylabel={Time ($\mu$s)},
         legend style={at={(0.5,1.2)}, anchor=north, legend columns=-1},
         symbolic x coords={DispatchBestOccluders, CopyTex, GenMipChain},
+        xticklabels={Dispatch Best Occluders, Copy Depth Buffer, Generate \ac{HiZ} Pyramid},
         xtick=data,
         ybar=0.4,
         bar width=25pt,
@@ -1479,14 +1499,14 @@ occlusion culling when comparing the average values.
     \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
     \end{axis}
   \end{tikzpicture}
-  \caption{First: The complete time measured on the \ac{GPU}. The \emph{Depth Prepass} is the extra overhead 
-  introduced by the \ac{HZB}. The \emph{Dispatch Mesh} is the drawing of the meshes, including the occlusion 
-  culling. \emph{Miscellaneous} includes a small amount of \emph{Barriers} used for synchronization and the 
-  rendering of some debug \ac{UI}. It is considered to be more or less static in computation time and is not 
-  part of the actual algorithm measured in this experiment. Second: The time measured in the \emph{Depth Prepass}. 
-  The \emph{Dispatch Best Occluders} is the drawing to the depth buffer. The \emph{Copy Depth Buffer} computation 
-  copies the depth buffers content into the final \ac{HiZ} resource. Finally, \emph{Generate HiZ Pyramid} shows 
-  the \ac{HiZ} creation, which is done sequentially.}
+  \caption{\textbf{First:} The complete time measured on the \ac{GPU}. The \emph{Depth Prepass} is the extra 
+  overhead introduced by the \ac{HZB}. The \emph{Dispatch Mesh} is the drawing of the meshes, including the 
+  occlusion culling. \emph{Miscellaneous} includes a small amount of \emph{Barriers} used for synchronization 
+  and the rendering of some debug \ac{UI}. It is considered to be more or less static in computation time and 
+  is not part of the actual algorithm measured in this experiment. \textbf{Second:} The time measured in the 
+  \emph{Depth Prepass}. The \emph{Dispatch Best Occluders} is the drawing to the depth buffer. The 
+  \emph{Copy Depth Buffer} computation copies the depth buffers content into the final \ac{HiZ} resource. 
+  Finally, \emph{Generate HiZ Pyramid} shows the \ac{HiZ} creation, which is done sequentially.}
   \label{fig:hairball-gpu-times}
 \end{figure}
 
