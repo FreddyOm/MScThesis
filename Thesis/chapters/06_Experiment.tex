@@ -2,12 +2,13 @@
 
 When considering occlusion culling algorithms that can be used in specific use cases, the runtime 
 performance is a critical aspect. But runtime performance is a multi-dimensional measure, in that 
-most algorithms provide results under specific circumstances and by setting several constraints.
-To be able to evaluate the strengths and weaknesses of this work's implementation, an in-depth  
-experiment was conducted and evaluated, highlighting a diverse set of measured data. \\
+most algorithms provide certain results under specific circumstances and by setting several constraints, 
+like a use in interiors only, or the use of pre-calculated data. To be able to evaluate the strengths 
+and weaknesses of this work's implementation, an in-depth experiment was conducted and evaluated, 
+highlighting a diverse set of measured data. \\
 
 \noindent
-To conduct the experiment, the method of profiling performance was chosen because it allows for 
+To conduct the experiment, the method of measuring performance was chosen because it allows for 
 an in-depth analysis of the pipeline steps. When accurately measuring the two configurations, 
 \ac{PONOC} and \ac{PMOC}, and comparing them to a baseline configuration without occlusion culling 
 enabled, the difference between both can be evaluated by looking at the individual pipeline steps 
@@ -38,10 +39,77 @@ the occlusion culling affected the given test scene and how the computations dif
 pipeline without any occlusion culling. 
 
 
+\subsection*{Scenes} \label{subsec-models}
+
+\begin{figure*}[!htb]
+  \begin{subfigure}{80px}
+      \includegraphics[width=80px]{images/graphics/model-lucy.jpg}
+      \caption{Lucy}
+      \parbox{\linewidth}{\centering\footnotesize 331,254 voxels,\\ 1600 best occluders}
+  \end{subfigure}
+  \begin{subfigure}{80px}
+      \includegraphics[width=80px]{images/graphics/model-bunny.jpg}
+      \caption{Stanford Bunny}
+      \parbox{\linewidth}{\centering\footnotesize 3,379,738 voxels,\\ 8256 best occluders}
+  \end{subfigure}
+  \begin{subfigure}{80px}
+      \includegraphics[width=80px]{images/graphics/model-torus.jpg}
+      \caption{Torus}
+      \parbox{\linewidth}{\centering\footnotesize 2,311,006 voxels,\\ 7168 best occluders}
+  \end{subfigure}
+  \begin{subfigure}{80px}
+      \includegraphics[width=80px]{images/graphics/model-terrain.jpg}
+      \caption{Terrain}
+      \parbox{\linewidth}{\centering\footnotesize 953,362 voxels,\\ 6976 best occluders}
+  \end{subfigure}
+  \begin{subfigure}{80px}
+      \includegraphics[width=80px]{images/graphics/model-hairball.jpg}
+      \caption{Hairball}
+      \parbox{\linewidth}{\centering\footnotesize 1,652,435 voxels,\\ 5056 best occluders}
+  \end{subfigure}
+  
+  \caption{The scenes used for the experimental evaluation of the algorithm.}
+  \label{fig:experiment-models}
+\end{figure*}
+
+\noindent
+The scenes that were used in the tests are \emph{Lucy} (Stanford 3D Scanning Repository), the 
+\emph{Stanford Bunny} (Stanford 3D Scanning Repository), the \emph{Hairball}, the \emph{Torus}, 
+and a \emph{Terrain}. All of these scenes feature different characteristics, which tested 
+the pipeline in a variety of ways. The models were voxelized to a size of $256^3$ and occupy 
+different amounts of space within the scene. The scenes are listed in Figure 
+\ref{fig:experiment-models}. \\
+
+\begin{table}[htbp]
+  \begin{center}
+    \begin{tabular}{|c|c|c|c|}
+      \hline
+      \textbf{}&\multicolumn{3}{|c|}{\textbf{Scene Memory Footprint - $256^3$}} \\
+      \cline{2-4} 
+      \textbf{Scene} & \textbf{\textit{Voxel Data (KiB)}}& \textbf{\textit{Octree Node Buffer (KiB)}} & \textbf{\textit{Best Occluder Buffer (KiB)}} \\
+      \hline
+      Lucy        & 5,176   & 321   & 50  \\
+      Bunny       & 52,808  & 2,697 & 258 \\
+      Torus       & 36,109  & 1,866 & 224 \\
+      Terrain     & 14,896  & 867   & 218 \\
+      Hairball    & 25,819  & 1,857 & 158 \\
+      \hline
+    \end{tabular}
+  \end{center}
+  \caption{Memory footprint of the tested scenes.}
+  \label{tbl:scene-data-size}
+\end{table}
+
+\noindent
+Table \ref{tbl:scene-data-size} shows the memory footprint of the necessary data structures for 
+each scene. Adding all three buffers together results in the total memory dedicated to the scene 
+geometry.
+
+
 \subsection*{Scene Layout} \label{subsec-scene-layout}
 
 For the scene layout, the spatial positioning of the model was important, and the data structure and shape 
-of the models was considered in particular. \\
+of the models were considered in particular. \\
 
 \noindent
 The data was sampled over time using a standardized camera animation, which was following a circular orbit 
@@ -172,71 +240,6 @@ well, starting from their first installment in the dedicated desktop \ac{GPU} se
 the test setups are listed in table \ref{tbl:hardware-setup}. \\
 
 
-\subsection*{Models} \label{subsec-models}
-
-\begin{figure*}[!htb]
-  \begin{subfigure}{80px}
-      \includegraphics[width=80px]{images/graphics/model-lucy.jpg}
-      \caption{Lucy}
-      \parbox{\linewidth}{\centering\footnotesize 331,254 voxels,\\ 1600 best occluders}
-  \end{subfigure}
-  \begin{subfigure}{80px}
-      \includegraphics[width=80px]{images/graphics/model-bunny.jpg}
-      \caption{Stanford Bunny}
-      \parbox{\linewidth}{\centering\footnotesize 3,379,738 voxels,\\ 8256 best occluders}
-  \end{subfigure}
-  \begin{subfigure}{80px}
-      \includegraphics[width=80px]{images/graphics/model-torus.jpg}
-      \caption{Torus}
-      \parbox{\linewidth}{\centering\footnotesize 2,311,006 voxels,\\ 7168 best occluders}
-  \end{subfigure}
-  \begin{subfigure}{80px}
-      \includegraphics[width=80px]{images/graphics/model-terrain.jpg}
-      \caption{Terrain}
-      \parbox{\linewidth}{\centering\footnotesize 953,362 voxels,\\ 6976 best occluders}
-  \end{subfigure}
-  \begin{subfigure}{80px}
-      \includegraphics[width=80px]{images/graphics/model-hairball.jpg}
-      \caption{Hairball}
-      \parbox{\linewidth}{\centering\footnotesize 1,652,435 voxels,\\ 5056 best occluders}
-  \end{subfigure}
-  
-  \caption{The scenes used for the experimental evaluation of the algorithm.}
-  \label{fig:experiment-models}
-\end{figure*}
-
-
-\noindent
-The models that were used in the tests are \emph{Lucy} (Stanford 3D Scanning Repository), the 
-\emph{Stanford Bunny} (Stanford 3D Scanning Repository), the \emph{Hairball}, a \emph{Torus}, 
-and a \emph{Terrain} model. All of these models feature different characteristics, which tested 
-the pipeline in a variety of ways. They were voxelized to a scene size of $256^3$ and occupy 
-different amounts of space within the scene. The models are listed in Figure 
-\ref{fig:experiment-models}. \\
-
-\begin{table}[htbp]
-  \begin{center}
-    \begin{tabular}{|c|c|c|c|}
-      \hline
-      \textbf{}&\multicolumn{3}{|c|}{\textbf{Scene Memory Footprint - $256^3$}} \\
-      \cline{2-4} 
-      \textbf{Scene} & \textbf{\textit{Voxel Data (KiB)}}& \textbf{\textit{Octree Node Buffer (KiB)}} & \textbf{\textit{Best Occluder Buffer (KiB)}} \\
-      \hline
-      Lucy        & 5,176   & 321   & 50  \\
-      Bunny       & 52,808  & 2,697 & 258 \\
-      Torus       & 36,109  & 1,866 & 224 \\
-      Terrain     & 14,896  & 867   & 218 \\
-      Hairball    & 25,819  & 1,857 & 158 \\
-      \hline
-    \end{tabular}
-  \end{center}
-  \caption{Memory footprint of the tested scenes.}
-  \label{tbl:scene-data-size}
-\end{table}
-
-\noindent
-Table \ref{tbl:scene-data-size} shows the memory footprint of the necessary data structures for each scene. 
-Adding all three buffers together results in the total memory dedicated to the scene geometry.
 
 \section{Experimental Results}
 
