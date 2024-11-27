@@ -11,12 +11,12 @@ using \ac{TPOC} relies on preprocessing large objects that are usually artist-pi
 in applications that make use of triangle meshes with only a boundary representation. This way, a lot of 
 small objects can be occluded by one large occluder. In contrast, the algorithm cannot be applied to voxel 
 rendering as is, since in a voxel scene there are only uniform meshes. Individual models might be interpreted 
-as large occluders but they are generally very computational intense to draw because of their voxelized nature. \\
+as large occluders, but they are generally very computationally intense to draw because of their voxelized nature. \\
 
 \noindent
-In consequence, the \ac{TPOC} was adjusted to fit the spicific circumstances found in volumetric voxel representations. 
-The uniform size of voxels made the traditional \ac{TPOC} rather inefficient in practice but the problem was 
-successfully tackled by aggregating neighboring voxels to larger primitives, consequently decreasing computation 
+In consequence, the \ac{TPOC} was adjusted to fit the specific circumstances found in volumetric voxel representations. 
+The uniform size of voxels made the traditional \ac{TPOC} rather inefficient in practice, but the problem was 
+successfully tackled by aggregating neighboring voxels into larger primitives, consequently decreasing computation 
 time of the depth prepass. This approach also shifted the use of the algorithm slightly. Traditionally, \ac{TPOC} 
 draws a handful of the best occluders to enable culling of emph{other} meshes. In the approach proposed in this work, 
 the best occluders are part of the occluded model, and the geometry contributing to their creation may 
@@ -30,8 +30,8 @@ Both configurations were able to occlude a considerable amount of voxels while u
 voxels than the per-octree node culling. \\
 
 \noindent
-Using uniform voxels as primitives for approximating scene data, enables the complete creation of geometry on the 
-\ac{GPU}. This also fits perfectly into the use of the mesh shading pipeline, since meshlets created on-chip do 
+Using uniform voxels as primitives for approximating scene data enables the complete creation of geometry on the 
+\ac{GPU}. This also fits perfectly into the use of the mesh shading pipeline since meshlets created on-chip do 
 not have to be pre-computed. The creation of a large amount of geometry is therefore efficient and easy to 
 implement. \\
 
@@ -88,6 +88,7 @@ it should only be impacted by a change of the screen resolution. This assumption
 creation is implemented. Consequently, the final performance of both tested configurations is expected to vary based on the amount 
 of completely filled octree nodes. \\
 
+\noindent
 The data indicates that a higher average occupation has the tendency to result in better overall culling performance and subsequently 
 in better \ac{GPU} performance as well. It can also be derived that the average culling efficiency increases with the increase of 
 voxels in the scene. But this is only true to an extent, since the \emph{Hairball} model showed a decrease in average culling efficiency 
@@ -178,7 +179,7 @@ sampling the \ac{HiZ} pyramid cheaper in terms of computation time. Since cubica
 there is no sub-voxel detail, this process can potentially be optimized further. When using per-meshlet culling, each voxel's bounds are 
 checked individually, and theoretically, no hierarchy is necessary. This assumption was formed by this work's implementation, since it only used 
 the full-resolution depth buffer for the \ac{HZB} due to visual errors that couldn't be fixed in time. That way, only one sampling per screen 
-rectangle corner is necessary, either per mip level, or only using the full resolution z-buffer. If this assumption holds true and can be 
+rectangle corner is necessary, either per mip level or only using the full-resolution z-buffer. If this assumption holds true and can be 
 generally confirmed, the computation of the prepass would reduce to only the depth pass, without the need to compute a hierarchy. \\
 
 \noindent
@@ -210,24 +211,24 @@ depth prepass. \\
 
 \noindent
 Another limitation was introduced by the hardware limitations in the mesh shading pipeline, or, more specifically, the 
-compute shader architecture. Due to the maximum amount of threadgroups that could be scheduled on the \ac{GPU}, there 
+compute shader architecture. Due to the maximum amount of thread groups that could be scheduled on the \ac{GPU}, there 
 was a limit to how many octree nodes could be computed within one draw call. Since the amount of voxels was equal to the 
 amount of threads scheduled in the shader, the model resolution was limited by the experimental setup, which only used 
-one draw call for better comparability. This limitation also meant, that the \ac{GPU} utilization varied quite a lot. 
+one draw call for better comparability. This limitation also meant that the \ac{GPU} utilization varied quite a lot. 
 In the given implementation, rejecting a large amount of octree nodes or voxels would consequently mean that the 
-threadgroups and threads would exit early. A more in-depth evaluation of this behaviour is necessary to find out if 
-there is a more efficient way to computing the voxels using the mesh shading piepeline. \\
+thread groups and threads would exit early. A more in-depth evaluation of this behavior is necessary to find out if 
+there is a more efficient way to compute the voxels using the mesh shading pipeline. \\
 
 \noindent
 As mentioned before, a major limitation is the overdraw within the pipeline. Although it could be shown that the 
-computation time can be reduced compared to the \ac{PONOC}, the maximum overdraw is still 
-very high. This is due to the best occluders which are not able to cull all occluded voxels but will rather cull 
-most of the occluded voxels. It is up to further inspection if the amount of overdraw is bearable for a given use 
-case, or if it is too much overdraw. \\
+computation time can be reduced compared to the \ac{PONOC}, the maximum overdraw is still very high. This is due 
+to the best occluders, which are not able to cull all occluded voxels but will rather cull most of the occluded 
+voxels. It is up to further inspection if the amount of overdraw is bearable for a given use case or if it is too 
+much overdraw. \\
 
 \noindent
 Although it is possible to handle multiple models without any changes to the pipeline, the limitation of a maximum 
-dispatch count mentioned before needs to be considered here. When having multiple seperate models within the scene, 
+dispatch count mentioned before needs to be considered here. When having multiple separate models within the scene, 
 how good the culling works really depends on the models, their properties, and the scene's resolution. In general, 
 any best occluder can cull voxels of any given model. But the more best occluders present in the scene, the more 
 the depth prepass will scale to longer computation times. For better performance, it might serve well to chunk the 
