@@ -117,7 +117,6 @@ that are similarly dense in structure and do not contain holes or other challeng
         \end{axis}
     \end{tikzpicture}
 
-    \noindent
     \begin{tikzpicture}
         \begin{axis}[
             width=12cm,
@@ -131,15 +130,16 @@ that are similarly dense in structure and do not contain holes or other challeng
             scaled x ticks=false,
             ]
 
-            \addplot[mark=square*, mark options={scale=1.2, fill=blue},] coordinates {(74.6, 1600)};
             \addplot[mark=square*, mark options={scale=1.2, fill=pink},] coordinates  {(64.8, 5056)};
+            \addplot[mark=square*, mark options={scale=1.2, fill=blue},] coordinates {(74.6, 1600)};
             \addplot[mark=square*, mark options={scale=1.2, fill=yellow},] coordinates {(81.1, 6976)};
             \addplot[mark=square*, mark options={scale=1.2, fill=green},] coordinates {(92.6, 7168)};
             \addplot[mark=square*, mark options={scale=1.2, fill=red},] coordinates {(94.7, 8256)};
-            \legend{Lucy, Hairball, Terrain, Torus, Bunny}
+            \legend{Hairball, Lucy, Terrain, Torus, Bunny}
         \end{axis}
     \end{tikzpicture}
-    \caption{}
+    \caption{Upper: The relation between voxel count and culling efficiency.
+    Lower: The relation between best occluder count and culling efficiency.}
     \label{plt:culling-efficiency-voxel-node-count}
 \end{figure}
 
