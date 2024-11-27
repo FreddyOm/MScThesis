@@ -94,6 +94,54 @@ in better \ac{GPU} performance as well. It can also be derived that the average 
 voxels in the scene. But this is only true to an extent, since the \emph{Hairball} model showed a decrease in average culling efficiency 
 compared to the \emph{Lucy} model while having almost 5 times the voxel count. This tendency is therefore only visible for models 
 that are similarly dense in structure and do not contain holes or other challenging features.\\
+\begin{figure}
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=12cm,
+            height=5cm,
+            ylabel={Voxel Count},
+            xlabel={Culling Efficiency},
+            grid=major,
+            grid style={dashed, gray!30},
+            legend style={at={(0.5,1.2)}, anchor=south, legend columns=5},
+            ymin=0, ymax=4000000,
+            scaled x ticks=false,
+            ]
+        
+            \addplot[mark=square*, mark options={scale=1.2, fill=pink},] coordinates  {(64.8, 1652435)};
+            \addplot[mark=square*, mark options={scale=1.2, fill=blue},] coordinates {(74.6, 331254)};
+            \addplot[mark=square*, mark options={scale=1.2, fill=yellow},] coordinates {(81.1, 953362)};
+            \addplot[mark=square*, mark options={scale=1.2, fill=green},] coordinates {(92.6, 2311006)};
+            \addplot[mark=square*, mark options={scale=1.2, fill=red},] coordinates {(94.7, 3379738)};
+            \legend{Hairball, Lucy, Terrain, Torus, Bunny}
+        \end{axis}
+    \end{tikzpicture}
+
+    \noindent
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=12cm,
+            height=5cm,
+            ylabel={Best Occluder Count},
+            xlabel={Culling Efficiency},
+            grid=major,
+            grid style={dashed, gray!30},
+            legend style={at={(0.5,1.2)}, anchor=south, legend columns=5},
+            ymin=0, ymax=10000,
+            scaled x ticks=false,
+            ]
+
+            \addplot[mark=square*, mark options={scale=1.2, fill=blue},] coordinates {(74.6, 1600)};
+            \addplot[mark=square*, mark options={scale=1.2, fill=pink},] coordinates  {(64.8, 5056)};
+            \addplot[mark=square*, mark options={scale=1.2, fill=yellow},] coordinates {(81.1, 6976)};
+            \addplot[mark=square*, mark options={scale=1.2, fill=green},] coordinates {(92.6, 7168)};
+            \addplot[mark=square*, mark options={scale=1.2, fill=red},] coordinates {(94.7, 8256)};
+            \legend{Lucy, Hairball, Terrain, Torus, Bunny}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{}
+    \label{plt:culling-efficiency-voxel-node-count}
+\end{figure}
 
 \noindent
 The general approximation of best occluders did work well for most of the models. However, the \emph{Hairball} model showed that specific 
@@ -204,24 +252,4 @@ scene and only consider the best occluders within "active" chunks for the cullin
 expected to be of advantage for dynamically updating the voxel data and therefore the best occluder data. For this 
 particular work, the management of chunk data is handled by the \ac{CPU}, which means that updating the data could 
 potentially be parallelized on the \ac{CPU} by using scene chunks. \\
-
-
-
-
-%
-%- Pro: 
-%    - No meshlet precomputation, since meshlets are created on the GPU
-%    - Meshlet voxels are inherently AABBs which is quite helpful for intense intersection computations % @TODO: Check if there are even any intersection comps to be done
-%    - Cores of most models can be "removed"
-%    - New possibility of using occluders for occlusoin of the same "mesh"
-%    - PMOC allows for only 4 checks to be made, since if voxels are meshlets, subvoxel detail doesn't exist. 
-%- Con:
-%   
-%    - Voxels as meshlets -> non-similar normals can be inefficient.. 
-
-%  
-%
-%Discussion points:
-%
-%- When already drawing aggregated bounding boxes, isn't this just HiZ Buffering? And is it then better to draw everything
-% to test for visibility instead of only best occluders? 
+ 

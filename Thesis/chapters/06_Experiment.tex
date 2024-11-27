@@ -1,5 +1,7 @@
 \chapter{Experiment} \label{cpt-experiment}
 
+
+
 When considering occlusion culling algorithms that can be used in specific use cases, the runtime 
 performance is a critical aspect. But runtime performance is a multi-dimensional measure, in that 
 most algorithms provide results under specific circumstances and by setting several constraints.
@@ -215,6 +217,32 @@ comparing the \ac{PONOC} configuration to the \ac{PMOC} configuration. Finally, 
 is presented that summarizes all the relevant data in a compact visualization.
 
 [@TODO: Update (Prepass) Labels (like Generate HiZ Pyramid instead of GenMipChain)]
+
+\subsection*{Best Occluder Selection}
+
+To evaluate the best occluder selection, all models were tested in terms of the octree's 
+query for the best occluders. 
+
+\begin{table}[htbp]
+  \begin{center}
+    \begin{tabular}{|c|c|c|c|}
+      \hline
+      \textbf{}&\multicolumn{3}{|c|}{\textbf{Best Occluder Selection - $256^3$}} \\
+      \cline{2-4} 
+      \textbf{Scene} & \textbf{\textit{Voxel Count}}& \textbf{\textit{Best Occluder Count}}& \textbf{\textit{Time (ms)}} \\
+      \hline
+      Lucy        & 331,254   & 1600 & 0.317 \\
+      Bunny       & 3,379,738 & 8256 & 3.752 \\
+      Torus       & 2,311,006 & 7168 & 2.681 \\
+      Terrain     & 953,362   & 6976 & 1.267 \\
+      Hairball    & 1,652,435 & 5056 & 2.377 \\
+      \hline
+    \end{tabular}
+    \caption{Measurements of best occluder query.}
+  \label{tab:best-occluder-query}
+  \end{center}
+\end{table}
+
 
 \subsection*{Stanford Lucy}
 

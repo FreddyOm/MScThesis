@@ -4,8 +4,8 @@ In order to put this work in context, some basic knowledge about computer graphi
 The reader is assumed to be familiar with the basic rendering pipeline and how 3D data is 
 transformed into a projected 2D image. Techniques like \emph{z-buffering}, \emph{mipmapping}, 
 the use of \emph{textures}, basic \emph{transformations}, and \emph{compute shaders} are mentioned 
-but not explained in further detail. Beyond that, a more in-depth discussion of related topics and 
-techniques this work builds upon is presented below.
+but not explained in further detail. Beyond that, a more in-depth discussion of relevant techniques 
+is presented below.
 
 \section{Voxel Scene Layout} \label{sec-voxel-scene-layout}
 
@@ -90,7 +90,7 @@ this concept of optimizing voxel data is compatible with the use case presented 
 grid. It is used to approximate 3D volumes analogous to how 2D pixels approximate shapes, lines, or areas in a 
 two-dimensional grid \cite{MegaVoxels2023}. Commonly, uniform cubes are used to represent the data in space, 
 which results in a distinct, blocky look, depending on the size of the primitives. Games like \emph{Minecraft} 
-\cite{Mojang2024} popularized this technique for games, which is often used because of its simplicity and low 
+(Mojang \cite{Mojang2024}, 2011) popularized this technique for games, which is often used because of its simplicity and low 
 memory footprint. Voxels have been used in a lot of ways, some of which are presented below.
 
 
@@ -98,21 +98,21 @@ memory footprint. Voxels have been used in a lot of ways, some of which are pres
 
 The basic approach to rendering voxels is using the traditional rasterized rendering pipeline.
 One of the most popular games of all time, \emph{Minecraft} (Mojang \cite{Mojang2024}, 2011) uses 
-this approach to render thousands of cube-shaped voxels on screen. \emph{Minecraft} also makes use 
-of various rendering optimizations to improve frame times. This approach is straightforward in 
-concept and can be implemented for existing \ac{API}s, making use of hardware acceleration, i.e. 
-the \ac{GPU}. The voxel representation allows for easy computation since geometry is laid out 
-uniformly. Lighting calculations, as well as physics operations, can be further optimized to 
-be even more efficient. The most significant characteristic is the ability to dynamically enable or 
-disable voxels within the scene layout. Or, in general, to update voxels and their corresponding 
-data efficiently. Also, since voxels are uniform shapes, they can be easily created on the \ac{GPU} 
-as opposed to being sent over the \ac{PCI Express} port. \\
+this approach to render thousands of cube-shaped voxels on screen. \emph{Minecraft} (Mojang 
+\cite{Mojang2024}, 2011) also makes use of various rendering optimizations to improve frame times. 
+This approach is straightforward in concept and can be implemented for existing \ac{API}s, making 
+use of hardware acceleration, i.e., the \ac{GPU}. The voxel representation allows for easy 
+computation since geometry is laid out uniformly. Lighting calculations, as well as physics 
+operations, can be further optimized to be even more efficient. The most significant characteristic 
+is the ability to dynamically enable or disable voxels within the scene layout, or, in general, 
+to update voxels and their corresponding data efficiently. Since voxels are uniform shapes, 
+they can be easily created on the \ac{GPU} as opposed to being sent over the \ac{PCI Express} port. \\
 
 \noindent
 Due to their uniform nature, voxels are often used for real-time ray tracing. Although ray tracing 
 is not considered for this work, there are still acceleration techniques and approaches for voxel 
 data layouts, which are used in ray traced voxel rendering. As long as these techniques can be 
-applied to rasterized voxel rendering, they can be of interest for this work's approach.
+applied to rasterized voxel rendering, they are of interest for this work's approach.
 
 
 \subsection*{Voxel Physics} \label{subsec-voxel-physics}
@@ -125,7 +125,7 @@ applied to rasterized voxel rendering, they can be of interest for this work's a
 \end{figure}
 
 \noindent
-Tuxedo Labs' \emph{Teardown} (\cite{TeardownSteam2022}, 2022) (Figure \ref{fig:teardown}) uses ray-traced 
+Tuxedo Labs' game \emph{Teardown} (\cite{TeardownSteam2022}, 2022) (Figure \ref{fig:teardown}) uses ray-traced 
 lighting, which is affordable due to the voxel scene representation \cite{TuxedoLabs2022}. Additionally, 
 it makes use of highly dynamic physics operations, which are relatively efficient using the voxel representation. 
 In its base layout, a cubical voxel is an \ac{AABB}, which allows for trivial collision tests. When rotated 
@@ -274,7 +274,7 @@ low-resolution and small mip-map on the other end of the mip chain. An exemplary
 In contrast to the classic generation of mip-maps, the computation of the values in the \ac{HiZ} pyramid works in a 
 very specific way. "[...] [E]ach z-value is the farthest z in the corresponding 2 \begin{math}\times\end{math} 2 window 
 of the adjacent finer level" \cite{AkenineMoeller2018}. This process is shown in Figure \ref{fig:hiz-value-computation}, 
-showing how the farthest value of each texel window is inserted into adjacent levels.\\
+visualizing how the farthest value of each texel window is inserted into adjacent levels.\\
 
 \begin{figure}[!]
     \centering
@@ -450,8 +450,8 @@ a highly parallelized rendering pipeline before mesh shading became part of the 
 For their \ac{GPU} culling algorithms, they refer to the prior work of Hill \cite{Hill11} and Greene \cite{Greene93}, which 
 provides the basis for some of the implementation in this work's approach. Most of the culling algorithms discussed in chapter 
 \ref{sec-culling-techniques} can be adopted to use meshlet culling. The algorithms can usually be applied to triangle clusters 
-without the need of changing a lot of the algorithm. Bounding volumes can be calculated for meshlets, too, and meshlets do also 
-consist of triangles themselves. In this chapter, the basic culling algorithms are briefly revisited in order to show how they 
+without the need to change a lot of the algorithm. Bounding volumes can be calculated for meshlets, too, and meshlets do also 
+consist of triangles themselves. In the following, the basic culling algorithms are briefly revisited in order to show how they 
 can be adapted for the mesh shading pipeline.
 
 
@@ -474,8 +474,8 @@ can be drawn, and the meshlets outside of the frustum can be discarded.
 
 \paragraph*{Meshlet Occlusion Culling} \label{subsubsec-meshlet-occlusion-culling}
 
-Meshlet occlusion culling refers to the process of culling meshlets, which are occluded by any other meshlet, by a 
-group of meshlets or another instance. It can be implemented in various ways, analogous to similar \ac{GPU}-based 
+Meshlet occlusion culling refers to the process of culling meshlets, which are occluded by any other meshlet, a 
+group of meshlets, or another instance. It can be implemented in various ways, analogous to similar \ac{GPU}-based 
 occlusion culling algorithms. Often, this implies the use of a \ac{BVH} like an octree to make visibility checks 
 easier. \ac{HZB} can also be applied to the new pipeline, and meshlets can be checked for occlusion using the 
 highly parallel mesh shading pipeline. Consequently, \ac{TPOC} is also applied to individual meshlets, which was 
