@@ -37,7 +37,7 @@ Unfortunately, comparing the occlusion culling implementation to an alternative 
 scope of this work, so efforts were made to evaluate the pipeline and its performance from a conceptual point of 
 view and to compare it to the plain pipeline, without any occlusion culling at all. This includes two different 
 versions of occlusion culling, one based on culling octree nodes, as it can be implemented without the use of the 
-Mesh Shading pipeline. The other one is based on \ac{PMOC}, which makes use of the more parallel 
+mesh shading pipeline. The other one is based on \ac{PMOC}, which makes use of the more parallel 
 computation capabilities of the \ac{GPU}. \\
 
 \noindent [@TODO: Check if this is still true] [@TODO: Parts of this are redundant. Rewrite and restructure to be more like the paper!]
@@ -173,7 +173,7 @@ to different versions of hardware features and capabilities.
 \end{table}
 
 \noindent
-Note that the use of the Mesh Shading pipeline requires graphics cards that support the pipeline in the first place. 
+Note that the use of the mesh shading pipeline requires graphics cards that support the pipeline in the first place. 
 For \emph{NVIDIA} \ac{GPU}s, this is the \emph{Turing} lineup (\emph{NVIDIA RTX 20 series}), and for \emph{AMD} cards, 
 this would be the \emph{RDNA 2} lineup (\emph{AMD RX 6000 series}). \emph{Intel} \ac{GPU}s support the feature as 
 well, starting from their first installment in the dedicated desktop \ac{GPU} series \emph{Intel Arc}. The specs of 
