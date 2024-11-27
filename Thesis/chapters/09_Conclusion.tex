@@ -1,5 +1,7 @@
 \chapter{Conclusions} \label{cpt-conclusion}
 
+% Was wurde gemacht und warum ?
+
 This work has presented an implementation for a \ac{GPU}-driven implementation of 
 \ac{HZB} for voxel-based volumetric rendering. A spatial data structure is 
 used to approximate the scene's inner volume and replace vast amounts of voxels 
@@ -8,35 +10,20 @@ be used for computing a depth prepass, which in turn is used for efficient
 occlusion culling on the \ac{GPU}. An exemplary voxel scene with over 3 million 
 voxels has been approximated by only 8256 larger voxels.  \\
 
+% Quantitative Ergebnisse
+
 \noindent
 The measurements have shown the capability of the modern mesh shading rendering 
 pipeline to increase culling efficiency by culling individual meshlets, which in 
 turn leads to a lower computational load for the rasterizer and pixel shader 
-stages. The \ac{GPU} experiment has provided a precise measurement that indicates a 
+stages. The experiment has provided a precise measurement that indicate a \ac{GPU} 
 performance increase of about $29 \%$ when using the \ac{PMOC} configuration 
 of the algorithm as compared to the more general \ac{PONOC} configuration. 
 Compared to the base pipeline without occlusion culling applied to the scene, the 
 performance increase ranged from $61.3 \%$ for the highly complex and irregular 
-\emph{Hairball} scene up to $90.7 \%$ for the \emph{Bunny} scene. \\
-
-\noindent
-The measurements have provided an overview of culling efficiency depending on several aspects 
-of the algorithm's configuration. The model's characteristics have a significant 
-effect on the culling efficiency, which increases for models with high volumes and flat 
-surfaces and decreases for small, thin, and detailed geometry with holes or empty spaces 
-within the model. The approach is therefore suggested for scenes that are dense and tight 
-and can be expected to provide at least a reasonable amount of full octree nodes. Conversely, 
-low voxel resolutions even tend to result in worse performance for this algorithm because of 
-the lower probability of featuring full octree nodes. \\
-
-\noindent
-Although several million voxels were computed by the pipeline for each frame, the fast and 
-\ac{GPU}-driven algorithm scales with the amount of visible voxels and partially scales 
-with screen resolution. A considerable part of the overhead is static in its computation 
-and can be easily compared to the performance gain. Consequently, the approach can be 
-implemented for suitable models and is expected to cull a significant number of voxels, 
-reducing the pipeline's computation times on the \ac{GPU} side and decreasing \ac{CPU} 
-load simultaneously. \\
+\emph{Hairball} scene up to $90.7 \%$ for the \emph{Bunny} scene. Alltogether, the 
+measurements indicate a better overall performance when using the modern mesh shading 
+pipeline.\\
 
 \noindent
 Furthermore, the pixel shader overdraw was shown to be considerably reduced by using 
@@ -50,9 +37,31 @@ generally be used to update the voxel data dynamically in real time. This is a k
 requirement for the use of the algorithm in real-time voxel-rendered games since 
 manipulating the voxel data arbitrarily is a common feature in such games. The 
 measurements have shown that the \ac{CPU} computations required for querying the 
-best occluders are within reasonable time budgets. The computations are expected to 
-be further optimized by chunking voxel data and using multithreaded computations for 
-the update and query. Nevertheless, it is up to future work to do an in-depth evaluation. \\
+best occluders are within reasonable time budgets. Further optimizations, such as 
+multithreading and chunked voxel data, are expected to enhance performance. \\
+
+\noindent
+The approach is particularly suited for dense and dynamic scenes, such as voxel-rendered 
+games or animated high-resolution models. It can significantly reduce computational load 
+on the \ac{GPU} and \ac{CPU}, as well as pixel shader overdraw, especially for dense scenes with 
+favorable occluder geometry. The measurements also indicate real-time capability, as 
+\ac{CPU} computations for occluder updates are within acceptable limits. Further 
+optimizations, such as multithreading and chunked voxel data, are expected to enhance 
+performance.
+
+% Einschränkungen und Herausforderungen
+
+\noindent
+The measurements have provided an overview of culling efficiency depending on several 
+aspects of the algorithm's configuration. The model's characteristics have a significant 
+effect on the culling efficiency. Models with high volumes and flat surfaces benefit most, 
+while thin, detailed geometries or low voxel resolutions perform less efficiently due 
+to fewer full octree nodes. The approach is therefore suggested for scenes that are dense 
+and tight and can be expected to provide at least a reasonable amount of full octree nodes. 
+The main factors to influence the performance are the number of voxels, the number of 
+best occluders, and the screen-resolution.\\
+
+
 
 \noindent
 Ultimately, this work has shown that voxel rendering can benefit from the latest advances 
@@ -61,11 +70,8 @@ using modern mesh shading can optimize the runtime performance as compared to a 
 per-octree culling approach or compared to not using any occlusion culling at all. \\
 
 \noindent
-The approach could be used in large voxel scenes, which are meant to feature both a 
-high-resolution voxel scene and a dynamic environment capable of complex player or 
-physical interaction. It is also possible to use it to animate high-resolution voxel 
-models or even to compute virtualized geometry. The latter case could feature a 
-continuously adapting geometrical resolution depending on the camera distance and 
-could provide similar results to Unreal Engine's \emph{Nanite virtualized geometry} 
-system \cite{Karis2021}. In their presentation, Karis et al. mention that they 
-considered approaching virtualized geometry by using voxels. 
+Finally, this work highlights the potential of modern rendering pipelines for voxel-based 
+graphics. The proposed algorithm could be extended for applications like virtualized 
+geometry, potentially achieving results similar to Unreal Engine's Nanite system, as 
+suggested by Karis et al. \cite{Karis2021}. Future research could explore this avenue 
+in detail.
