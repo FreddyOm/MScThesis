@@ -38,8 +38,7 @@ implement. \\
 \noindent
 The \ac{CPU} times were found to be rather static, although both testing setups were not significantly reliant 
 on \ac{CPU} computations due to their \ac{GPU}-driven nature. However, the \ac{GPU} measurements were significantly 
-in favor of the \ac{PMOC} configuration, which overall increased performance by $29.86\%$ on 
-average. \\
+in favor of the \ac{PMOC} configuration, which overall increased performance by $29.86\%$ on average. \\
 
 \noindent
 The overdraw measurements showed varying overdraw values for both configurations, which resulted in a similar amount 
@@ -49,13 +48,18 @@ per-octree culling and up to about 70 draws to one pixel for per-meshlet culling
 camera angle and was considerably high in both configurations. \\ 
 
 \noindent
-The type of mesh used in the scene had a significant influence on both the culling efficiency and the computation time.
-Large, dense models were generally favored and resulted in a high best occluder count. In contrast, curved edges or 
-surfaces resulted in a low octree node occupation, which in turn led to high overdraw. Thin and detailed geometry or 
-models featuring a lot of holes and empty space in them were rather inefficient in computation. They generally resulted 
-in a lack of full octree nodes and therefore in a lower best occluder count and octree node occupation. Such models 
-were found to be very sensitive to different camera angles and could not cull voxels as efficiently compared to the 
-other models tested. Still, they would benefit from the culling algorithm in both configurations.
+The particular model used in the scene had a significant influence on both the culling efficiency and the computation 
+time. Large, dense models were generally favored and resulted in a high best occluder count. In contrast, curved edges 
+or surfaces resulted in a low octree node occupation, which in turn led to high overdraw. Thin and detailed geometry 
+or models featuring a lot of holes and empty space in them were rather inefficient in computation. They generally 
+resulted in a lack of full octree nodes and therefore in a lower best occluder count and octree node occupation. Such 
+models were found to be very sensitive to different camera angles and could not cull voxels as efficiently compared 
+to the other models tested. Still, they would benefit from the culling algorithm in both configurations. \\
+
+\noindent
+A simple measurement of the time it took to select a set of best occluders within a scene showed that this algorithm 
+is capable of updating the voxel data in real-time. This makes it possible to use in applications that simulate physical 
+interactions or feature simmilar arbitrary manipulation of the scene data.
 
 \section{Interpretation of the Results}
 
@@ -65,11 +69,14 @@ the amount of culled voxels. The presented results indicate that this was succes
 provide more in-depth insights that are discussed below. \\
 
 \noindent
-First of all, the results need to be considered in the correct context. This approach was tested with a particular use case 
-in mind. The main constraint is the volumetric nature of the scene, which is essential for this algorithm to make sense in 
-the first place. For non-volumetric representations, other occlusion culling algorithms might be better suited, or the 
-selection of the best occluders would fall back to whole models instead of parts of a volumetric model, like in this work's 
-implementation. Another constraint is the rasterized rendering pipeline, since the occlusion algorithm cannot be applied to 
+First of all, the results need to be considered in the correct context. This approach was tested with a particular use 
+case in mind. The main constraint is the volumetric nature of the scene, which is essential for this algorithm to make 
+sense in the first place. For non-volumetric representations, other occlusion culling algorithms might be better suited, 
+or the selection of the best occluders would fall back to whole models instead of parts of a volumetric model, like in 
+this work's implementation. \\
+
+\noindent
+Another constraint is the rasterized rendering pipeline, since the occlusion algorithm cannot be applied to 
 raytraced rendering. If both of these essential requirements are satisfied, the proposed approach can be adopted, and the 
 presented results can be used as a benchmark in terms of performance and culling results. \\
 
