@@ -442,7 +442,7 @@ how the computation time changed, and it includes the \ac{GPU} work that was cal
 
 \noindent
 In general, the time spent on the most significant \ac{CPU} computations was pretty much static for this specific 
-model. This result is as expected, as most of the work was executed on the \ac{GPU}, including the creation of the 
+model. This result is as expected, since most of the work was executed on the \ac{GPU}, including the creation of the 
 voxel meshes. After all, this approach is \ac{GPU}-driven at its core, so the bandwidth is small and the culling 
 completely happens on the \ac{GPU} end of the pipeline.
 
@@ -828,11 +828,11 @@ bunny.
 
 \subsection*{Torus}
 
-The \emph{Torus} provides a higher voxel count and a hole in it, which created an area where the 
-octree isn't densely filled with voxels. This model was specifically used to test the algorithm's 
-capabilities of culling voxels when the voxels were densely crowded in small parts of the scene and 
-at the same time provided areas with no voxels at all. Also, the \emph{Torus} is an inherently round 
-shape and therefore has a lot of partially filled octree nodes representing its surface. 
+The \emph{Torus} provides a high voxel count and has a hole in it, which creates an area where the 
+octree isn't densely filled with voxels. This model was specifically intended to test the algorithm's 
+capabilities of culling voxels in scene, that is densely crowded in some parts, provides areas with 
+no voxels in other parts. Also, the \emph{Torus} is an inherently round shape and therefore has a lot 
+of partially filled octree nodes representing its surface. 
 
 \subsubsection*{Culling Results} \label{subsubsec-culling-results-torus}
 
