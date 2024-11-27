@@ -77,16 +77,16 @@ simplicity and low memory footprint. Voxels have been used in a lot of ways, som
 \subsection*{Rasterized Voxel Rendering} \label{subsec-rasterized-voxel-rendering}
 
 The basic approach to rendering voxels is using the traditional rasterized rendering pipeline.
-One of the most popular games of all time, \emph{Minecraft} (Mojang \cite{Mojang2024}, 2011) uses 
-this approach to render thousands of cube-shaped voxels on screen. \emph{Minecraft} (Mojang 
-\cite{Mojang2024}, 2011) also makes use of various rendering optimizations to improve frame times. 
-This approach is straightforward in concept and can be implemented for existing \ac{API}s, making 
-use of hardware acceleration, i.e., the \ac{GPU}. The voxel representation allows for easy 
-computation since geometry is laid out uniformly. Lighting calculations, as well as physics 
-operations, can be further optimized to be even more efficient. The most significant characteristic 
-is the ability to dynamically enable or disable voxels within the scene layout, or, in general, 
-to update voxels and their corresponding data efficiently. Since voxels are uniform shapes, 
-they can be easily created on the \ac{GPU} as opposed to being sent over the \ac{PCI Express} port. \\
+It can be found in the game \emph{Minecraft} (Mojang \cite{Mojang2024}, 2011), which uses 
+this approach to render thousands of cube-shaped voxels on screen. It also makes use of various 
+rendering optimizations to improve frame times. Using rasterized voxel rendering is straightforward 
+in concept and can be implemented for existing \ac{API}s, making use of hardware acceleration, i.e., 
+the \ac{GPU}. The voxel representation allows for easy computation since geometry is laid out 
+uniformly. Lighting calculations, as well as physics operations, can be further optimized to be 
+even more efficient. The most significant characteristic is the ability to dynamically enable or 
+disable voxels within the scene layout, or, in general, to update voxels and their corresponding 
+data efficiently. Since voxels are uniform shapes, they can be easily generated on the \ac{GPU}, 
+eliminating the need to transfer geometry from the \ac{CPU} to the \ac{GPU}. \\
 
 \noindent
 Due to their uniform nature, voxels are often used for real-time ray tracing. Although ray tracing 
@@ -107,17 +107,17 @@ applied to rasterized voxel rendering, they are of interest for this work's appr
 \noindent
 Tuxedo Labs' game \emph{Teardown} (\cite{TeardownSteam2022}, 2022) (Figure \ref{fig:teardown}) uses ray-traced 
 lighting, which is affordable due to the voxel scene representation \cite{TuxedoLabs2022}. Additionally, 
-it makes use of highly dynamic physics operations, which are relatively efficient using the voxel representation. 
+it makes use of highly dynamic physics operations that are relatively efficient using the voxel representation. 
 In its base layout, a cubical voxel is an \ac{AABB}, which allows for trivial collision tests. When rotated 
 around any axis, a voxel is still an \ac{OBB}, making collision tests more expensive than when using an \ac{AABB}, 
 but still rather efficient. These characteristics make voxels excellent candidates for dynamic physics 
-calculations. Also, storing voxels in a spatial container helps keep collision checks to a minimum. \\
+calculations. Also, storing voxels in a spatial container helps to keep collision checks to a minimum. \\
 
 \noindent
-Although voxel physics is not considered for this work, it is very suitable for this approach as it basically 
-allows dynamic operations like physics or simulations. The performance of the proposed concept under dynamic 
-conditions needs to be tested in future experiments to see if it can support physics interactions. 
-
+Although voxel physics are not tested in this work, it is of great interest to evaluate the proposed approach 
+in terms of compatibility with real-time interactions or physics simulations. The performance of the proposed 
+concept under dynamic conditions needs to be tested in future experiments to see if it can support such complex 
+behavior.
 
 \section{Culling Techniques} \label{sec-culling-techniques}
 
