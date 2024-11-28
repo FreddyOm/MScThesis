@@ -258,17 +258,17 @@ at runtime. The measured values for each tested scene is presented in Table \ref
 
 \begin{table}[htbp]
   \begin{center}
-    \begin{tabular}{|c|c|c|c|}
+    \begin{tabular}{|c|c|c|c|c|}
       \hline
-      \textbf{}&\multicolumn{3}{|c|}{\textbf{Best Occluder Selection - $256^3$}} \\
-      \cline{2-4} 
-      \textbf{Scene} & \textbf{\textit{Voxel Count}}& \textbf{\textit{Best Occluder Count}}& \textbf{\textit{Time (ms)}} \\
+      \textbf{}&\multicolumn{4}{|c|}{\textbf{Best Occluder Selection - $256^3$}} \\
+      \cline{2-5} 
+      \textbf{Scene} & \textbf{\textit{Voxel Count}}& \textbf{\textit{Best Occluder Count}}& \textbf{\textit{Hierarchy Width}}& \textbf{\textit{Time (ms)}} \\
       \hline
-      Lucy        & 331,254   & 1600 & 0.317 \\
-      Bunny       & 3,379,738 & 8256 & 3.752 \\
-      Torus       & 2,311,006 & 7168 & 2.681 \\
-      Terrain     & 953,362   & 6976 & 1.267 \\
-      Hairball    & 1,652,435 & 5056 & 2.377 \\
+      Lucy        & 331,254   & 1600 & 2 / 8  & 0.317 \\
+      Bunny       & 3,379,738 & 8256 & 8 / 8  & 3.752 \\
+      Torus       & 2,311,006 & 7168 & 4 / 8  & 2.681 \\
+      Terrain     & 953,362   & 6976 & 4 / 8  & 1.267 \\
+      Hairball    & 1,652,435 & 5056 & 4 / 8  & 2.377 \\
       \hline
     \end{tabular}
     \caption{Measurements of best occluder query.}
@@ -278,7 +278,12 @@ at runtime. The measured values for each tested scene is presented in Table \ref
 
 \noindent
 The measurement show that each scene was processed in significantly less than 16.6 ms and the 
-computation times scaled with the amount of voxels within the scene.
+computation times scaled with the amount of voxels within the scene. The table additionally shows 
+the octree hierarchy width. The hierarchy is limited in its depth by the maximum amount of voxels 
+per octree node. However, its width is defined by the scene topology. The table shows how many of 
+the first eight child nodes in the hierarchy are subdivided into more child nodes. While \emph{Lucy} 
+only occlupies two of the eight child nodes, the \emph{Bunny} model occupies all of the first eight 
+child nodes.
 
 
 \subsection*{Stanford Lucy}

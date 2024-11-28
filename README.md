@@ -44,8 +44,7 @@ pipeline discussion and in depth data visualization.
 
 ## TODO Paper:
 - [x] Memory occupation of models also into paper?
-- [] Transpose CPU performance table
-- Andi -> Research and Development Strichpunkt Design
+- [] Transpose CPU performance table 
 
 ## Kolloquium
 
