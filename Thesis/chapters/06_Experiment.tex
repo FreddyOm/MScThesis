@@ -280,6 +280,7 @@ at runtime. The measured values for each tested scene is presented in Table \ref
 The measurement show that each scene was processed in significantly less than 16.6 ms and the 
 computation times scaled with the amount of voxels within the scene.
 
+
 \subsection*{Stanford Lucy}
 
 The \emph{Lucy} model is tall and slim, which means that its volume is distributed more over one axis 
@@ -344,35 +345,29 @@ no best occluders are expected.
 
 \noindent
 Figure \ref{plt:lucy-256-culling-culling-results} shows the amount of visible voxels and visible octree 
-nodes for both the \ac{PONOC} (upper graph) and the \ac{PMOC} (lower graph) configurations. \\
-
-\noindent [@TODO: Fix plot color references]
-
-The average amount of visible voxels was \emph{140,842} for \ac{PONOC}, which is marked 
-as the blue dotted line, and \emph{84,082} for \ac{PMOC}, marked in red. The average 
-amount of visible octree nodes was \emph{3,460} for \ac{PONOC}, which is marked as the 
-blue dotted line, and \emph{2,483} for \ac{PMOC}, which is marked as the red dotted 
-line. \\
+nodes for both occlusion culling configurations, as well as the average values represented by the dotted 
+lines. \\
 
 \noindent
-[@TODO: Consider moving explanations and further analysis to discussion part.]
-It is obvious that the \ac{PMOC} significantly reduced the amount of dispatched voxels and octree nodes, 
-which led to less load for the rasterizer and the pixel shader. The amount of octree nodes decreased when using 
-\ac{PMOC} because octree nodes could be culled, even when their corners were visible by the camera. 
-For instance, when considering a node that holds just 5 voxels, which are all overlapped by a part of the model, 
-this octree node will be inherently culled when using \ac{PMOC}. Contrary, when using \ac{PONOC}, 
-the culling is dependent on the visibility of any of the octree node's corners, which can result in a node being not 
-culled, even though all voxels within that node remain occluded. \\
-
-\noindent 
-Both curves indicate how the model fits the overall culling algorithm. For instance, the \emph{Stanford Lucy} 
-model has a relatively even curve over time. Of course, this is a dynamic measure and highly depends on the 
-angle of the camera. Still, the compact, tall model provides a good amount of best occluders to occlude a 
-relatively even number of voxels when viewed from the side. \\
+The average amount of visible voxels was 140,842 for \ac{PONOC} and 84,082 for \ac{PMOC}, 
+while the number of total voxels in the scene was 331,254 voxels. The average amount of visible 
+octree nodes was 3,460 for \ac{PONOC} and 2,483 for \ac{PMOC}. The number of total octree nodes 
+in the scene was 6,830. \\
 
 \noindent
-Considering the average amount of visible voxels, the per-octree algorithm was able to cull $57.5\%$ of all 
-voxels. On average, the \ac{PMOC} even managed to omit $74.6\%$ of all voxels. 
+The measurements show that the \ac{PMOC} significantly reduced the amount of dispatched voxels and octree nodes. 
+The amount of octree nodes decreased when using \ac{PMOC} because octree nodes could be culled, even when their 
+corners were visible by the camera. Looking at the data over time, the amount of visible voxels and octree nodes
+varies in a similar way. Both curves indicate how the model fits the overall culling algorithm. For instance, 
+the \emph{Stanford Lucy} scene has a relatively even curve over time. Of course, this is a dynamic measure and 
+highly depends on the angle of the camera. Still, the compact, tall model seems to have provided a good amount of 
+best occluders to occlude a relatively even number of voxels when viewed from the side. \\
+
+\noindent [@TODO: Add average divergence to all models]
+Considering the average amount of visible voxels for both culling configurations, \ac{PONOC} was able to cull 
+$57.5\%$ of all voxels. On average, the \ac{PMOC} even managed to omit $74.6\%$ of all voxels. For \ac{PONOC},
+the number of visible voxels diverged by a maximum of $17.83\%$ from the average value, and by $27.18\%$ for \ac{PMOC}. 
+For the visible octree nodes the variations were $14.80\%$ for \ac{PONOC} and $23.28\%$ for \ac{PMOC}.
 
 \subsubsection*{CPU Performance Results} \label{subsubsec-cpu-performance-results-lucy}
 
@@ -425,20 +420,26 @@ voxels. On average, the \ac{PMOC} even managed to omit $74.6\%$ of all voxels.
 \end{figure}
 
 \noindent
-Figure \ref{plt:lucy-256-culling-cpu-time} shows the \ac{CPU} computations over the course of the test animation.
-The first graph shows the computation of the \ac{CPU} \emph{Update()} function, which includes updating the camera's 
-view and projection matrices. This function was expected to be static in runtime, regardless of the culling configuration. 
-The graph shows that this is generally correct, as both are not significantly diverging.\\
+Figure \ref{plt:lucy-256-culling-cpu-time} shows the \ac{CPU} times spent on the \emph{Update()} and \emph{Render()}
+routines. The \emph{Update()} function includes updating the camera's view and projection matrices. This function was 
+expected to be static in runtime, regardless of the culling configuration. The graph shows that this is generally 
+correct, as both are not significantly diverging. Nevertheless, there are small differences in the frame times, 
+especially when comparing both culling configurations to the base pipeline without culling enabled. Within the last 
+800 frames, the base pipeline seems to have had longer update times. The differences cannot be clearly attributed to 
+any difference in the pipelines, since the code was identical for all measured configurations. \\
 
 \noindent
-The second graph shows the isolated computation time of the \ac{CPU} \emph{Render()} function. It is a good indicator of 
-how the computation time changed, and it includes the \ac{GPU} work that was called during the function, like 
-\emph{DispatchMesh()} during the depth prepass and the final draw call. \\
+The \emph{Render()} function includes the rendering process, the dispatch of the depth prepass, and the drawing of the 
+debugging \ac{UI}. Similar to the \emph{Update()} routine, the \emph{Render()} function doesn't change significantly 
+between the configurations. Small differences are visible when comparing both culling configurations to the base 
+pipeline without culling. There were small frame time spikes between the frames 700 and 900. However, it is not obvious 
+why these differences ocurred. Minor differences might be attributed to the varying \ac{GPU} times presented below, but 
+since \ac{GPU} work is usually running asynchronously, it is hard to point to a particular reason in this case. \\
 
 \noindent
 In general, the time spent on the most significant \ac{CPU} computations was pretty much static for this specific 
-model. This result is as expected, since most of the work was executed on the \ac{GPU}, including the creation of the 
-voxel meshes. After all, this approach is \ac{GPU}-driven at its core, so the bandwidth is small and the culling 
+model. This result is as expected, since most of the work was executed on the \ac{GPU} anyway, including the creation 
+of the voxel meshes. After all, this approach is \ac{GPU}-driven at its core, so the bandwidth is small and the culling 
 completely happens on the \ac{GPU} end of the pipeline.
 
 \subsubsection*{GPU Performance Results} \label{subsubsec-gpu-performance-results-lucy}
@@ -447,17 +448,18 @@ completely happens on the \ac{GPU} end of the pipeline.
   \centering
   \begin{tikzpicture}
     \begin{axis}[
-        height=6cm,
-        width=14cm,
+        height=4cm,
+        width=13cm,
         x tick label style={/pgf/number format/1000 sep=},
         ylabel={Time ($\mu$s)},
-        legend style={at={(0.5,1.2)}, anchor=north, legend columns=-1},
+        legend style={at={(0.5,1.4)}, anchor=north, legend columns=-1},
         symbolic x coords={DepthPrepass, DispatchMesh, Misc},
         xticklabels={Depth Prepass, Dispatch Mesh, Miscellaneous},
         xtick=data,
         ybar=0.4,
         bar width=25pt,
         ymin=0,
+        ymax=650,
         nodes near coords,
         enlargelimits=0.2,
     ]
@@ -470,17 +472,18 @@ completely happens on the \ac{GPU} end of the pipeline.
 
   \begin{tikzpicture}
     \begin{axis}[
-        height=6cm,
-        width=14cm,
+        height=4cm,
+        width=13cm,
         x tick label style={/pgf/number format/1000 sep=},
         ylabel={Time ($\mu$s)},
-        legend style={at={(0.5,1.2)}, anchor=north, legend columns=-1},
+        legend style={at={(0.5,1.4)}, anchor=north, legend columns=-1},
         symbolic x coords={DispatchBestOccluders, CopyTex, GenMipChain},
         xticklabels={Dispatch Best Occluders, Copy Depth Buffer, Generate \ac{HiZ} Pyramid},
         xtick=data,
         ybar=0.4,
         bar width=25pt,
         ymin=0,
+        ymax=45,
         nodes near coords,
         enlargelimits=0.2,
     ]
@@ -501,15 +504,16 @@ completely happens on the \ac{GPU} end of the pipeline.
 \end{figure}
 
 \noindent
-On the \ac{GPU}, the \ac{PMOC} turned out to be faster in computation. As the occlusion 
-culling algorithm intended, the time spent drawing the meshes could be reduced by $30\%$ on average for this 
-particular model. Compared to the base pipeline featuring no culling, the performance on the \ac{GPU} side 
-was increased by $58.2 \%$ using \ac{PONOC} and $74.6\%$ using \ac{PMOC}. \\
+On the \ac{GPU}, the \ac{PMOC} turned out to be faster in computation. As the occlusion culling algorithm 
+intended, the time spent drawing the meshes could be reduced by $30\%$ on average for this particular model. 
+Compared to the base pipeline featuring no culling, the performance on the \ac{GPU} side was increased by 
+$58.2 \%$ using \ac{PONOC} and $74.6\%$ using \ac{PMOC}. \\
 
 \noindent
 The comparison of the depth prepass shows a small difference in computation time. The per-octree node configuration 
 terminated faster by $1.93$ microseconds on average. In this case, the difference was created by small deviations in 
-copying the depth buffer and computing the mip maps. 
+copying the depth buffer and computing the mip maps. All prepass steps were identical between both culling 
+configurations.
 
 \subsubsection*{Overdraw}
 
@@ -549,9 +553,9 @@ copying the depth buffer and computing the mip maps.
 \noindent
 Figure \ref{fig:lucy-overdraw} shows that the \ac{PONOC} had more overdrawn pixels than the \ac{PMOC} configuration. 
 While the \ac{PONOC} resulted in a maximum overdraw of 38 draws per pixel, the \ac{PMOC} was able to reduce this to 
-a maximum of 27 draws. The comparison measurement without culling applied resulted in a maximum of 78 draws. The 
-side view featured only a maximum of 7 draws per pixel in both configurations. 
-
+a maximum of 27 draws. The comparison measurement without occlusion culling resulted in a maximum of 78 draws. The 
+side view featured only a maximum of 7 draws per pixel in both configurations and was in general less prone to overdraw.
+For both camera angles, the difference visualization shows that the \ac{PMOC} configuration was able to decrease overdraw. 
 
 \clearpage
 
@@ -612,29 +616,32 @@ approximations.
           \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
         \end{axis}
       \end{tikzpicture}
+    \end{center}
 
       \caption{\textbf{First:} The amount of visible voxels over the course of the test animation. 
       \textbf{Second:} The amount of visible octree nodes over the course of the test animation.}
       \label{plt:bunny-256-culling-res-voxels}
-    \end{center}
   \end{figure}
 % ----------------------------------------------------------------------------------------
 
 \noindent
-Similar to the first model, the \emph{Stanford Bunny} also discarded a significant amount of 
-voxels in both of the applied culling configurations. The average culling ratio was $88.6\%$ 
-for the \ac{PONOC} and $94.6\%$ for the \ac{PMOC}. This immense 
-amount of occlusion was due to the already large amount of \emph{3,379,738} total voxels in the 
-mesh and the large volume of the model, which provided a good basis for the generation of the 
-best occluders. \\
-
+Figure \ref{plt:bunny-256-culling-res-voxels} shows the amount of visible voxels and visible 
+octree nodes for both occlusion culling configurations, as well as the average values represented 
+by the dotted lines. \\
 
 \noindent
-The average amount of visible voxels was \emph{385,210} for \ac{PONOC}, which is 
-marked as the blue dotted line, and \emph{180,266} for \ac{PMOC}, marked in red.
-The average amount of visible octree nodes was \emph{8,519} for \ac{PONOC}, which 
-is marked as the blue dotted line, and \emph{5,415} for \ac{PMOC}, which is marked
-as the red dotted line.
+The average amount of visible voxels was 385,210 for \ac{PONOC} and 180,266 for \ac{PMOC},
+while the number of total voxels in the scene was 3,379,738 voxels. The average amount of
+visible octree nodes was 8,519 for \ac{PONOC} and 5,415 for \ac{PMOC}. The number of total 
+octree nodes in the scene was 57,481. \\
+
+\noindent
+The measurements show that the \emph{Stanford Bunny} considerably benefitted from both occlusion 
+culling configurations and the most significant reduction of visible voxels resulted from the use 
+of \ac{PMOC}. The average culling ratio was $88.6\%$ for the \ac{PONOC} and $94.6\%$ for the 
+\ac{PMOC}. For \ac{PONOC}, the number of visible voxels diverged by a maximum of $30.88\%$ from 
+the average value, and by $23.01\%$ for \ac{PMOC}. For the visible octree nodes the variations were 
+$24.61\%$ for \ac{PONOC} and $39.78\%$ for \ac{PMOC}.
 
 \subsubsection*{CPU Performance Results} \label{subsubsec-cpu-performance-results-bunny}
 
@@ -678,22 +685,24 @@ as the red dotted line.
         \legend{No Occlusion Culling, Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
       \end{axis}
     \end{tikzpicture}
+  \end{center}
     \caption{Overview of the render times over the course of the test animation. The first graph shows the time 
     each frame took to execute the \emph{Update()} function on the \ac{CPU}. The second graph shows the time each 
     frame took to execute the function \emph{Render()} on the \ac{CPU}. This includes the completion of the 
     \ac{GPU} computations.}
     \label{plt:bunny-256-culling-cpu-time}
-  \end{center}
 \end{figure}
 
 
 \noindent
-Like with the \emph{Lucy} model, the \emph{Bunny} showed no significant difference in \ac{CPU} computation time. 
-In Figure \ref{plt:bunny-256-culling-cpu-time}, the second graph shows a small amount of frames between frames 280 
-and 380, which seem to have been faster in execution using the \ac{PMOC}. However, it is not 
-obvious why there would be any difference here. Similarly, the first graph also shows small differences that are 
-not considered significant enough to make any assumptions about them. Therefore, for this particular model, the 
-\ac{CPU} compute times are also considered to be static between both configurations.
+Figure \ref{plt:bunny-256-culling-cpu-time} shows that there are no significant differences in render and update times.
+There occasional spikes in different frames but mostly both configurations showed similar execution times. A difference 
+between the culling configurations is visible between frames 280 and 380 in the \emph{Render()} routine. Here, the 
+\ac{PMOC} was able to achieve lower render times on the \ac{CPU} compared to the \ac{PONOC} configuration. Another 
+difference is visible between the base pipeline and both occlusion culling pipelines. For the first quarter of the test 
+animation, the occlusion culling pipelines performed better than the base pipeline during the \emph{Render()} function.
+The differences might be caused by shorter \ac{GPU} times, but no final evaluation can be made in this case. Ultimately, 
+the \ac{CPU} times do not show clear differences that can be attributed to any particular difference in the pipeline.
 
 \subsubsection*{GPU Performance Results} \label{subsubsec-gpu-performance-results-bunny}
 
@@ -701,11 +710,11 @@ not considered significant enough to make any assumptions about them. Therefore,
   \centering
   \begin{tikzpicture}
     \begin{axis}[
-        height=6cm,
-        width=14cm,
+        height=4cm,
+        width=13cm,
         x tick label style={/pgf/number format/1000 sep=},
         ylabel={Time ($\mu$s)},
-        legend style={at={(0.5,1.2)}, anchor=north, legend columns=-1},
+        legend style={at={(0.5,1.4)}, anchor=north, legend columns=-1},
         symbolic x coords={DepthPrepass, DispatchMesh, Misc},
         xticklabels={Depth Prepass, Dispatch Mesh, Miscellaneous},
         xtick=data,
@@ -724,11 +733,11 @@ not considered significant enough to make any assumptions about them. Therefore,
 
   \begin{tikzpicture}
     \begin{axis}[
-        height=6cm,
-        width=14cm,
+        height=4cm,
+        width=13cm,
         x tick label style={/pgf/number format/1000 sep=},
         ylabel={Time ($\mu$s)},
-        legend style={at={(0.5,1.2)}, anchor=north, legend columns=-1},
+        legend style={at={(0.5,1.4)}, anchor=north, legend columns=-1},
         symbolic x coords={DispatchBestOccluders, CopyTex, GenMipChain},
         xticklabels={Dispatch Best Occluders, Copy Depth Buffer, Generate \ac{HiZ} Pyramid},
         xtick=data,
@@ -965,11 +974,11 @@ using the \ac{PMOC} configuration as shown in Figure \ref{fig:torus-gpu-results}
   \centering
   \begin{tikzpicture}
     \begin{axis}[
-        height=6cm,
-        width=14cm,
+        height=4cm,
+        width=13cm,
         x tick label style={/pgf/number format/1000 sep=},
         ylabel={Time ($\mu$s)},
-        legend style={at={(0.5,1.2)}, anchor=north, legend columns=-1},
+        legend style={at={(0.5,1.4)}, anchor=north, legend columns=-1},
         symbolic x coords={DepthPrepass, DispatchMesh, Misc},
         xticklabels={Depth Prepass, Dispatch Mesh, Miscellaneous},
         xtick=data,
@@ -988,11 +997,11 @@ using the \ac{PMOC} configuration as shown in Figure \ref{fig:torus-gpu-results}
 
   \begin{tikzpicture}
     \begin{axis}[
-        height=6cm,
-        width=14cm,
+        height=4cm,
+        width=13cm,
         x tick label style={/pgf/number format/1000 sep=},
         ylabel={Time ($\mu$s)},
-        legend style={at={(0.5,1.2)}, anchor=north, legend columns=-1},
+        legend style={at={(0.5,1.4)}, anchor=north, legend columns=-1},
         symbolic x coords={DispatchBestOccluders, CopyTex, GenMipChain},
         xticklabels={Dispatch Best Occluders, Copy Depth Buffer, Generate \ac{HiZ} Pyramid},
         xtick=data,
@@ -1216,11 +1225,11 @@ Overall, the \emph{Terrain} model achieved a reduction in computation time of $4
   \centering
   \begin{tikzpicture}
     \begin{axis}[
-        height=6cm,
-        width=14cm,
+        height=4cm,
+        width=13cm,
         x tick label style={/pgf/number format/1000 sep=},
         ylabel={Time ($\mu$s)},
-        legend style={at={(0.5,1.2)}, anchor=north, legend columns=-1},
+        legend style={at={(0.5,1.4)}, anchor=north, legend columns=-1},
         symbolic x coords={DepthPrepass, DispatchMesh, Misc},
         xticklabels={Depth Prepass, Dispatch Mesh, Miscellaneous},
         xtick=data,
@@ -1239,11 +1248,11 @@ Overall, the \emph{Terrain} model achieved a reduction in computation time of $4
 
   \begin{tikzpicture}
     \begin{axis}[
-        height=6cm,
-        width=14cm,
+        height=4cm,
+        width=13cm,
         x tick label style={/pgf/number format/1000 sep=},
         ylabel={Time ($\mu$s)},
-        legend style={at={(0.5,1.2)}, anchor=north, legend columns=-1},
+        legend style={at={(0.5,1.4)}, anchor=north, legend columns=-1},
         symbolic x coords={DispatchBestOccluders, CopyTex, GenMipChain},
         xticklabels={Dispatch Best Occluders, Copy Depth Buffer, Generate \ac{HiZ} Pyramid},
         xtick=data,
@@ -1458,11 +1467,11 @@ occlusion culling when comparing the average values.
   \centering
   \begin{tikzpicture}
     \begin{axis}[
-        height=6cm,
-        width=14cm,
+        height=4cm,
+        width=13cm,
         x tick label style={/pgf/number format/1000 sep=},
         ylabel={Time ($\mu$s)},
-        legend style={at={(0.5,1.2)}, anchor=north, legend columns=-1},
+        legend style={at={(0.5,1.4)}, anchor=north, legend columns=-1},
         symbolic x coords={DepthPrepass, DispatchMesh, Misc},
         xticklabels={Depth Prepass, Dispatch Mesh, Miscellaneous},
         xtick=data,
@@ -1481,11 +1490,11 @@ occlusion culling when comparing the average values.
 
   \begin{tikzpicture}
     \begin{axis}[
-        height=6cm,
-        width=14cm,
+        height=4cm,
+        width=13cm,
         x tick label style={/pgf/number format/1000 sep=},
         ylabel={Time ($\mu$s)},
-        legend style={at={(0.5,1.2)}, anchor=north, legend columns=-1},
+        legend style={at={(0.5,1.4)}, anchor=north, legend columns=-1},
         symbolic x coords={DispatchBestOccluders, CopyTex, GenMipChain},
         xticklabels={Dispatch Best Occluders, Copy Depth Buffer, Generate \ac{HiZ} Pyramid},
         xtick=data,

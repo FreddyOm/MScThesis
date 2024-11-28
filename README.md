@@ -29,8 +29,9 @@ pipeline discussion and in depth data visualization.
 - [x] Add mew measurements into thesis (Best occluder creation)
 - [x] Fix capitalization of words
 - [x] Write Conclusion
+- [] Add Octree hierarchy depth to general information?
 - [] Evaluate memory footprint in discussion?
-- [] Add Octree depth to general information?
+- [] Refer to PMOC average divergence in discussion
 
 ## TODO Paper:
 - [] Memory occupation of models also into paper?
@@ -42,3 +43,4 @@ pipeline discussion and in depth data visualization.
 and do experiments with dynamically updating and changing the voxel meshes.
 - Compare depth prepass with all voxels against depth prepass with aggregated best occluders
 - Would have liked to fix visual errors 
+- Show differences for different scene resolutions and different screen resolutions
