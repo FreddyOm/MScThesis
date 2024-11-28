@@ -30,7 +30,11 @@ pipeline discussion and in depth data visualization.
 - [x] Fix capitalization of words
 - [x] Write Conclusion
 - [] Evaluate memory footprint in discussion?
-- [] Paper: Memory occupation of models also into paper?
+- [] Add Octree depth to general information?
+
+## TODO Paper:
+- [] Memory occupation of models also into paper?
+- [] Transpose CPU performance table
 
 ## Kolloquium
 
