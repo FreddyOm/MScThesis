@@ -4,7 +4,7 @@ The following chapter discusses possible advantages and disadvantages of the pro
 the data presented in Chapter \ref{cpt-experiment}. The results are revisited and summarized before they 
 are interpreted and evaluated. Finally, limitations of the approach are presented and discussed.
 
-\section{Summary of the Results}
+\section{Experimental Results Summary}
 
 The experiment tested the ability of the \ac{TPOC} to be adapted to a new use case. The traditional way of 
 using \ac{TPOC} relies on preprocessing large objects that are usually artist-picked and are generally used 
@@ -61,7 +61,7 @@ A simple measurement of the time it took to select a set of best occluders withi
 is capable of updating the voxel data in real-time. This makes it possible to use in applications that simulate physical 
 interactions or feature simmilar arbitrary manipulation of the scene data.
 
-\section{Interpretation of the Results}
+\section{Experimental Results Interpretation}
 
 This work aimed to test if the \ac{TPOC} algorithm could be applied to voxel rendering by adopting a good approximation 
 for the creation of the best occluders and if the use of the mesh shading pipeline would optimize the performance and 
@@ -203,9 +203,7 @@ computations, like updating the voxel data dynamically. When using the approach 
 to optimize volumetric voxel rendering further. Particularly if the proposed implementation is even further optimized to fit the given use case, 
 for example, by using command lists to avoid a write-back to \ac{CPU} memory before dispatching the meshes for the final draw call. \\
 
-
-
-\section{Limitations}
+\section{Implications for Pracical Use}
 
 The experiment also featured some limitations that are essential to consider for further research of the approach.
 A central limitation was the depth hierarchy, which was not being used in the intended way, as mentioned earlier.
@@ -243,4 +241,3 @@ scene and only consider the best occluders within "active" chunks for the cullin
 expected to be of advantage for dynamically updating the voxel data and therefore the best occluder data. For this 
 particular work, the management of chunk data is handled by the \ac{CPU}, which means that updating the data could 
 potentially be parallelized on the \ac{CPU} by using scene chunks. \\
- 

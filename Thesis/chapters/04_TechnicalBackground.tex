@@ -59,8 +59,8 @@ High-resolution sparse voxel \ac{DAG}s proposed by Kämpe et al. \cite{Kampe2013
 generalize and optimize high-resolution \ac{SVO}s. It is a favourable approach for an implementation like 
 the one described in this work because it uses a highly efficient way of storing spatial data, reduces redundancies, 
 and can be easily transferred to \ac{GPU} memory. It seems to be a very good solution for reading, storing, and 
-optimizing octree data, although the work presented in Chapter \ref{cpt-implementation} uses a more basic 
-approach in the implementation for reasons of simplicity. 
+optimizing octree data, although the implementation presented in Chapter \ref{cpt-implementation} uses a more basic 
+approach for reasons of simplicity. 
 
 
 \section{Voxel Rendering} \label{sec-voxel-rendering}
@@ -128,52 +128,7 @@ behavior.
 the final image" \cite{AkenineMoeller2018}. This allows for expensive scenes to be rendered, since most parts of it 
 will probably not be visible by the camera at the same time. Ignoring non-visible objects or triangles is therefore a 
 common process in real-time rendering, because "the fastest triangle to render is the one never sent to the \ac{GPU}" 
-\cite{AkenineMoeller2018}. In this section, common culling techniques are presented and analyzed. 
-
-
-\subsection*{Backface Culling} \label{subsec-backface-culling}
-
-Backface culling is concerned with discarding triangles that are facing away from the camera. 
-These triangles will not be seen by the camera anyway and thus can be safely ignored in the rendering process. 
-To compute the facing direction of a triangle, which when normalized is equivalent to the triangle's 
-\emph{Surface Normal}, the vertex \emph{winding order} of the given rendering backend is considered.
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=200px]{images/graphics/winding-order-triangle.jpg}
-    \caption{Two possible winding orders of triangles \cite{Michel2016}.}
-    \label{fig:triangle-winding-order}
-\end{figure}
-
-\noindent
-When describing a triangle mathematically, the vertex positions are considered, which perfectly define the edges of 
-said triangle. The surface can then be interpreted as facing towards the viewer or away from them. 
-When trying to compute the triangle, its vertex positions can be recorded in an arbitrary order, but to encode which 
-direction the surface is facing, the vertex position order is specified up front. Microsoft's rendering \ac{API}s D3D11 
-and D3D12, for example, encode a counterclockwise winding order to be interpreted as facing towards the viewer 
-\cite{D3DTopology2020}. With this standard in place, all triangles can uniquely define their orientation relative to 
-the camera. When enabling backface culling within the rendering backend, triangles that are not facing the camera 
-are automatically omitted immediately after screenmapping \cite{AkenineMoeller2018}. Depending on the type of geometry, 
-backface culling can often remove around half of the triangles about to be rendered, proving very valuable to highly 
-populated scenes and high geometric density.
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=300px]{images/graphics/cluster-backface-culling.jpg}
-    \caption{A common normal cone of a triangle cluster. It can be used to calculate a frontfacing
-    and a backfacing cone. If the camera is located in either of these cones, all triangles in the 
-    cluster are facing toward the camera, or away from it respectively \cite{AkenineMoeller2018}.}
-    \label{fig:cluster-backface-culling}
-\end{figure}
-
-\noindent 
-Backface culling algorithms can also be applied to clusters of triangles. As Shirmun et al. \cite{Shirmun1993} 
-propose, multiple triangles can be culled at once considering a common normal cone, constructed by the normals 
-of all the triangles within the cluster. "Shirmun and Abi-Ezzi \cite{Shirmun1993} prove that if the viewer is 
-located in [a] frontfacing cone, then all faces in the cone are frontfacing, and similarly for the backfacing 
-cone" \cite{AkenineMoeller2018}. As mentioned in Chapter \ref{subsubsec-meshlet-backface-culling}, this approach 
-can be used for more parallelized backface culling using an updated rendering pipeline in current graphics 
-\ac{API}s. A visual representation is provided in Figure \ref{fig:cluster-backface-culling}.
+\cite{AkenineMoeller2018}. In this section, relevant culling techniques are presented and analyzed. 
 
 
 \subsection*{View Frustum Culling} \label{subsec-view-frustum-culling}

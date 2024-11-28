@@ -241,7 +241,7 @@ perspective. \\
 \end{figure}
 
 \noindent
-Nodes that were not culled using the view frustum are then drawn, checking each voxel for occlusion against the 
+Nodes that were not culled using the view frustum are then scheduled for drawing, checking each voxel for occlusion against the 
 \ac{HiZ} texture and its mip maps. This operation introduces additional overhead, which is normal for any acceleration structure. 
 The goal is always to apply it to a scenario where the additional overhead is compensated by the acceleration it provides. 
 In this case, the visible voxels might have to pass the whole \ac{HiZ} structure. The non-visible voxels, however, will likely 
@@ -265,24 +265,23 @@ trivial to determine for uniform voxels and are also looked up in the mesh shade
 The occlusion culling algorithm is the central part of the pipeline and thus deserves a more detailed coverage. The 
 basic implementation is very similar to the ones provided by Aaltonen et al., Greene et al., or Karis et al. 
 \cite{Aaltonen2015,Greene93,Karis2021}. It relies on the pre-computations discussed above and can be applied to the 
-octree nodes or to individual meshlets. Usually, octree nodes are culled in this process, as \cite{AkenineMoeller2018}
-points out. However, using the mesh shading pipeline, it has become possible to cull more granularly by using 
-meshlet bounding volumes as occludees. One advantage is that geometry can be culled, even when the occluder doesn't 
-fully overlap the octree node. Therefore, even small instances in the scene can occlude a lot of geometry, resulting 
-in better performance overall. On the other hand, this approach requires a lot more computations because all meshlets 
-are checked against the \ac{HiZ} pyramid. It is necessary to make precise measurements in order to find out which 
-approach works best under the given circumstances.
+octree nodes or to individual meshlets. Usually, octree nodes are culled in this process, as Akenine-Möller et al. 
+\cite{AkenineMoeller2018} point out. However, using the mesh shading pipeline, it has become possible to cull more 
+granularly by using meshlet bounding volumes as occludees. One advantage is that geometry can be culled, even when 
+the occluder doesn't fully overlap the octree node. Therefore, even small instances in the scene can occlude a lot 
+of geometry, resulting in better performance overall. On the other hand, this approach requires a lot more 
+computations because all meshlets are checked against the \ac{HiZ} pyramid. It is necessary to make precise 
+measurements in order to find out which approach works best under the given circumstances.
 
 
 \subsection*{Visibility Computation} \label{subsec-visibility-computation}
 
-As mentioned before, the task shader is used to pre-select and pre-process the scheduled geometry data, 
-which in this case is just the position of an individual octree node and all the voxels inside of the node. 
-This precomputational step is used for visibility checking, i.e., view frustum culling and occlusion culling. 
-Since the task shader is based on the compute architecture, this pipeline step is realized using a standard 
-compute-like code structure. \\
+The task shader is used to pre-select and pre-process the scheduled geometry data, which in this case is just 
+the position of an individual octree node and all the voxels inside of the node. This precomputational step is 
+used for visibility checking, i.e., view frustum culling and occlusion culling. Since the task shader is based 
+on the compute architecture, this pipeline step is realized using a standard compute-like code structure. \\
 
-\begin{figure}[htbp]
+\begin{figure}[!htb]
     \centering
     \includegraphics[width=\linewidth]{images/graphics/screen_space_occlusion_test.jpg}
     \caption{The occlusion test is done in screen space using the \emph{min} and \emph{max} boundaries. The octree node 
@@ -386,10 +385,10 @@ The routine is shown in Listing \ref{lst:occlusion-culling-algo} as pseudocode.
 \vspace{0.5cm}
 
 
-\section{Implementation Limitations} \label{sec-implementation-limitations}
+\section{Limitations} \label{sec-implementation-limitations}
 
 The implementation has some limitations that need to be considered for the experimental setup 
-in the following chapter.\\
+in the following chapter. \\
 
 \noindent
 When dispatching a large amount of data using compute shaders, there are hardware limitations for 
@@ -402,7 +401,7 @@ might pose a limitation for larger scenes. \\
 If more voxels are needed, the group size can be increased further, which also results in a larger 
 octree node size, given that the implementation is similar to the one presented here. Another way 
 to increase the total amount of voxels is to draw the scene in multiple passes, invoking the task 
-shader more than once.\\
+shader more than once. \\
 
 \noindent
 Furthermore, the implementation poses some visual errors when viewing the scene from specific 
@@ -410,9 +409,6 @@ angles. It is assumed that this might be due to precision errors, but this assum
 be finally confirmed. This problem is, however, manageable by shortcutting the \ac{HiZ} pyramid 
 and using the full-resolution depth buffer for the visibility test directly, without traversing 
 the hierarchy. This results in a functional occlusion culling without visual errors and is used 
-for all of the following measurements. \\
-
-\noindent
-This modification reduces the time required for traversing the hierarchy. However, since it was 
-applied uniformly across all tested configurations, any resulting inaccuracies are eliminated, 
-ensuring full comparability between the tested configurations. 
+for all of the following measurements. This modification reduces the time required for traversing 
+the hierarchy. However, since it was applied uniformly across all tested configurations, any 
+resulting inaccuracies are eliminated, ensuring full comparability between the tested configurations. 

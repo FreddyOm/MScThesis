@@ -30,12 +30,22 @@ pipeline discussion and in depth data visualization.
 - [x] Fix capitalization of words
 - [x] Write Conclusion
 - [] Add Octree hierarchy depth to general information?
-- [] Evaluate memory footprint in discussion?
+- [] ~~Evaluate memory footprint in discussion~~
 - [] Refer to PMOC average divergence in discussion
+- [] Adjust GPU Performance Results ymax values in plot
+- [] Add conclusion in brief chapter overview at the end of motivation? 
+- [] Consider removing Virtualized Geometry from conclusion
+
+- ~~Limitations statt Impl Limits~~
+- ~~Experimental Setup~~
+- ~~Experimental Results Summary~~
+- ~~Experimental Results Interpretation~~
+- ~~Implications for Practical Use~~ 
 
 ## TODO Paper:
-- [] Memory occupation of models also into paper?
+- [x] Memory occupation of models also into paper?
 - [] Transpose CPU performance table
+- Andi -> Research and Development Strichpunkt Design
 
 ## Kolloquium
 

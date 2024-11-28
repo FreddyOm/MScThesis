@@ -31,7 +31,7 @@ well as the models, which were tested. Finally, the results are discussed by pre
 for each model. A summary of the most meaningful results is given in the end, aggregating average data from 
 all the tests performed during the experiment.
 
-\section{Experimental Evaluation} \label{sec-experimental-evaluation}
+\section{Experimental Setup} \label{sec-experimental-evaluation}
 
 The experiment aimed to evaluate the tested scenes in respect to the above mentioned aspects. To do this, 
 various characteristics have been selected, which are outlined below. All aspects aim to demonstrate how 
@@ -350,9 +350,9 @@ lines. \\
 
 \noindent
 The average amount of visible voxels was 140,842 for \ac{PONOC} and 84,082 for \ac{PMOC}, 
-while the number of total voxels in the scene was 331,254 voxels. The average amount of visible 
-octree nodes was 3,460 for \ac{PONOC} and 2,483 for \ac{PMOC}. The number of total octree nodes 
-in the scene was 6,830. \\
+while the number of total voxels in the scene was 331,254. The average amount of visible 
+octree nodes was 3,460 for \ac{PONOC} and 2,483 for \ac{PMOC}. The number of total octree 
+nodes in the scene was 6,830. \\
 
 \noindent
 The measurements show that the \ac{PMOC} significantly reduced the amount of dispatched voxels and octree nodes. 
@@ -367,7 +367,7 @@ best occluders to occlude a relatively even number of voxels when viewed from th
 Considering the average amount of visible voxels for both culling configurations, \ac{PONOC} was able to cull 
 $57.5\%$ of all voxels. On average, the \ac{PMOC} even managed to omit $74.6\%$ of all voxels. For \ac{PONOC},
 the number of visible voxels diverged by a maximum of $17.83\%$ from the average value, and by $27.18\%$ for \ac{PMOC}. 
-For the visible octree nodes the variations were $14.80\%$ for \ac{PONOC} and $23.28\%$ for \ac{PMOC}.
+For the visible octree nodes the variations were $14.80\%$ for \ac{PONOC}, and $23.28\%$ for \ac{PMOC}.
 
 \subsubsection*{CPU Performance Results} \label{subsubsec-cpu-performance-results-lucy}
 
@@ -618,7 +618,7 @@ approximations.
       \end{tikzpicture}
     \end{center}
 
-      \caption{\textbf{First:} The amount of visible voxels over the course of the test animation. 
+      \caption{\textbf{First:} The amount of visible voxels over the course of the test animation. \\
       \textbf{Second:} The amount of visible octree nodes over the course of the test animation.}
       \label{plt:bunny-256-culling-res-voxels}
   \end{figure}
@@ -631,9 +631,9 @@ by the dotted lines. \\
 
 \noindent
 The average amount of visible voxels was 385,210 for \ac{PONOC} and 180,266 for \ac{PMOC},
-while the number of total voxels in the scene was 3,379,738 voxels. The average amount of
-visible octree nodes was 8,519 for \ac{PONOC} and 5,415 for \ac{PMOC}. The number of total 
-octree nodes in the scene was 57,481. \\
+while the number of total voxels in the scene was 3,379,738. The average amount of visible 
+octree nodes was 8,519 for \ac{PONOC} and 5,415 for \ac{PMOC}. The number of total octree 
+nodes in the scene was 57,481. \\
 
 \noindent
 The measurements show that the \emph{Stanford Bunny} considerably benefitted from both occlusion 
@@ -641,7 +641,7 @@ culling configurations and the most significant reduction of visible voxels resu
 of \ac{PMOC}. The average culling ratio was $88.6\%$ for the \ac{PONOC} and $94.6\%$ for the 
 \ac{PMOC}. For \ac{PONOC}, the number of visible voxels diverged by a maximum of $30.88\%$ from 
 the average value, and by $23.01\%$ for \ac{PMOC}. For the visible octree nodes the variations were 
-$24.61\%$ for \ac{PONOC} and $39.78\%$ for \ac{PMOC}.
+$24.61\%$ for \ac{PONOC}, and $39.78\%$ for \ac{PMOC}.
 
 \subsubsection*{CPU Performance Results} \label{subsubsec-cpu-performance-results-bunny}
 
@@ -721,6 +721,7 @@ the \ac{CPU} times do not show clear differences that can be attributed to any p
         ybar=0.4,
         bar width=25pt,
         ymin=0,
+        ymax=6000,
         nodes near coords,
         enlargelimits=0.2,
     ]
@@ -744,6 +745,7 @@ the \ac{CPU} times do not show clear differences that can be attributed to any p
         ybar=0.4,
         bar width=25pt,
         ymin=0,
+        ymax=40,
         nodes near coords,
         enlargelimits=0.2,
     ]
@@ -764,16 +766,13 @@ the \ac{CPU} times do not show clear differences that can be attributed to any p
 \end{figure}
 
 \noindent
-The \ac{GPU} performance shows a significant difference when comparing both configurations. The per-meshlet 
-occlusion culling was able to decrease the time spent on \emph{DispatchMesh} by $36.1\%$ on average as compared 
-to the \ac{PONOC}. On closer inspection, the depth prepass showed a minor difference 
-in runtime, similar to the prepass of the \emph{Lucy} model. The difference in runtime is 1.6 microseconds, 
-mostly due to differences in \ac{HiZ} dispatch and depth buffer copy. \\
+The \ac{GPU} performance shows a significant difference when comparing both configurations. The \ac{PMOC} 
+was able to decrease the time spent on \emph{DispatchMesh} by $36.1\%$ on average as compared to the 
+\ac{PONOC}. On closer inspection, the depth prepass showed a minor difference in runtime. The difference 
+is 1.6 microseconds, mostly due to differences in \ac{HiZ} dispatch and depth buffer copy. \\
 
 \noindent
-Compared to the \emph{Lucy} model, the depth prepass took considerably longer to compute. This was mainly due to 
-the longer dispatch of the best occluders, which took about three times as long. The \emph{Bunny}'s amount of 
-best occluders was 5.1 times as high as the amount of best occluders in the \emph{Lucy} model.
+Both culling configurations decreased the time spent on the \ac{GPU} by $85.4\%$ and $90.7\%$ respectively.
 
 \subsubsection*{Overdraw} \label{subsubsec-overdraw-bunny}
 
@@ -811,20 +810,19 @@ best occluders was 5.1 times as high as the amount of best occluders in the \emp
 \end{figure}
 
 \noindent
-Figure \ref{fig:bunny-overdraw} shows the overdraw of pixels from two different camera angles.
-Both rows show that the \ac{PONOC} had more overdrawn pixels than the 
-\ac{PMOC} configuration. The difference is in favor of per-meshlet 
-culling, which had only a maximum of 43 draws to the same pixels as compared to 60 draws. Without 
-the culling activated, the maximum amount of overdraw was measured to be 111 draws to the same pixel.
-The camera angle clearly made a difference here, as the top view increased the amount of 
-overdraw significantly. This is especially visible on the surface of the model, where a lot 
-of rounded edges are present. \\
+Figure \ref{fig:bunny-overdraw} shows that the \ac{PONOC} had more overdrawn pixels than the 
+\ac{PMOC} configuration. The difference is in favor of \ac{PMOC}, which had only a maximum of 
+43 draws to the same pixels as compared to 60 draws. Without the culling activated, the maximum 
+amount of overdraw was measured to be 111 draws to the same pixel. The camera angle clearly made 
+a difference here, as the top view increased the amount of overdraw significantly. This is 
+especially visible on the surface of the model, where a lot of rounded edges are present. \\
 
 \noindent
-The images also show how the \ac{PONOC} produces more overdraw on the surface than the 
-\ac{PMOC} because a larger portion of the voxels on the outside of the mesh were being 
-culled. In Figure \ref{fig:bunny-overdraw}, this is visible as the broader red outline around the 
-bunny.
+The images also show how the \ac{PONOC} produces more overdraw on the surface than the \ac{PMOC} 
+because a larger portion of the voxels on the outside of the mesh were being culled. In Figure 
+\ref{fig:bunny-overdraw}, this is visible as the broad red outline around the bunny. The rightmost 
+column additionally highlights a considerable difference in overdraw between the two occlusion 
+culling configurations.
 
 \clearpage
 
@@ -834,7 +832,7 @@ bunny.
 
 The \emph{Torus} provides a high voxel count and has a hole in it, which creates an area where the 
 octree isn't densely filled with voxels. This model was specifically intended to test the algorithm's 
-capabilities of culling voxels in scene, that is densely crowded in some parts, provides areas with 
+capabilities of culling voxels in scene that is densely crowded in some parts, provides areas with 
 no voxels in other parts, i.e., the hole in the middle. Also, the \emph{Torus} is an inherently round 
 shape and is therefore expected to have a lot of partially filled octree nodes representing its surface. 
 
@@ -885,31 +883,36 @@ shape and is therefore expected to have a lot of partially filled octree nodes r
           \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
         \end{axis}
       \end{tikzpicture}
-
-      \caption{\textbf{First:} The amount of visible voxels over the course of the test animation. 
-      \textbf{Second:} The amount of visible octree nodes over the course of the test animation.}
-      \label{plt:torus-256-culling-res-voxels}
     \end{center}
+
+    \caption{\textbf{First:} The amount of visible voxels over the course of the test animation. 
+    \textbf{Second:} The amount of visible octree nodes over the course of the test animation.}
+    \label{plt:torus-256-culling-res-voxels}
   \end{figure}
 
 % ----------------------------------------------------------------------------------------
 
 \noindent
-The \emph{Torus} model varied in culling efficiency depending on the view angle. As expected, the hole 
-in the mesh turned out to be inefficient for the culling algorithm. When considering the occlusion ratio, 
-both the \ac{PONOC} and the \ac{PMOC} performed significantly better 
-when the torus was viewed from an angle, from which th hole in the middle was occluded. The variation between 
-the maximum amount of visible voxels and the minimum amount of voxels was the highest for the \emph{Torus} 
-model, which is remarkable compared to the other models. Using this particular experimental setup, the 
-lowest amount of visible voxels was $36.8\%$ of the maximum amount of visible voxels. This variation is 
-also clearly evident in Figure \ref{plt:torus-256-culling-res-voxels}. \\ 
+As Figure \ref{plt:torus-256-culling-res-voxels} shows, the \emph{Torus} model varied in culling efficiency 
+depending on the view angle. As expected, the hole in the mesh turned out to be inefficient for the culling 
+algorithm. When considering the occlusion ratio, both the \ac{PONOC} and the \ac{PMOC} performed significantly 
+better when the torus was viewed from an angle, from which the hole in the middle was occluded. \\
 
 \noindent
-In general, for \ac{PONOC}, the average culling ratio was $84.4\%$, and $92.6\%$ for \ac{PMOC}. 
+The average number of visible voxels was 359,313 for \ac{PONOC} and 170,772 for \ac{PMOC}, while the number 
+of total voxels in the scene was 2,311,006. The average amount of visible octree nodes was 7,712 for \ac{PONOC} 
+and 4,768 for \ac{PMOC}. The number of total octree nodes in the scene was 39,794. \\
+
+\noindent
+The data suggests that the \emph{Torus} was able to be used for both occlusion culling configurations and benefitted 
+from the more granular \ac{PMOC}, while still being considerably dependant on the viewing angle of the camera. The 
+average culling ratio was $84.5\%$ for \ac{PONOC} and $92.6\%$ for \ac{PMOC}. For the former, the number of visible 
+voxels diverged by a maximum of $56.05\%$ from the average value, while the latter diverged by a maximum of $50.74\%$. 
+For the visible octree nodes the variations were $52.11\%$ for \ac{PONOC}, and $55.23\%$ for \ac{PMOC}.
 
 \subsubsection*{CPU Performance Results} \label{subsubsec-cpu-performance-results-torus}
 
-Similar to the other models, the \emph{Torus} showed very similar \ac{CPU} performances in both 
+The \emph{Torus} showed very similar \ac{CPU} performances in both 
 occlusion culling configurations. The measurements confirmed what could already be shown for the 
 \emph{Bunny}: The time spent on the depth prepass directly correlates to the amount of best occluders 
 for a given model.
@@ -985,6 +988,7 @@ using the \ac{PMOC} configuration as shown in Figure \ref{fig:torus-gpu-results}
         ybar=0.4,
         bar width=25pt,
         ymin=0,
+        ymax=4000,
         nodes near coords,
         enlargelimits=0.2,
     ]
@@ -1008,6 +1012,7 @@ using the \ac{PMOC} configuration as shown in Figure \ref{fig:torus-gpu-results}
         ybar=0.4,
         bar width=25pt,
         ymin=0,
+        ymax=39,
         nodes near coords,
         enlargelimits=0.2,
     ]
