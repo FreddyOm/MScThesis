@@ -173,13 +173,9 @@ with and without the occlusion culling applied. The amount of culled voxels was 
 voxels, resulting in an overview of how much geometry could be culled for different scene setups. The same is 
 valid for the amount of octree nodes. They could also be compared to the number of best occluders. The more best 
 occluders present in a scene, the higher the probability to occlude other voxels or octree nodes. To evaluate 
-how much can be optimized during the depth prepass, the number of best occluders was compared to the number 
-of voxels representing the best occluders. \\
-
-\noindent
-Finally, the actual amount of processed triangles was considered in order to show the actual geometry processed 
-by the \ac{GPU}. This data indicates how much work is being scheduled for the vertex transformations, the rasterizer, 
-and the pixel shader. Ultimately, it decides over the amount of overdraw and should therefore be kept at a minimum.
+the optimization during the depth prepass, the number of best occluders was compared to the number of voxels 
+representing the geometry approximated by the best occluders, because it is favourable to have a small number of 
+best occluders approximate a high number of voxels.\\
 
 
 \subsection*{Measuring Tools} \label{subsec-measuring-tools}
@@ -250,7 +246,6 @@ in \ref{subsec-experimental-environment}. The data analysis is structured simila
 comparing the \ac{PONOC} configuration to the \ac{PMOC} configuration. Finally, an overview 
 is presented that summarizes all the relevant data in a compact visualization.
 
-[@TODO: Update (Prepass) Labels (like Generate HiZ Pyramid instead of GenMipChain)]
 
 \subsection*{Best Occluder Selection}
 
@@ -282,8 +277,8 @@ at runtime. The measured values for each tested scene is presented in Table \ref
 \end{table}
 
 \noindent
-The measurement show that each scene was processed in significantly less than 16.6 ms. The 
-computation times clearly scale with the amount of voxels.
+The measurement show that each scene was processed in significantly less than 16.6 ms and the 
+computation times scaled with the amount of voxels within the scene.
 
 \subsection*{Stanford Lucy}
 
