@@ -831,8 +831,8 @@ bunny.
 The \emph{Torus} provides a high voxel count and has a hole in it, which creates an area where the 
 octree isn't densely filled with voxels. This model was specifically intended to test the algorithm's 
 capabilities of culling voxels in scene, that is densely crowded in some parts, provides areas with 
-no voxels in other parts. Also, the \emph{Torus} is an inherently round shape and therefore has a lot 
-of partially filled octree nodes representing its surface. 
+no voxels in other parts, i.e., the hole in the middle. Also, the \emph{Torus} is an inherently round 
+shape and is therefore expected to have a lot of partially filled octree nodes representing its surface. 
 
 \subsubsection*{Culling Results} \label{subsubsec-culling-results-torus}
 
@@ -894,7 +894,7 @@ of partially filled octree nodes representing its surface.
 The \emph{Torus} model varied in culling efficiency depending on the view angle. As expected, the hole 
 in the mesh turned out to be inefficient for the culling algorithm. When considering the occlusion ratio, 
 both the \ac{PONOC} and the \ac{PMOC} performed significantly better 
-when the torus was viewed from an angle, so the hole in the middle was occluded. The variation between 
+when the torus was viewed from an angle, from which th hole in the middle was occluded. The variation between 
 the maximum amount of visible voxels and the minimum amount of voxels was the highest for the \emph{Torus} 
 model, which is remarkable compared to the other models. Using this particular experimental setup, the 
 lowest amount of visible voxels was $36.8\%$ of the maximum amount of visible voxels. This variation is 
@@ -1074,9 +1074,9 @@ to be 267 draws to one pixel.
 \subsection*{Terrain}
 
 The \emph{Terrain} model aimed to replicate a relatively flat, open area that could be found in actual 
-games like \emph{Minecraft}. Its surface is setup in a way that allows for only a small amount of best 
-occluders to be formed. The terrain's hills are assumed to be occluding a large part of the scene, 
-which again would help for rendering such a scene in a game.
+games like \emph{Minecraft} (Mojang \cite{Mojang2024}, 2011). Its surface is setup in a way that allows 
+for only a small amount of best occluders to be formed. The terrain's hills are assumed to be occluding 
+a large part of the scene, which again would help for rendering such a scene in a game. 
 
 \subsubsection*{Culling Results} \label{subsubsec-culling-results-terrain}
 
@@ -1519,7 +1519,7 @@ occlusion culling when comparing the average values.
 \noindent
 The data clearly indicates that the \emph{Hairball} model wasn't using the culling algorithm as efficiently as 
 the other models did. From this, it is possible to derive how the algorithm should ideally be applied and in 
-which use case the overhead is greater than the time saving.
+which use case the overhead is greater than the time being saved.
 
 \subsubsection*{Overdraw}
 
