@@ -28,7 +28,10 @@ Overall, the experiment showed that the \ac{TPOC} algorithm can be customized to
 representation using two different configurations: the per-octree node culling and the per-meshlet culling. 
 Both configurations were able to occlude a considerable amount of voxels while using a minimal amount of 
 \ac{GPU} bandwidth. The per-meshlet culling was able to cull more octree nodes and, consequently, more 
-voxels than the per-octree node culling. \\
+voxels than the per-octree node culling. It also demonstrated a higher deviation from the average culling 
+ratio. This indicates, that the \ac{PMOC} algorithm was able to cull more voxels in the best case but also 
+had a higher variation of the culling ratio. Still, for almost all frames tested, the number of visible 
+voxels was significantly lower when using \ac{PMOC} when compared to \ac{PONOC}.\\
 
 \noindent
 Using uniform voxels as primitives for approximating scene data enables the complete creation of geometry on the 
