@@ -29,12 +29,14 @@ pipeline discussion and in depth data visualization.
 - [x] Add mew measurements into thesis (Best occluder creation)
 - [x] Fix capitalization of words
 - [x] Write Conclusion
-- [] Add Octree hierarchy depth to general information?
+- [] ~~Add Octree hierarchy depth to general information?~~
 - [] ~~Evaluate memory footprint in discussion~~
 - [] Refer to PMOC average divergence in discussion
-- [] Adjust GPU Performance Results ymax values in plot
+- [x] Adjust GPU Performance Results ymax values in plot
 - [] Add conclusion in brief chapter overview at the end of motivation? 
 - [] Consider removing Virtualized Geometry from conclusion
+- [] Remove implementational limitations from discussions limitations
+- [] Add different sources for academic sources, image sources, games, ...
 
 - ~~Limitations statt Impl Limits~~
 - ~~Experimental Setup~~

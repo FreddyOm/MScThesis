@@ -100,57 +100,9 @@ The data indicates that a higher average occupation has the tendency to result i
 in better \ac{GPU} performance as well. It can also be derived that the average culling efficiency increases with the increase of 
 voxels in the scene. But this is only true to an extent, since the \emph{Hairball} model showed a decrease in average culling efficiency 
 compared to the \emph{Lucy} model while having almost 5 times the voxel count. This tendency is therefore only visible for models 
-that are similarly dense in structure and do not contain holes or other challenging features.\\
+that are similarly dense in structure and do not contain holes or other challenging features.
+[@TODO: Potentially adapt text above because of relocated figure] \\
 
-\begin{figure}[!htb]
-    \centering
-    \begin{tikzpicture}
-        \begin{axis}[
-            width=12cm,
-            height=5cm,
-            ylabel={Voxel Count},
-            xlabel={Culling Efficiency},
-            grid=major,
-            grid style={dashed, gray!30},
-            legend style={at={(0.5,1.2)}, anchor=south, legend columns=5},
-            ymin=0, ymax=4000000,
-            scaled x ticks=false,
-            ]
-        
-            \addplot[mark=square*, mark options={scale=1.2, fill=pink},] coordinates  {(64.8, 1652435)};
-            \addplot[mark=square*, mark options={scale=1.2, fill=blue},] coordinates {(74.6, 331254)};
-            \addplot[mark=square*, mark options={scale=1.2, fill=yellow},] coordinates {(81.1, 953362)};
-            \addplot[mark=square*, mark options={scale=1.2, fill=green},] coordinates {(92.6, 2311006)};
-            \addplot[mark=square*, mark options={scale=1.2, fill=red},] coordinates {(94.7, 3379738)};
-            \legend{Hairball, Lucy, Terrain, Torus, Bunny}
-        \end{axis}
-    \end{tikzpicture}
-
-    \begin{tikzpicture}
-        \begin{axis}[
-            width=12cm,
-            height=5cm,
-            ylabel={Best Occluder Count},
-            xlabel={Culling Efficiency},
-            grid=major,
-            grid style={dashed, gray!30},
-            legend style={at={(0.5,1.2)}, anchor=south, legend columns=5},
-            ymin=0, ymax=10000,
-            scaled x ticks=false,
-            ]
-
-            \addplot[mark=square*, mark options={scale=1.2, fill=pink},] coordinates  {(64.8, 5056)};
-            \addplot[mark=square*, mark options={scale=1.2, fill=blue},] coordinates {(74.6, 1600)};
-            \addplot[mark=square*, mark options={scale=1.2, fill=yellow},] coordinates {(81.1, 6976)};
-            \addplot[mark=square*, mark options={scale=1.2, fill=green},] coordinates {(92.6, 7168)};
-            \addplot[mark=square*, mark options={scale=1.2, fill=red},] coordinates {(94.7, 8256)};
-            \legend{Hairball, Lucy, Terrain, Torus, Bunny}
-        \end{axis}
-    \end{tikzpicture}
-    \caption{Upper: The relation between voxel count and culling efficiency.
-    Lower: The relation between best occluder count and culling efficiency.}
-    \label{plt:culling-efficiency-voxel-node-count}
-\end{figure}
 
 \noindent
 The general approximation of best occluders did work well for most of the models. However, the \emph{Hairball} model showed that specific 
@@ -203,7 +155,7 @@ computations, like updating the voxel data dynamically. When using the approach 
 to optimize volumetric voxel rendering further. Particularly if the proposed implementation is even further optimized to fit the given use case, 
 for example, by using command lists to avoid a write-back to \ac{CPU} memory before dispatching the meshes for the final draw call. \\
 
-\section{Implications for Pracical Use}
+\section{Implications for Practical Use}
 
 The experiment also featured some limitations that are essential to consider for further research of the approach.
 A central limitation was the depth hierarchy, which was not being used in the intended way, as mentioned earlier.

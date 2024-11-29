@@ -3,7 +3,7 @@
 When considering occlusion culling algorithms that can be used in specific use cases, the runtime 
 performance is a critical aspect. But runtime performance is a multi-dimensional measure, in that 
 most algorithms provide certain results under specific circumstances and by setting several constraints, 
-like a use in interiors only, or the use of pre-calculated data. To be able to evaluate the strengths 
+like a use in interiors only or the use of pre-calculated data. To be able to evaluate the strengths 
 and weaknesses of this work's implementation, an in-depth experiment was conducted and evaluated, 
 highlighting a diverse set of measured data. \\
 
@@ -33,10 +33,10 @@ all the tests performed during the experiment.
 
 \section{Experimental Setup} \label{sec-experimental-evaluation}
 
-The experiment aimed to evaluate the tested scenes in respect to the above mentioned aspects. To do this, 
+The experiment aimed to evaluate the tested scenes in respect to the above-mentioned aspects. To do this, 
 various characteristics have been selected, which are outlined below. All aspects aim to demonstrate how 
-the occlusion culling affected the given test scene and how the computations differed compared to the plain 
-pipeline without any occlusion culling. 
+the occlusion culling affected the given test scene, how the computations differed compared to the plain 
+pipeline without any occlusion culling, and how it can be optimally used in practice.
 
 
 \subsection*{Scenes} \label{subsec-models}
@@ -108,47 +108,45 @@ geometry.
 
 \subsection*{Scene Layout} \label{subsec-scene-layout}
 
-For the scene layout, the spatial positioning of the model was important, and the data structure and shape 
-of the models were considered in particular. \\
+For the scene layout, the position of the model in the scene was important, and the data structure and 
+topology were considered in particular. \\
 
 \noindent
 The data was sampled over time using a standardized camera animation, which was following a circular orbit 
-around the model, visualized in Figure \ref{fig:test-anim-camera-path}. A vertical offset was added to the orbit 
-so the model could be drawn from various angles. This was especially important for models like the \emph{Torus}, 
+around the scene, visualized in Figure \ref{fig:test-anim-camera-path}. A vertical offset was added to the orbit 
+so the scene could be drawn from various angles. This was especially important for scenes like the \emph{Torus}, 
 which are likely to behave very differently when viewed from above compared to when viewed from the side. \\
 
 \noindent
 Some of the scenes were filled up to the borders, others only occupied a small portion of the overall scene. 
 Since the octree had always taken up the entire space of the scene, the overall scene layout was additionally 
 challenged by different models. The \emph{Terrain} model, for example, only occupied the lower part of the 
-scene but reached to each end of the sides while the \emph{Lucy} model occupied only one quarter of the scene, 
-reaching to the top end of the octree, instead of the sides. \\
+scene but reached to each end of the sides, while the \emph{Lucy} model occupied only one quarter of the scene, 
+reaching to the top end of the octree instead of the sides. \\
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=200px]{images/graphics/test-anim-camera-path.jpg}
     \caption{During profiling, the camera is moved along an orbit around the voxel scene while being offset to compensate 
     for models, which behave differently when viewed from an angle. The visualization is not to scale, the models 
-    are always completely visible and not culled by view frustum culling.}
+    were always completely visible and not culled by view frustum culling.}
     \label{fig:test-anim-camera-path}
 \end{figure}
 
 \noindent
-[@TODO: Consider replacing the last "algorithm" with the actual subelement of the algo (scene data / data dispatch / ...)] 
 Another aspect to consider is the model data structure. The voxel models are volumetric representations and thus 
 not hollow. This leaves a large portion of the computation to be irrelevant and allows for the occlusion culling to 
 optimize the data flow. Different types of models were used to challenge the culling algorithm in various ways. 
 In concept, the culling should be optimal on large, dense models with even faces. Consequently, models with 
 slopes and holes were tested to see how the best occluders can be computed for diverse geometry. Smaller models might 
-also pose a challenge for the optimization, especially when the octree nodes cannot be filled completely. All these 
-different aspects aim to show the strengths and weaknesses of the algorithm and how it can be optimally used in practice. \\
+also pose a challenge for the optimization, especially when the octree nodes cannot be filled completely. \\
 
 \noindent
-The resolution of the voxelization process played a central role in the experimentation process.
-For the experiment, the voxel scenes were constrained to be a power of two in length per axis, and a resolution 
-of $\emph{256} \times \emph{256} \times \emph{256}$ was used for the performance profiling, resulting in a maximum 
-of 16,777,216 voxels. In practice, the maximum amount of voxels was limited by the data dispatch limitation mentioned 
-in Chapter \ref{sec-implementation-limitations}.
+The resolution of the voxelization process played a central role in the experimentation process. For the experiment, 
+the voxel scenes were constrained to be a power of two in length per axis, and a resolution of 
+$\emph{256} \times \emph{256} \times \emph{256}$ was used for the performance profiling, resulting in a maximum of 
+16,777,216 voxels. In practice, the maximum amount of voxels was limited by the data dispatch limitation mentioned in 
+Chapter \ref{sec-implementation-limitations}.
 
 
 \subsection*{Timings} \label{subsec-timings}
@@ -174,13 +172,13 @@ voxels, resulting in an overview of how much geometry could be culled for differ
 valid for the amount of octree nodes. They could also be compared to the number of best occluders. The more best 
 occluders present in a scene, the higher the probability to occlude other voxels or octree nodes. To evaluate 
 the optimization during the depth prepass, the number of best occluders was compared to the number of voxels 
-representing the geometry approximated by the best occluders, because it is favourable to have a small number of 
+representing the geometry approximated by the best occluders, because it is favorable to have a small number of 
 best occluders approximate a high number of voxels.\\
 
 
 \subsection*{Measuring Tools} \label{subsec-measuring-tools}
 
-To measure timings and data precisely, a few external tools were used. All tools are up of industry-standard 
+To measure timings and data precisely, a few external tools were used. All tools are of industry standard 
 and were therefore assumed to be mostly reliable. Still, measuring performance usually comes with a minimal 
 overhead, which means that the results most likely vary in precision. Also, some of the tools provided 
 various ways of sampling the data. Some data was measured while the profiled application was running, and 
@@ -191,7 +189,7 @@ configuration. \\
 \noindent
 For the collection of data output, \emph{RenderDoc} \cite{RenderDoc} was used. It is a free, MIT-licensed 
 rendering debugger, widely used in the industry. For \emph{NVIDIA}-specific \ac{GPU} profiling, \emph{NVIDIA NSight} 
-\cite{NSight} was used, which is another industry standard profiling and debugging tool. It is only available for 
+\cite{NSight} was used, which is another industry-standard profiling and debugging tool. It is only available for 
 inspection of \emph{NVIDIA} graphics card computations but provided valuable insights into the rendering pipeline 
 and hardware usage. The last tool used is \emph{Microsoft's PIX} \cite{PIX}, which is another performance debugging 
 and profiling tool for \emph{Windows} platforms using \emph{Microsoft's DirectX} \ac{API}. \\
@@ -206,8 +204,9 @@ All of the aspects above were standardized for each model over all test runs.
 
 \subsection*{Experimental Environment} \label{subsec-experimental-environment}
 
-For the experiment, a modern hardware setup was used for performance profiling. All performance related 
-measurement were performed on Setup 1, outlined in Table \ref{tbl:hardware-setup}.
+For the experiment, a modern hardware setup was used for performance profiling. All performance-related 
+measurements were performed on Setup 1, outlined in Table \ref{tbl:hardware-setup}. Some measurements 
+were performed on Setup 2, although none of those measurements were performance-related.
 
 \begin{table}[h]          % System setup table
   \centering
@@ -232,29 +231,27 @@ measurement were performed on Setup 1, outlined in Table \ref{tbl:hardware-setup
 Note that the use of the mesh shading pipeline requires graphics cards that support the pipeline in the first place. 
 For \emph{NVIDIA} \ac{GPU}s, this is the \emph{Turing} lineup (\emph{NVIDIA RTX 20 series}), and for \emph{AMD} cards, 
 this would be the \emph{RDNA 2} lineup (\emph{AMD RX 6000 series}). \emph{Intel} \ac{GPU}s support the feature as 
-well, starting from their first installment in the dedicated desktop \ac{GPU} series, \emph{Intel Arc}. The specs of 
-the test setups are listed in table \ref{tbl:hardware-setup}. \\
-
+well, starting from their first installment in the dedicated desktop \ac{GPU} series, \emph{Intel Arc}. \\
 
 
 \section{Experimental Results}
 
 In this section, the experimental results are presented and discussed for each model tested.
 For each model, the culling results include data that isn't dependent on specific hardware. 
-After that, the profiling measurements are discussed, which relate to the hardware setup presented 
-in \ref{subsec-experimental-environment}. The data analysis is structured similarly for all models,
-comparing the \ac{PONOC} configuration to the \ac{PMOC} configuration. Finally, an overview 
-is presented that summarizes all the relevant data in a compact visualization.
+After that, the profiling measurements are discussed, which relate to the hardware setup 
+presented in \ref{subsec-experimental-environment}. The data analysis is structured similarly 
+for all models, comparing the \ac{PONOC} configuration to the \ac{PMOC} configuration. Finally, 
+an overview is presented that summarizes all the relevant data in a compact visualization.
 
 
 \subsection*{Best Occluder Selection}
 
-To evaluate the best occluder selection, all models were tested in terms of the octree's 
-query for the best occluders. This is a essential measure for evaluating the capability 
-of the occlusion culling approach to work in dynamic scenes that change their voxel 
-data in between frames. For the evaluation, a time budget of approximately 16.6 ms per 
-frame is used as a reference budget, which is used to reach a framerate of 60 \emph{Hz} 
-at runtime. The measured values for each tested scene is presented in Table \ref{tab:best-occluder-query}. 
+To evaluate the best occluder selection, all models were tested in terms of the octree's query 
+for the best occluders. This is an essential measure for evaluating the capability of the 
+occlusion culling approach to work in dynamic scenes that change their voxel data in between 
+frames. For the evaluation, a time budget of approximately 16.6 ms per frame is used as a 
+reference budget, which is used to reach a framerate of 60 \emph{Hz} at runtime. The measured 
+values for each tested scene are presented in Table \ref{tab:best-occluder-query}. 
 
 \begin{table}[htbp]
   \begin{center}
@@ -277,12 +274,12 @@ at runtime. The measured values for each tested scene is presented in Table \ref
 \end{table}
 
 \noindent
-The measurement show that each scene was processed in significantly less than 16.6 ms and the 
+The measurements show that each scene was processed in significantly less than 16.6 ms and the 
 computation times scaled with the amount of voxels within the scene. The table additionally shows 
 the octree hierarchy width. The hierarchy is limited in its depth by the maximum amount of voxels 
 per octree node. However, its width is defined by the scene topology. The table shows how many of 
 the first eight child nodes in the hierarchy are subdivided into more child nodes. While \emph{Lucy} 
-only occlupies two of the eight child nodes, the \emph{Bunny} model occupies all of the first eight 
+only occupies two of the eight child nodes, the \emph{Bunny} model occupies all of the first eight 
 child nodes.
 
 
@@ -372,7 +369,7 @@ best occluders to occlude a relatively even number of voxels when viewed from th
 Considering the average amount of visible voxels for both culling configurations, \ac{PONOC} was able to cull 
 $57.5\%$ of all voxels. On average, the \ac{PMOC} even managed to omit $74.6\%$ of all voxels. For \ac{PONOC},
 the number of visible voxels diverged by a maximum of $17.83\%$ from the average value, and by $27.18\%$ for \ac{PMOC}. 
-For the visible octree nodes the variations were $14.80\%$ for \ac{PONOC}, and $23.28\%$ for \ac{PMOC}.
+For the visible octree nodes, the variations were $14.80\%$ for \ac{PONOC} and $23.28\%$ for \ac{PMOC}.
 
 \subsubsection*{CPU Performance Results} \label{subsubsec-cpu-performance-results-lucy}
 
@@ -431,20 +428,20 @@ expected to be static in runtime, regardless of the culling configuration. The g
 correct, as both are not significantly diverging. Nevertheless, there are small differences in the frame times, 
 especially when comparing both culling configurations to the base pipeline without culling enabled. Within the last 
 800 frames, the base pipeline seems to have had longer update times. The differences cannot be clearly attributed to 
-any difference in the pipelines, since the code was identical for all measured configurations. \\
+any difference in the pipelines since the code was identical for all measured configurations. \\
 
 \noindent
 The \emph{Render()} function includes the rendering process, the dispatch of the depth prepass, and the drawing of the 
 debugging \ac{UI}. Similar to the \emph{Update()} routine, the \emph{Render()} function doesn't change significantly 
 between the configurations. Small differences are visible when comparing both culling configurations to the base 
-pipeline without culling. There were small frame time spikes between the frames 700 and 900. However, it is not obvious 
-why these differences occurred. Minor differences might be attributed to the varying \ac{GPU} times presented below, but 
-since \ac{GPU} work is usually running asynchronously, it is hard to point to a particular reason in this case. \\
+pipeline without culling. There were small frame time spikes between frames 700 and 900. However, it is not obvious 
+why these differences occurred. Minor differences might be attributed to the varying \ac{GPU} times presented below, 
+but since \ac{GPU} work is usually running asynchronously, it is hard to point to a particular reason in this case. \\
 
 \noindent
 In general, the time spent on the most significant \ac{CPU} computations was pretty much static for this specific 
 model. This result is as expected, since most of the work was executed on the \ac{GPU} anyway, including the creation 
-of the voxel meshes. After all, this approach is \ac{GPU}-driven at its core, so the bandwidth is small and the culling 
+of the voxel meshes. After all, this approach is \ac{GPU}-driven at its core, so the bandwidth is small, and the culling 
 completely happens on the \ac{GPU} end of the pipeline.
 
 \subsubsection*{GPU Performance Results} \label{subsubsec-gpu-performance-results-lucy}
@@ -642,11 +639,11 @@ nodes in the scene was 57,481. \\
 
 \noindent
 The measurements show that the \emph{Stanford Bunny} considerably benefitted from both occlusion 
-culling configurations and the most significant reduction of visible voxels resulted from the use 
+culling configurations, and the most significant reduction of visible voxels resulted from the use 
 of \ac{PMOC}. The average culling ratio was $88.6\%$ for the \ac{PONOC} and $94.6\%$ for the 
 \ac{PMOC}. For \ac{PONOC}, the number of visible voxels diverged by a maximum of $30.88\%$ from 
-the average value, and by $23.01\%$ for \ac{PMOC}. For the visible octree nodes the variations were 
-$24.61\%$ for \ac{PONOC}, and $39.78\%$ for \ac{PMOC}.
+the average value, and by $23.01\%$ for \ac{PMOC}. For the visible octree nodes, the variations were 
+$24.61\%$ for \ac{PONOC} and $39.78\%$ for \ac{PMOC}.
 
 \subsubsection*{CPU Performance Results} \label{subsubsec-cpu-performance-results-bunny}
 
@@ -701,13 +698,14 @@ $24.61\%$ for \ac{PONOC}, and $39.78\%$ for \ac{PMOC}.
 
 \noindent
 Figure \ref{plt:bunny-256-culling-cpu-time} shows that there are no significant differences in render and update times.
-There occasional spikes in different frames but mostly both configurations showed similar execution times. A difference 
-between the culling configurations is visible between frames 280 and 380 in the \emph{Render()} routine. Here, the 
-\ac{PMOC} was able to achieve lower render times on the \ac{CPU} compared to the \ac{PONOC} configuration. Another 
-difference is visible between the base pipeline and both occlusion culling pipelines. For the first quarter of the test 
-animation, the occlusion culling pipelines performed better than the base pipeline during the \emph{Render()} function.
-The differences might be caused by shorter \ac{GPU} times, but no final evaluation can be made in this case. Ultimately, 
-the \ac{CPU} times do not show clear differences that can be attributed to any particular difference in the pipeline.
+There were occasional spikes in different frames, but mostly both configurations showed similar execution times. A 
+difference between the culling configurations is visible between frames 280 and 380 in the \emph{Render()} routine. 
+Here, the \ac{PMOC} was able to achieve lower render times on the \ac{CPU} compared to the \ac{PONOC} configuration. 
+Another difference is visible between the base pipeline and both occlusion culling pipelines. For the first quarter 
+of the test animation, the occlusion culling pipelines performed better than the base pipeline during the \emph{Render()} 
+function. The differences might be caused by shorter \ac{GPU} times, but no final evaluation can be made in this case. 
+Ultimately, the \ac{CPU} times do not show clear differences that can be attributed to any particular difference in 
+the pipeline.
 
 \subsubsection*{GPU Performance Results} \label{subsubsec-gpu-performance-results-bunny}
 
@@ -778,7 +776,7 @@ is 1.6 microseconds, mostly due to differences in \ac{HiZ} dispatch and depth bu
 
 \noindent
 Both culling configurations decreased the time spent on the \ac{GPU} compared to the base pipeline by 
-$85.5\%$ and $90.7\%$ respectively.
+$85.5\%$ and $90.7\%$, respectively.
 
 \subsubsection*{Overdraw} \label{subsubsec-overdraw-bunny}
 
@@ -838,7 +836,7 @@ culling configurations.
 
 The \emph{Torus} provides a high voxel count and has a hole in it, which creates an area where the 
 octree isn't densely filled with voxels. This model was specifically intended to test the algorithm's 
-capabilities of culling voxels in scene that is densely crowded in some parts, provides areas with 
+capabilities of culling voxels in a scene that is densely crowded in some parts and provides areas with 
 no voxels in other parts, i.e., the hole in the middle. Also, the \emph{Torus} is an inherently round 
 shape and is therefore expected to have a lot of partially filled octree nodes representing its surface. 
 
@@ -902,7 +900,7 @@ shape and is therefore expected to have a lot of partially filled octree nodes r
 As Figure \ref{plt:torus-256-culling-res-voxels} shows, the \emph{Torus} model varied in culling efficiency 
 depending on the view angle. As expected, the hole in the mesh turned out to be inefficient for the culling 
 algorithm. When considering the occlusion ratio, both the \ac{PONOC} and the \ac{PMOC} performed significantly 
-better when the torus was viewed from an angle, from which the hole in the middle was occluded. \\
+better when the torus was viewed from an angle from which the hole in the middle was occluded. \\
 
 \noindent
 The average number of visible voxels was 359,313 for \ac{PONOC} and 170,772 for \ac{PMOC}, while the number 
@@ -911,10 +909,10 @@ and 4,768 for \ac{PMOC}. The number of total octree nodes in the scene was 39,79
 
 \noindent
 The data suggests that the \emph{Torus} was able to be used for both occlusion culling configurations and benefitted 
-from the more granular \ac{PMOC}, while still being considerably dependant on the viewing angle of the camera. The 
+from the more granular \ac{PMOC} while still being considerably dependent on the viewing angle of the camera. The 
 average culling ratio was $84.5\%$ for \ac{PONOC} and $92.6\%$ for \ac{PMOC}. For the former, the number of visible 
 voxels diverged by a maximum of $56.05\%$ from the average value, while the latter diverged by a maximum of $50.74\%$. 
-For the visible octree nodes the variations were $52.11\%$ for \ac{PONOC}, and $55.23\%$ for \ac{PMOC}.
+For the visible octree nodes, the variations were $52.11\%$ for \ac{PONOC} and $55.23\%$ for \ac{PMOC}.
 
 \subsubsection*{CPU Performance Results} \label{subsubsec-cpu-performance-results-torus}
 
@@ -970,9 +968,9 @@ For the visible octree nodes the variations were $52.11\%$ for \ac{PONOC}, and $
 Figure \ref{plt:torus-256-culling-cpu-time} shows that the \emph{Torus} showed very similar \ac{CPU} performances 
 in both occlusion culling configurations. The measurements show small differences for the \emph{Render()} function 
 when comparing the base pipeline to the occlusion culling pipelines. The difference was only present in the first 300 
-frames of the animation and it cannot be reliably attributed to any particular difference in the occlusion culling 
+frames of the animation, and it cannot be reliably attributed to any particular difference in the occlusion culling 
 algorithm. Comparing the \ac{PONOC} to the \ac{PMOC}, there are similar differences, which only occurred during a 
-short time of the test animation. Because these differences were not measureable over the whole test, both pipelines 
+short time of the test animation. Because these differences were not measurable over the whole test, both pipelines 
 are considered to be similar in \ac{CPU} time.
 
 \subsubsection*{GPU Performance Results} \label{subsubsec-gpu-performance-results-torus}
@@ -1037,14 +1035,14 @@ are considered to be similar in \ac{CPU} time.
 \end{figure}
 
 \noindent
-The \ac{GPU} performance for the \emph{Torus} model was considerably better using the per-meshlet 
-occlusion culling approach. While the depth prepass differed by only 0.54 microseconds in favor of 
-the \ac{PONOC}, the complete time spent on the \ac{GPU} was decreased by $36.8\%$ using the \ac{PMOC} 
-configuration as shown in Figure \ref{fig:torus-gpu-results}. \\
+The \ac{GPU} performance for the \emph{Torus} model was considerably better using the \ac{PMOC} approach. 
+While the depth prepass differed by only 0.54 microseconds in favor of the \ac{PONOC}, the complete time 
+spent on the \ac{GPU} was decreased by $36.8\%$ using the \ac{PMOC} configuration as shown in Figure 
+\ref{fig:torus-gpu-results}. \\
 
 \noindent
 Both culling configurations decreased the time spent on the \ac{GPU} compared to the base pipeline by 
-$83.0\%$ and $89.3\%$ respectively.
+$83.0\%$ and $89.3\%$, respectively.
 
 \subsubsection*{Overdraw}
 
@@ -1096,8 +1094,8 @@ Without culling, the maximum amount of overdraw was measured to be 267 draws to 
 \subsection*{Terrain}
 
 The \emph{Terrain} model aimed to replicate a relatively flat, open area that could be found in actual 
-games like \emph{Minecraft} (Mojang \cite{Mojang2024}, 2011). Its surface is setup in a way that allows 
-for only a small layer of best occluders to be formed. The terrain's hills are assumed to be occluding 
+games like \emph{Minecraft} (Mojang \cite{Mojang2024}, 2011). Its surface is set up in a way that allows 
+for only a small layer of the best occluders to be formed. The terrain's hills are assumed to be occluding 
 a large part of the scene, which would help for rendering such a scene in a game.
 
 \subsubsection*{Culling Results} \label{subsubsec-culling-results-terrain}
@@ -1168,17 +1166,17 @@ voxels in the scene was 953,362. The average amount of visible octree nodes was 
 \ac{PMOC}. The number of total octree nodes in the scene was 18,465. \\
 
 \noindent
-The data suggests that the Torus was able to be used for both occlusion culling configurations and benefitted from 
-the more granular \ac{PMOC}, while still being considerably dependant on the viewing angle of the camera. The average 
+The data suggests that the \emph{Terrain} was able to be used for both occlusion culling configurations and benefitted from 
+the more granular \ac{PMOC} while still being considerably dependent on the viewing angle of the camera. The average 
 culling ratio was $58.4\%$ for \ac{PONOC} and $81.1\%$ for \ac{PMOC}. For the former, the number of visible voxels 
 diverged by a maximum of $20.50\%$ from the average value, while the latter diverged by a maximum of $20.36\%$. 
-For the visible octree nodes the variations were $16.80\%$ for \ac{PONOC}, and $17.12\%$ for \ac{PMOC}.
+For the visible octree nodes, the variations were $16.80\%$ for \ac{PONOC} and $17.12\%$ for \ac{PMOC}.
 
 \subsubsection*{CPU Performance Results} \label{subsubsec-cpu-performance-results-terrain}
 
 Figure \ref{plt:terrain-256-culling-cpu-time} shows the \ac{CPU} performance over time, which in general 
-was similar for all tested pipeline configurations. Some parts of the test showed varying \ac{CPU} times but 
-this could not be reliably attributed to any of the differences in the measured algorithm. 
+was similar for all tested pipeline configurations. Some parts of the test showed varying \ac{CPU} times, 
+but this could not be reliably attributed to any of the differences in the measured algorithm. 
 
 \begin{figure}[!htb]              % Terrain CPU times
   \begin{center}
@@ -1230,16 +1228,10 @@ this could not be reliably attributed to any of the differences in the measured 
 
 \subsubsection*{GPU Performance Results} \label{subsubsec-gpu-performance-results-terrain}
 
-Figure \ref{fig:terrain-gpu-times} shows the time spent on the \ac{GPU} for the \emph{Terrain model}.
-The model had a considerable amount of best occluders, which resulted in a prepass, which was similar 
-in duration to other models with high best occluder counts, like the \emph{Bunny}. In contrast to 
-the models discussed before, this time the \ac{PMOC} configuration's prepass terminated faster 
-than the \ac{PONOC} configuration. On average, the prepass execution time improved by 0.35 
-microseconds for this model. \\
-
-\noindent
-Overall, the \emph{Terrain} model achieved a reduction in computation time of $41.9\%$ in favor of 
-\ac{PMOC}, while the depth prepass didn't change significantly.
+Figure \ref{fig:terrain-gpu-times} shows the time spent on the \ac{GPU} for the \emph{Terrain} scene.
+The complete time spent on the \ac{GPU} was decreased by $55.4\%$ using the \ac{PONOC} and by 
+$74.1\%$ using the \ac{PMOC} as compared to the base pipeline without occlusion culling. The depth 
+prepass didn't change significantly between both culling configurations. \\
 
 
 \begin{figure}[!htb]
@@ -1413,8 +1405,8 @@ resulting in an unfavorable data layout to test the limits of the occlusion cull
 \noindent
 Figure \ref{plt:hairball-256-culling-res-voxels} shows the amount of culled voxels and octree nodes 
 over the course of the test animation for both occlusion culling configurations. The \emph{Hairball} 
-scene showed a drastic drop in visible voxels when it was viewd from above instead of from the side. 
-This suggests that the scene is highly dependant on the camera position and angle. \\
+scene showed a drastic drop in visible voxels when it was viewed from above instead of from the side. 
+This suggests that the scene is highly dependent on the camera position and angle. \\
 
 \noindent
 The average number of visible voxels was 697,549 for \ac{PONOC} and 581,663 for \ac{PMOC}, while the 
@@ -1423,12 +1415,12 @@ number of total voxels in the scene was 1,652,435. The average amount of visible
 39,591. \\
 
 \noindent
-The data suggests that the Torus was able to be used for both occlusion culling configurations and 
-benefitted from the more granular \ac{PMOC}, while still being considerably dependant on the viewing 
+The data suggests that the \emph{Hairball} was able to be used for both occlusion culling configurations 
+and benefitted from the more granular \ac{PMOC} while still being considerably dependent on the viewing 
 angle of the camera. The average culling ratio was $57.8\%$ for \ac{PONOC} and $64.8\%$ for \ac{PMOC}. 
 For the former, the number of visible voxels diverged by a maximum of $12.91\%$ from the average value, 
-while the latter diverged by a maximum of $14.29\%$. For the visible octree nodes the variations were 
-$12.98\%$ for \ac{PONOC}, and $13.78\%$ for \ac{PMOC}. These values show, that the occlusion cullig 
+while the latter diverged by a maximum of $14.29\%$. For the visible octree nodes, the variations were 
+$12.98\%$ for \ac{PONOC} and $13.78\%$ for \ac{PMOC}. These values show that the occlusion culling 
 algorithm wasn't able to cull significantly more voxels for a given camera angle than from any other 
 camera angle in the scene. 
 
@@ -1492,17 +1484,16 @@ the occlusion culling algorithm.
 
 \subsubsection*{GPU Performance Results} \label{subsubsec-gpu-performance-results-hairball}
 
-Figure \ref{fig:hairball-gpu-times} shows the difference in \ac{GPU} timing, which was in favor of the 
-\ac{PMOC}. 
+Figure \ref{fig:hairball-gpu-times} shows the \ac{GPU} timings for all tested pipeline configurations.
+The \emph{Hairball} scene showed a significant difference between the base pipeline and the two occlusion 
+culling configurations. The \ac{PONOC} configuration was able to decrease the \ac{GPU} time by $54.4\%$ 
+as compared to the base pipeline. The \ac{PMOC} configuration was able to optimize \ac{GPU} times by 
+$61.2\%$ compared to the base pipeline. In this case, the \ac{PMOC} didn't perform tremendously better 
+than the \ac{PONOC} configuration. Nevertheless, depending on the camera angle, both culling configurations 
+could successfully increase the \ac{GPU} performance. \\
 
-
-Although the \ac{PMOC} configuration still accelerated the \ac{GPU} operations, the differences 
-got smaller compared to the other models, yielding only a $14.9\%$ decrease in 
-computation time on average. 
-
-
-The depth prepass diverged by only 0.75 microseconds in favor of the per-meshlet 
-occlusion culling when comparing the average values.  
+\noindent
+When comparing the average values, the depth prepass diverged by only 0.75 microseconds in favor of the \ac{PMOC}.  
 
 \begin{figure}[!htb]
   \centering
@@ -1563,13 +1554,6 @@ occlusion culling when comparing the average values.
   \label{fig:hairball-gpu-times}
 \end{figure}
 
-\noindent
-The data clearly indicates that the \emph{Hairball} model wasn't using the culling algorithm as efficiently as 
-the other models did. 
-
-From this, it is possible to derive how the algorithm should ideally be applied and in 
-which use case the overhead is greater than the time being saved.
-
 \subsubsection*{Overdraw}
 
 \begin{figure}[!htb]
@@ -1607,25 +1591,20 @@ which use case the overhead is greater than the time being saved.
 
 \noindent
 Figure \ref{fig:hairball-overdraw} shows that the overdraw was similar for both configurations, 
-but still in favor of \ac{PMOC}. The last column featuring the difference 
-values between both configurations shows this particularly well. There is only a small difference 
-between both measurements, which is also reflected in the maximum amount of overdraw. The 
-\ac{PONOC} resulted in a maximum of 54 draws to one pixel, and the per-meshlet 
-culling configuration resulted in a maximum of 51 draws. Without occlusion culling, the overdraw 
-reached its maximum at 117 draws to one pixel. 
-
-Again, the top view resulted in more 
-overdraw than the front view.
+but still in favor of \ac{PMOC}. The last column, featuring the difference values between both 
+configurations, shows this particularly well. There is only a small difference between the  
+measurements, which is also reflected in the maximum amount of overdraw. The \ac{PONOC} resulted 
+in a maximum of 54 draws to one pixel, and the \ac{PMOC} configuration resulted in a maximum of 
+51 draws. Without occlusion culling, the overdraw reached its maximum at 117 draws to one pixel.
 
 \clearpage
 
 
-
-\section*{Measurment Overview}
+\subsection*{Cross-Comparison}
 
 Now that each model has been analyzed individually, the data is cross-compared over all models to 
 discuss the overall results the measurements provided. Table \ref{tbl:culling-result-overview} shows 
-an overview of all models and some of the most interesting data points. 
+an overview of all models and some of the most meaningful data points. 
   
 \begin{table}[!htb]
   \begin{tabular}{|lccccc|}
@@ -1661,17 +1640,79 @@ an overview of all models and some of the most interesting data points.
 The table shows the average culling data for all models. The row \emph{Average Node Population} is 
 particularly interesting as it shows how the culling results related to the degree to which the octree 
 nodes were filled. The higher this value, the more the octree nodes were filled on average. A high 
-average fill indicates the existence of a lot of best occluders relative the amount of voxels and 
+average fill indicates the existence of a lot of best occluders relative to the amount of voxels and 
 octree nodes present in the scene. This measure strongly correlates with the average ratio of culled 
-coxels and octree nodes. \\
+voxels and octree nodes. \\
 
 \noindent
-The table also shows the same aspects for the \ac{PMOC} configuration. It shows that the 
+The table shows all aspects of the \ac{PONOC} and \ac{PMOC} configurations. It demonstrates that the 
 occlusion culling algorithm was able to cull a greater amount of voxels when using the \ac{PMOC} 
-configuration. Additionally, across all models, a higher amount of best occluders consequently resulted in a 
-higher culling ratio, and the average node population correlated with the average voxel culling ratio.
+configuration. Additionally, across all models, a higher amount of best occluders consequently 
+resulted in a higher culling ratio. \\
 
-\begin{figure}    % GPU time overview
+\begin{figure}[!htb]
+  \centering
+  \begin{tikzpicture}
+      \begin{axis}[
+          width=12cm,
+          height=5cm,
+          ylabel={Voxel Count},
+          xlabel={Average Culling Ratio (\%)},
+          grid=major,
+          grid style={dashed, gray!30},
+          legend style={at={(0.5,1.2)}, anchor=south, legend columns=5},
+          ymin=0, ymax=4000000,
+          scaled x ticks=false,
+          ]
+      
+          \addplot[mark=square*, mark options={scale=1.2, fill=pink},] coordinates  {(64.8, 1652435)};
+          \addplot[mark=square*, mark options={scale=1.2, fill=blue},] coordinates {(74.6, 331254)};
+          \addplot[mark=square*, mark options={scale=1.2, fill=yellow},] coordinates {(81.1, 953362)};
+          \addplot[mark=square*, mark options={scale=1.2, fill=green},] coordinates {(92.6, 2311006)};
+          \addplot[mark=square*, mark options={scale=1.2, fill=red},] coordinates {(94.7, 3379738)};
+          \legend{Hairball, Lucy, Terrain, Torus, Bunny}
+      \end{axis}
+  \end{tikzpicture}
+
+  \begin{tikzpicture}
+      \begin{axis}[
+          width=12cm,
+          height=5cm,
+          ylabel={Best Occluder Count},
+          xlabel={Average Culling Ratio (\%)},
+          grid=major,
+          grid style={dashed, gray!30},
+          legend style={at={(0.5,1.2)}, anchor=south, legend columns=5},
+          ymin=0, ymax=10000,
+          scaled x ticks=false,
+          ]
+
+          \addplot[mark=square*, mark options={scale=1.2, fill=pink},] coordinates  {(64.8, 5056)};
+          \addplot[mark=square*, mark options={scale=1.2, fill=blue},] coordinates {(74.6, 1600)};
+          \addplot[mark=square*, mark options={scale=1.2, fill=yellow},] coordinates {(81.1, 6976)};
+          \addplot[mark=square*, mark options={scale=1.2, fill=green},] coordinates {(92.6, 7168)};
+          \addplot[mark=square*, mark options={scale=1.2, fill=red},] coordinates {(94.7, 8256)};
+          \legend{Hairball, Lucy, Terrain, Torus, Bunny}
+      \end{axis}
+  \end{tikzpicture}
+  \caption{Upper: The relation between voxel count and culling ratio. \\
+  Lower: The relation between best occluder count and culling ratio.}
+  \label{plt:culling-efficiency-voxel-node-count}
+\end{figure}
+
+\noindent
+Figure \ref{plt:culling-efficiency-voxel-node-count} outlines the relationship between the voxel 
+count and the culling ratio compared to the relation between the best occluder count and the culling 
+ratio. The data shows a correlation between the culling ratio and the voxel count, or best occluder 
+count, respectively. It also shows that this correlation only remained as long as the scene topology 
+was sufficiently suitable for the occlusion culling algorithm. The complex \emph{Hairball} scene 
+demonstrates how unfavorable topology led to a drop in culling ratio. This is additionally confirmed 
+by the \emph{Terrain} and \emph{Torus} scenes, which featured a similar amount of best occluders 
+but showed significantly different average culling ratios. Ultimately, the culling ratio depended 
+on topology, voxel and best occluder counts, and model size. \\
+
+
+\begin{figure}[!htb]    % GPU time overview
   \begin{center}
     \begin{tikzpicture}
       \begin{axis}[
@@ -1700,18 +1741,17 @@ higher culling ratio, and the average node population correlated with the averag
 \end{figure}
 
 \noindent
-The measurements show that the culling significantly benefitted the \ac{GPU} performance throughout all 
-models. Figure \ref{fig:gpu-performance-overview} shows an overview of all models comparing the time spent 
-on the \ac{GPU} between both tested configurations. The \ac{CPU} performance did not show any significant 
-differences that could reliably be traced back to the tested approaches. Small differences were usually in the 
-order of about 1-10 microseconds and could not be reliably attributed to either of the two culling 
-configurations. \\
-
+The measurements indicate that the \ac{GPU} performance significantly benefitted from the occlusion 
+culling throughout all scenes. Figure \ref{fig:gpu-performance-overview} shows an overview of all 
+scenes comparing the time spent on the \ac{GPU} for both tested configurations. The \ac{CPU} 
+performance did not show any significant differences that could reliably be traced back to the 
+tested approaches. Small differences were usually in the order of about 1-10 microseconds and could 
+not be reliably attributed to either of the two culling configurations. \\
 
 \noindent
-The individual overdraw measurements indicate that the amount of overdraw significantly varies with the 
+The individual overdraw measurements suggest that the amount of overdraw significantly varied with the 
 change of the camera angle. It is evident that the overdraw could be reduced best using models with high 
-volumes and avoiding small and thin details. In general, the \ac{PMOC} approach was able to 
-achieve better results in terms of overdraw, although it was highly dependent on camera angle and dense 
-best occluder coverage. Usually, outer edges of models with curved surfaces could not be covered very well 
+volumes and avoiding small and thin details. In general, the \ac{PMOC} approach was able to achieve 
+better results in terms of overdraw, although it was highly dependent on camera angle and dense best 
+occluder coverage. Usually, outer edges of models with curved surfaces could not be covered very well 
 because of the lack of best occluders. \\
