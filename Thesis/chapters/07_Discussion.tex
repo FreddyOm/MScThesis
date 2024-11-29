@@ -99,26 +99,25 @@ assumption is strongly supported by the way the \ac{HiZ} creation is implemented
 of both tested configurations is expected to vary based on the amount of completely filled octree nodes. \\
 
 \noindent
-The data indicates that a higher average occupation has the tendency to result in better overall culling performance 
-and subsequently in better \ac{GPU} performance as well. It can also be derived that the average culling efficiency 
-increases with the increase of voxels in the scene. But this is only true to an extent, since the \emph{Hairball} 
-model showed a decrease in average culling efficiency compared to the \emph{Lucy} model while having almost 5 times 
-the voxel count. This tendency is therefore only visible for models that are similarly dense in structure and do not 
-contain holes or other challenging features. [@TODO: Potentially adapt text above because of relocated figure] \\
-
+The data indicates that a higher average octree node occupation has the tendency to result in better overall culling 
+performance and subsequently in better \ac{GPU} performance as well. It can also be derived that the average culling 
+ratio increases with the increase of voxels in the scene. But this is only true to an extent, since topologically 
+complex scenes showed a decrease in average culling ratio compared to less topologically complex ones. This correlation 
+between the total voxel count and the average culling ratio is therefore only visible for scenes that are similarly 
+dense in structure and do not contain holes or other challenging features. \\
 
 \noindent
-The general approximation of best occluders did work well for most of the models. However, the \emph{Hairball} model 
-showed that specific features posed a challenge for the algorithm. The approximation of a model's volume by aggregating 
-voxels together is only possible for models that provide dense volumes in the first place. The systematic testing of a 
-challenging model provided valuable insights into the limitations of the approach. Consequently, the algorithm is 
-expected to not be very beneficial when using it in scenes with small, thin details or areas with low geometric 
-occupation.\\
+The general approximation of best occluders did work well for most of the scenes. However, the complex \emph{Hairball} 
+scene showed that specific features posed a challenge for the algorithm. The approximation of a scene's volume by 
+aggregating voxels together is only possible for scenes that provide dense volumes in the first place. The systematic 
+testing of a challenging scene provided valuable insights into the limitations of the approach. Consequently, the 
+algorithm is expected to not be very beneficial when using it in scenes with small, thin details or areas with low 
+geometric occupation.\\
 
 \noindent
 The \ac{TPOC} algorithm usually uses a handful of occluders to cull other occludees. So normally, there is no overlap 
 between occluders and occludees. However, this work's approach uses a slightly different way of working with occluders 
-and occludees. Because of their volumetric nature, the models can self-occlude, which means that the approximated volume 
+and occludees. Because of their volumetric nature, the scenes can self-occlude, which means that the approximated volume 
 can be used as an occluder to cull a vast amount of voxels that make up the volume itself. This is a slightly different 
 perspective on the \ac{TPOC} algorithm and makes it possible to use the approach when there is only one model present. \\
 
@@ -166,7 +165,7 @@ pipeline. \\
 Another limitation was introduced by the hardware limitations in the mesh shading pipeline, or, more specifically, the 
 compute shader architecture. Due to the maximum amount of thread groups that could be scheduled on the \ac{GPU}, there 
 was a limit to how many octree nodes could be computed within one draw call. Since the amount of voxels was equal to the 
-amount of threads scheduled in the shader, the model resolution was limited by the experimental setup, which only used 
+amount of threads scheduled in the shader, the scene resolution was limited by the experimental setup, which only used 
 one draw call for better comparability. This limitation also meant that the \ac{GPU} utilization varied quite a lot. 
 In the given implementation, rejecting a large amount of octree nodes or voxels would consequently mean that the thread 
 groups and threads would exit early. A more in-depth evaluation of this behavior is necessary to find out if there is a 
