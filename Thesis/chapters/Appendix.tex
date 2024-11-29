@@ -1,5 +1,140 @@
 \chapter{Appendix} \label{cpt-appendix}
 
-- CPU frame time
 - Code
-- 
+
+\section*{CPU Frame Times}
+
+
+\begin{figure}[!htbp]              % Lucy CPU times
+    \begin{center}
+      \begin{tikzpicture}
+        \begin{axis}[
+            width=\linewidth,
+            height=100px,
+            xlabel={Frames},
+            ylabel={Frame Time (s)},
+            grid,
+            xmin=0,
+            xmax=1868,
+            ymin=0,
+            ymax=0.04,
+            legend style={at={(0.5,1.8)}, anchor=north, legend columns=2},
+          ]
+          \addplot[blue, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1868 / 1864, y=time]{./plotdata/cpu/lucy_256_frameTime_pooc.csv};
+          \addplot[red, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1868 / 1868, y=time]{./plotdata/cpu/lucy_256_frameTime.csv};
+          \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
+        \end{axis}
+      \end{tikzpicture}
+    \end{center}
+    \caption{The frame time measured over the course of the test animation on the \ac{CPU} side for the \emph{Lucy} scene.
+    The frame times were artificially capped to 30, 60 or 120 Hz by \emph{Diligent Engine}.}
+    \label{plt:lucy-256-culling-cpu-frame-time}
+  \end{figure}
+
+\begin{figure}[!htbp]              % Bunny CPU times
+    \begin{center}
+      \begin{tikzpicture}
+        \begin{axis}[
+            width=\linewidth,
+            height=100px,
+            xlabel={Frames},
+            ylabel={Frame Time (s)},
+            grid,
+            xmin=0,
+            xmax=1701,
+            ymin=0,
+            ymax=0.04,
+            legend style={at={(0.5,1.8)}, anchor=north, legend columns=2},
+          ]
+          \addplot[blue, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1701 / 1548, y=time]{./plotdata/cpu/bunny_256_frameTime_pooc.csv};
+          \addplot[red, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1701 / 1701, y=time]{./plotdata/cpu/bunny_256_frameTime.csv};
+          \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
+        \end{axis}
+      \end{tikzpicture}
+    \end{center}
+    \caption{The frame time measured over the course of the test animation on the \ac{CPU} side for the \emph{Bunny} scene.
+    The frame times were artificially capped to 30, 60 or 120 Hz by \emph{Diligent Engine}.}
+    \label{plt:bunny-256-culling-cpu-frame-time}
+  \end{figure}
+
+\begin{figure}[!htbp]              % Torus CPU times
+    \begin{center}
+      \begin{tikzpicture}
+        \begin{axis}[
+            width=\linewidth,
+            height=100px,
+            xlabel={Frames},
+            ylabel={Frame Time (s)},
+            grid,
+            xmin=0,
+            xmax=1786,
+            ymin=0,
+            ymax=0.04,
+            legend style={at={(0.5,1.8)}, anchor=north, legend columns=2},
+          ]
+          \addplot[blue, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1786 / 1555, y=time]{./plotdata/cpu/torus_256_frameTime_pooc.csv};
+          \addplot[red, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1786 / 1786, y=time]{./plotdata/cpu/torus_256_frameTime.csv};
+          \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
+        \end{axis}
+      \end{tikzpicture}
+    \end{center}
+    \caption{The frame time measured over the course of the test animation on the \ac{CPU} side for the \emph{Torus} scene.
+    The frame times were artificially capped to 30, 60 or 120 Hz by \emph{Diligent Engine}.}
+    \label{plt:torus-256-culling-cpu-frame-time}
+  \end{figure}
+
+\begin{figure}[!htbp]              % Terrain CPU times
+    \begin{center}
+      \begin{tikzpicture}
+        \begin{axis}[
+            width=\linewidth,
+            height=100px,
+            xlabel={Frames},
+            ylabel={Frame Time (s)},
+            grid,
+            xmin=0,
+            xmax=1814,
+            ymin=0,
+            ymax=0.04,
+            legend style={at={(0.5,1.8)}, anchor=north, legend columns=2},
+          ]
+          \addplot[blue, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1814 / 1572, y=time]{./plotdata/cpu/terrain_256_frameTime_pooc.csv};
+          \addplot[red, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1814 / 1814, y=time]{./plotdata/cpu/terrain_256_frameTime.csv};
+          \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
+        \end{axis}
+      \end{tikzpicture}
+    \end{center}
+    \caption{The frame time measured over the course of the test animation on the \ac{CPU} side for the \emph{Terrain} scene.
+    The frame times were artificially capped to 30, 60 or 120 Hz by \emph{Diligent Engine}.}
+    \label{plt:terrain-256-culling-cpu-frame-time}
+  \end{figure}
+
+\begin{figure}[!htbp]              % Hairball CPU times
+    \begin{center}
+      \begin{tikzpicture}
+        \begin{axis}[
+            width=\linewidth,
+            height=100px,
+            xlabel={Frames},
+            ylabel={Frame Time (s)},
+            grid,
+            xmin=0,
+            xmax=1446,
+            ymin=0,
+            ymax=0.025,
+            legend style={at={(0.5,1.8)}, anchor=north, legend columns=2},
+          ]
+          \addplot[blue, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1446 / 1422, y=time]{./plotdata/cpu/hairball_256_frameTime_pooc.csv};
+          \addplot[red, no marks, solid] table[col sep=comma, x=frame, x expr=\thisrow{frame} * 1446 / 1446, y=time]{./plotdata/cpu/hairball_256_frameTime.csv};
+          \legend{Per-Octree Occlsion Culling, Per-Meshlet Occlusion Culling}
+        \end{axis}
+      \end{tikzpicture}
+    \end{center}
+    \caption{The frame time measured over the course of the test animation on the \ac{CPU} side for the \emph{Hairball} scene.
+    The frame times were artificially capped to 30, 60 or 120 Hz by \emph{Diligent Engine}.}
+    \label{plt:hairball-256-culling-cpu-frame-time}
+  \end{figure}
+  
+
+\section*{Project Code}
+
