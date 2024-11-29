@@ -11,7 +11,8 @@ using \ac{TPOC} relies on preprocessing large objects that are usually artist-pi
 in applications that make use of triangle meshes with only a boundary representation. This way, a lot of 
 small objects can be occluded by one large occluder. In contrast, the algorithm cannot be applied to voxel 
 rendering as is, since in a voxel scene there are only uniform meshes. Individual models might be interpreted 
-as large occluders, but they are generally very computationally intense to draw because of their voxelized nature. \\
+as large occluders, but they are generally very computationally intense to draw because of their voxelized 
+nature. \\
 
 \noindent
 In consequence, the \ac{TPOC} was adjusted to fit the specific circumstances found in volumetric voxel representations. 
@@ -19,8 +20,8 @@ The uniform size of voxels made the traditional \ac{TPOC} rather inefficient in 
 successfully tackled by aggregating neighboring voxels into larger primitives, consequently decreasing computation 
 time of the depth prepass. This approach also shifted the use of the algorithm slightly. Traditionally, \ac{TPOC} 
 draws a handful of the best occluders to enable culling of emph{other} meshes. In the approach proposed in this work, 
-the best occluders are part of the occluded model, and the geometry contributing to their creation may 
-\emph{itself} be occluded. \\
+the best occluders are part of the occluded model, and the geometry contributing to their creation may itself be 
+occluded. \\
 
 \noindent
 Overall, the experiment showed that the \ac{TPOC} algorithm can be customized to work in a volumetric voxel 
@@ -54,7 +55,9 @@ or surfaces resulted in a low octree node occupation, which in turn led to high 
 or models featuring a lot of holes and empty space in them were rather inefficient in computation. They generally 
 resulted in a lack of full octree nodes and therefore in a lower best occluder count and octree node occupation. Such 
 models were found to be very sensitive to different camera angles and could not cull voxels as efficiently compared 
-to the other models tested. Still, they would benefit from the culling algorithm in both configurations. \\
+to the other models tested. Still, they would benefit from the culling algorithm in both configurations, since all 
+scenes showed a performance increase with either occlusion culling configuration applied when compared to the base 
+pipeline. \\
 
 \noindent
 A simple measurement of the time it took to select a set of best occluders within a scene showed that this algorithm 
@@ -76,95 +79,88 @@ or the selection of the best occluders would fall back to whole models instead o
 this work's implementation. \\
 
 \noindent
-Another constraint is the rasterized rendering pipeline, since the occlusion algorithm cannot be applied to 
-raytraced rendering. If both of these essential requirements are satisfied, the proposed approach can be adopted, and the 
+Another constraint is the rasterized rendering pipeline, since the occlusion algorithm cannot be applied to raytraced 
+rendering. If both of these essential requirements are satisfied, the proposed approach can be adopted, and the 
 presented results can be used as a benchmark in terms of performance and culling results. \\
 
 \noindent
-The main factors to influence the resulting performance and the culling efficiency are the models and their voxel resolution.
-In general, large bodies with large volumes can be approximated better than small or thin bodies. Models featuring small and 
-thin details, holes, or large areas without geometry are harder to approximate. The higher the number of best occluders, the 
-more likely it is that a lot of voxels are going to be culled in any given moment. \\
+The main factors to influence the resulting performance and the culling efficiency are the models and their voxel 
+resolution. In general, large bodies with large volumes can be approximated better than small or thin bodies. Models 
+featuring small and thin details, holes, or large areas without geometry are harder to approximate. The higher the 
+number of best occluders, the more likely it is that a lot of voxels are going to be culled in any given moment. \\
 
 \noindent
-But there are more nuanced relationships between the scene data and the performance. The \ac{GPU} performance scaled considerably 
-with the amount of occluded voxels and, consequently, with the amount of visible voxels. The depth prepass scaled with the amount 
-of best occluders that were drawn to the depth buffer, while the \ac{HiZ} creation wasn't shown to be scaling in the experiment, 
-using a fixed screen resolution. Since in general, the \ac{HiZ} is the same for any given scene with the same screen resolution, 
-it should only be impacted by a change of the screen resolution. This assumption is strongly supported by the way the \ac{HiZ} 
-creation is implemented. Consequently, the final performance of both tested configurations is expected to vary based on the amount 
-of completely filled octree nodes. \\
+But there are more nuanced relationships between the scene data and the performance. The \ac{GPU} performance scaled 
+considerably with the amount of occluded voxels and, consequently, with the amount of visible voxels. The depth prepass 
+scaled with the amount of best occluders that were drawn to the depth buffer, while the \ac{HiZ} creation wasn't shown 
+to be scaling in the experiment, using a fixed screen resolution. Since in general, the \ac{HiZ} is the same for any 
+given scene with the same screen resolution, it should only be impacted by a change of the screen resolution. This 
+assumption is strongly supported by the way the \ac{HiZ} creation is implemented. Consequently, the final performance 
+of both tested configurations is expected to vary based on the amount of completely filled octree nodes. \\
 
 \noindent
-The data indicates that a higher average occupation has the tendency to result in better overall culling performance and subsequently 
-in better \ac{GPU} performance as well. It can also be derived that the average culling efficiency increases with the increase of 
-voxels in the scene. But this is only true to an extent, since the \emph{Hairball} model showed a decrease in average culling efficiency 
-compared to the \emph{Lucy} model while having almost 5 times the voxel count. This tendency is therefore only visible for models 
-that are similarly dense in structure and do not contain holes or other challenging features.
-[@TODO: Potentially adapt text above because of relocated figure] \\
+The data indicates that a higher average occupation has the tendency to result in better overall culling performance 
+and subsequently in better \ac{GPU} performance as well. It can also be derived that the average culling efficiency 
+increases with the increase of voxels in the scene. But this is only true to an extent, since the \emph{Hairball} 
+model showed a decrease in average culling efficiency compared to the \emph{Lucy} model while having almost 5 times 
+the voxel count. This tendency is therefore only visible for models that are similarly dense in structure and do not 
+contain holes or other challenging features. [@TODO: Potentially adapt text above because of relocated figure] \\
 
 
 \noindent
-The general approximation of best occluders did work well for most of the models. However, the \emph{Hairball} model showed that specific 
-features posed a challenge for the algorithm. The approximation of a model's volume by aggregating voxels together is only possible for 
-models that provide dense volumes in the first place. The systematic testing of a challenging model provided valuable insights into the 
-limitations of the approach. Consequently, the algorithm is expected to not be very beneficial when using it in scenes with small, thin 
-details or holes.\\
-
-
-
-
-%\noindent [@TODO: Consider moving this to technical background or something like this]
-%The fact that the approach uses screen space visibility testing results in a general purpose culling algorithm. Although there are use cases 
-%in which the approach works better than in others, there is limitation to where it can be applied. Consider another occlusion culling algorithm 
-%that uses bouding boxes to approximate object boundaries. Such an algorithm would check for visibility using the bounding volumes. If one of the 
-%objects were a wall with a window in it, this could not be reliably computed because of the hole in the wall. Another technique would have to 
-%be used here in order to test for visibility using the \\
+The general approximation of best occluders did work well for most of the models. However, the \emph{Hairball} model 
+showed that specific features posed a challenge for the algorithm. The approximation of a model's volume by aggregating 
+voxels together is only possible for models that provide dense volumes in the first place. The systematic testing of a 
+challenging model provided valuable insights into the limitations of the approach. Consequently, the algorithm is 
+expected to not be very beneficial when using it in scenes with small, thin details or areas with low geometric 
+occupation.\\
 
 \noindent
-The \ac{TPOC} algorithm usually uses a handful of occluders to cull other occludees. So normally, there is no overlap between occluders and 
-occludees. However, this work's approach uses a slightly different way of working with occluders and occludees. Because of their volumetric 
-nature, the models can self-occlude, which means that the approximated volume can be used as an occluder to cull a vast amount of voxels that 
-make up the volume itself. This is a slightly different perspective on the \ac{TPOC} algorithm and makes it possible to use the approach when 
-there is only one model present. \\
+The \ac{TPOC} algorithm usually uses a handful of occluders to cull other occludees. So normally, there is no overlap 
+between occluders and occludees. However, this work's approach uses a slightly different way of working with occluders 
+and occludees. Because of their volumetric nature, the models can self-occlude, which means that the approximated volume 
+can be used as an occluder to cull a vast amount of voxels that make up the volume itself. This is a slightly different 
+perspective on the \ac{TPOC} algorithm and makes it possible to use the approach when there is only one model present. \\
 
 \noindent
-The per-meshlet culling configuration proved to be more efficient due to a more precise culling of voxels, even partially culling octree nodes.
-In this sense, the mesh shading pipeline featured a higher culling ratio and superior occlusion culling in general. Another aspect to consider 
-is the possibility of optimizing the \ac{HZB} algorithm further. Traditionally, when comparing a bounding box to the \ac{HiZ} pyramid, all depth 
-values of the \ac{HiZ} pyramid within the minimum and maximum bounds need to be checked against the minimum z value of the object in question.
-This is where the hierarchy optimizes the process because with each mip level, a texel covers a greater section of the depth buffer, making 
-sampling the \ac{HiZ} pyramid cheaper in terms of computation time. Since cubical voxels are easily defined by their min and max values and 
-there is no sub-voxel detail, this process can potentially be optimized further. When using per-meshlet culling, each voxel's bounds are 
-checked individually, and theoretically, no hierarchy is necessary. This assumption was formed by this work's implementation, since it only used 
-the full-resolution depth buffer for the \ac{HZB} due to visual errors that couldn't be fixed in time. That way, only one sampling per screen 
-rectangle corner is necessary, either per mip level or only using the full-resolution z-buffer. If this assumption holds true and can be 
-generally confirmed, the computation of the prepass would reduce to only the depth pass, without the need to compute a hierarchy. \\
+The per-meshlet culling configuration proved to be more efficient due to a more precise culling of voxels, even partially 
+culling octree nodes. In this sense, the mesh shading pipeline featured a higher culling ratio and superior occlusion 
+culling in general. Another aspect to consider is the possibility of optimizing the \ac{HZB} algorithm further. 
+Traditionally, when comparing a bounding box to the \ac{HiZ} pyramid, all depth values of the \ac{HiZ} pyramid within the 
+minimum and maximum bounds need to be checked against the minimum z value of the object in question. This is where the 
+hierarchy optimizes the process because with each mip level, a texel covers a greater section of the depth buffer, making 
+sampling the \ac{HiZ} pyramid cheaper in terms of computation time. Since cubical voxels are easily defined by their min 
+and max values and there is no sub-voxel detail, this process can potentially be optimized further. When using per-meshlet 
+culling, each voxel's bounds are checked individually, and theoretically, no hierarchy is necessary. This assumption was 
+formed by this work's implementation, since it only used the full-resolution depth buffer for the \ac{HZB} due to visual 
+errors that couldn't be fixed in the timeframe of this work. That way, only one sampling per screen rectangle corner is 
+necessary, either per mip level or only using the full-resolution z-buffer. If this assumption holds true and can be 
+generally confirmed, the computation of the prepass would reduce to only the depth pass, without the need to compute a 
+hierarchy. \\
 
 \noindent
-No matter how the prepass is executed, the measurements show that the highly parallelized way of computing the occlusion test does not lead to 
-the per-meshlet culling being slower than the per-octree culling. This can be explained by the massive amount of parallelization that is 
-possible in modern hardware and how the more fine-grained culling removes more geometry than the per-octree node culling does. This in turn leads 
-to a lower dispatch count of mesh shaders and subsequently to a lower load on rasterizer and pixel shader computations. However, this relation 
-is expected to be only valid for a reasonable amount of dispatches by the task shader, since a higher amount could ultimately lead to an inefficient 
-usage of \ac{GPU} threads. \\
+No matter how the prepass is executed, the measurements show that the highly parallelized way of computing the occlusion 
+test does not lead to the per-meshlet culling being slower than the per-octree culling. This can be explained by the 
+massive amount of parallelization that is possible in modern hardware and how the more fine-grained culling removes more 
+geometry than the per-octree node culling does. This in turn leads to a lower dispatch count of mesh shaders and 
+subsequently to a lower load on rasterizer and pixel shader computations. However, this relation is expected to be only 
+valid for a reasonable amount of dispatches by the task shader, since a higher amount could ultimately lead to an 
+inefficient usage of \ac{GPU} threads. \\
 
 \noindent
-The \ac{GPU}-driven approach moves most of the computations for the occlusion culling to the \ac{GPU}, leaving more \ac{CPU} cycles for different 
-computations, like updating the voxel data dynamically. When using the approach with suitable scenes and geometry, this algorithm might be able 
-to optimize volumetric voxel rendering further. Particularly if the proposed implementation is even further optimized to fit the given use case, 
-for example, by using command lists to avoid a write-back to \ac{CPU} memory before dispatching the meshes for the final draw call. \\
+The \ac{GPU}-driven approach moves most of the computations for the occlusion culling to the \ac{GPU}, leaving more 
+\ac{CPU} cycles for different computations, like updating the voxel data dynamically. When using the approach with 
+suitable scenes and geometry, this algorithm might be able to optimize volumetric voxel rendering further. Particularly 
+if the proposed implementation is even further optimized to fit the given use case, for example, by using command lists 
+to avoid a write-back to \ac{CPU} memory before dispatching the meshes for the final draw call. \\
 
 \section{Implications for Practical Use}
 
-The experiment also featured some limitations that are essential to consider for further research of the approach.
-A central limitation was the depth hierarchy, which was not being used in the intended way, as mentioned earlier.
-Due to unresolvable visual errors, the full-resolution depth buffer was used for the visibility checks, however, 
-using the full depth pyramid should usually yield similar or better results in terms of runtime performance. 
-Nevertheless, this limited the precision of the measurements in a way that the depth prepass couldn't be measured 
-in its full complexity. As the data suggests, the major differences in the compared pipeline configurations were 
-originating from the \emph{DispatchMesh} routine, which was not influenced by the actual implementation of the 
-depth prepass. \\
+The experiment highlighted some limitations that are essential to consider for the practical use of the approach. 
+A central implication is of course the specific use case this work aims for. It is not expected to be of great use 
+for hollow voxel scenes or for raytraced rendering scenarios. The algorithm is specifically tailored to deal with 
+high voxel resolutions in a scene that is a volumetric representation and is rendered using a rasterized rendering 
+pipeline. \\
 
 \noindent
 Another limitation was introduced by the hardware limitations in the mesh shading pipeline, or, more specifically, the 
@@ -172,16 +168,16 @@ compute shader architecture. Due to the maximum amount of thread groups that cou
 was a limit to how many octree nodes could be computed within one draw call. Since the amount of voxels was equal to the 
 amount of threads scheduled in the shader, the model resolution was limited by the experimental setup, which only used 
 one draw call for better comparability. This limitation also meant that the \ac{GPU} utilization varied quite a lot. 
-In the given implementation, rejecting a large amount of octree nodes or voxels would consequently mean that the 
-thread groups and threads would exit early. A more in-depth evaluation of this behavior is necessary to find out if 
-there is a more efficient way to compute the voxels using the mesh shading pipeline. \\
+In the given implementation, rejecting a large amount of octree nodes or voxels would consequently mean that the thread 
+groups and threads would exit early. A more in-depth evaluation of this behavior is necessary to find out if there is a 
+more efficient way to compute the voxels using the mesh shading pipeline. \\
 
 \noindent
-As mentioned before, a major limitation is the overdraw within the pipeline. Although it could be shown that the 
-computation time can be reduced compared to the \ac{PONOC}, the maximum overdraw is still very high. This is due 
-to the best occluders, which are not able to cull all occluded voxels but will rather cull most of the occluded 
-voxels. It is up to further inspection if the amount of overdraw is bearable for a given use case or if it is too 
-much overdraw. \\
+Another major limitation is the overdraw within the pipeline. Although it could be shown that the computation time 
+can be reduced compared to the \ac{PONOC}, the maximum overdraw is still very high. This is due to the best occluders, 
+which are not able to cull all occluded voxels but will only cull the vast majority of the occluded voxels. It is up 
+to further inspection if the amount of overdraw is bearable for a given use case or if it is too much for practical 
+use. \\
 
 \noindent
 Although it is possible to handle multiple models without any changes to the pipeline, the limitation of a maximum 
