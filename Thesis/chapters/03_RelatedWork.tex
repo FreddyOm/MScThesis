@@ -33,12 +33,14 @@ The efficient \ac{SVO}s feature a similar approach to this work in that octree n
 processing times. While Laine et al. use contours for their approximations, this work uses whole octree nodes 
 to approximate volumes. \\
 
+\clearpage
+
 \noindent
-However, Laine et al. use their implementation for raytraced voxel rendering, and the approximations are only 
-targeting model boundaries instead of volumes. Therefore, the approximation using contours is not aiming for the 
-same optimization that the approximation in this work does. While the first one refers to optimizing ray casting, 
-the latter refers to optimizing a depth prepass computation. Nevertheless, both approaches share the aspect of 
-reducing octree complexity by approximating parts of the tree hierarchy.
+However, Laine et al. use their implementation for raytraced voxel rendering, and the 
+approximations are only targeting model boundaries instead of volumes. Therefore, the approximation using contours 
+is not aiming for the same optimization that the approximation in this work does. While the first one refers 
+to optimizing ray casting, the latter refers to optimizing a depth prepass computation. Nevertheless, both 
+approaches share the aspect of reducing octree complexity by approximating parts of the tree hierarchy.
 
 
 \subsection*{Sparse Voxel Directed Acyclic Graphs}
@@ -70,6 +72,7 @@ primary usage is ray-traced rendering, which is not what this work is concerned 
 could generally be applied to rasterized rendering, this work uses a custom sparse voxel octree optimized for 
 traversal and easy coordinate extraction. 
 
+\clearpage
 
 \section{Occlusion Culling}
 
@@ -108,9 +111,11 @@ Luebke et al. \cite{Luebke1995} present a less exact but much simpler approach t
 of a \ac{PVS}. Their approach relies on subdividing space into cells, which are interconnected by 
 portals. The portals are represented by boundary boxes, which are projected into screen space to 
 create a distinct testing boundary for objects in the adjacent cell. If the object's boundaries 
-intersect with the portal's boundaries in screen space, they are potentially visible. If they do 
-not intersect whatsoever, the object can be safely culled. This way, potentially visible meshes can 
-be determined dynamically and at runtime, enabling the culling of large parts of the scene. \\
+intersect with the portal's boundaries in screen space, they are potentially visible.  \\
+
+\noindent
+If they do not intersect whatsoever, the object can be safely culled. This way, potentially visible 
+meshes can be determined dynamically and at runtime, enabling the culling of large parts of the scene. \\
 
 \noindent
 Like similar approaches before, this cell-based technique can be used to coarsely evaluate visibility 
@@ -186,7 +191,10 @@ still visible. This optimizes the culling further so scenes can be more densely 
 The findings of Karis et al. and Remedy Entertainment are adapted for this work's implementation, which also relies on 
 the use of the mesh shading pipeline. While the implementations of Karis et al. and Remedy Entertainment are based on 
 a boundary representation and do not require the use of a spatial container for the culling algorithm, this 
-implementation aims for a different use case. Contrary to boundary representations, the spatial properties of voxels 
+implementation aims for a different use case. \\
+
+\noindent
+Contrary to boundary representations, the spatial properties of voxels 
 can be used to approximate volumetric coverage by less complex geometry, making it more efficient to select and draw the 
 best occluders. Also, this work uses the best occluders not only to occlude meshlets, which are behind the best occluders, 
 but it can additionally be used to occlude parts of the best occluders themselves. This poses a new way of applying occluders 

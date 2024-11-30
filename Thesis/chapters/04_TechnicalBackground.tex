@@ -29,7 +29,7 @@ more payload instances than a specified threshold allows, it is split into eight
 and the payload originally present in the node is distributed onto the child nodes. This process 
 is repeated until all data is finally inserted into the octree. The resulting octree maintains 
 all the relevant payload data, having a deeper tree hierarchy where more data is present and a 
-shallow hierarchy where (almost) no data is present.
+shallow hierarchy where (almost) no data is present. \\
 
 \begin{figure}[h]
     \centering
@@ -45,6 +45,8 @@ payload. Some might store it right next to the octree node description, others m
 octree and payload data. Octree nodes could also be appended to a dedicated buffer and therefore 
 be stored separately from the tree hierarchy description. Such an approach would maintain cache 
 coherency during an unordered traversal of all octree nodes.\\
+\enlargethispage{\baselineskip}
+\enlargethispage{\baselineskip}
 
 \noindent
 When using hierarchical data structures, dedicated vertex positions can be omitted, and instead, 
@@ -69,9 +71,12 @@ approach for reasons of simplicity.
 \emph{Voxel Rendering} refers to the use of primitive objects to represent data elements in a three-dimensional 
 grid. It is used to approximate 3D volumes analogous to how 2D pixels approximate shapes, lines, or areas in a 
 two-dimensional grid \cite{MegaVoxels2023}. Commonly, uniform cubes are used to represent the data in space, 
-which results in a distinct, blocky look, depending on the size of the primitives. Games like \emph{Minecraft} 
-(Mojang \cite{Mojang2024}, 2011) popularized this technique for games, which is often used because of its 
-simplicity and low memory footprint. Voxels have been used in a lot of ways, some of which are presented below.
+which results in a distinct, blocky look, depending on the size of the primitives. \\
+
+\noindent
+Games like \emph{Minecraft} (Mojang \cite{Mojang2024}, 2011) popularized this technique for games, which is 
+often used because of its simplicity and low memory footprint. Voxels have been used in a lot of ways, 
+some of which are presented below.
 
 
 \subsection*{Rasterized Voxel Rendering} \label{subsec-rasterized-voxel-rendering}
@@ -155,7 +160,8 @@ In combination with acceleration structures like an octree, view frustum culling
 volumes of the given structure, which can further optimize the culling operations due to spatial grouping of multiple 
 instances. This technique is also applied in this work's implementation, using spheres as approximations for the 
 cubical octree bounding volumes.
-
+\enlargethispage{\baselineskip}
+\enlargethispage{\baselineskip}
 
 \subsection*{Occlusion Culling} \label{subsec-point-based-occlusion-culling}
 
@@ -176,7 +182,9 @@ only visible instances. To achieve this, algorithms can be used to select and om
 \noindent
 Different occlusion culling algorithms can be applied depending on scene layout, object characteristics, and other 
 factors. Algorithms have been proposed that operate in \emph{image space}, \emph{object space}, or \emph{ray space}, 
-with image space occlusion culling being most widely adopted in real-time rendering \cite{AkenineMoeller2018}. 
+with image space occlusion culling being most widely adopted in real-time rendering \cite{AkenineMoeller2018}. \\
+
+\noindent
 These algorithms operate on a projected 2D image to consider the visibility of different instances. As is the case 
 with culling algorithms in general, occlusion culling algorithms usually rely on bounding volumes to approximate 
 object positions and scale in space. Figure \ref{fig:bounding-volumes} shows how different bounding volumes can be 
@@ -213,8 +221,9 @@ In contrast to the classic generation of mip-maps, the computation of the values
 very specific way. "[...] [E]ach z-value is the farthest z in the corresponding 2 \begin{math}\times\end{math} 2 window 
 of the adjacent finer level" \cite{AkenineMoeller2018}. This process is shown in Figure \ref{fig:hiz-value-computation}, 
 visualizing how the farthest value of each texel window is inserted into adjacent levels.\\
+\enlargethispage{\baselineskip}
 
-\begin{figure}[!]
+\begin{figure}[h]
     \centering
     \includegraphics[width=200px]{images/graphics/hiz-buf-values.jpg}
     \caption{The calculation of a \ac{HiZ} pyramid computes the farthest value of each texel window, 
@@ -266,6 +275,8 @@ leveraged on the \ac{GPU} side for efficient occlusion culling.
 present in the 2014 title \emph{Assassin's Creed Unity} by \emph{Ubisoft} \cite{Ubisoft2014}. One year later, Ulrich 
 Haar and Sebastian Aaltonen presented their approach at SIGGRAPH 2015 \cite{Aaltonen2015}. Their implementation 
 inspired other developers, like \emph{Epic Games} for \emph{Unreal Engine 5}, to adopt similar techniques \cite{Karis2021}. \\
+\enlargethispage{\baselineskip}
+\enlargethispage{\baselineskip}
 
 \noindent
 Some use cases are especially well suited for the application of occlusion culling. \emph{Assassin's Creed Unity}, for 
@@ -295,7 +306,9 @@ this case, the last frame's depth, color, and visibility information would remai
 differences would be introduced by animation or physics simulation, which could move instances independently 
 from the camera movement. But even with the camera moving over frames, a large part of the scene - static 
 parts like buildings or terrain in particular - would retain a lot of its information. This means that there 
-will be a significant coherence in visibility between frames, which depth reprojection makes use of.\\
+will be a significant coherence in visibility between frames, which depth reprojection makes use of. \\
+\enlargethispage{\baselineskip}
+\enlargethispage{\baselineskip}
 
 \noindent
 The algorithm stores the last frame's depth information and "reprojects" it onto the new frame. In the best case, 
@@ -308,7 +321,6 @@ process sometimes fails to compute the correct depth values for objects, especia
 camera. Another problem occurs in use cases where the camera moves very fast relative to the environment. In such 
 a case, the camera might cover too large a distance so that none of the visible instances in a given frame were 
 visible during the previous frame \cite{Kruskonja2022}. \\
-
 
 \section{Mesh Shading}  \label{sec-mesh-shading}
 
@@ -333,7 +345,10 @@ feature \emph{Nanite} \cite{Karis2021}.\\
 \noindent
 The \emph{mesh shading rendering pipeline} is a rendering pipeline optimized for scenes with complicated 
 geometry. It shares the rasterizer and the pixel shader stages with the vertex shading pipeline but 
-introduces two new stages, which aim to replace the vertex shader, geometry shader, and tesselation stage.
+introduces two new stages, which aim to replace the vertex shader, geometry shader, and tesselation stage. \\
+\enlargethispage{\baselineskip}
+
+\noindent
 The new stages are called \emph{task shader} (or \emph{amplification shader}) and \emph{mesh shader}. Both 
 are fully programmable and are based on the compute shaders architecture. Therefore, they are inherently 
 different from the traditional vertex shader stage, even though they both can be used for vertex 
@@ -366,11 +381,15 @@ number of triangles, called a \emph{meshlet}, which is shown in Figure \ref{fig:
 to operating on vertices allows for a new interpretation of mesh data. The primitive topology is not anymore constrained 
 to triangles, triangle fans, and triangle strips but can be individually specified by the developers.
 Meshlets are computed by thread groups, which usually fetch the mesh data from the given vertex and index buffers and 
-apply transformations and arbitrary operations. This new way of processing geometry is not only more efficient in many 
-cases and reduces the memory bandwidth, but also allows for per-meshlet operations \cite{Kubisch2020}. This is a key 
-advantage, since the geometry of a complete mesh can now be processed in parallel and still be individually discarded 
-or post-processed. There are several other advantages over the traditional vertex shader pipeline, which will not be 
-listed to the full degree. More details are provided in the blog post by NVIDIA \cite{Kubisch2020}.\\
+apply transformations and arbitrary operations. \\
+\enlargethispage{\baselineskip}
+
+\noindent
+This new way of processing geometry is not only more efficient in many cases and reduces the memory bandwidth, but 
+also allows for per-meshlet operations \cite{Kubisch2020}. This is a key advantage, since the geometry of a 
+complete mesh can now be processed in parallel and still be individually discarded or post-processed. There are 
+several other advantages over the traditional vertex shader pipeline, which will not be listed to the full degree. 
+More details are provided in the blog post by NVIDIA \cite{Kubisch2020}.\\
 
 
 \subsection*{Meshlet Culling} \label{subsec-meshlet-culling}
@@ -401,6 +420,8 @@ need to be computed. The same principles apply to meshlet bounding volumes as to
 volumes are usually fast and cheap to calculate. If the meshlets are pre-calculated, the bounding volumes can be 
 precalculated as well, since they will not change over time. Then, frustum culling is as simple as using any existing 
 frustum culling algorithm (see Chapter \ref{subsec-view-frustum-culling}) and applying it to the meshlets. \\
+
+\clearpage
 
 \noindent
 Since this can be done in the task shader, the culling can be computed in parallel, and culled meshlets can 
