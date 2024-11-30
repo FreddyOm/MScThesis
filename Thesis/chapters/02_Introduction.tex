@@ -37,6 +37,8 @@ in a much more general way than in 1999. Both the technical complexity and the f
 have tremendously increased. Today, a \ac{GPU} is often referred to as a \ac{GPGPU} because of its 
 evolution towards a multi-purpose tool. \\
 
+\clearpage
+
 \noindent
 Nevertheless, \ac{GPU} architecture is still strongly influenced by the entertainment 
 industry, first and foremost the games industry. Some of the latest changes to \ac{GPU} 
@@ -71,6 +73,7 @@ effects, games with higher triangle density, new lighting technology, and cube m
 was introduced to the pipeline featuring real-time reflections shown in  Figure 
 \ref{fig:bubble-reflection-demo} \cite{Battaglia2024}.
 
+\clearpage
 
 \subsection*{Rendering Pipeline} \label{subsec-rendering-pipeline}
 
@@ -109,6 +112,8 @@ introduced the \emph{GeForce 3} graphics card, which "contained the first exampl
 introduced to execute custom operations on vertices. The same trend was seen in the per-pixel operations, 
 which also became its own programmable stage \cite{KhronosProgramibility2024}. \\
 
+\clearpage
+
 \begin{figure}[h]
     \centering
     \includegraphics[width=\linewidth]{images/graphics/traditional-rendering-pipeline.jpg}
@@ -118,10 +123,11 @@ which also became its own programmable stage \cite{KhronosProgramibility2024}. \
 \end{figure}
 
 \noindent
-The programmability of the stages enabled developers to customize their applications and the output presented 
-on screen. It also contributed to a more parallelized architecture, which improved computation capabilities on 
-the \ac{GPU} instead of sequential computations by the \ac{CPU}. Over the years, more stages like the 
-\emph{geometry shader} stage were added, and the stages were expanded to be programmable - or at least configurable. \\
+The programmability of the stages enabled developers to customize their applications and the output 
+presented on screen. It also contributed to a more parallelized architecture, which improved computation 
+capabilities on the \ac{GPU} instead of sequential computations by the \ac{CPU}. Over the years, more 
+stages like the \emph{geometry shader} stage were added, and the stages were expanded to be programmable 
+- or at least configurable. \\
 
 \noindent
 Today, these stages are still considered the "standard rendering pipeline", although current advances in 
@@ -146,31 +152,33 @@ by Dean Calver \cite{Calver2004} in 2004. This technique makes use of multiple r
 necessary for the lighting calculations into various buffers. This way, the surface normals, the specular intensity, 
 the albedo (texture color), the depth, and more values can all be stored individually, as per-pixel data. This includes 
 the relevant data for the lighting calculations. When all buffers are drawn, the final result is easily found by 
-looking up all the relevant data from each buffer at one pixel coordinate and combining them into a final result. 
-Figure \ref{fig:deferred-shading-buffers} shows an example of all the buffers used for the creation of one frame in 
-\emph{Guerilla Games'} \emph{Killzone 2} (2009) \cite{KillzoneFandom}. 
+looking up all the relevant data from each buffer at one pixel coordinate and combining them into a final result. \\
 
-\begin{figure}[!]
+\begin{figure}[h]
     \centering
-    \includegraphics[width=175px]{images/graphics/killzone-2-buffer-depth.jpg}
-    \includegraphics[width=175px]{images/graphics/killzone-2-buffer-vsn.jpg}
-    \includegraphics[width=175px]{images/graphics/killzone-2-buffer-specular.jpg}
-    \includegraphics[width=175px]{images/graphics/killzone-2-buffer-specular-rough.jpg}
-    \includegraphics[width=175px]{images/graphics/killzone-2-buffer-ss-motion.jpg}
-    \includegraphics[width=175px]{images/graphics/killzone-2-buffer-albedo.jpg}
-    \includegraphics[width=175px]{images/graphics/killzone-2-buffer-composed-result.jpg}
-    \includegraphics[width=175px]{images/graphics/killzone-2-buffer-post.jpg}
+    \includegraphics[width=173px]{images/graphics/killzone-2-buffer-depth.jpg}
+    \includegraphics[width=173px]{images/graphics/killzone-2-buffer-vsn.jpg}
+    \includegraphics[width=173px]{images/graphics/killzone-2-buffer-specular.jpg}
+    \includegraphics[width=173px]{images/graphics/killzone-2-buffer-specular-rough.jpg}
+    \includegraphics[width=173px]{images/graphics/killzone-2-buffer-ss-motion.jpg}
+    \includegraphics[width=173px]{images/graphics/killzone-2-buffer-albedo.jpg}
+    \includegraphics[width=173px]{images/graphics/killzone-2-buffer-composed-result.jpg}
+    \includegraphics[width=173px]{images/graphics/killzone-2-buffer-post.jpg}
     \caption{Different buffers for deferred shading in \emph{Guerilla Games'} \emph{Killzone 2} (2009) 
     \cite{Valient2007}.}
     \label{fig:deferred-shading-buffers}
 \end{figure}
 
 \noindent
-As Akenine-Möller et al. point out, "the contribution of the models’ geometry has been fully decoupled from lighting 
+Figure \ref{fig:deferred-shading-buffers} shows an example of all the buffers used for the creation of one frame in 
+\emph{Guerilla Games'} \emph{Killzone 2} (2009) \cite{KillzoneFandom}. \\
+
+\noindent
+As Akenine-Möller et al. point out, "the contribution of the models' geometry has been fully decoupled from lighting 
 computations" \cite{AkenineMoeller2018}. Deferred shading encompasses a lot more optimizations, like compression, 
 light clustering, deferred texturing, and more \cite{AkenineMoeller2018}. All these techniques combined can ultimately 
 result in a more efficient shading model for specific use cases, for instance, when using a lot of lights in combination 
-with high-density geometry.\\
+with high-density geometry. \\
 
 \noindent
 The basic idea of deferred shading influenced the next couple of years of real-time graphics technology and is 
@@ -183,7 +191,7 @@ rendering.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=300px]{images/graphics/assassins-creed-unity-gameplay.jpg}
+    \includegraphics[width=290px]{images/graphics/assassins-creed-unity-gameplay.jpg}
     \caption{A screenshot of the game \emph{Assassin's Creed Unity} (\emph{Ubisoft} \cite{Ubisoft2014}, 2014) 
     showcasing the high density of geometry and far draw distances \cite{Burke2014}.}
     \label{fig:assassins-creed-unity-gameplay}
@@ -207,7 +215,12 @@ This trend gained attention with the rise of the \ac{GPGPU} and the better suppo
 one of the earlier games to make heavy use of \ac{GPUDR} is \emph{Assassin's Creed Unity} (\emph{Ubisoft} 
 \cite{Ubisoft2014}, 2014), shown in Figure \ref{fig:assassins-creed-unity-gameplay}. In 2015, Aaltonen et al. 
 \cite{Aaltonen2015} presented approaches for \ac{GPUDR}, which included occlusion culling, deferred texturing, 
-and the clustering of geometry. The proposed technology allowed for a densely populated, dynamic, open world. 
+and the clustering of geometry. \\
+
+\clearpage
+
+\noindent
+The proposed technology allowed for a densely populated, dynamic, open world. 
 Some of the technology used would only be seen in other games almost a decade later, when geometric computation 
 was supported by specific hardware adaptations. Especially large, open games can profit from optimizations like 
 storing scene data directly on the \ac{GPU}. In modern real-time computer graphics, the pre-computation by the 
