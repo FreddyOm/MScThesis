@@ -29,7 +29,7 @@ representation using two different configurations: the per-octree node culling a
 Both configurations were able to occlude a considerable amount of voxels while using a minimal amount of 
 \ac{GPU} bandwidth. The per-meshlet culling was able to cull more octree nodes and, consequently, more 
 voxels than the per-octree node culling. It also demonstrated a higher deviation from the average culling 
-ratio. This indicates, that the \ac{PMOC} algorithm was able to cull more voxels in the best case but also 
+ratio. This indicates that the \ac{PMOC} algorithm was able to cull more voxels in the best case but also 
 had a higher variation of the culling ratio. Still, for almost all frames tested, the number of visible 
 voxels was significantly lower when using \ac{PMOC} when compared to \ac{PONOC}.\\
 
@@ -58,14 +58,14 @@ or surfaces resulted in a low octree node occupation, which in turn led to high 
 or models featuring a lot of holes and empty space in them were rather inefficient in computation. They generally 
 resulted in a lack of full octree nodes and therefore in a lower best occluder count and octree node occupation. Such 
 models were found to be very sensitive to different camera angles and could not cull voxels as efficiently compared 
-to the other models tested. Still, they would benefit from the culling algorithm in both configurations, since all 
+to the other models tested. Still, they would benefit from the culling algorithm in both configurations since all 
 scenes showed a performance increase with either occlusion culling configuration applied when compared to the base 
 pipeline. \\
 
 \noindent
 A simple measurement of the time it took to select a set of best occluders within a scene showed that this algorithm 
-is capable of updating the voxel data in real-time. This makes it possible to use in applications that simulate physical 
-interactions or feature simmilar arbitrary manipulation of the scene data.
+is capable of updating the voxel data in real time. This makes it possible to use in applications that simulate physical 
+interactions or feature similar arbitrary manipulation of the scene data.
 
 \section{Experimental Results Interpretation}
 
@@ -134,7 +134,7 @@ hierarchy optimizes the process because with each mip level, a texel covers a gr
 sampling the \ac{HiZ} pyramid cheaper in terms of computation time. Since cubical voxels are easily defined by their min 
 and max values and there is no sub-voxel detail, this process can potentially be optimized further. When using per-meshlet 
 culling, each voxel's bounds are checked individually, and theoretically, no hierarchy is necessary. This assumption was 
-formed by this work's implementation, since it only used the full-resolution depth buffer for the \ac{HZB} due to visual 
+formed by this work's implementation since it only used the full-resolution depth buffer for the \ac{HZB} due to visual 
 errors that couldn't be fixed in the timeframe of this work. That way, only one sampling per screen rectangle corner is 
 necessary, either per mip level or only using the full-resolution z-buffer. If this assumption holds true and can be 
 generally confirmed, the computation of the prepass would reduce to only the depth pass, without the need to compute a 
@@ -159,7 +159,7 @@ to avoid a write-back to \ac{CPU} memory before dispatching the meshes for the f
 \section{Implications for Practical Use}
 
 The experiment highlighted some limitations that are essential to consider for the practical use of the approach. 
-A central implication is of course the specific use case this work aims for. It is not expected to be of great use 
+A central implication is, of course, the specific use case this work aims for. It is not expected to be of great use 
 for hollow voxel scenes or for raytraced rendering scenarios. The algorithm is specifically tailored to deal with 
 high voxel resolutions in a scene that is a volumetric representation and is rendered using a rasterized rendering 
 pipeline. \\

@@ -8,7 +8,7 @@ used to approximate the scene's inner volume and replace vast amounts of voxels
 with a small amount of cubical geometry. This way, a set of best occluders can 
 be used for computing a depth prepass, which in turn is used for efficient 
 occlusion culling on the \ac{GPU}. An exemplary voxel scene with over 3 million 
-voxels has been approximated by only 8256 larger voxels.  \\
+voxels has been approximated by only 8,256 larger voxels.  \\
 
 % Quantitative Ergebnisse
 
@@ -16,12 +16,12 @@ voxels has been approximated by only 8256 larger voxels.  \\
 The measurements have shown the capability of the modern mesh shading rendering 
 pipeline to increase culling efficiency by culling individual meshlets, which in 
 turn leads to a lower computational load for the rasterizer and pixel shader 
-stages. The experiment has provided a precise measurement that indicate a \ac{GPU} 
+stages. The experiment has provided a precise measurement that indicates a \ac{GPU} 
 performance increase of about $29 \%$ when using the \ac{PMOC} configuration 
 of the algorithm as compared to the more general \ac{PONOC} configuration. 
 Compared to the base pipeline without occlusion culling applied to the scene, the 
 performance increase ranged from $61.3 \%$ for the highly complex and irregular 
-\emph{Hairball} scene up to $90.7 \%$ for the \emph{Bunny} scene. Alltogether, the 
+\emph{Hairball} scene up to $90.7 \%$ for the \emph{Bunny} scene. Altogether, the 
 measurements indicate a better overall performance when using the modern mesh shading 
 pipeline.\\
 
@@ -49,7 +49,7 @@ on the \ac{GPU} and \ac{CPU}, as well as pixel shader overdraw, especially for d
 favorable occluder geometry. The measurements also indicate real-time capability, as 
 \ac{CPU} computations for occluder updates are within acceptable limits. Further 
 optimizations, such as multithreading and chunked voxel data, are expected to enhance 
-performance.
+performance. \\
 
 % Einschränkungen und Herausforderungen
 
@@ -61,7 +61,7 @@ while thin, detailed geometries or low voxel resolutions perform less efficientl
 to fewer full octree nodes. The approach is therefore suggested for scenes that are dense 
 and tight and can be expected to provide at least a reasonable amount of full octree nodes. 
 The main factors to influence the performance are the number of voxels, the number of 
-best occluders, and the screen-resolution.\\
+best occluders, and the screen resolution.\\
 
 \noindent
 Ultimately, this work has shown that voxel rendering can benefit from the latest advances 
@@ -71,7 +71,7 @@ per-octree culling approach or compared to not using any occlusion culling at al
 
 \noindent
 Finally, this work highlights the potential of modern rendering pipelines for voxel-based 
-graphics. The proposed algorithm could be used in games like \ac{Minecraft} (Mojang 
-\cite{Mojang}, 2011) for optimizing the rendering using a \ac{GPU}-driven approach. It 
+graphics. The proposed algorithm could be used in games like \emph{Minecraft} (Mojang 
+\cite{Mojang2024}, 2011) for optimizing the rendering using a \ac{GPU}-driven approach. It 
 could also be extended for use on highly dynamic scenes and even voxel-based animations, 
 which could be explored in more detail in the future.

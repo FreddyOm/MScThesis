@@ -274,7 +274,7 @@ values for each tested scene are presented in Table \ref{tab:best-occluder-query
 \end{table}
 
 \noindent
-The measurements show that each scene was processed in significantly less than 16.6 ms and the 
+The measurements show that each scene was processed in significantly less than 16.6 ms, and the 
 computation times scaled with the amount of voxels within the scene. The table additionally shows 
 the octree hierarchy width. The hierarchy is limited in its depth by the maximum amount of voxels 
 per octree node. However, its width is defined by the scene topology. The table shows how many of 
@@ -361,7 +361,7 @@ The measurements show that the \ac{PMOC} significantly reduced the amount of dis
 The amount of octree nodes decreased when using \ac{PMOC} because octree nodes could be culled, even when their 
 corners were visible by the camera. Looking at the data over time, the amount of visible voxels and octree nodes
 varies in a similar way. The curves are used to evaluate how well the scene fits the culling algorithm. This 
-scene has a relatively even curve over time but of course, this is a dynamic measure and highly depends on the 
+scene has a relatively even curve over time, but of course, this is a dynamic measure and highly depends on the 
 angle of the camera. Still, the compact, tall model seems to have provided a good amount of best occluders to 
 occlude a relatively even number of voxels when viewed from the side. \\
 
