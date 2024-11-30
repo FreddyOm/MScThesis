@@ -24,6 +24,8 @@ found in appendix \ref{cpt-appendix}.
     \label{fig:pipeline-initialization}
 \end{figure}
 
+\clearpage
+
 \noindent
 The pipeline is split into an initialization routine and an update loop. The initialization is called once during 
 the beginning of the execution flow, and the render loop is initiated after the initialization is finished. Then, 
@@ -95,6 +97,7 @@ model. As discussed in Chapter \ref{subsec-highres-svo-dags}, it is recommended 
 compressed octree implementation like an \ac{SVO} or a Sparse Voxel \ac{DAG} \cite{Kampe2013}. For the purpose of 
 this work, a custom octree implementation is used, which refers to indices in the \emph{voxel position buffer}, 
 as shown in Figure \ref{fig:voxelpos-octreenode-buffer}. \\
+\enlargethispage{\baselineskip}
 
 \begin{figure}[h]
     \centering
@@ -161,6 +164,8 @@ inputting the node's position and bounds. This way, a whole node gets drawn inst
 reducing the computation cost for drawing the best occluders considerably. The best occluders are stored in a 
 separate buffer so they can be dispatched efficiently. \\
 
+\clearpage
+
 \noindent
 This concludes the initialization of the pipeline. When changes are applied to the scene,then the voxel buffer,
 the octree node buffer, and the best occluder buffer need to be updated accordingly to reflect those changes. 
@@ -186,6 +191,8 @@ with no runtime alternation are assumed for this work, a static, pre-calculated 
 The rendering loop consists of three main steps: the depth prepass, including \ac{HiZ} generation, the 
 task shader, and the mesh shader. The different stages consume and generate various data buffers 
 and textures, as shown in Figure \ref{fig:pipeline-loop}. 
+
+\clearpage
 
 \subsection*{Depth Pre-Pass} \label{subsec-depth-prepass}
 
@@ -242,7 +249,9 @@ perspective. \\
 
 \noindent
 Nodes that were not culled using the view frustum are then scheduled for drawing, checking each voxel for occlusion against the 
-\ac{HiZ} texture and its mip maps. This operation introduces additional overhead, which is normal for any acceleration structure. 
+\ac{HiZ} texture and its mip maps. This operation introduces additional overhead, which is normal for any acceleration structure. \\
+
+\noindent
 The goal is always to apply it to a scenario where the additional overhead is compensated by the acceleration it provides. 
 In this case, the visible voxels might have to pass the whole \ac{HiZ} structure. The non-visible voxels, however, will likely 
 exit early after just a few operations, comparing against the mip map hierarchy. In a volumetric representation, the candidates 
@@ -280,6 +289,7 @@ The task shader is used to pre-select and pre-process the scheduled geometry dat
 the position of an individual octree node and all the voxels inside of the node. This precomputational step is 
 used for visibility checking, i.e., view frustum culling and occlusion culling. Since the task shader is based 
 on the compute architecture, this pipeline step is realized using a standard compute-like code structure. \\
+\enlargethispage{\baselineskip}
 
 \begin{figure}[!htb]
     \centering
@@ -312,7 +322,7 @@ from the camera, i.e., to have the same depth value. This depth value is the \em
 This way, as long as any corner of the rectangle is located \emph{in front} of the best occluders stored in the 
 \ac{HiZ} pyramid, the rectangle could be visible partially or completely. Conversely, as long as all corners of 
 the rectangle are located \emph{behind} the best occluder, the rectangle must be completely occluded. A visualization of 
-this process is shown in Figure \ref{fig:screen-space-occlusion-test}.
+this process is shown in Figure \ref{fig:screen-space-occlusion-test}. \\
 
 \begin{figure}[htbp]
     \centering
@@ -403,6 +413,7 @@ If more voxels are needed, the group size can be increased further, which also r
 octree node size, given that the implementation is similar to the one presented here. Another way 
 to increase the total amount of voxels is to draw the scene in multiple passes, invoking the task 
 shader more than once. \\
+\enlargethispage{\baselineskip}
 
 \noindent
 Furthermore, the implementation poses some visual errors when viewing the scene from specific 
