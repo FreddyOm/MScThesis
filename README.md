@@ -33,7 +33,7 @@ pipeline discussion and in depth data visualization.
 - [x] Adjust GPU Performance Results ymax values in plot
 - [x] Refer to PMOC average divergence in discussion
 - [x] Consider removing Virtualized Geometry from conclusion
-- [] Add conclusion in brief chapter overview at the end of motivation 
+- [x] Add conclusion in brief chapter overview at the end of motivation 
 - [] ~~Add different sources for academic sources, image sources, games, ...~~
 - [] ~~Evaluate memory footprint in discussion~~
 - [] ~~Add Octree hierarchy depth to general information?~~
