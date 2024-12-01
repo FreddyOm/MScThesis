@@ -3,8 +3,8 @@
 The proposed approach is an aggregation of various ideas and implementations that have been 
 around for quite some time. It is of great interest to explore related work, which can provide 
 context for use cases and highlight additional techniques that can be adopted additionally. 
-This chapter focuses on related work addressing \emph{voxel rendering}, \emph{occlusion culling}, 
-and \emph{mesh shading}, on which the proposed implementation is based. The most relevant concepts 
+This chapter focuses on related work addressing \emph{voxel rendering} and \emph{occlusion culling}, 
+on which the proposed implementation is based. The most relevant concepts 
 are revisited and discussed in more detail in Chapter \ref{cpt-technical-background}. 
 
 
@@ -22,7 +22,7 @@ these basic encodings of voxel data.
 
 \subsection*{Efficient Sparse Voxel Octrees}
 
-Laine and Karras \cite{Laine2010} analyze and implement a variation of the base sparse voxel Octree approach for 
+Laine and Karras \cite{Laine2010} analyze and implement a variation of the base sparse voxel octree approach for 
 efficiently raytracing voxel models. In their work, contours are used to approximate octree nodes within an \ac{SVO}. 
 If the octree node is found to be approximated good enough, the subdivision to deeper levels in the octree node is 
 terminated \cite{Kampe2013,Laine2010}. This way, \ac{SVO}s can be significantly reduced in size, which benefits 
@@ -100,7 +100,7 @@ visibility testing and maintaining a depth buffer. \\
 
 \noindent
 However, more modern approaches are used to adapt this algorithm for \ac{GPU}-friendly design, like computing the depth 
-in a pre-pass, using only the best occluders instead of all possible meshes, and disabling color writes completely. This 
+in a prepass, using only the best occluders instead of all possible meshes, and disabling color writes completely. This 
 also limits the amount of recomputations of the mip-chain since all occluders are only drawn to the depth buffer once per 
 frame instead of scaling with the number of visible meshes.
 
@@ -138,16 +138,16 @@ not satisfy the requirement of dynamically adapting to a changing environment at
 Aaltonen et al. \cite{Aaltonen2015} present a \ac{GPU}-based two-pass occlusion culling technique based on 
 the \ac{HZB} approach proposed by Greene et al. \cite{Greene93,Greene95}. This technique additionally features 
 depth reprojection, which makes for a good occlusion culling technique in games with large occluders or interiors. 
-First, artist-picked \emph{best occluders} are drawn to the depth buffer in a depth pre-pass. Then, projected 
+First, artist-picked \emph{best occluders} are drawn to the depth buffer in a depth prepass. Then, projected 
 bounding boxes can be used to test the visibility of smaller objects in the scene. A hierarchical z-buffer is 
 used to accelerate this testing, as proposed by Greene et al. Finally, the depth buffer of the last frame can 
 be reprojected to further minimize computations. This technique allows developers to push for huge draw distances 
 and densely crowded environments. \\
 
 \noindent
-Similar to this work, the game uses advanced technology in its implementation, clustering geometry, and allowing 
-for a \ac{GPU}-centric approach to occlusion culling. However, the game doesn't use a volumetric representation 
-but the standard boundary representation for its world. Furthermore, the best occluders are provided in different 
+Similar to this work, the \ac{TPOC} uses advanced technology in its implementation, clustering geometry, and allowing 
+for a \ac{GPU}-centric approach to occlusion culling. However, Aaltonen et al. do not use a volumetric representation 
+but the standard boundary representation for their implementation. Furthermore, the best occluders are provided in different 
 ways. Aaltonen et al. \cite{Aaltonen2015} propose the use of a hand-picked set of large, static meshes, while this 
 work relies on a simple approximation of the voxel layout. This way, the latter implementation can dynamically 
 provide the best occluders during runtime, adapting the occlusion capabilities with the addition or removal of 
@@ -181,17 +181,17 @@ to the last possible stage of the pipeline, making the application of \ac{CPU}-a
 
 \subsection*{Per-Meshlet Two-Pass Occlusion Culling}
 
-Karis et al. \cite{Karis2021} and Remedy Entertainment \cite{Remedy2023} find that using \ac{HZB} can provide great 
+Karis et al. \cite{Karis2021} find that using \ac{HZB} can provide great 
 runtime performance for open and highly dense scenes. Both combine the \ac{HZB} with depth reprojection to further optimize 
 the computation of the depth buffer. Using the mesh shading pipeline, this concept can be applied to meshlets, enabling 
 per-meshlet culling. That means that small parts of the geometry can be culled, even if other parts of the same mesh are 
 still visible. This optimizes the culling further so scenes can be more densely populated with meshes. \\
 
 \noindent
-The findings of Karis et al. and Remedy Entertainment are adapted for this work's implementation, which also relies on 
-the use of the mesh shading pipeline. While the implementations of Karis et al. and Remedy Entertainment are based on 
-a boundary representation and do not require the use of a spatial container for the culling algorithm, this 
-implementation aims for a different use case. \\
+The findings of Karis et al. are adapted for this work's implementation, which also relies on the use of the mesh shading 
+pipeline. While the implementations of Karis et al. are based on a boundary representation and do not require the use of 
+a spatial container for the culling algorithm, this implementation aims for a different use case. \\
+
 
 \noindent
 Contrary to boundary representations, the spatial properties of voxels 

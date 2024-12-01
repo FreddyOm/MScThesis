@@ -69,8 +69,9 @@ geometry. Increasing the amount of triangles rendered ultimately led to worse ru
 performance. The advent of a dedicated, massively parallel chip to perform a large amount of 
 operations introduced a solution for this problem. Over the years, more and more stages of the 
 rendering pipeline were offloaded to the \ac{GPU}, which in turn resulted in a lot of new visual 
-effects, games with higher triangle density, new lighting technology, and cube mapping, which 
-was introduced to the pipeline featuring real-time reflections shown in  Figure 
+effects, games with higher triangle density, and new lighting technolog. One example is 
+\emph{cube mapping}, which was introduced to the pipeline with the release of the 
+\emph{GeForce 256} and enabled real-time reflections shown in  Figure 
 \ref{fig:bubble-reflection-demo} \cite{Battaglia2024}.
 
 \clearpage
@@ -132,8 +133,8 @@ stages like the \emph{geometry shader} stage were added, and the stages were exp
 \noindent
 Today, these stages are still considered the "standard rendering pipeline", although current advances in 
 hardware and software have introduced additions to the pipeline or even offered replacement technology 
-for computing three-dimensional data. Nevertheless, these new innovations increase the programmability 
-and customization capabilities of the pipeline, following a trend that began decades ago.
+for computing three-dimensional data. These new innovations increased the programmability 
+and customization capabilities of the pipeline, and are consequently following a trend that began decades ago.
 
 
 \subsection*{Deferred Shading} \label{subsec-deferred-rendering}
@@ -284,13 +285,11 @@ pipeline in combination with efficient culling could drastically improve frame t
 pointed out in Chapter \ref{subsubsec-two-pass-occlusion-culling}, modern occlusion culling algorithms 
 often make use of depth buffer information and use objects of different sizes to cull smaller instances 
 or even primitives. Since voxels are always of the same size, this algorithm cannot be applied as is. 
-The proposed approach relies on preprocessing data and applying approximations to the scene layout, 
-so a variation of a common occlusion culling algorithm can be applied. \\
 
-\noindent
-The proposed approach additionally aims to maintain runtime interactivity. Some of the related approaches 
-use a predetermined set of objects for visibility testing, which is not viable in a voxel rendering pipeline, 
-since often such voxel scenes allow runtime manipulation of the environment or simulate physical interactions. \\
+Considering the possibilities created by the advances in \ac{GPUDR}, this work aims to implement 
+effecive \ac{GPU}-driven occlusion culling for voxel-based rasterized rendering. It proposes 
+a possible approach to integrate a screen-space occlusion culling algorithm using large occluders 
+into a voxel rendering pipeline, while not affect the real-time interactivity of the application. \\
 
 \clearpage
 
