@@ -73,6 +73,7 @@ This work aimed to test if the \ac{TPOC} algorithm could be applied to voxel ren
 for the creation of the best occluders and if the use of the mesh shading pipeline would optimize the performance and 
 the amount of culled voxels. The presented results indicate that this was successful. Nevertheless, the results also 
 provide more in-depth insights that are discussed below. \\
+\enlargethispage{\baselineskip}
 
 \noindent
 First of all, the results need to be considered in the correct context. This approach was tested with a particular use 
@@ -109,6 +110,8 @@ complex scenes showed a decrease in average culling ratio compared to less topol
 between the total voxel count and the average culling ratio is therefore only visible for scenes that are similarly 
 dense in structure and do not contain holes or other challenging features. \\
 
+\clearpage
+
 \noindent
 The general approximation of best occluders did work well for most of the scenes. However, the complex \emph{Hairball} 
 scene showed that specific features posed a challenge for the algorithm. The approximation of a scene's volume by 
@@ -144,7 +147,10 @@ hierarchy. \\
 No matter how the prepass is executed, the measurements show that the highly parallelized way of computing the occlusion 
 test does not lead to the per-meshlet culling being slower than the per-octree culling. This can be explained by the 
 massive amount of parallelization that is possible in modern hardware and how the more fine-grained culling removes more 
-geometry than the per-octree node culling does. This in turn leads to a lower dispatch count of mesh shaders and 
+geometry than the per-octree node culling does. \\
+
+\noindent
+This in turn leads to a lower dispatch count of mesh shaders and 
 subsequently to a lower load on rasterizer and pixel shader computations. However, this relation is expected to be only 
 valid for a reasonable amount of dispatches by the task shader, since a higher amount could ultimately lead to an 
 inefficient usage of \ac{GPU} threads. \\
@@ -180,6 +186,7 @@ can be reduced compared to the \ac{PONOC}, the maximum overdraw is still very hi
 which are not able to cull all occluded voxels but will only cull the vast majority of the occluded voxels. It is up 
 to further inspection if the amount of overdraw is bearable for a given use case or if it is too much for practical 
 use. \\
+\enlargethispage{\baselineskip}
 
 \noindent
 Although it is possible to handle multiple models without any changes to the pipeline, the limitation of a maximum 

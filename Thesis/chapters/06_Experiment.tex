@@ -185,6 +185,8 @@ various ways of sampling the data. Some data was measured while the profiled app
 other data was acquired by replaying the command list of the \ac{GPU}. Consequently, all measurements 
 referring to one aspect of the application were compared against measurements using the same tool and 
 configuration. \\
+\enlargethispage{\baselineskip}
+\enlargethispage{\baselineskip}
 
 \noindent
 For the collection of data output, \emph{RenderDoc} \cite{RenderDoc} was used. It is a free, MIT-licensed 
@@ -429,6 +431,7 @@ correct, as both are not significantly diverging. Nevertheless, there are small 
 especially when comparing both culling configurations to the base pipeline without culling enabled. Within the last 
 800 frames, the base pipeline seems to have had longer update times. The differences cannot be clearly attributed to 
 any difference in the pipelines since the code was identical for all measured configurations. \\
+\enlargethispage{\baselineskip}
 
 \noindent
 The \emph{Render()} function includes the rendering process, the dispatch of the depth prepass, and the drawing of the 
@@ -446,7 +449,12 @@ completely happens on the \ac{GPU} end of the pipeline.
 
 \subsubsection*{GPU Performance Results} \label{subsubsec-gpu-performance-results-lucy}
 
-\begin{figure}[!htbp]      % Lucy GPU Results
+\enlargethispage{\baselineskip}
+\enlargethispage{\baselineskip}
+\enlargethispage{\baselineskip}
+\enlargethispage{\baselineskip}
+
+\begin{figure}[h]      % Lucy GPU Results
   \centering
   \begin{tikzpicture}
     \begin{axis}[
@@ -504,6 +512,10 @@ completely happens on the \ac{GPU} end of the pipeline.
   copies the depth buffers content into the final \ac{HiZ} resource. Finally, \emph{Generate HiZ Pyramid} shows 
   the \ac{HiZ} creation, which is done sequentially.}
 \end{figure}
+
+
+
+\clearpage
 
 \noindent
 On the \ac{GPU}, the \ac{PMOC} turned out to be faster in computation. As the occlusion culling algorithm 
@@ -706,6 +718,7 @@ of the test animation, the occlusion culling pipelines performed better than the
 function. The differences might be caused by shorter \ac{GPU} times, but no final evaluation can be made in this case. 
 Ultimately, the \ac{CPU} times do not show clear differences that can be attributed to any particular difference in 
 the pipeline.
+\enlargethispage{\baselineskip}
 
 \subsubsection*{GPU Performance Results} \label{subsubsec-gpu-performance-results-bunny}
 
@@ -816,10 +829,13 @@ $85.5\%$ and $90.7\%$, respectively.
 \noindent
 Figure \ref{fig:bunny-overdraw} shows that the \ac{PONOC} had more overdrawn pixels than the 
 \ac{PMOC} configuration. The difference is in favor of \ac{PMOC}, which had only a maximum of 
-43 draws to the same pixels as compared to 60 draws. Without the culling activated, the maximum 
-amount of overdraw was measured to be 111 draws to the same pixel. The camera angle clearly made 
-a difference here, as the top view increased the amount of overdraw significantly. This is 
-especially visible on the surface of the model, where a lot of rounded edges are present. \\
+43 draws to the same pixels as compared to 60 draws. \\ 
+
+\noindent
+Without the culling activated, the maximum amount of overdraw was measured to be 111 draws to 
+the same pixel. The camera angle clearly made a difference here, as the top view increased the 
+amount of overdraw significantly. This is especially visible on the surface of the model, 
+where a lot of rounded edges are present. \\
 
 \noindent
 The images also show how the \ac{PONOC} produces more overdraw on the surface than the \ac{PMOC} 
@@ -906,6 +922,8 @@ better when the torus was viewed from an angle from which the hole in the middle
 The average number of visible voxels was 359,313 for \ac{PONOC} and 170,772 for \ac{PMOC}, while the number 
 of total voxels in the scene was 2,311,006. The average amount of visible octree nodes was 7,712 for \ac{PONOC} 
 and 4,768 for \ac{PMOC}. The number of total octree nodes in the scene was 39,794. \\
+\enlargethispage{\baselineskip}
+\enlargethispage{\baselineskip}
 
 \noindent
 The data suggests that the \emph{Torus} was able to be used for both occlusion culling configurations and benefitted 
@@ -969,7 +987,10 @@ Figure \ref{plt:torus-256-culling-cpu-time} shows that the \emph{Torus} showed v
 in both occlusion culling configurations. The measurements show small differences for the \emph{Render()} function 
 when comparing the base pipeline to the occlusion culling pipelines. The difference was only present in the first 300 
 frames of the animation, and it cannot be reliably attributed to any particular difference in the occlusion culling 
-algorithm. Comparing the \ac{PONOC} to the \ac{PMOC}, there are similar differences, which only occurred during a 
+algorithm. \\
+
+\noindent
+Comparing the \ac{PONOC} to the \ac{PMOC}, there are similar differences, which only occurred during a 
 short time of the test animation. Because these differences were not measurable over the whole test, both pipelines 
 are considered to be similar in \ac{CPU} time.
 
@@ -1226,6 +1247,8 @@ but this could not be reliably attributed to any of the differences in the measu
   \end{center}
 \end{figure}
 
+\clearpage
+
 \subsubsection*{GPU Performance Results} \label{subsubsec-gpu-performance-results-terrain}
 
 Figure \ref{fig:terrain-gpu-times} shows the time spent on the \ac{GPU} for the \emph{Terrain} scene.
@@ -1478,9 +1501,12 @@ camera angle in the scene.
 Figure \ref{plt:hairball-256-culling-cpu-time} shows the \ac{CPU} times during the test animation. During 
 the first 200 frames of the test animation, a difference is visible between the base pipeline without 
 occlusion culling and the two occlusion culling configurations. This difference is visible in both the 
-\emph{Update()} and the \emph{Render()} function frame time graphs. Neither variation could be attributed 
-to any pipeline characteristic and was therefore considered to be of no significance for the evaluation of 
-the occlusion culling algorithm.
+\emph{Update()} and the \emph{Render()} function frame time graphs.
+Neither variation could be attributed to any pipeline characteristic and was therefore considered to be of 
+no significance for the evaluation of the occlusion culling algorithm.
+
+\enlargethispage{\baselineskip}
+\enlargethispage{\baselineskip}
 
 \subsubsection*{GPU Performance Results} \label{subsubsec-gpu-performance-results-hairball}
 
@@ -1711,6 +1737,7 @@ by the \emph{Terrain} and \emph{Torus} scenes, which featured a similar amount o
 but showed significantly different average culling ratios. Ultimately, the culling ratio depended 
 on topology, voxel and best occluder counts, and model size. \\
 
+\clearpage
 
 \begin{figure}[!htb]    % GPU time overview
   \begin{center}
