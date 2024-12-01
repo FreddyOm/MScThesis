@@ -8,7 +8,7 @@ maintaining access to all core features, makes \emph{Diligent Engine} a good pla
 
 \noindent
 For the experiment, the mesh shading pipeline is enhanced to better fit the purpose of drawing a huge amount of voxels. 
-Also, the integrated meshlet-based view-frustum culling was altered to some degree so that it works on meshlet-groups 
+Also, the integrated meshlet-based view-frustum culling was altered to some degree so that it would work on meshlet-groups 
 rather than meshlets themselves. This change was made during the restructuring of the draw tasks. The updated pipeline 
 changes how meshes are dispatched because of the use of additional acceleration structures. This chapter provides 
 a detailed overview of the complete pipeline and how it works in particular. The full implementation details can be 
@@ -27,8 +27,8 @@ found in appendix \ref{cpt-appendix}.
 \clearpage
 
 \noindent
-The pipeline is split into an initialization routine and an update loop. The initialization is called once during 
-the beginning of the execution flow, and the render loop is initiated after the initialization is finished. Then, 
+The pipeline is split into an initialization routine and a rendering loop. The initialization is called once during 
+the beginning of the execution flow, and the rendering loop is initiated after the initialization is finished. Then, 
 the loop is called each frame. Figure \ref{fig:pipeline-initialization} shows the initialization procedure. 
 
 \subsection*{Voxel Model Loading} \label{subsec-voxel-model-loading}
@@ -98,6 +98,7 @@ compressed octree implementation like an \ac{SVO} or a Sparse Voxel \ac{DAG} \ci
 this work, a custom octree implementation is used, which refers to indices in the \emph{voxel position buffer}, 
 as shown in Figure \ref{fig:voxelpos-octreenode-buffer}. \\
 \enlargethispage{\baselineskip}
+\enlargethispage{\baselineskip}
 
 \begin{figure}[h]
     \centering
@@ -142,7 +143,7 @@ voxels present within the respective node is equal to the maximum number of voxe
 nodes can be considered a best occluder because their shape can be approximated. If the node is not completely filled 
 or has holes in it, the approximation will not work. This property of a best occluder is propagated up the tree, as 
 long as all eight child nodes satisfy the requirements of being a best occluder. Figure 
-\ref{fig:octreenode-filled-non-filled} shows three possible leaf nodes. 
+\ref{fig:octreenode-filled-non-filled} shows four possible leaf nodes. 
 
 \begin{figure}[h]
     \centering
@@ -200,29 +201,32 @@ The frame computation starts with the depth prepass, which is the custom render 
 occlusion culling. In this pass, a compute shader is invoked that takes the best occluders and draws 
 them to the depth buffer. This depth pass does not draw to the back buffer, making the computation 
 relatively efficient. To get a better understanding of what this means, Figure \ref{fig:best-occluder-viz} 
-shows the best occluders. Note that the best occluders in this visualization are not hierarchically 
-aggregated, which results in a slightly different visual result than what the actual depth buffer shows. 
+shows the best occluders. \\
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=200px]{images/graphics/lucy-best-occluders-viz.jpg}
-    \includegraphics[width=200px]{images/graphics/lucy-best-occluders-diff-viz.jpg}
-    \caption{A visualization of the best occluders (left) and the best occluders blended with a silhouette 
-    of the whole voxel model (right). Each color represents one octree node, which is considered to be a best occluder.
-    The best occluders describe the non-visible core of the model and can be aggregated and used to occlude 
-    many non-visible voxels during rendering.}
+    \includegraphics[width=180px]{images/graphics/lucy-best-occluders-viz.jpg}
+    \includegraphics[width=180px]{images/graphics/lucy-best-occluders-diff-viz.jpg}
+    \caption{A visualization of the \emph{Lucy} model (left) and the best occluders blended with a silhouette 
+    of the whole voxel model (right). Each color represents one octree node. The best occluders describe the 
+    non-visible core of the model and can be aggregated and used to occlude many non-visible voxels during 
+    rendering.}
     \label{fig:best-occluder-viz}
 \end{figure}
+\enlargethispage{\baselineskip}
+\enlargethispage{\baselineskip}
 
 \subsection*{HiZ Generation} \label{subsec-highz-generation}
 
-\begin{figure}[!htb]
+\begin{figure}[h]
     \centering
     \includegraphics[width=\linewidth]{images/graphics/lucy-hiz-pyramid-inverted.jpg}
     \caption{The \ac{HiZ} pyramid featuring the full-resolution depth buffer as well as the individual mip map 
     levels. The color representation was inverted for better visualization.}
     \label{fig:lucy-hiz-pyramid}
 \end{figure}
+
+\clearpage
 
 \noindent
 After drawing the best occluders to the depth buffer, it is copied into the \ac{HiZ} texture resource. Subsequently, 
@@ -285,12 +289,6 @@ measurements in order to find out which approach works best under the given circ
 
 \subsection*{Visibility Computation} \label{subsec-visibility-computation}
 
-The task shader is used to pre-select and pre-process the scheduled geometry data, which in this case is just 
-the position of an individual octree node and all the voxels inside of the node. This precomputational step is 
-used for visibility checking, i.e., view frustum culling and occlusion culling. Since the task shader is based 
-on the compute architecture, this pipeline step is realized using a standard compute-like code structure. \\
-\enlargethispage{\baselineskip}
-
 \begin{figure}[!htb]
     \centering
     \includegraphics[width=\linewidth]{images/graphics/screen_space_occlusion_test.jpg}
@@ -300,12 +298,22 @@ on the compute architecture, this pipeline step is realized using a standard com
     representation of the octree nodes screen space occupancy (right).}
     \label{fig:screen-space-occlusion-test}
 \end{figure}
+\enlargethispage{\baselineskip}
+
+\noindent
+The task shader is used to pre-select and pre-process the scheduled geometry data, which in this case is just 
+the position of an individual octree node and all the voxels inside of the node. This precomputational step is 
+used for visibility checking, i.e., view frustum culling and occlusion culling. Since the task shader is based 
+on the compute architecture, this pipeline step is realized using a standard compute-like code structure. \\
 
 \noindent
 To check for visibility, projected bounding boxes need to be constructed and checked against the 
 \ac{HiZ} pyramid. This step can be highly parallelized by using one \ac{GPU} thread per bounding box 
 calculation. The first step involves the projection of the bounding box onto the view plane, which results 
-in a clip-space representation of the data. This early projection is done for all eight vertices of the 
+in a clip-space representation of the data. \\
+
+\noindent
+This early projection is done for all eight vertices of the 
 bounding box, so the \emph{min} and \emph{max} values on each axis can be calculated to end up with clip space, 
 and eventually with screen space coordinates. The \emph{min} and \emph{max} values for each axis represent 
 a screen-space rectangle, which can be used for the depth test. The rectangle has the following characteristics:
@@ -333,7 +341,6 @@ this process is shown in Figure \ref{fig:screen-space-occlusion-test}. \\
     \label{fig:visibility-hiz-sampling}
 \end{figure}
 
-
 \noindent
 Now the hierarchy is traversed until the node is found to be fully occluded or until the hierarchy is fully traversed 
 and the node is found to be visible. Note that the area that is checked is not perfectly congruent with the actual 
@@ -346,6 +353,7 @@ The complete occlusion culling routine computes the bounding box corners as \emp
 from the mip level, which the depth values are checked against. In the best case, the visibility can be determined by 
 using the coarsest mip level. In the worst case, all mip levels up to the full resolution depth buffer need to be checked.
 The routine is shown in Listing \ref{lst:occlusion-culling-algo} as pseudocode.
+\enlargethispage{\baselineskip}
 
 \vspace{0.5cm}
 

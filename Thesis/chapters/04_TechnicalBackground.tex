@@ -126,6 +126,8 @@ Although voxel physics are not tested in this work, it is of great interest to e
 in terms of compatibility with real-time interactions or physics simulations. The performance of the proposed 
 concept under dynamic conditions needs to be tested in future experiments to see if it can support such complex 
 behavior.
+\enlargethispage{\baselineskip}
+\enlargethispage{\baselineskip}
 
 \section{Culling Techniques} \label{sec-culling-techniques}
 
@@ -148,7 +150,7 @@ common process in real-time rendering, because "the fastest triangle to render i
 \end{figure}
 
 \noindent
-\emph{View Frustum Culling} is a technique that aims to remove instances, i.e. meshes that are outside of the camera 
+\emph{View Frustum Culling} is a technique that aims to remove instances, i.e., meshes that are outside of the camera 
 view frustum. This leads to the skipping of all instances that are completely invisible due to their location relative to 
 the camera. Said instances can thus be safely ignored and discarded early in order to keep the memory occupation low. 
 Figure \ref{fig:view-frustum-culling} shows how the view frustum might look in relation to the scene. 
@@ -241,11 +243,11 @@ texel group value, it is consequently occluded. If the comparison yields the opp
 recursively down the \ac{HiZ} pyramid until the [bounding volume] is found to be occluded, or until the bottom level of the 
 \ac{HiZ} pyramid is reached, at which point the box is known to be visible" \cite{AkenineMoeller2018}. Visible octree nodes 
 are then drawn to the depth buffer, meaning all the geometry contained within the node is drawn to the depth buffer 
-for testing against during the computation of the following octree nodes.\\
+serving as occluders for the computation of the following octree nodes.\\
 
 \noindent
 This works because the \ac{HiZ} pyramid encodes the closest object's depth for each pixel, and, by hierarchically 
-aggregating the depth values, approximating the depth for larger and larger groups of pixels. Checking bounding boxes 
+aggregating the depth values, approximates the depth for larger and larger groups of pixels. Checking bounding boxes 
 against the lowest resolution mip-map in the \ac{HiZ} pyramid requires fewer samples than checking the same bounding 
 box against a higher resolution mip-map. Consequently, objects that are relatively far behind a potential occluder 
 can be determined very efficiently. \\
@@ -265,7 +267,7 @@ leveraged on the \ac{GPU} side for efficient occlusion culling.
     \includegraphics[width=200px]{images/graphics/depth-buffer-ac-unity.jpg}
     \includegraphics[width=200px]{images/graphics/final-frame-ac-unity.jpg}
     \caption{The depth buffer (left) and the final back buffer (right) of \emph{Assassin's Creed Unity} (\emph{Ubisoft}, 2014 \cite{Ubisoft2014}). 
-    The hand-picked \emph{best occluders} were already drawn to the depth buffer in a depth pre-pass.
+    The hand-picked \emph{best occluders} were already drawn to the depth buffer in a depth prepass.
     While rendering all the geometry to the back buffer, each instance can be checked against the \ac{HiZ} pyramid \cite{Kruskonja2022}.}
     \label{fig:depth-buffer-ac-unity}
 \end{figure}
@@ -283,8 +285,8 @@ Some use cases are especially well suited for the application of occlusion culli
 example, has a large open world in a city with many large buildings. A rather large amount of instances can therefore be 
 expected to be occluded by some of the buildings at any given moment. \emph{Assassin's Creed Unity's} \ac{TPOC} 
 implementation uses artist-picked \emph{best occluders} for \ac{HZB} computation. During runtime, the best occluders are 
-drawn to the depth buffer in a dedicated depth pre-pass and then used as described in the next section. 
-The output of the depth buffer pre-pass is shown in Figure \ref{fig:depth-buffer-ac-unity}. Depth passes can be done 
+drawn to the depth buffer in a dedicated depth prepass and then used as described in the next section. 
+The output of the depth buffer prepass is shown in Figure \ref{fig:depth-buffer-ac-unity}. Depth passes can be done 
 quite efficiently, especially if they only contain a handful of instances to draw. Additionally, because of the advances 
 in \ac{GPU}-driven rendering, the \ac{HiZ} pyramid can be computed by a \emph{compute shader}, which leverages the 
 highly parallel computation capabilities of the \ac{GPU}. \\
@@ -405,9 +407,9 @@ Although the mesh shading pipeline was first introduced in 2018, the idea of tri
 Aaltonen et al. \cite{Aaltonen2015} provide an overview of multiple cluster-related optimization techniques, implementing 
 a highly parallelized rendering pipeline before mesh shading became part of the official rendering \ac{API}s.
 For their \ac{GPU} culling algorithms, they refer to the prior work of Hill \cite{Hill11} and Greene \cite{Greene93}, which 
-provides the basis for some of the implementation in this work's approach. Most of the culling algorithms discussed in chapter 
-\ref{sec-culling-techniques} can be adopted to use meshlet culling. The algorithms can usually be applied to triangle clusters 
-without the need to change a lot of the algorithm. Bounding volumes can be calculated for meshlets, too, and meshlets do also 
+also provides the basis for some of the implementation in this work's approach. Many culling algorithms can be adopted to 
+use meshlet culling. The algorithms can usually be applied to triangle clusters without the need to change a lot of the 
+core behaviour. Bounding volumes can be calculated for meshlets, too, and meshlets do also 
 consist of triangles themselves. In the following, the basic culling algorithms are briefly revisited in order to show how they 
 can be adapted for the mesh shading pipeline.
 
