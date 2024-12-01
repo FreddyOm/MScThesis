@@ -652,7 +652,12 @@ nodes in the scene was 57,481. \\
 \noindent
 The measurements show that the \emph{Stanford Bunny} considerably benefitted from both occlusion 
 culling configurations, and the most significant reduction of visible voxels resulted from the use 
-of \ac{PMOC}. The average culling ratio was $88.6\%$ for the \ac{PONOC} and $94.6\%$ for the 
+of \ac{PMOC}. \\
+\enlargethispage{\baselineskip}
+\enlargethispage{\baselineskip}
+
+\noindent
+The average culling ratio was $88.6\%$ for the \ac{PONOC} and $94.6\%$ for the 
 \ac{PMOC}. For \ac{PONOC}, the number of visible voxels diverged by a maximum of $30.88\%$ from 
 the average value, and by $23.01\%$ for \ac{PMOC}. For the visible octree nodes, the variations were 
 $24.61\%$ for \ac{PONOC} and $39.78\%$ for \ac{PMOC}.
@@ -790,6 +795,8 @@ is 1.6 microseconds, mostly due to differences in \ac{HiZ} dispatch and depth bu
 \noindent
 Both culling configurations decreased the time spent on the \ac{GPU} compared to the base pipeline by 
 $85.5\%$ and $90.7\%$, respectively.
+
+\clearpage
 
 \subsubsection*{Overdraw} \label{subsubsec-overdraw-bunny}
 
@@ -1067,7 +1074,7 @@ $83.0\%$ and $89.3\%$, respectively.
 
 \subsubsection*{Overdraw}
 
-\begin{figure}[!htbp]
+\begin{figure}[!htb]
   \centering
   \includegraphics[height=100px]{images/graphics/overdraw-torus1-nocull.png}
   \includegraphics[height=100px]{images/graphics/overdraw-torus1-pooc.png}
@@ -1256,7 +1263,6 @@ The complete time spent on the \ac{GPU} was decreased by $55.4\%$ using the \ac{
 $74.1\%$ using the \ac{PMOC} as compared to the base pipeline without occlusion culling. The depth 
 prepass didn't change significantly between both culling configurations. \\
 
-
 \begin{figure}[!htb]
   \centering
   \begin{tikzpicture}
@@ -1315,6 +1321,8 @@ prepass didn't change significantly between both culling configurations. \\
   Finally, \emph{Generate HiZ Pyramid} shows the \ac{HiZ} creation, which is done sequentially.}
   \label{fig:terrain-gpu-times}
 \end{figure}
+
+\clearpage
 
 \subsubsection*{Overdraw}
 
