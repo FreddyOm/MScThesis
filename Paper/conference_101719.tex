@@ -17,7 +17,7 @@
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 \begin{document}
 
-\title{Two-Pass Occlusion Culling for Voxel-Based Volumetric Rendering\\}
+\title{Two-Pass Occlusion Culling for Dynamic Voxel Scenes based on Hierarchical Z-Buffering\\}
 
 \author{
     
@@ -29,14 +29,14 @@
     *Corresponding author
     ~\\
     \and
-    \IEEEauthorblockN{2\textsuperscript{nd} Prof. Dr. Stefan Radicke}
+    \IEEEauthorblockN{2\textsuperscript{nd} Stefan Radicke}
     \IEEEauthorblockA{\textit{Department of Computer Science} \\
     \textit{Media University Stuttgart}\\
     Stuttgart, Germany \\
     radicke@hdm-stuttgart.de}
     ~\\
     \and
-\IEEEauthorblockN{3\textsuperscript{rd} Dr. Andreas Stiegler}
+\IEEEauthorblockN{3\textsuperscript{rd} Andreas Stiegler}
 \IEEEauthorblockA{\textit{Research and Development} \\
 \textit{Strichpunkt Design}\\
 Stuttgart, Germany \\
@@ -52,22 +52,27 @@ lorin.atzberger@gmail.com}
 
 \maketitle
 
+% @TODO: 
+%   - Add section from below
+%   - Make sure abreviations are consistently used and are explained both in the abstract AND in the paper itself
+%   - Add performance numbers
+
+
 \begin{abstract}
-    The Hierarchical Z-Buffering algorithm has recently gained popularity due to its ability to 
-    efficiently cull occluded geometry using a GPU-driven approach. This algorithm has not been 
-    available in its original form for voxel-based volumetric rendering. Here we present a 
-    GPU-driven approach to hierarchical z-buffering for voxel-based volumetric scenes by 
-    approximating the scene's volume with larger geometry. The approach uses an octree to 
-    efficiently schedule voxel data with respect to their spatial characteristics and replaces 
-    full octree nodes with larger geometry for fast computation of the hierarchical z-buffer. 
-    This not only allows the application of hierarchical z-buffering to a dynamic voxel scene, 
-    but also results in a performance increase compared to a rendering pipeline without occlusion 
-    culling. We show that the use of the modern mesh shading pipeline improves computations and 
-    leads to even better culling efficiency and overall performance.
+    We present \ac{TPOC} for dynamic voxel scenes based on \ac{HZB}, which is a \ac{GPU}-driven 
+    approach to \ac{HZB} that uses larger geometry as an approximation of the scene's volume. 
+    The \ac{HZB} algorithm has recently gained popularity due to its ability to efficiently cull 
+    occluded geometry using a \ac{GPU}-driven approach. This algorithm has not been available in 
+    its original form for dynamic voxel-based scenes. The approach uses an octree to efficiently 
+    schedule voxel data with respect to their spatial characteristics and replaces full octree nodes 
+    with larger geometry for fast computation of the \ac{HZB}. This not only allows the application 
+    of \ac{HZB} to a dynamic voxel scene, but also results in increased performance compared to a 
+    rendering pipeline without occlusion culling. We show that the use of the modern mesh shading 
+    pipeline improves computations and leads to even better culling efficiency and overall performance.
 \end{abstract}
 
 \begin{IEEEkeywords}
-occlusion culling, hierarchical Z-Buffering, voxel rendering, mesh shading
+occlusion culling, hierarchical z-buffering, voxel rendering, mesh shading
 \end{IEEEkeywords}
 
 \section{Introduction}
@@ -87,15 +92,15 @@ GPUs has been upgraded to support features like ray-traced ambient occlusion, sh
 and global illumination. However, the rasterized approach to voxel rendering hasn't been 
 very present in the entertainment industry, although the rasterized rendering pipeline has 
 been upgraded significantly over the last decade. A central overhaul is the mesh shading 
-pipeline, which has been introduced to GPUs in 2018. It features a new way of preprocessing 
-vertices using a more general compute architecture, which allows for more efficient GPU 
+pipeline, which has been introduced to \ac{GPU}s in 2018. It features a new way of preprocessing 
+vertices using a more general compute architecture, which allows for more efficient \ac{GPU} 
 computations. \\
 
 \noindent
 Recent games made use of \ac{HZB} in combination with the mesh shading pipeline to efficiently 
 cull mesh instances and even invisible parts of meshes. While the original algorithm by Greene 
-et al. \cite{b1} was intended to be used on the CPU, modern applications of \ac{HZB} are implemented 
-as GPU-driven occlusion culling techniques, which have been a driving factor for the recent increase 
+et al. \cite{b1} was intended to be used on the \ac{CPU}, modern applications of \ac{HZB} are implemented 
+as \ac{GPU}-driven occlusion culling techniques, which have been a driving factor for the recent increase 
 in geometrical density. The approach is heavily reliant on the presence of large, static occluder 
 geometry, which makes it inefficient to be used in voxelized scenes in the form it has been so far. \\
 
@@ -105,13 +110,13 @@ that the use of the mesh shading pipeline in combination with a \ac{SVO} can ada
 efficiently occlude a significant number of voxels, which results in an overall performance increase.
 The term volumetric voxel scene refers to a scene that not only approximates the surface by using 
 voxels but also includes a voxel-based volume that might be exposed or altered during runtime. 
-A great amount of the algorithm relies on GPU-driven computations, which allow for millions of 
+A great amount of the algorithm relies on \ac{GPU}-driven computations, which allow for millions of 
 voxels to be drawn efficiently. \\
 
 \noindent
 Our technique is based on the assumption that a vast amount of voxels within and behind a given 
 part of the scene is occluded by some other voxels in the same scene. The technique approximates 
-the non-visible volume within a voxel scene and uses it as an occluder for GPU-based \ac{HZB}. 
+the non-visible volume within a voxel scene and uses it as an occluder for \ac{GPU}-based \ac{HZB}. 
 We have implemented and tested the algorithm in two different configurations to consider both 
 per-octree node occlusion culling and per-meshlet occlusion culling. Both configurations have 
 been tested to provide insights into the performance differences and the constraints of the 
@@ -124,9 +129,9 @@ approach.
 \noindent
 Laine and Karras \cite{b6} analyze and implement a variation of the base Sparse Voxel Octree
 approach for efficiently ray tracing voxel models. In their work, contours are used to
-approximate octree nodes within a sparse voxel octree (SVO). If the octree node is found
+approximate octree nodes within a \ac{SVO}. If the octree node is found
 to be approximated good enough, the subdivision to deeper levels in the octree node is
-terminated. This way, SVOs can be significantly reduced in size, which benefits the memory 
+terminated. This way, \ac{SVO}s can be significantly reduced in size, which benefits the memory 
 footprint of the application and aims to increase real-time raytracing performance. \\
 
 \noindent
@@ -143,7 +148,7 @@ eliminating redundant parts of the hierarchy and reducing the amount of used mem
 \noindent
 Greene et al. \cite{b1} proposed the first \ac{HZB} algorithm with the capability to use 
 screen space data to cull meshes in large and densely populated scenes. The idea originated 
-in the context of a forward-rendered pipeline, making use of the CPU for culling instances. 
+in the context of a forward-rendered pipeline, making use of the \ac{CPU} for culling instances. 
 They propose to use a spatial container like an octree to enable drawing the scene in a rough 
 front-to-back order. Each mesh is individually drawn to a depth buffer resource, starting with 
 an empty one in the beginning and populating it as more meshes are drawn. The buffer resource 
@@ -154,17 +159,17 @@ far objects, resulting in an efficient way to reject invisible meshes. \\
 
 \noindent
 Hasselgren et al. \cite{b3} present a novel way of implementing occlusion culling relying on hardware 
-occlusion queries while optimizing the queries using CPU \ac{SIMD} acceleration. The basic algorithm 
-is very similar to common CPU- or GPU-computed \ac{HZB}, with two major alterations to the implementation. 
+occlusion queries while optimizing the queries using \ac{CPU} \ac{SIMD} acceleration. The basic algorithm 
+is very similar to common \ac{CPU}- or \ac{GPU}-computed \ac{HZB}, with two major alterations to the implementation. 
 First, they make use of Intel's \ac{AVX} to compute depth values for tiles of 256 texels in parallel. 
 The second difference is the way they store depth and coverage data. In contrast to a "traditional" 
-\ac{HiZ} mip-chain, Hasselgren et al. decouple depth and coverage data by storing a coverage mask for 
-$32 \times 8$ pixel tiles, which can be efficiently computed by using the \ac{AVX} of Intel CPUs. In 
+\ac{HZB} mip-chain, Hasselgren et al. decouple depth and coverage data by storing a coverage mask for 
+$32 \times 8$ pixel tiles, which can be efficiently computed by using the \ac{AVX} of Intel \ac{CPU}s. In 
 their results, they show that their implementation is up to 3 times faster than previous occlusion 
 culling algorithms while also providing a lower memory footprint. \\
 
 \noindent
-Aaltonen et al. \cite{b4} present a GPU-driven technique involving both \ac{HZB} and depth reprojection. 
+Aaltonen et al. \cite{b4} present a \ac{GPU}-driven technique involving both \ac{HZB} and depth reprojection. 
 Both make for a good occlusion culling technique in games with large occluders or interiors. First, 
 artist-picked best occluders are drawn to the depth buffer in a depth pre-pass. Then, projected bounding
 boxes can be used to test the visibility of smaller objects in the scene. A hierarchical z-buffer is 
@@ -176,14 +181,14 @@ to push for huge draw distances and densely crowded environments.
 
 \noindent
 In the past, the \ac{HZB} algorithm proposed by Greene et al. \cite{b1} has been slightly 
-adapted for use on the GPU. During the rendering routine, a small set of best occluders is 
+adapted for use on the \ac{GPU}. During the rendering routine, a small set of best occluders is 
 drawn to the depth buffer during a depth prepass, without invoking the pixel shader. This 
-depth information is subsequently converted into a \ac{HiZ} pyramid, which is a mip chain 
+depth information is subsequently converted into a \ac{HZB} pyramid, which is a mip chain 
 containing the depth information for increasingly large parts of the screen space per texel. \\
 
 \noindent
 In the final color pass, a bounding box is computed for each mesh instance, which in turn is used 
-to sample the depth values stored in the \ac{HiZ} pyramid. This depth information is taken into 
+to sample the depth values stored in the \ac{HZB} pyramid. This depth information is taken into 
 account for a conservative visibility check, and non-visible instances are omitted, while visible 
 instances are being drawn.
 
@@ -191,9 +196,9 @@ instances are being drawn.
 
 \noindent
 Our approach uses a point cloud generated by voxelizing triangle meshes using \emph{bivox} \cite{b5}, 
-which is stored as a position list, consumable by the GPU. A second data structure is necessary for 
+which is stored as a position list, consumable by the \ac{GPU}. A second data structure is necessary for 
 spatial computation, so voxels can be efficiently approximated by larger geometry. We chose a custom 
-\ac{SVO} implementation that can easily be transferred to the GPU. \\
+\ac{SVO} implementation that can easily be transferred to the \ac{GPU}. \\
 
 \noindent
 Different structures that are also compatible with our implementation were considered, such as 
@@ -202,7 +207,7 @@ proposed by Kämpe et al. \cite{b2}. Nevertheless, we chose a more verbose and e
 reasons of simplicity. \\ 
 
 \noindent
-The data structures are bound to the GPU pipeline and can be updated as needed. Updating the scene data 
+The data structures are bound to the \ac{GPU} pipeline and can be updated as needed. Updating the scene data 
 involves updating the voxel list and recomputing the best occluders. Recurring real-time updates to the 
 scene were not part of our measurements.
 
@@ -227,7 +232,7 @@ occluders, a buffer of octree nodes is used, which contains a list of the best o
 \noindent
 To compute a best occluder, the property of a full node is recursively propagated upwards within the hierarchy, 
 so the largest possible octree node, which is completely filled with voxels is used as an approximation for 
-all the contained voxels. All best occluder nodes are then added to a buffer that can be sent to the GPU for 
+all the contained voxels. All best occluder nodes are then added to a buffer that can be sent to the \ac{GPU} for 
 use in the depth prepass. \\
 
 \noindent
@@ -260,23 +265,23 @@ not draw to the back buffer, making the computation relatively efficient. \\
 
 \noindent
 After the depth buffer is created, it is used to create a mip chain containing the depth 
-data from the depth buffer, the \ac{HiZ} pyramid. To create the mip chain, the full-resolution 
+data from the depth buffer, the \ac{HZB} pyramid. To create the mip chain, the full-resolution 
 depth buffer is processed by a compute shader, which calculates the farthest depth value out 
 of four texels and outputs it to the next higher mip level. The resulting mip chain consequently 
 contains a coverage of differently sized screen-space quads with the respective farthest depth 
 value. The mip chain is subsequently used in the task shader (amplification shader) during the 
-occlusion culling. Fig.~\ref{fig:hiz-pyramid-viz} shows an exemplary \ac{HiZ} pyramid.
+occlusion culling. Fig.~\ref{fig:hzb-pyramid-viz} shows an exemplary \ac{HZB} pyramid.
 
 \begin{figure}
     \includegraphics[width=\linewidth]{images/hiz-pyramid.png}
-    \caption{The \ac{HiZ} pyramid of the \emph{Bunny} scene.}
-    \label{fig:hiz-pyramid-viz}
+    \caption{The \ac{HZB} pyramid of the \emph{Bunny} scene.}
+    \label{fig:hzb-pyramid-viz}
 \end{figure}
 
 \section{Occlusion Culling} \label{sec-occlusion-culling}
 
 \noindent
-For the main rendering pass, we propose generating the voxels directly on the GPU, since this 
+For the main rendering pass, we propose generating the voxels directly on the \ac{GPU}, since this 
 guarantuees fast processing of geometry and allows to create meshlets without precomputation.
 Consequently, our implementation treats each voxel as one meshlet. \\
 
@@ -288,9 +293,9 @@ around each point of the point cloud, which are then projected to screen space. 
 a two-dimensional screen-space rectangle is constructed around the bounding box using the minimum 
 and maximum values on the \emph{y} and \emph{z} axes. Additionally, the minimum \emph{z} value of 
 the bounding box is computed and stored alongside the \emph{y} and \emph{z} values. Using these 
-coordinates, the four corners of the bounding boxes are sampled from the \ac{HiZ} pyramid, and the 
+coordinates, the four corners of the bounding boxes are sampled from the \ac{HZB} pyramid, and the 
 resulting depth values are compared against the minimum \emph{z} value. If either of the 
-\ac{HiZ} pyramid samples is further away from the camera than the minimum \emph{z} value, the current 
+\ac{HZB} pyramid samples is further away from the camera than the minimum \emph{z} value, the current 
 voxel might be completely or partially visible. Conversely, as long as all samples are nearer to 
 the camera than the minimum \emph{z} value, the voxel can safely be assumed to be occluded. This 
 sampling starts using the highest mip level and continues down the mip chain until the voxel is 
@@ -340,7 +345,7 @@ which made the pipelines comparable again.\\
 
 \noindent
 We will evaluate the two occlusion culling configurations (per-octree node and per-meshlet) with respect 
-to culling efficiency, CPU runtime performance, GPU runtime performance, and pixel overdraw. We use five 
+to culling efficiency, \ac{CPU} runtime performance, \ac{GPU} runtime performance, and pixel overdraw. We use five 
 test scenes featuring different geometrical characteristics, shown in Fig.~\ref{fig:models}. 
 
 
@@ -392,7 +397,7 @@ The results suggest that the query can be used in realtime applications, as most
 within reasonable time budgets for computation, if 16.6 ms is used as a reference time for one frame. However, 
 the measurements were executed on a single thread, and the computation was not optimized thoroughly. The 
 duration is expected to be optimized further by chunking the data to limit the size and the amount of octree 
-nodes, as well as by applying multi-threaded computations, e.g., computing each chunk in parallel on the CPU.
+nodes, as well as by applying multi-threaded computations, e.g., computing each chunk in parallel on the \ac{CPU}.
 
 \subsection{Culling Efficiency} \label{subsec-culling-efficiency}
 
@@ -430,7 +435,7 @@ of large, tight geometry and is challenged by smaller details, large empty space
 \subsection{CPU Performance} \label{subsec-cou-performance}
 
 \begin{table}[htbp]
-    \caption{Average CPU performance using different occlusion culling configurations.}
+    \caption{Average \ac{CPU} performance using different occlusion culling configurations.}
     \begin{center}
         \begin{tabular}{|c|c|c|c|}
             \hline
@@ -447,28 +452,28 @@ of large, tight geometry and is challenged by smaller details, large empty space
 \end{table}
 
 \noindent
-The average CPU time over the course of a standardized test animation using our implementation is 
+The average \ac{CPU} time over the course of a standardized test animation using our implementation is 
 shown in Fig.~\ref{tab:cpu-performance}. It was measured for each scene and combined to a total 
-average value using an AMD Ryzen 9 9950X CPU. This was done for each culling configuration to 
+average value using an AMD Ryzen 9 9950X \ac{CPU}. This was done for each culling configuration to 
 evaluate the difference in runtime performance for the \emph{Update()} and \emph{Render} functions 
 of the application. \\
 
 \noindent
-The table shows that the average CPU performance does not change significantly between the different 
-culling configurations. This is due to the GPU-driven nature of the algorithm, which results in a 
-low memory bandwidth between CPU and GPU. Most of the work is executed on the GPU and the CPU 
+The table shows that the average \ac{CPU} performance does not change significantly between the different 
+culling configurations. This is due to the \ac{GPU}-driven nature of the algorithm, which results in a 
+low memory bandwidth between \ac{CPU} and \ac{GPU}. Most of the work is executed on the \ac{GPU} and the \ac{CPU} 
 implementations do not change considerably between the per-octree node occlusion culling and the 
 per-meshlet occlusion culling configuration. \\
 
 \noindent
 The small changes that are visible in the \emph{Render()} function measurements are attributed to 
-the GPU performance differences presented below. The changes in the \emph{Update()} function 
+the \ac{GPU} performance differences presented below. The changes in the \emph{Update()} function 
 measurements cannot be reliably attributed to any change in the pipeline setup.
 
 \subsection{GPU Performance} \label{subsec-gpu-performance}
 
 \noindent
-The GPU performance shown in Fig.~\ref{fig:gpu-performance-full} was measured on a NVIDIA GeForce RTX 4090 
+The \ac{GPU} performance shown in Fig.~\ref{fig:gpu-performance-full} was measured on a NVIDIA GeForce RTX 4090 
 for each scene and each culling configuration. The average measurements indicate a significant performance 
 increase in every scenario. The greatest average increase was measured using the \emph{Bunny} scene, which 
 featured a large volume and a high number of voxels. Those characteristics seem to work in favor of the 
@@ -497,7 +502,7 @@ to be full. \\
         \end{axis}
         \end{tikzpicture}
     \end{center}
-    \caption{The average GPU performance measured for each scene, using both the per-octree node occlusion culling 
+    \caption{The average \ac{GPU} performance measured for each scene, using both the per-octree node occlusion culling 
     configuration and the per-meshlet occlusion culling configuration.}
     \label{fig:gpu-performance-full}
 \end{figure}
@@ -508,7 +513,7 @@ computation time for both configurations, as it scales with the screen resolutio
 resolution of $1280 \times 900$ for all measurements. This means that the overhead of the algorithm scales 
 with screen resolution and the number of the best occluders drawn during the prepass. 
 Fig.~\ref{fig:gpu-performance-prepass} shows that both tested configurations perform similarly during the 
-depth prepass and that both the copy and the generation of the \ac{HiZ} are relatively static in this testing 
+depth prepass and that both the copy and the generation of the \ac{HZB} are relatively static in this testing 
 scenario. Only the drawing of the best occluders varies significantly for different scenes, as the amount of 
 best occluders changes from one scene to another. \\
 
@@ -538,11 +543,11 @@ best occluders changes from one scene to another. \\
             \addplot[brown, mark=diamond] coordinates {(Lucy,35.26) (Bunny,34.29) (Torus,34.05) (Terrain,33.66) (Hairball,33.87)};
 
 
-            \legend{Draw Best Occluders, Copy Depth Buffer, Generate \ac{HiZ}, Draw Best Occluders, Copy Depth Buffer, Generate \ac{HiZ}}
+            \legend{Draw Best Occluders, Copy Depth Buffer, Generate \ac{HZB}, Draw Best Occluders, Copy Depth Buffer, Generate \ac{HZB}}
         \end{axis}
         \end{tikzpicture}
     \end{center}
-    \caption{The depth prepass timings measured on the GPU. The dashed lines refer to the per-octree node occlusion culling 
+    \caption{The depth prepass timings measured on the \ac{GPU}. The dashed lines refer to the per-octree node occlusion culling 
     configuration and the solid lines refer to the per-meshlet occlusion culling configuration.}
     \label{fig:gpu-performance-prepass}
 \end{figure}
@@ -619,7 +624,7 @@ modern mesh shading pipeline considerably increases culling efficiency and, ulti
 The increase in performance compared to the base pipeline without occlusion culling ranged from $61.3 \%$ for 
 the \emph{Hairball} scene up to $90.7 \%$ for the \emph{Bunny} scene. The measurements showed that the modern 
 mesh shading pipeline allows for a more granular culling of voxels and outperforms the compared per-octree 
-node occlusion culling by an average of $29 \%$ in terms of time spent on the GPU. \\
+node occlusion culling by an average of $29 \%$ in terms of time spent on the \ac{GPU}. \\
 
 \noindent
 We conclude that the algorithm can successfully be applied to dense voxel scenes, which feature large, dense 
@@ -635,7 +640,7 @@ determined during runtime, instead of being manually picked beforehand.
 
 \noindent
 The dynamic update needs to be tested thoroughly to evaluate the capability of the algorithm to handle updating 
-larger scenes while also providing reasonable budget for other CPU operations. The determination of the best 
+larger scenes while also providing reasonable budget for other \ac{CPU} operations. The determination of the best 
 occluders could potentially be optimized further by introducing multi-threading. One approach might be to 
 compute the best occluders for the first eight child nodes in the hierarchy in parallel and to combine the results 
 afterwards. \\
@@ -661,12 +666,17 @@ Nvidia Research for \emph{Hairball}, the Stanford 3D Scanning Repository for \em
 and \emph{Stanford Bunny}, Patrick Min for \emph{binvox}.
 
 \begin{acronym}[SPS] % longest acronym in [...] for spacing
-    \acro{HiZ}{hierarchical z}
-    \acro{HZB}{hierarchical z-buffering}
-    \acro{SVO}{sparse voxel octree}
-    \acro{DAG}{directed acyclic graph}
     \acro{AVX}{advanced vector extensions}
+    \acro{CPU}{central processing unit}
+    \acro{DAG}{directed acyclic graph}
+    \acro{GPU}{graphics processing unit}
+    \acro{HZB}{hierarchical z-buffering}
+    \acro{PM}{per-meshlet}
     \acro{SIMD}{single instruction multiple data}
+    \acro{SVO}{sparse voxel octree}
+    \acro{TPOC}{two-pass occlusion culling}
+    \acro{TPOC-PM}{two-pass occlusion culling - per-meshlet}
+
     % acrodefplural, wenn eine Pluralform benötigt wird (Standard: angehängtes "s" aus dem Englischen)
     % \acrodefplural{acroKey}[plural short]{plural long}
 \end{acronym}
