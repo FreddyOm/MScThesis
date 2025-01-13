@@ -23,3 +23,19 @@ Thesis/images/*.pdf
 *(busy)
 Paper/conference_101719.pdf
 Paper/IEEEtran_HOWTO.pdf
+
+# Paper
+Paper/conference_101719.aux
+Paper/conference_101719.bbl
+Paper/conference_101719.bcf
+Paper/conference_101719.blg
+Paper/conference_101719.fdb_latexmk
+Paper/conference_101719.fls
+Paper/conference_101719.lof
+Paper/conference_101719.log
+Paper/conference_101719.lot
+Paper/conference_101719.out
+Paper/conference_101719.pdf
+Paper/conference_101719.run.xml
+Paper/conference_101719.synctex.gz
+Paper/conference_101719.toc
