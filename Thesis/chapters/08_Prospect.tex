@@ -41,7 +41,7 @@ even faster and less dependent on the screen resolution. \\
 \noindent
 The provided implementation features some visual glitches during occlusion culling as long as higher mip levels 
 are used for the depth prepass. This issue led to the assumption that the hierarchy isn't actually obligatory 
-for per-meshlet culling since no sub-voxel detail is present anyway. This assumption needs to be tested in 
+for \ac{PMOC} since no sub-voxel detail is present anyway. This assumption needs to be tested in 
 order to be finally validated. If the assumption holds true, the \ac{HZB} could be made completely redundant, and 
 the occlusion culling algorithm can be simplified further. \\
 
