@@ -94,7 +94,7 @@ Over the last decades, ray tracing has been subject to a lot of innovation, espe
 real-time applications for entertainment purposes, i.e., games. Hardware manufacturers have 
 been adding more support for specific raytracing compute units, and the software side of 
 GPUs has been upgraded to support features like ray-traced ambient occlusion, shadows, 
-and global illumination. However, the rasterized approach to voxel rendering hasn't been 
+and global illumination. However, the rasterized approach to voxel rendering  has not been 
 very present in the entertainment industry, although the rasterized rendering pipeline has 
 been upgraded significantly over the last decade. A central overhaul is the mesh shading 
 pipeline, which has been introduced to \ac{GPU}s in 2018. It features a new way of preprocessing 
@@ -332,13 +332,13 @@ visible.
 
 \section{Evaluation} \label{sec-evaluation}
 
-\noindent
-The primary experimental setup tested \ac{PMOC} and compared it to per-octree node 
-occlusion culling, which works similarly to the culling procedure outlined above but uses whole octree 
-nodes instead of individual meshlets for the culling. In our implementation, the per-octree occlusion 
-culling configuration had some visual errors, which were fixed to a great extent by directly using the 
-full resolution depth buffer for sampling. However, this change was applied to both configurations, 
-which made the pipelines comparable again.\\
+\noindent   % @TODO: Fix this sentence!!
+The primary experimental setup tested \ac{PMOC} and compared it to \ac{PONOC}, which uses whole 
+octree nodes instead of individual meshlets for the culling. \\
+%Using the \ac{PONOC} configuration, 
+%each octree node is tested for occlusion in parallel on the \ac{GPU}. This results in less 
+%screen-space occlusion tests compared to \ac{PMOC} but also leads to higher voxel counts after the 
+%occlusion culling.\\
 
 \noindent
 We evaluated the two occlusion culling configurations \ac{PONOC} and \ac{PMOC} with respect to culling 
