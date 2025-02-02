@@ -159,7 +159,7 @@ in the context of a forward-rendered pipeline, making use of the \ac{CPU} for cu
 They propose to use a spatial container like an octree to enable drawing the scene in a rough 
 front-to-back order. Each mesh is individually drawn to a depth buffer resource, starting with 
 an empty one in the beginning and populating it as more meshes are drawn. The buffer resource 
-also maintains a mip chain that is updated when the full-resolution depth buffer is updated. 
+also maintains a mip map chain that is updated when the full-resolution depth buffer is updated. 
 Each time a mesh is rendered to the depth buffer, it is checked against the depth hierarchy, 
 starting with the coarsest mip level. This way, near and big objects are likely to occlude small, 
 far objects, resulting in an efficient way to reject invisible meshes. \\
@@ -170,7 +170,7 @@ occlusion queries while optimizing the queries using \ac{CPU} \ac{SIMD} accelera
 is very similar to common \ac{CPU}- or \ac{GPU}-computed \ac{HZB}, with two major alterations to the implementation. 
 First, they make use of Intel's \ac{AVX} to compute depth values for tiles of 256 texels in parallel. 
 The second difference is the way they store depth and coverage data. In contrast to a "traditional" 
-\ac{HZB} mip-chain, Hasselgren et al. decouple depth and coverage data by storing a coverage mask for 
+\ac{HZB} mip map chain, Hasselgren et al. decouple depth and coverage data by storing a coverage mask for 
 $32 \times 8$ pixel tiles, which can be efficiently computed by using the \ac{AVX} of Intel \ac{CPU}s. In 
 their results, they show that their implementation is up to 3 times faster than previous occlusion 
 culling algorithms while also providing a lower memory footprint. \\
@@ -190,7 +190,7 @@ to push for huge draw distances and densely crowded environments.
 In the past, the \ac{HZB} algorithm proposed by Greene et al. \cite{b1} has been slightly 
 adapted for use on the \ac{GPU}. During the rendering routine, a small set of best occluders is 
 drawn to the depth buffer during a depth prepass, without invoking the pixel shader. This 
-depth information is subsequently converted into a \ac{HZB} pyramid, which is a mip chain 
+depth information is subsequently converted into a \ac{HZB} pyramid, which is a mip map chain 
 containing the depth information for increasingly large parts of the screen space per texel. \\
 
 \noindent
@@ -237,22 +237,18 @@ all the contained voxels. All best occluder nodes are then added to a buffer tha
 use in the depth prepass. \\
 
 \noindent
-In case of an alternation of the voxel data, the octree and the buffer need to be updated to reflect the 
-new geometrical layout for the next frame. We show that querying the octree for the best occluders can be done 
-within a reasonable time, although a final evaluation remains a subject for future research. \\
-
-\noindent
 Ultimately, the best occluders exchange a large amount of voxels with larger, octree node-sized boxes for 
 computing the depth prepass. This way, drawing geometry to approximate the volume of the voxel scene is 
 more efficient because of the reduced number of meshes contributing to the prepass. 
 Fig.~\ref{fig:best-occluder-selection} shows a visualization featuring the best occluders in relation 
-to the final voxel scene.
+to the final voxel scene. Because of \ac{TPOC}, the number of voxels drawn during the prepass can be reduced 
+from about 3 million to only 8256 best occluder voxels.
 
 \begin{figure}
     \centering
     \includegraphics[width=150px]{images/bunny-best-occluder-outline.png}
     \caption{The bunny model silhouette in black and the best occluders selected for the prepass in green.
-    Instead of about 3 million voxels, only 8256 best occluders need to be drawn to approximate its volume.}
+    Because of \ac{TPOC}, only 8256 best occluders need to be drawn to approximate the scene's volume instead of about 3 million voxels.}
     \label{fig:best-occluder-selection}
 \end{figure}
 
@@ -265,12 +261,12 @@ that takes the best occluders and draws them to the depth buffer. This depth pas
 not draw to the back buffer, making the computation relatively efficient. \\
 
 \noindent
-After the depth buffer is created, it is used to create a mip chain containing the depth 
-data from the depth buffer, the \ac{HZB} pyramid. To create the mip chain, the full-resolution 
+After the depth buffer is created, it is used to create a mip map chain containing the depth 
+data from the depth buffer, the \ac{HZB} pyramid. To create the mip map chain, the full-resolution 
 depth buffer is processed by a compute shader, which calculates the farthest depth value out 
-of four texels and outputs it to the next higher mip level. The resulting mip chain consequently 
+of four texels and outputs it to the next higher mip level. The resulting mip map chain consequently 
 contains a coverage of differently sized screen-space quads with the respective farthest depth 
-value. The mip chain is subsequently used in the task shader (amplification shader) during the 
+value. The mip map chain is subsequently used in the task shader (amplification shader) during the 
 occlusion culling. Fig.~\ref{fig:hzb-pyramid-viz} shows an exemplary \ac{HZB} pyramid.
 
 \begin{figure}
@@ -299,7 +295,7 @@ resulting depth values are compared against the minimum \emph{z} value. If eithe
 \ac{HZB} pyramid samples is further away from the camera than the minimum \emph{z} value, the current 
 voxel might be completely or partially visible. Conversely, as long as all samples are nearer to 
 the camera than the minimum \emph{z} value, the voxel can safely be assumed to be occluded. This 
-sampling starts using the highest mip level and continues down the mip chain until the voxel is 
+sampling starts using the highest mip level and continues down the mip map chain until the voxel is 
 found to be fully occluded or until the hierarchy is fully traversed and the voxel is found to be 
 visible. 
 
@@ -337,7 +333,7 @@ visible.
 \section{Evaluation} \label{sec-evaluation}
 
 \noindent
-The primary experimental setup tested per-meshlet occlusion culling and compared it to per-octree node 
+The primary experimental setup tested \ac{PMOC} and compared it to per-octree node 
 occlusion culling, which works similarly to the culling procedure outlined above but uses whole octree 
 nodes instead of individual meshlets for the culling. In our implementation, the per-octree occlusion 
 culling configuration had some visual errors, which were fixed to a great extent by directly using the 
@@ -345,8 +341,8 @@ full resolution depth buffer for sampling. However, this change was applied to b
 which made the pipelines comparable again.\\
 
 \noindent
-We will evaluate the two occlusion culling configurations (per-octree node and per-meshlet) with respect 
-to culling efficiency, \ac{CPU} runtime performance, \ac{GPU} runtime performance, and pixel overdraw. We use five 
+We evaluated the two occlusion culling configurations \ac{PONOC} and \ac{PMOC} with respect to culling 
+efficiency, \ac{CPU} runtime performance, \ac{GPU} runtime performance, and pixel overdraw. We used five 
 test scenes featuring different geometrical characteristics, shown in Fig.~\ref{fig:models}. 
 
 
@@ -389,7 +385,7 @@ All measured scenes had a dimension of $256^3$.
 
 \noindent
 The measurements show the scaling of the computation time with the amount of best occluders. The \emph{Hairball} 
-scene additionally shows a worse performance when compared to the \emph{Terrain}, although the terrain has more 
+scene additionally shows worse performance when compared to the \emph{Terrain}, although the terrain has more 
 best occluders. This indicates that the quality of the scene in respect to its layout characteristics affects the 
 amount of best occluders and ultimately the time spent on the selection query.\\
 
@@ -404,13 +400,13 @@ nodes, as well as by applying multi-threaded computations, e.g., computing each 
 
 \begin{table}[htbp]
     \caption{Culling efficiency for each of the tested scenes. The average amount was measured using a 
-    standerdized camera animation to take different camera angles into account. Higher is better.}
+    standardized camera animation to take different camera angles into account. Higher is better.}
     \begin{center}
         \begin{tabular}{|c|cc|cc|}
             \hline
             \textbf{}&\multicolumn{4}{|c|}{\textbf{Avg. Culled Voxels - $256^3$}} \\
             \cline{2-5} 
-            \textbf{Scene} & \textbf{\textit{Per-Octree Node}} & \textbf{\textit{Ratio}} & \textbf{\textit{Per-Meshlet}} & \textbf{\textit{Ratio}} \\
+            \textbf{Scene} & \textbf{\textit{\ac{PONOC}}} & \textbf{\textit{Ratio}} & \textbf{\textit{\ac{PMOC}}} & \textbf{\textit{Ratio}} \\
             \hline
             Lucy        &  190,412      & $57.5 \%$    & 247,226        & $74.6 \%$     \\
             Bunny       &  2,994,528    & $88.6 \%$    & 3,199,472      & $94.7 \%$     \\
@@ -425,12 +421,12 @@ nodes, as well as by applying multi-threaded computations, e.g., computing each 
 
 \noindent
 Table \ref{tab:culling-efficiency} shows the average culling efficiency for each tested scene measured using 
-different camera angles. The table indicates an overall better culling performance when using the per-meshlet 
-occlusion culling as compared to the per-octree culling configuration. The per-meshlet configuration culled 
+different camera angles. The table indicates an overall better culling performance when using the \ac{PMOC} 
+occlusion culling as compared to the \ac{PONOC} configuration. The \ac{PMOC} configuration culled 
 an average of $12.2 \%$ more voxels and always resulted in fewer voxels computed by the rasterizer and the 
 pixel shader. The measurements also suggest that larger scenes with more voxels lead to a higher culling 
 efficiency. This seems plausible, as a higher voxel number tends to result in a higher number of best occluders 
-for a static amount of voxels per octree node. As the \emph{Hairball} scene shows, the algorithm works in favor 
+for a static amount of voxels per octree node. As the \emph{Hairball} scene shows, \ac{TPOC} works in favor 
 of large, tight geometry and is challenged by smaller details, large empty spaces, and holes.
 
 \subsection{CPU Performance} \label{subsec-cou-performance}
@@ -440,12 +436,11 @@ of large, tight geometry and is challenged by smaller details, large empty space
     \begin{center}
         \begin{tabular}{|c|c|c|c|}
             \hline
-            \textbf{}&\multicolumn{3}{|c|}{\textbf{Avg. CPU Performance - $256^3$}} \\
+            \textbf{}&\multicolumn{3}{|c|}{\textbf{Avg. \ac{CPU} Performance - $256^3$}} \\
             \cline{2-4} 
-            \textbf{Function} & \textbf{\textit{No Culling (ms)}} & \textbf{\textit{Per-Octree Node (ms)}} & \textbf{\textit{Per-Meshlet (ms)}}  \\
+            \textbf{Function} & \textbf{\textit{No Culling (ms)}} & \textbf{\textit{\ac{PONOC} (ms)}} & \textbf{\textit{\ac{PMOC} (ms)}}  \\
             \hline
-            Render      &  0.1165   & 0.1135    &  0.1122   \\
-            Update      &  0.0218   & 0.0182    &  0.0177   \\
+            Render-Thread      &  0.1165   & 0.1135    &  0.1122   \\
             \hline
         \end{tabular}
     \label{tab:cpu-performance}
@@ -463,8 +458,8 @@ of the application. \\
 The table shows that the average \ac{CPU} performance does not change significantly between the different 
 culling configurations. This is due to the \ac{GPU}-driven nature of the algorithm, which results in a 
 low memory bandwidth between \ac{CPU} and \ac{GPU}. Most of the work is executed on the \ac{GPU} and the \ac{CPU} 
-implementations do not change considerably between the per-octree node occlusion culling and the 
-per-meshlet occlusion culling configuration. \\
+implementations do not change considerably between the \ac{PONOC} and the 
+\ac{PMOC} configuration. \\
 
 \noindent
 The small changes that are visible in the \emph{Render()} function measurements are attributed to 
@@ -499,12 +494,12 @@ to be full. \\
             \addplot[brown!60, mark=diamond] coordinates {(Lucy,0.58) (Bunny,5.53) (Torus,3.90) (Terrain,1.59) (Hairball,2.69)};
             \addplot[blue, mark=diamond] coordinates {(Lucy,0.32) (Bunny,0.80) (Torus,0.66) (Terrain,0.71) (Hairball,1.22)};
             \addplot[red, mark=diamond] coordinates {(Lucy,0.22) (Bunny,0.51) (Torus,0.42) (Terrain,0.41) (Hairball,1.04)};
-            \legend{No Culling, Per-Octree, Per-Meshlet}
+            \legend{No Culling, \ac{PONOC}, \ac{PMOC}}
         \end{axis}
         \end{tikzpicture}
     \end{center}
-    \caption{The average \ac{GPU} performance measured for each scene, using both the per-octree node occlusion culling 
-    configuration and the per-meshlet occlusion culling configuration.}
+    \caption{The average \ac{GPU} performance measured for each scene, using both the \ac{PONOC} 
+    configuration and the \ac{PMOC} configuration.}
     \label{fig:gpu-performance-full}
 \end{figure}
 
@@ -514,7 +509,7 @@ computation time for both configurations, as it scales with the screen resolutio
 resolution of $1280 \times 900$ for all measurements. This means that the overhead of the algorithm scales 
 with screen resolution and the number of the best occluders drawn during the prepass. 
 Fig.~\ref{fig:gpu-performance-prepass} shows that both tested configurations perform similarly during the 
-depth prepass and that both the copy and the generation of the \ac{HZB} are relatively static in this testing 
+depth prepass and that both the copy and the generation of the \ac{HZB} are roughly constant in this testing 
 scenario. Only the drawing of the best occluders varies significantly for different scenes, as the amount of 
 best occluders changes from one scene to another. \\
 
@@ -548,8 +543,8 @@ best occluders changes from one scene to another. \\
         \end{axis}
         \end{tikzpicture}
     \end{center}
-    \caption{The depth prepass timings measured on the \ac{GPU}. The dashed lines refer to the per-octree node occlusion culling 
-    configuration and the solid lines refer to the per-meshlet occlusion culling configuration.}
+    \caption{The depth prepass timings measured on the \ac{GPU}. The dashed lines refer to the \ac{PONOC} 
+    configuration and the solid lines refer to the \ac{PMOC} configuration.}
     \label{fig:gpu-performance-prepass}
 \end{figure}
 
@@ -564,7 +559,7 @@ performance gains outweigh the overhead introduced by the occlusion culling in a
 \noindent
 Analyzing the overdraw for each scene helps to understand where unnecessary pixel shader 
 invocations occur. We tested different angles for each scene and recorded overdraw of individual 
-pixels using no occlusion culling, the per-octree occlusion culling, and the per-meshlet occlusion 
+pixels using no occlusion culling, the \ac{PONOC}, and the per-meshlet occlusion 
 culling configuration. Fig.~\ref{fig:overdraw} shows an exemplary overdraw visualization for the 
 \emph{Bunny} scene. \\
 
@@ -576,12 +571,12 @@ culling configuration. Fig.~\ref{fig:overdraw} shows an exemplary overdraw visua
     \end{subfigure}
     \begin{subfigure}{60px}
         \includegraphics[width=60px]{images/overdraw-bunny2-pooc.png}
-        \caption{Per-Octree}
+        \caption{\ac{PONOC}}
         \parbox{\linewidth}{\centering\footnotesize }
     \end{subfigure}
     \begin{subfigure}{60px}
         \includegraphics[width=60px]{images/overdraw-bunny2-pmoc.png}
-        \caption{Per-Meshlet}
+        \caption{\ac{PMOC}}
         \parbox{\linewidth}{\centering\footnotesize }
     \end{subfigure}
     \begin{subfigure}{60px}
@@ -598,17 +593,17 @@ culling configuration. Fig.~\ref{fig:overdraw} shows an exemplary overdraw visua
 
 \noindent
 Image (a) shows that no culling results in a lot of overdraw for some camera angles tested. (b) shows 
-the per-octree occlusion culling, which features less overdraw overall but still a visible outline 
-for the voxels that were not culled by the best occluders. (c) shows the per-meshlet occlusion culling 
+the \ac{PONOC}, which features less overdraw overall but still a visible outline 
+for the voxels that were not culled by the best occluders. (c) shows the \ac{PMOC} 
 configuration, which was able to reduce overdraw considerably as compared to (a) and (b). The outline 
 of the scene is smaller and not as heavily overdrawn as the outline in (b), which is attributed to the 
 more granular culling of voxels, even within otherwise visible octree nodes. (d) shows the difference 
 between (b) and (c), which clearly indicates that the visible surface of the scene can be better 
-optimized in terms of overdraw when using per-meshlet occlusion culling. \\
+optimized in terms of overdraw when using \ac{PMOC}.. \\
 
 \noindent
 Different angles lead to less overdraw and lower differences between all configurations. Nevertheless, 
-in all cases the per-meshlet occlusion culling configuration was able to reduce overdraw at least to a 
+in all cases the \ac{PMOC} configuration was able to reduce overdraw at least to a 
 considerable degree.
 
 \section{Conclusion} \label{sec-conclusion}
@@ -638,6 +633,11 @@ overhead. In addition, it can be used for dynamically changing scenes since the 
 determined during runtime, instead of being manually picked beforehand.
 
 \section{Future Work} \label{sec-future-work}
+
+\noindent   % @TODO: Check for redundancy! This paragraph was just cut and pasted!
+In case of an alternation of the voxel data, the octree and the buffer need to be updated to reflect the 
+new geometrical layout for the next frame. We show that querying the octree for the best occluders can be done 
+within a reasonable time, although a final evaluation remains a subject for future research. \\
 
 \noindent
 The dynamic update needs to be tested thoroughly to evaluate the capability of the algorithm to handle updating 
