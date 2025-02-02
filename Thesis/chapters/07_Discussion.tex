@@ -25,10 +25,10 @@ occluded. \\
 
 \noindent
 Overall, the experiment showed that the \ac{TPOC} algorithm can be customized to work in a volumetric voxel 
-representation using two different configurations: the per-octree node culling and the per-meshlet culling. 
+representation using two different configurations: the \ac{PONOC} and the \ac{PMOC}. 
 Both configurations were able to occlude a considerable amount of voxels while using a minimal amount of 
-\ac{GPU} bandwidth. The per-meshlet culling was able to cull more octree nodes and, consequently, more 
-voxels than the per-octree node culling. It also demonstrated a higher deviation from the average culling 
+\ac{GPU} bandwidth. The \ac{PMOC} was able to cull more octree nodes and, consequently, more 
+voxels than the \ac{PONOC}. It also demonstrated a higher deviation from the average culling 
 ratio. This indicates that the \ac{PMOC} algorithm was able to cull more voxels in the best case but also 
 had a higher variation of the culling ratio. Still, for almost all frames tested, the number of visible 
 voxels was significantly lower when using \ac{PMOC} when compared to \ac{PONOC}.\\
@@ -46,9 +46,9 @@ in favor of the \ac{PMOC} configuration, which overall increased performance by 
 
 \noindent
 The overdraw measurements showed varying overdraw values for both configurations, which resulted in a similar amount 
-of overdraw in the best case. In the worst case, the per-meshlet culling generally resulted in lower overdraw than 
-the per-octree node culling. The amount of overdraw reached up to a maximum of about 90 draws to one pixel for 
-per-octree culling and up to about 70 draws to one pixel for per-meshlet culling. It strongly correlated to the 
+of overdraw in the best case. In the worst case, the \ac{PMOC} generally resulted in lower overdraw than 
+the \ac{PONOC}. The amount of overdraw reached up to a maximum of about 90 draws to one pixel for 
+\ac{PONOC} and up to about 70 draws to one pixel for \ac{PMOC}. It strongly correlated to the 
 camera angle and was considerably high in both configurations. \\ 
 
 \noindent
@@ -128,15 +128,14 @@ can be used as an occluder to cull a vast amount of voxels that make up the volu
 perspective on the \ac{TPOC} algorithm and makes it possible to use the approach when there is only one model present. \\
 
 \noindent
-The per-meshlet culling configuration proved to be more efficient due to a more precise culling of voxels, even partially 
+The \ac{PMOC} configuration proved to be more efficient due to a more precise culling of voxels, even partially 
 culling octree nodes. In this sense, the mesh shading pipeline featured a higher culling ratio and superior occlusion 
 culling in general. Another aspect to consider is the possibility of optimizing the \ac{HZB} algorithm further. 
 Traditionally, when comparing a bounding box to the \ac{HiZ} pyramid, all depth values of the \ac{HiZ} pyramid within the 
 minimum and maximum bounds need to be checked against the minimum z value of the object in question. This is where the 
 hierarchy optimizes the process because with each mip level, a texel covers a greater section of the depth buffer, making 
 sampling the \ac{HiZ} pyramid cheaper in terms of computation time. Since cubical voxels are easily defined by their min 
-and max values and there is no sub-voxel detail, this process can potentially be optimized further. When using per-meshlet 
-culling, each voxel's bounds are checked individually, and theoretically, no hierarchy is necessary. This assumption was 
+and max values and there is no sub-voxel detail, this process can potentially be optimized further. When using \ac{PMOC}, each voxel's bounds are checked individually, and theoretically, no hierarchy is necessary. This assumption was 
 formed by this work's implementation since it only used the full-resolution depth buffer for the \ac{HZB} due to visual 
 errors that couldn't be fixed in the timeframe of this work. That way, only one sampling per screen rectangle corner is 
 necessary, either per mip level or only using the full-resolution z-buffer. If this assumption holds true and can be 
@@ -145,9 +144,9 @@ hierarchy. \\
 
 \noindent
 No matter how the prepass is executed, the measurements show that the highly parallelized way of computing the occlusion 
-test does not lead to the per-meshlet culling being slower than the per-octree culling. This can be explained by the 
+test does not lead to the \ac{PMOC} being slower than the \ac{PONOC}. This can be explained by the 
 massive amount of parallelization that is possible in modern hardware and how the more fine-grained culling removes more 
-geometry than the per-octree node culling does. \\
+geometry than the \ac{PONOC} does. \\
 
 \noindent
 This in turn leads to a lower dispatch count of mesh shaders and 
