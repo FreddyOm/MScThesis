@@ -422,7 +422,7 @@ nodes, as well as by applying multi-threaded computations, e.g., computing each 
 
 \noindent
 Table \ref{tab:culling-efficiency} shows the average culling efficiency for each tested scene measured using 
-different camera angles. The table indicates an overall better culling performance when using the \ac{PMOC} 
+various camera angles. The table indicates an overall better culling performance when using the \ac{PMOC} 
 occlusion culling as compared to the \ac{PONOC} configuration. The \ac{PMOC} configuration culled 
 an average of $12.2 \%$ more voxels and always resulted in fewer voxels computed by the rasterizer and the 
 pixel shader. The measurements also suggest that larger scenes with more voxels lead to a higher culling 
@@ -452,20 +452,16 @@ of large, tight geometry and is challenged by smaller details, large empty space
 The average \ac{CPU} time over the course of a standardized test animation using our implementation is 
 shown in Fig.~\ref{tab:cpu-performance}. It was measured for each scene and combined to a total 
 average value using an AMD Ryzen 9 9950X \ac{CPU}. This was done for each culling configuration to 
-evaluate the difference in runtime performance for the \emph{Update()} and \emph{Render} functions 
-of the application. \\
+evaluate the difference in runtime performance for the Render-Thread functions of the application. \\
 
 \noindent
 The table shows that the average \ac{CPU} performance does not change significantly between the different 
-culling configurations. This is due to the \ac{GPU}-driven nature of the algorithm, which results in a 
-low memory bandwidth between \ac{CPU} and \ac{GPU}. Most of the work is executed on the \ac{GPU} and the \ac{CPU} 
-implementations do not change considerably between the \ac{PONOC} and the 
-\ac{PMOC} configuration. \\
+culling configurations. The small changes that are visible in measurements are attributed to the \ac{GPU} 
+performance differences presented below. Because of the \ac{GPU}-driven nature of \ac{TPOC}, which 
+results in a low memory bandwidth between \ac{CPU} and \ac{GPU}, these changes are rather small. Most of 
+the work is executed on the \ac{GPU} and the \ac{CPU} implementations do not change considerably between 
+the \ac{PONOC} and the \ac{PMOC} configuration. \\
 
-\noindent
-The small changes that are visible in the \emph{Render()} function measurements are attributed to 
-the \ac{GPU} performance differences presented below. The changes in the \emph{Update()} function 
-measurements cannot be reliably attributed to any change in the pipeline setup.
 
 \subsection{GPU Performance} \label{subsec-gpu-performance}
 
@@ -473,10 +469,9 @@ measurements cannot be reliably attributed to any change in the pipeline setup.
 The \ac{GPU} performance shown in Fig.~\ref{fig:gpu-performance-full} was measured on a NVIDIA GeForce RTX 4090 
 for each scene and each culling configuration. The average measurements indicate a significant performance 
 increase in every scenario. The greatest average increase was measured using the \emph{Bunny} scene, which 
-featured a large volume and a high number of voxels. Those characteristics seem to work in favor of the 
-algorithm, as a large volume and a high voxel count result in an efficient approximation of the given scene. 
-Best occluders can potentially be computed more efficiently, since a lot of adjacent octree nodes are expected 
-to be full. \\
+featured a large volume and a high number of voxels. Those characteristics seem to work in favor \ac{TPOC}, 
+as a large volume and a high voxel count result in an efficient approximation of the given scene. Best occluders 
+can potentially be computed more efficiently, since a lot of adjacent octree nodes are expected to be full. \\
 
 \begin{figure}
     \begin{center}
@@ -624,12 +619,12 @@ mesh shading pipeline allows for a more granular culling of voxels and outperfor
 node occlusion culling by an average of $29 \%$ in terms of time spent on the \ac{GPU}. \\
 
 \noindent       % @TODO: Insert actual performance numbers! Compared to what? 
-Our approach can be used to increase performance by up to $10000\%$ for suitable scenes while preserving a 
-manageable overhead. In addition, it can be used for dynamically changing scenes since the best occluders 
-can be determined during runtime, instead of being manually picked beforehand. \\
+Our approach to the \ac{TPOC-PM} implementation can be used to increase performance by up to $10000\%$ for 
+suitable scenes while preserving a manageable overhead. In addition, it can be used for dynamically changing 
+scenes since the best occluders can be determined during runtime, instead of being manually picked beforehand. \\
 
 \noindent
-We conclude that the algorithm can successfully be applied to dense voxel scenes, which feature large, dense 
+We conclude that \ac{TPOC} can successfully be applied to dense voxel scenes, which feature large, dense 
 geometry. In contrast, scenes featuring fine, thin details, holes, or large areas without any geometry are 
 generally challenging for the algorithm.
 
