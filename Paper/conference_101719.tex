@@ -203,6 +203,7 @@ scene were not part of our measurements.
 
 \subsection{Hierarchical Z-Buffering}
 
+\noindent
 In the past, the \ac{HZB} algorithm has been slightly adapted for use on the \ac{GPU}. During the rendering 
 routine, a small set of best occluders is drawn to the depth buffer during a depth prepass, without invoking 
 the pixel shader. This depth information is subsequently converted into a \ac{HZB} pyramid, which is a mip 
@@ -210,7 +211,9 @@ map chain containing the depth information for increasingly large parts of the s
 
 \subsection{Mesh Shading}
 
-
+\noindent
+Although \ac{TPOC} is generally compatible with traditional rendering pipelines, we choose the 
+\ac{GPU}-driven mesh shading pipeline for computing large amounts of voxels.
 
 
 \subsection{Generating Best Occluders} \label{sec-gen-best-occluders}
