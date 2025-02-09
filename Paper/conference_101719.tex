@@ -53,7 +53,6 @@ lorin.atzberger@gmail.com}
 \maketitle
 
 % @TODO: 
-%   - Add section from below
 %   - Make sure abreviations are consistently used and are explained both in the abstract AND in the paper itself
 %   - Add performance numbers
 
@@ -125,8 +124,8 @@ the non-visible volume within a voxel scene and uses it as an occluder for \ac{G
 We have implemented and tested the algorithm in two different configurations:
 
 \begin{itemize}
-    \item \ac{PONOC} using a mesh shading pipeline
-    \item \ac{PMOC} using a mesh shading pipeline
+    \item \ac{TPOC-PM} using a mesh shading pipeline; testing individual meshlets for occlusion 
+    \item \ac{TPOC-PON} using a mesh shading pipeline; testing individual octree nodes for occlusion
 \end{itemize}
 
 \section{Related Work}
@@ -213,7 +212,7 @@ map chain containing the depth information for increasingly large parts of the s
 
 \noindent
 Although \ac{TPOC} is generally compatible with traditional rendering pipelines, we choose the 
-\ac{GPU}-driven mesh shading pipeline for computing large amounts of voxels.
+\ac{GPU}-driven mesh shading pipeline for computing large amounts of voxels. 
 
 
 \subsection{Generating Best Occluders} \label{sec-gen-best-occluders}
@@ -337,15 +336,15 @@ visible.
 \section{Evaluation} \label{sec-evaluation}
 
 \noindent   % @TODO: Fix this sentence!!
-The primary experimental setup tested \ac{PMOC} and compared it to \ac{PONOC}, which uses whole 
+The primary experimental setup tested \ac{TPOC-PM} and compared it to \ac{TPOC-PON}, which uses whole 
 octree nodes instead of individual meshlets for the culling. \\
-%Using the \ac{PONOC} configuration, 
+%Using the \ac{TPOC-PON} configuration, 
 %each octree node is tested for occlusion in parallel on the \ac{GPU}. This results in less 
-%screen-space occlusion tests compared to \ac{PMOC} but also leads to higher voxel counts after the 
+%screen-space occlusion tests compared to \ac{TPOC-PM} but also leads to higher voxel counts after the 
 %occlusion culling.\\
 
 \noindent
-We evaluated the two occlusion culling configurations \ac{PONOC} and \ac{PMOC} with respect to culling 
+We evaluated the two occlusion culling configurations \ac{TPOC-PON} and \ac{TPOC-PM} with respect to culling 
 efficiency, \ac{CPU} runtime performance, \ac{GPU} runtime performance, and pixel overdraw. We used five 
 test scenes featuring different geometrical characteristics, shown in Fig.~\ref{fig:models}. 
 
@@ -404,13 +403,13 @@ nodes, as well as by applying multi-threaded computations, e.g., computing each 
 
 \begin{table}[htbp]
     \caption{Culling efficiency for each of the tested scenes. The average amount was measured using a 
-    standardized camera animation to take different camera angles into account. Higher is better.}
+    unified camera animation to take different camera angles into account. Higher is better.}
     \begin{center}
         \begin{tabular}{|c|cc|cc|}
             \hline
             \textbf{}&\multicolumn{4}{|c|}{\textbf{Avg. Culled Voxels - $256^3$}} \\
             \cline{2-5} 
-            \textbf{Scene} & \textbf{\textit{\ac{PONOC}}} & \textbf{\textit{Ratio}} & \textbf{\textit{\ac{PMOC}}} & \textbf{\textit{Ratio}} \\
+            \textbf{Scene} & \textbf{\textit{\ac{TPOC-PON}}} & \textbf{\textit{Ratio}} & \textbf{\textit{\ac{TPOC-PM}}} & \textbf{\textit{Ratio}} \\
             \hline
             Lucy        &  190,412      & $57.5 \%$    & 247,226        & $74.6 \%$     \\
             Bunny       &  2,994,528    & $88.6 \%$    & 3,199,472      & $94.7 \%$     \\
@@ -425,8 +424,8 @@ nodes, as well as by applying multi-threaded computations, e.g., computing each 
 
 \noindent
 Table \ref{tab:culling-efficiency} shows the average culling efficiency for each tested scene measured using 
-various camera angles. The table indicates an overall better culling performance when using the \ac{PMOC} 
-occlusion culling as compared to the \ac{PONOC} configuration. The \ac{PMOC} configuration culled 
+various camera angles. The table indicates an overall better culling performance when using the \ac{TPOC-PM} 
+occlusion culling as compared to the \ac{TPOC-PON} configuration. The \ac{TPOC-PM} configuration culled 
 an average of $12.2 \%$ more voxels and always resulted in fewer voxels computed by the rasterizer and the 
 pixel shader. The measurements also suggest that larger scenes with more voxels lead to a higher culling 
 efficiency. This seems plausible, as a higher voxel number tends to result in a higher number of best occluders 
@@ -442,7 +441,7 @@ of large, tight geometry and is challenged by smaller details, large empty space
             \hline
             \textbf{}&\multicolumn{3}{|c|}{\textbf{Avg. \ac{CPU} Performance - $256^3$}} \\
             \cline{2-4} 
-            \textbf{Function} & \textbf{\textit{No Culling (ms)}} & \textbf{\textit{\ac{PONOC} (ms)}} & \textbf{\textit{\ac{PMOC} (ms)}}  \\
+            \textbf{Function} & \textbf{\textit{No Culling (ms)}} & \textbf{\textit{\ac{TPOC-PON} (ms)}} & \textbf{\textit{\ac{TPOC-PM} (ms)}}  \\
             \hline
             Render-Thread      &  0.1165   & 0.1135    &  0.1122   \\
             \hline
@@ -452,7 +451,7 @@ of large, tight geometry and is challenged by smaller details, large empty space
 \end{table}
 
 \noindent
-The average \ac{CPU} time over the course of a standardized test animation using our implementation is 
+The average \ac{CPU} time over the course of the unified test animation using \ac{TPOC} is 
 shown in Fig.~\ref{tab:cpu-performance}. It was measured for each scene and combined to a total 
 average value using an AMD Ryzen 9 9950X \ac{CPU}. This was done for each culling configuration to 
 evaluate the difference in runtime performance for the Render-Thread functions of the application. \\
@@ -463,7 +462,7 @@ culling configurations. The small changes that are visible in measurements are a
 performance differences presented below. Because of the \ac{GPU}-driven nature of \ac{TPOC}, which 
 results in a low memory bandwidth between \ac{CPU} and \ac{GPU}, these changes are rather small. Most of 
 the work is executed on the \ac{GPU} and the \ac{CPU} implementations do not change considerably between 
-the \ac{PONOC} and the \ac{PMOC} configuration. \\
+the \ac{TPOC-PON} and the \ac{TPOC-PM} configuration. \\
 
 
 \subsection{GPU Performance} \label{subsec-gpu-performance}
@@ -493,12 +492,12 @@ can potentially be computed more efficiently, since a lot of adjacent octree nod
             \addplot[brown!60, mark=diamond] coordinates {(Lucy,0.58) (Bunny,5.53) (Torus,3.90) (Terrain,1.59) (Hairball,2.69)};
             \addplot[blue, mark=diamond] coordinates {(Lucy,0.32) (Bunny,0.80) (Torus,0.66) (Terrain,0.71) (Hairball,1.22)};
             \addplot[red, mark=diamond] coordinates {(Lucy,0.22) (Bunny,0.51) (Torus,0.42) (Terrain,0.41) (Hairball,1.04)};
-            \legend{No Culling, \ac{PONOC}, \ac{PMOC}}
+            \legend{No Culling, \ac{TPOC-PON}, \ac{TPOC-PM}}
         \end{axis}
         \end{tikzpicture}
     \end{center}
-    \caption{The average \ac{GPU} performance measured for each scene, using both the \ac{PONOC} 
-    configuration and the \ac{PMOC} configuration.}
+    \caption{The average \ac{GPU} performance measured for each scene, using both the \ac{TPOC-PON} 
+    configuration and the \ac{TPOC-PM} configuration.}
     \label{fig:gpu-performance-full}
 \end{figure}
 
@@ -542,8 +541,8 @@ best occluders changes from one scene to another. \\
         \end{axis}
         \end{tikzpicture}
     \end{center}
-    \caption{The depth prepass timings measured on the \ac{GPU}. The dashed lines refer to the \ac{PONOC} 
-    configuration and the solid lines refer to the \ac{PMOC} configuration.}
+    \caption{The depth prepass timings measured on the \ac{GPU}. The dashed lines refer to the \ac{TPOC-PON} 
+    configuration and the solid lines refer to the \ac{TPOC-PM} configuration.}
     \label{fig:gpu-performance-prepass}
 \end{figure}
 
@@ -558,7 +557,7 @@ performance gains outweigh the overhead introduced by the occlusion culling in a
 \noindent
 Analyzing the overdraw for each scene helps to understand where unnecessary pixel shader 
 invocations occur. We tested different angles for each scene and recorded overdraw of individual 
-pixels using no occlusion culling, the \ac{PONOC}, and the per-meshlet occlusion 
+pixels using no occlusion culling, the \ac{TPOC-PON}, and the per-meshlet occlusion 
 culling configuration. Fig.~\ref{fig:overdraw} shows an exemplary overdraw visualization for the 
 \emph{Bunny} scene. \\
 
@@ -570,12 +569,12 @@ culling configuration. Fig.~\ref{fig:overdraw} shows an exemplary overdraw visua
     \end{subfigure}
     \begin{subfigure}{60px}
         \includegraphics[width=60px]{images/overdraw-bunny2-pooc.png}
-        \caption{\ac{PONOC}}
+        \caption{\ac{TPOC-PON}}
         \parbox{\linewidth}{\centering\footnotesize }
     \end{subfigure}
     \begin{subfigure}{60px}
         \includegraphics[width=60px]{images/overdraw-bunny2-pmoc.png}
-        \caption{\ac{PMOC}}
+        \caption{\ac{TPOC-PM}}
         \parbox{\linewidth}{\centering\footnotesize }
     \end{subfigure}
     \begin{subfigure}{60px}
@@ -592,17 +591,17 @@ culling configuration. Fig.~\ref{fig:overdraw} shows an exemplary overdraw visua
 
 \noindent
 Image (a) shows that no culling results in a lot of overdraw for some camera angles tested. (b) shows 
-the \ac{PONOC}, which features less overdraw overall but still a visible outline 
-for the voxels that were not culled by the best occluders. (c) shows the \ac{PMOC} 
+the \ac{TPOC-PON}, which features less overdraw overall but still a visible outline 
+for the voxels that were not culled by the best occluders. (c) shows the \ac{TPOC-PM} 
 configuration, which was able to reduce overdraw considerably as compared to (a) and (b). The outline 
 of the scene is smaller and not as heavily overdrawn as the outline in (b), which is attributed to the 
 more granular culling of voxels, even within otherwise visible octree nodes. (d) shows the difference 
 between (b) and (c), which clearly indicates that the visible surface of the scene can be better 
-optimized in terms of overdraw when using \ac{PMOC}.. \\
+optimized in terms of overdraw when using \ac{TPOC-PM}.. \\
 
 \noindent
 Different angles lead to less overdraw and lower differences between all configurations. Nevertheless, 
-in all cases the \ac{PMOC} configuration was able to reduce overdraw at least to a 
+in all cases the \ac{TPOC-PM} configuration was able to reduce overdraw at least to a 
 considerable degree.
 
 \section{Conclusion} \label{sec-conclusion}
@@ -669,12 +668,11 @@ and \emph{Stanford Bunny}, Patrick Min for \emph{binvox}.
     \acro{GPU}{graphics processing unit}
     \acro{HZB}{hierarchical z-buffering}
     \acro{PM}{per-meshlet}
-    \acro{PMOC}{per-meshlet occlusion culling}
-    \acro{PONOC}{per-octree-node occlusion culling}
     \acro{SIMD}{single instruction multiple data}
     \acro{SVO}{sparse voxel octree}
     \acro{TPOC}{two-pass occlusion culling}
     \acro{TPOC-PM}{two-pass occlusion culling - per-meshlet}
+    \acro{TPOC-PON}{two-pass occlusion culling - per-octree-node}
 
     % acrodefplural, wenn eine Pluralform benötigt wird (Standard: angehängtes "s" aus dem Englischen)
     % \acrodefplural{acroKey}[plural short]{plural long}
