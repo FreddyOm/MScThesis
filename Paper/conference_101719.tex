@@ -335,12 +335,15 @@ visible.
 
 \section{Evaluation} \label{sec-evaluation}
 
+\noindent
 We evaluated the two occlusion culling configurations \ac{TPOC-PON} and \ac{TPOC-PM} with respect to culling 
 efficiency, \ac{CPU} runtime performance, \ac{GPU} runtime performance, and pixel overdraw. We used five 
 test scenes featuring different geometrical characteristics, shown in Fig.~\ref{fig:models}. The tests were 
 executed on a Windows 10 system with an AMD Ryzen 9 9950X and a NVIDIA GeForce RTX 4090, using Shader Model 
 6.7. All tests were performed using a unified camera animation in order to consider a variety of camera angles 
-and provide more meaningful results in repsect to real use-cases. % @TODO: Check this last sentence again
+and provide more meaningful results in repsect to real use-cases. During the animation, the camera follows an 
+orbital path around the scene, while also moving up and down again. This way, the topological characteristics 
+of the scene are represented evenly. % @TODO: Fix the last sentence. Is it redundat?
 
 
 \subsection{Best Occluder Selection} \label{subsec-best-occluder-selection}
@@ -381,10 +384,10 @@ All measured scenes had a dimension of $256^3$.
 \end{table}
 
 \noindent
-The measurements show the scaling of the computation time with the amount of best occluders. The \emph{Hairball} 
-scene additionally shows worse performance when compared to the \emph{Terrain}, although the terrain has more 
-best occluders. This indicates that the quality of the scene in respect to its layout characteristics affects the 
-amount of best occluders and ultimately the time spent on the selection query.\\
+In general, the measurements show that the computation time for the best occluders corelates with the voxel count.
+However, the topological characteristics of the scenes have to be taken into consideration as well. This is 
+indicated by the \emph{Hairball} scene, which compared to its high voxel count has fewer best occluders than 
+expected, but takes more time to compute than the \emph{Terrain} scene with more best occluders. \\
 
 \noindent
 The results suggest that the query can be used in realtime applications, as most of the measurements stay 
