@@ -340,10 +340,10 @@ We evaluated the two occlusion culling configurations \ac{TPOC-PON} and \ac{TPOC
 efficiency, \ac{CPU} runtime performance, \ac{GPU} runtime performance, and pixel overdraw. We used five 
 test scenes featuring different geometrical characteristics, shown in Fig.~\ref{fig:models}. The tests were 
 executed on a Windows 10 system with an AMD Ryzen 9 9950X and a NVIDIA GeForce RTX 4090, using Shader Model 
-6.7. All tests were performed using a unified camera animation in order to consider a variety of camera angles 
-and provide more meaningful results in repsect to real use-cases. During the animation, the camera follows an 
-orbital path around the scene, while also moving up and down again. This way, the topological characteristics 
-of the scene are represented evenly. % @TODO: Fix the last sentence. Is it redundat?
+6.7 and a fixed resolution of $1280 \times 900$. All tests were performed using a unified camera animation in 
+order to consider a variety of camera angles and provide more meaningful results in repsect to real use-cases. 
+During the animation, the camera follows an orbital path around the scene, while also moving up and down again. 
+This way, the topological characteristics of the scene are represented evenly. % @TODO: Fix the last sentence. Is it redundat?
 
 
 \subsection{Best Occluder Selection} \label{subsec-best-occluder-selection}
@@ -500,13 +500,12 @@ can potentially be computed more efficiently, since a lot of adjacent octree nod
 
 \noindent
 A closer inspection of the individual pipeline stages revealed that the depth prepass is more or less static in 
-computation time for both configurations, as it scales with the screen resolution, which was set to a fixed 
-resolution of $1280 \times 900$ for all measurements. This means that the overhead of the algorithm scales 
-with screen resolution and the number of the best occluders drawn during the prepass. 
-Fig.~\ref{fig:gpu-performance-prepass} shows that both tested configurations perform similarly during the 
-depth prepass and that both the copy and the generation of the \ac{HZB} are roughly constant in this testing 
-scenario. Only the drawing of the best occluders varies significantly for different scenes, as the amount of 
-best occluders changes from one scene to another. \\
+computation time for both configurations, as it scales with the screen resolution. This means that the overhead 
+of the algorithm scales with screen resolution and the number of the best occluders drawn during the prepass. 
+Fig.~\ref{fig:gpu-performance-prepass} shows that both tested configurations perform similarly during the depth 
+prepass and that both the copy and the generation of the \ac{HZB} are roughly constant in this testing scenario. 
+Only the drawing of the best occluders varies significantly for different scenes, as the amount of best occluders 
+changes from one scene to another. \\
 
 \begin{figure}
     \begin{center}
