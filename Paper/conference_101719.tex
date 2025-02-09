@@ -335,18 +335,12 @@ visible.
 
 \section{Evaluation} \label{sec-evaluation}
 
-\noindent   % @TODO: Fix this sentence!!
-The primary experimental setup tested \ac{TPOC-PM} and compared it to \ac{TPOC-PON}, which uses whole 
-octree nodes instead of individual meshlets for the culling. \\
-%Using the \ac{TPOC-PON} configuration, 
-%each octree node is tested for occlusion in parallel on the \ac{GPU}. This results in less 
-%screen-space occlusion tests compared to \ac{TPOC-PM} but also leads to higher voxel counts after the 
-%occlusion culling.\\
-
-\noindent
 We evaluated the two occlusion culling configurations \ac{TPOC-PON} and \ac{TPOC-PM} with respect to culling 
 efficiency, \ac{CPU} runtime performance, \ac{GPU} runtime performance, and pixel overdraw. We used five 
-test scenes featuring different geometrical characteristics, shown in Fig.~\ref{fig:models}. 
+test scenes featuring different geometrical characteristics, shown in Fig.~\ref{fig:models}. The tests were 
+executed on a Windows 10 system with an AMD Ryzen 9 9950X and a NVIDIA GeForce RTX 4090, using Shader Model 
+6.7. All tests were performed using a unified camera animation in order to consider a variety of camera angles 
+and provide more meaningful results in repsect to real use-cases. % @TODO: Check this last sentence again
 
 
 \subsection{Best Occluder Selection} \label{subsec-best-occluder-selection}
