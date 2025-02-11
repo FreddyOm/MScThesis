@@ -7,7 +7,7 @@
 \usepackage{graphicx}
 \usepackage{textcomp}
 \usepackage{xcolor}
-\usepackage[nolist, smaller]{acronym}
+\usepackage[nolist]{acronym}
 \usepackage{subcaption}
 \usepackage{tikz}
 \usepackage{pgfplots}
@@ -58,21 +58,21 @@ lorin.atzberger@gmail.com}
 
 
 \begin{abstract}
-    We present \ac{TPOC} for dynamic voxel scenes based on \ac{HZB}, which is a \ac{GPU}-driven 
-    approach to \ac{HZB} that uses larger geometry as an approximation of the scene's volume. 
-    The \ac{HZB} algorithm has recently gained popularity due to its ability to efficiently cull 
-    occluded geometry using a \ac{GPU}-driven approach. This algorithm has not been available in 
-    its original form for dynamic voxel-based scenes. The approach uses an octree to efficiently 
-    schedule voxel data with respect to their spatial characteristics and replaces full octree nodes 
-    with larger geometry for fast computation of the \ac{HZB}. This not only allows the application 
-    of \ac{HZB} to a dynamic voxel scene, but also results in increased performance compared to a 
-    rendering pipeline without occlusion culling. We show that the use of the mesh shading pipeline 
-    in combination with a \ac{SVO} can adapt the \ac{HZB} to efficiently occlude a significant number 
-    of voxels, which results in an overall performance increase. The term volumetric voxel scene 
-    refers to a scene that not only approximates the surface by using voxels but also includes a 
-    voxel-based volume that might be exposed or altered during runtime. A great amount of the 
-    algorithm relies on \ac{GPU}-driven computations, which allow for millions of voxels to be 
-    drawn efficiently.
+    We present two-pass occlusion culling (TPOC) for dynamic voxel scenes based on hierarchical 
+    z-buffering (HZB), which is a graphics processing unit (GPU)-driven approach to HZB that uses 
+    larger geometry as an approximation of the scene's volume. The HZB algorithm has recently 
+    gained popularity due to its ability to efficiently cull occluded geometry using a GPU-driven 
+    approach. This algorithm has not been available in its original form for dynamic voxel-based 
+    scenes. The approach uses an octree to efficiently schedule voxel data with respect to their 
+    spatial characteristics and replaces full octree nodes with larger geometry for fast computation 
+    of the HZB. This not only allows the application of HZB to a dynamic voxel scene, but also 
+    results in increased performance compared to a rendering pipeline without occlusion culling. 
+    We show that the use of the mesh shading pipeline in combination with a parse voxel octree (SVO) 
+    can adapt the HZB to efficiently occlude a significant number of voxels, which results in an 
+    overall performance increase. The term volumetric voxel scene refers to a scene that not only 
+    approximates the surface by using voxels but also includes a voxel-based volume that might be 
+    exposed or altered during runtime. A great amount of the algorithm relies on GPU-driven 
+    computations, which allow for millions of voxels to be drawn efficiently.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -92,7 +92,7 @@ representations of scenes and simple physics or similar dynamic interactions. \\
 Over the last decades, ray tracing has been subject to a lot of innovation, especially in  
 real-time applications for entertainment purposes, i.e., games. Hardware manufacturers have 
 been adding more support for specific raytracing compute units, and the software side of 
-ac{GPU}s has been upgraded to support features like ray-traced ambient occlusion, shadows, 
+\ac{GPU}s has been upgraded to support features like ray-traced ambient occlusion, shadows, 
 and global illumination. However, the rasterized approach to voxel rendering  has not been 
 very present in the entertainment industry, although the rasterized rendering pipeline has 
 been upgraded significantly over the last decade. A central overhaul is the mesh shading 
@@ -212,7 +212,10 @@ map chain containing the depth information for increasingly large parts of the s
 
 \noindent
 Although \ac{TPOC} is generally compatible with traditional rendering pipelines, we choose the 
-\ac{GPU}-driven mesh shading pipeline for computing large amounts of voxels. 
+\ac{GPU}-driven mesh shading pipeline for computing large amounts of voxels. Compared to the use 
+of geometry shaders or instancing, mesh shading promises the best performance for large amount 
+of on-chip created voxels, while also being compatible with modern \ac{GPU}-based rendering and 
+culling algorithms. 
 
 
 \subsection{Generating Best Occluders} \label{sec-gen-best-occluders}
@@ -484,11 +487,13 @@ can potentially be computed more efficiently, since a lot of adjacent octree nod
             symbolic x coords={Lucy, Bunny, Torus, Terrain, Hairball},
             xtick=data,
             ymin=0,
-            enlargelimits=0.2,]
+            enlargelimits=0.2,
+            ybar,
+            bar width=7pt]
 
-            \addplot[brown!60, mark=diamond] coordinates {(Lucy,0.58) (Bunny,5.53) (Torus,3.90) (Terrain,1.59) (Hairball,2.69)};
-            \addplot[blue, mark=diamond] coordinates {(Lucy,0.32) (Bunny,0.80) (Torus,0.66) (Terrain,0.71) (Hairball,1.22)};
-            \addplot[red, mark=diamond] coordinates {(Lucy,0.22) (Bunny,0.51) (Torus,0.42) (Terrain,0.41) (Hairball,1.04)};
+            \addplot[brown!60, fill=brown!30] coordinates {(Lucy,0.58) (Bunny,5.53) (Torus,3.90) (Terrain,1.59) (Hairball,2.69)};
+            \addplot[blue, fill=blue!30] coordinates {(Lucy,0.32) (Bunny,0.80) (Torus,0.66) (Terrain,0.71) (Hairball,1.22)};
+            \addplot[red, fill=red!30] coordinates {(Lucy,0.22) (Bunny,0.51) (Torus,0.42) (Terrain,0.41) (Hairball,1.04)};
             \legend{No Culling, \ac{TPOC-PON}, \ac{TPOC-PM}}
         \end{axis}
         \end{tikzpicture}
@@ -502,45 +507,9 @@ can potentially be computed more efficiently, since a lot of adjacent octree nod
 A closer inspection of the individual pipeline stages revealed that the depth prepass is more or less static in 
 computation time for both configurations, as it scales with the screen resolution. This means that the overhead 
 of the algorithm scales with screen resolution and the number of the best occluders drawn during the prepass. 
-Fig.~\ref{fig:gpu-performance-prepass} shows that both tested configurations perform similarly during the depth 
-prepass and that both the copy and the generation of the \ac{HZB} are roughly constant in this testing scenario. 
-Only the drawing of the best occluders varies significantly for different scenes, as the amount of best occluders 
-changes from one scene to another. \\
-
-\begin{figure}
-    \begin{center}
-        \begin{tikzpicture}
-        \begin{axis}
-            [height=6cm,
-            width=\linewidth,
-            x tick label style={/pgf/number format/1000 sep=},
-            ylabel={Time ($\mu$s)},
-            legend style={at={(0.5,1.4)}, anchor=north, legend columns=2},
-            symbolic x coords={Lucy, Bunny, Torus, Terrain, Hairball},
-            xtick=data,
-            ymin=0,
-            enlargelimits=0.2,
-            ]
-
-            % Per-Octree culling
-            \addplot[black, mark=diamond, dashed] coordinates {(Lucy,11.06) (Bunny,35.23) (Torus,32.56) (Terrain,29.49) (Hairball,23.14)};
-            \addplot[blue, mark=diamond, dashed] coordinates {(Lucy,2.46) (Bunny,1.89) (Torus,2.29) (Terrain,2.15) (Hairball,2.15)};
-            \addplot[red, mark=diamond, dashed] coordinates {(Lucy,34.48) (Bunny,34.35) (Torus,33.71) (Terrain,34.43) (Hairball,33.85)};
-
-            % Per-Meshlet culling
-            \addplot[green, mark=diamond] coordinates {(Lucy,11.06) (Bunny,36.12) (Torus,33.18) (Terrain,29.49) (Hairball,22.73)};
-            \addplot[orange, mark=diamond] coordinates {(Lucy,2.39) (Bunny,2.44) (Torus,2.15) (Terrain,2.33) (Hairball,2.34)};
-            \addplot[brown, mark=diamond] coordinates {(Lucy,35.26) (Bunny,34.29) (Torus,34.05) (Terrain,33.66) (Hairball,33.87)};
-
-
-            \legend{Draw Best Occluders, Copy Depth Buffer, Generate \ac{HZB}, Draw Best Occluders, Copy Depth Buffer, Generate \ac{HZB}}
-        \end{axis}
-        \end{tikzpicture}
-    \end{center}
-    \caption{The depth prepass timings measured on the \ac{GPU}. The dashed lines refer to the \ac{TPOC-PON} 
-    configuration and the solid lines refer to the \ac{TPOC-PM} configuration.}
-    \label{fig:gpu-performance-prepass}
-\end{figure}
+Both tested configurations perform similarly during the depth prepass and both the copy and the generation of the 
+\ac{HZB} are roughly constant in this testing scenario. Only the drawing of the best occluders varies significantly 
+for different scenes, as the amount of best occluders changes from one scene to another. \\
 
 \noindent
 The most significant differences in performance originate from the main draw pass, which includes the task shader, 
