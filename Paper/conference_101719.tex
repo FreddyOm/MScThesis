@@ -311,6 +311,14 @@ found to be fully occluded or until the hierarchy is fully traversed and the vox
 visible. 
 
 \begin{figure*}
+    \includegraphics[width=\linewidth]{images/pipeline-rendering-loop.png}
+    \caption{The rendering loop and its resources.}
+    \label{fig:rendering-loop}
+\end{figure*}
+
+\section{Evaluation} \label{sec-evaluation}
+
+\begin{figure*}
     \begin{subfigure}{100px}
         \includegraphics[width=100px]{images/model-lucy.jpg}
         \caption{Lucy \cite{b7}}
@@ -340,8 +348,6 @@ visible.
     \caption{The scenes used for the experimental evaluation of the algorithm.}
     \label{fig:models}
 \end{figure*}
-
-\section{Evaluation} \label{sec-evaluation}
 
 \noindent
 We evaluated the two occlusion culling configurations \ac{TPOC-PON} and \ac{TPOC-PM} with respect to culling 
