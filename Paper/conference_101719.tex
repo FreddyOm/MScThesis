@@ -13,8 +13,28 @@
 \usepackage{pgfplots}
 \usepackage[font=footnotesize]{caption}        % small, footnotesize, scriptsize, or large
 \captionsetup[figure]{labelfont={bf}}
+\pgfplotsset{compat=1.18}
+\acresetall
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\begin{acronym}[SPS] % longest acronym in [...] for spacing
+    \acro{AVX}{advanced vector extensions}
+    \acro{CPU}{central processing unit}
+    \acro{DAG}{directed acyclic graph}
+    \acro{GPU}{graphics processing unit}
+    \acro{HZB}{hierarchical z-buffering}
+    \acro{PM}{per-meshlet}
+    \acro{SIMD}{single instruction multiple data}
+    \acro{SVO}{sparse voxel octree}
+    \acro{TPOC}{two-pass occlusion culling}
+    \acro{TPOC-PM}{two-pass occlusion culling - per-meshlet}
+    \acro{TPOC-PON}{two-pass occlusion culling - per-octree-node}
+
+    % acrodefplural, wenn eine Pluralform benötigt wird (Standard: angehängtes "s" aus dem Englischen)
+    % \acrodefplural{acroKey}[plural short]{plural long}
+\end{acronym}
+
 \begin{document}
 
 \title{Two-Pass Occlusion Culling for Dynamic Voxel Scenes based on Hierarchical Z-Buffering\\}
@@ -59,20 +79,20 @@ lorin.atzberger@gmail.com}
 
 \begin{abstract}
     We present two-pass occlusion culling (TPOC) for dynamic voxel scenes based on hierarchical 
-    z-buffering (HZB), which is a graphics processing unit (GPU)-driven approach to HZB that uses 
-    larger geometry as an approximation of the scene's volume. The HZB algorithm has recently 
-    gained popularity due to its ability to efficiently cull occluded geometry using a GPU-driven 
-    approach. This algorithm has not been available in its original form for dynamic voxel-based 
-    scenes. The approach uses an octree to efficiently schedule voxel data with respect to their 
-    spatial characteristics and replaces full octree nodes with larger geometry for fast computation 
-    of the HZB. This not only allows the application of HZB to a dynamic voxel scene, but also 
-    results in increased performance compared to a rendering pipeline without occlusion culling. 
-    We show that the use of the mesh shading pipeline in combination with a parse voxel octree (SVO) 
-    can adapt the HZB to efficiently occlude a significant number of voxels, which results in an 
-    overall performance increase. The term volumetric voxel scene refers to a scene that not only 
-    approximates the surface by using voxels but also includes a voxel-based volume that might be 
-    exposed or altered during runtime. A great amount of the algorithm relies on GPU-driven 
-    computations, which allow for millions of voxels to be drawn efficiently.
+    z-buffering (HZB). Our approach to TPOC uses larger geometry as an approximation of the scene's 
+    volume and can be applied to a scene that not only approximates the surface by using voxels 
+    but also includes a voxel-based volume that might be exposed or altered during runtime. A great 
+    amount of the algorithm relies on GPU-driven computations, which allow for millions of voxels 
+    to be drawn efficiently. The HZB algorithm has recently gained popularity due to its ability 
+    to efficiently cull occluded geometry using a GPU-driven approach. This algorithm has not been 
+    available in its original form for dynamic voxel-based scenes. Our TPOC implementation uses an 
+    octree to efficiently schedule voxel data with respect to their spatial characteristics and 
+    replaces full octree nodes with larger geometry for fast computation of the HZB. This not only 
+    allows the application of HZB to a dynamic voxel scene, but also results in increased performance 
+    up to 90\% compared to a rendering pipeline without occlusion culling. We show that the use of 
+    the mesh shading pipeline in combination with a parse voxel octree (SVO) can adapt the HZB to 
+    efficiently occlude a significant number of voxels, which results in an overall performance 
+    increase. 
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -103,19 +123,20 @@ computations. \\
 \noindent
 Recent games made use of \ac{HZB} in combination with the mesh shading pipeline to efficiently 
 cull mesh instances and even invisible parts of meshes. While the original algorithm by Greene 
-et al. \cite{b1} was intended to be used on the \ac{CPU}, modern applications of \ac{HZB} are implemented 
-as \ac{GPU}-driven occlusion culling techniques, which have been a driving factor for the recent increase 
-in geometrical density. The approach is heavily reliant on the presence of large, static occluder 
-geometry, which makes it inefficient to be used in voxelized scenes in the form it has been so far. \\
+et al. \cite{b1} was intended to be used on the \ac{CPU}, modern applications of \ac{HZB} are 
+implemented as \ac{GPU}-driven occlusion culling techniques, which have been a driving factor 
+for the recent increase in geometrical density. The approach is heavily reliant on the presence 
+of large, static occluder geometry, which makes it inefficient to be used in voxelized scenes 
+in the form it has been so far. \\
 
 \noindent
-In this paper, we present a technique to dynamically approximate volumetric voxel scenes, and show 
-that the use of the mesh shading pipeline in combination with a \ac{SVO} can adapt the \ac{HZB} to 
-efficiently occlude a significant number of voxels, which results in an overall performance increase.
-The term volumetric voxel scene refers to a scene that not only approximates the surface by using 
-voxels but also includes a voxel-based volume that might be exposed or altered during runtime. 
-A great amount of the algorithm relies on \ac{GPU}-driven computations, which allow for millions of 
-voxels to be drawn efficiently. \\
+In this paper, we present a technique to dynamically approximate volumetric voxel scenes, and 
+show that the use of the mesh shading pipeline in combination with a \ac{SVO} can adapt the 
+\ac{HZB} to efficiently occlude a significant number of voxels, which results in an overall 
+performance increase. The term volumetric voxel scene refers to a scene that not only 
+approximates the surface by using voxels but also includes a voxel-based volume that might be 
+exposed or altered during runtime. A great amount of the algorithm relies on \ac{GPU}-driven 
+computations, which allow for millions of voxels to be drawn efficiently. \\
 
 \noindent
 Our technique is based on the assumption that a vast amount of voxels within and behind a given 
@@ -637,22 +658,7 @@ direction for future work.
 Nvidia Research for \emph{Hairball}, the Stanford 3D Scanning Repository for \emph{Lucy} 
 and \emph{Stanford Bunny}, Patrick Min for \emph{binvox}.
 
-\begin{acronym}[SPS] % longest acronym in [...] for spacing
-    \acro{AVX}{advanced vector extensions}
-    \acro{CPU}{central processing unit}
-    \acro{DAG}{directed acyclic graph}
-    \acro{GPU}{graphics processing unit}
-    \acro{HZB}{hierarchical z-buffering}
-    \acro{PM}{per-meshlet}
-    \acro{SIMD}{single instruction multiple data}
-    \acro{SVO}{sparse voxel octree}
-    \acro{TPOC}{two-pass occlusion culling}
-    \acro{TPOC-PM}{two-pass occlusion culling - per-meshlet}
-    \acro{TPOC-PON}{two-pass occlusion culling - per-octree-node}
 
-    % acrodefplural, wenn eine Pluralform benötigt wird (Standard: angehängtes "s" aus dem Englischen)
-    % \acrodefplural{acroKey}[plural short]{plural long}
-\end{acronym}
 
 \begin{thebibliography}{00}
 \bibitem{b1} N. Greene, M. Kass, and G. Miller, ``Hierarchical Z-Buffer Visibility,'' in SIGGRAPH 1993: Proceedings of the 20th Annual Conference on Computer Graphics and Interactive Techniques, ACM, pp. 231–238, Aug. 1993.
