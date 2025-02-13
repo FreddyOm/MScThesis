@@ -640,20 +640,12 @@ generally challenging for the algorithm.
 
 \section{Future Work} \label{sec-future-work}
 
-\noindent   % @TODO: Check for redundancy! This paragraph was just cut and pasted!
-In case of an alternation of the voxel data, the octree and the buffer need to be updated to reflect the 
-new geometrical layout for the next frame. We show that querying the octree for the best occluders can be done 
-within a reasonable time, although a final evaluation remains a subject for future research. \\
-
 \noindent
 The dynamic update needs to be tested thoroughly to evaluate the capability of the algorithm to handle updating 
 larger scenes while also providing reasonable budget for other \ac{CPU} operations. The determination of the best 
 occluders could potentially be optimized further by introducing multi-threading. One approach might be to 
 compute the best occluders for the first eight child nodes in the hierarchy in parallel and to combine the results 
 afterwards. \\
-
-% \noindent
-
 % @TODO: - Command Buffers?     - Chunking scene data and paralellizing the work even more!
 
 
