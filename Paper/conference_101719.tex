@@ -72,11 +72,6 @@ lorin.atzberger@gmail.com}
 
 \maketitle
 
-% @TODO: 
-%   - Make sure abreviations are consistently used and are explained both in the abstract AND in the paper itself
-%   - Add performance numbers
-
-
 \begin{abstract}
     We present two-pass occlusion culling (TPOC) for dynamic voxel scenes based on hierarchical 
     z-buffering (HZB). Our approach to TPOC uses larger geometry as an approximation of the scene's 
@@ -92,7 +87,7 @@ lorin.atzberger@gmail.com}
     up to 90\% compared to a rendering pipeline without occlusion culling. We show that the use of 
     the mesh shading pipeline in combination with a parse voxel octree (SVO) can adapt the HZB to 
     efficiently occlude a significant number of voxels, which results in an overall performance 
-    increase. 
+    increase.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -168,7 +163,14 @@ memory all at once. Their data structure can be easily split up into several sub
 which in turn can be loaded individually. This approach seems promising for large scenes 
 and use cases, which require the streaming of data. They propose to structure the data in 
 a way that enables equal nodes of an octree hierarchy to be reduced to only one instance, 
-eliminating redundant parts of the hierarchy and reducing the amount of used memory immensely.
+eliminating redundant parts of the hierarchy and reducing the amount of used memory by up 
+to $38\times$ compared to similar voxel representations. \\
+
+\noindent
+Our approach makes use of an \ac{SVO} for storing the voxels in respect to their spatial 
+characteristics. Although we implemented a custom \ac{SVO}, our approach to \ac{TPOC} for 
+voxel scenes can benefit from using a high-resolution sparse voxel \ac{DAG} for even larger 
+voxel counts.
 
 \subsection{Occlusion Culling} \label{subsec-occlusion-culling}
 
@@ -187,24 +189,32 @@ fundamental basis of the \ac{TPOC} algorithm we present here.\\
 
 \noindent
 Hasselgren et al. \cite{b3} present a way of implementing occlusion culling relying on hardware 
-occlusion queries while optimizing the queries using \ac{CPU} \ac{SIMD} acceleration. The basic algorithm 
-is very similar to common \ac{CPU}- or \ac{GPU}-computed \ac{HZB}, with two major alterations to the 
-implementation. 
-First, they make use of vectorized \ac{CPU} operations to compute depth values for tiles of 256 texels 
-in parallel. The second difference is the way they store depth and coverage data. In contrast to a 
-"traditional" \ac{HZB} mip map chain, Hasselgren et al. decouple depth and coverage data by storing a 
-coverage mask for $32 \times 8$ pixel tiles, which can be efficiently computed by using the \ac{SIMD} 
-capabilities of \ac{CPU}s. In their results, they show that their implementation is up to 3 times faster 
-than previous occlusion culling algorithms while also providing a lower memory footprint. This work shows 
-the potential for optimizations of the \ac{HZB} algorithm using \ac{SIMD}. This potential can be utilized 
-even further when moving the algorithm to the \ac{GPU}. \\
+occlusion queries while optimizing the queries using \ac{CPU} \ac{SIMD} acceleration. The basic 
+algorithm is very similar to common \ac{CPU}- or \ac{GPU}-computed \ac{HZB}, with two major 
+alterations to the implementation. 
+First, they make use of vectorized \ac{CPU} operations to compute depth values for tiles of 256 
+texels in parallel. The second difference is the way they store depth and coverage data. In contrast 
+to a "traditional" \ac{HZB} mip map chain, Hasselgren et al. decouple depth and coverage data by 
+storing a coverage mask for $32 \times 8$ pixel tiles, which can be efficiently computed by using 
+the \ac{SIMD} capabilities of \ac{CPU}s. In their results, they show that their implementation is 
+up to 3 times faster than previous occlusion culling algorithms while also providing a lower memory 
+footprint. This work shows the potential for optimizations of the \ac{HZB} algorithm using \ac{SIMD}, 
+which can be utilized even further when moving the algorithm to the \ac{GPU}. \\
 
 \noindent
-Aaltonen et al. \cite{b4} present a \ac{GPU}-driven technique involving both \ac{HZB} and depth reprojection. 
-Both make for a good occlusion culling technique in games with large occluders or interiors. First, 
-artist-picked best occluders are drawn to the depth buffer in a depth pre-pass. Then, projected bounding
-boxes can be used to test the visibility of smaller objects in the scene. A hierarchical z-buffer is 
-used to accelerate this testing, as proposed by Greene et al. \cite{b1}.
+Aaltonen et al. \cite{b4} present a \ac{GPU}-driven technique involving both \ac{HZB} and depth 
+reprojection. Both make for a good occlusion culling technique in games with large occluders or 
+interiors. First, artist-picked best occluders are drawn to the depth buffer in a depth pre-pass. 
+Then, projected bounding boxes can be used to test the visibility of smaller objects in the scene. 
+A hierarchical z-buffer is used to accelerate this testing, as proposed by Greene et al. \cite{b1}. \\
+
+\noindent
+While \ac{TPOC} can be easily used in scenes with partially static triangle meshes, it can not be 
+easily applied to voxel scenes. We therefore make use of the base \ac{TPOC} algorithm excluding depth 
+reprojection for this particular evaluation and expand it with a dynamic way to compute best occluders 
+in large voxel scenes. Similar to Aaltonen et al., we use \ac{GPU}-driven approach to \ac{TPOC} and 
+make use of the mesh shading pipeline for more granular culling.
+
 
 \section{Two Pass Occlusion Culling} \label{sec-hierarchical-z-buffering}
 
@@ -428,7 +438,7 @@ expected, but takes more time to compute than the \emph{Terrain} scene with more
 The results suggest that the query can be used in realtime applications, as most of the measurements stay 
 within reasonable time budgets for computation, if 16.6 ms is used as a reference time for one frame. However, 
 the measurements were executed on a single thread, and the computation was not optimized thoroughly. The 
-duration is expected to be optimized further by chunking the data to limit the size and the amount of octree 
+duration is expected to be minimized further by chunking the data to limit the size and the amount of octree 
 nodes, as well as by applying multi-threaded computations, e.g., computing each chunk in parallel on the \ac{CPU}.
 
 \subsection{Culling Efficiency} \label{subsec-culling-efficiency}
@@ -594,12 +604,12 @@ configuration, which was able to reduce overdraw considerably as compared to (a)
 of the scene is smaller and not as heavily overdrawn as the outline in (b), which is attributed to the 
 more granular culling of voxels, even within otherwise visible octree nodes. (d) shows the difference 
 between (b) and (c), which clearly indicates that the visible surface of the scene can be better 
-optimized in terms of overdraw when using \ac{TPOC-PM}.. \\
+optimized in terms of overdraw when using \ac{TPOC-PM}. \\
 
 \noindent
 Different angles lead to less overdraw and lower differences between all configurations. Nevertheless, 
-in all cases the \ac{TPOC-PM} configuration was able to reduce overdraw at least to a 
-considerable degree.
+in all cases the \ac{TPOC-PM} configuration was able to reduce overdraw up to $84 \%$ as compared to 
+a pipeline without culling.
 
 \section{Conclusion} \label{sec-conclusion}
 
