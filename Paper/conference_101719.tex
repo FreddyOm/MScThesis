@@ -187,6 +187,12 @@ used to accelerate this testing, as proposed by Greene et al. \cite{b1}.
 
 \section{Two Pass Occlusion Culling} \label{sec-hierarchical-z-buffering}
 
+\begin{figure*}
+    \includegraphics[width=\linewidth]{images/pipeline-rendering-loop.png}
+    \caption{The rendering loop and its resources.}
+    \label{fig:rendering-loop}
+\end{figure*}
+
 \subsection{Sparse Voxel Octree}
 
 \noindent
@@ -309,12 +315,6 @@ the camera than the minimum \emph{z} value, the voxel can safely be assumed to b
 sampling starts using the highest mip level and continues down the mip map chain until the voxel is 
 found to be fully occluded or until the hierarchy is fully traversed and the voxel is found to be 
 visible. 
-
-\begin{figure*}
-    \includegraphics[width=\linewidth]{images/pipeline-rendering-loop.png}
-    \caption{The rendering loop and its resources.}
-    \label{fig:rendering-loop}
-\end{figure*}
 
 \section{Evaluation} \label{sec-evaluation}
 
