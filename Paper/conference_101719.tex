@@ -208,11 +208,11 @@ interiors. First, artist-picked best occluders are drawn to the depth buffer in 
 Then, projected bounding boxes can be used to test the visibility of smaller objects in the scene. 
 A hierarchical z-buffer is used to accelerate this testing, as proposed by Greene et al. \cite{b1}. \\
 
-\noindent
+\noindent % @TODO: Der Beitrag ist super aber....
 While \ac{TPOC} can be easily used in scenes with partially static triangle meshes, it can not be 
 easily applied to voxel scenes. We therefore make use of the base \ac{TPOC} algorithm excluding depth 
 reprojection for this particular evaluation and expand it with a dynamic way to compute best occluders 
-in large voxel scenes. Similar to Aaltonen et al., we use \ac{GPU}-driven approach to \ac{TPOC} and 
+in large voxel scenes. Similar to Aaltonen et al., we use a \ac{GPU}-driven approach to \ac{TPOC} and 
 make use of the mesh shading pipeline for more granular culling.
 
 
@@ -628,9 +628,10 @@ mesh shading pipeline allows for a more granular culling of voxels and outperfor
 node occlusion culling by an average of $29 \%$ in terms of time spent on the \ac{GPU}. \\
 
 \noindent       % @TODO: Insert actual performance numbers! Compared to what? 
-Our approach to the \ac{TPOC-PM} implementation can be used to increase performance by up to $10000\%$ for 
-suitable scenes while preserving a manageable overhead. In addition, it can be used for dynamically changing 
-scenes since the best occluders can be determined during runtime, instead of being manually picked beforehand. \\
+Our approach to the \ac{TPOC-PM} implementation can be used to increase performance for suitable scenes by up 
+to $90\%$ compared to a pipeline without occlusion culling and by up to $42\%$ compared to \ac{TPOC-PON}, while 
+preserving a manageable overhead. In addition, it can be used for dynamically changing scenes since the best 
+occluders can be determined during runtime, instead of being manually picked beforehand. \\
 
 \noindent
 We conclude that \ac{TPOC} can successfully be applied to dense voxel scenes, which feature large, dense 
