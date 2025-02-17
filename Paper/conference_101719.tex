@@ -101,7 +101,7 @@ Real-time voxel rendering usually has two distinct fields of application: real-t
 raytracing and the traditional rasterized rendering approach. While the former is 
 popular due to the uniform nature of voxels and the ability to easily cast rays using 
 a regular voxel grid, the latter has been used in real-time applications for volumetric 
-representations of scenes and simple physics or similar dynamic interactions. \\
+representations of scenes and simple physics or similar dynamic interactions \cite{b9}. \\
 
 \noindent
 Over the last decades, ray tracing has been subject to a lot of innovation, especially in  
@@ -208,7 +208,7 @@ interiors. First, artist-picked best occluders are drawn to the depth buffer in 
 Then, projected bounding boxes can be used to test the visibility of smaller objects in the scene. 
 A hierarchical z-buffer is used to accelerate this testing, as proposed by Greene et al. \cite{b1}. \\
 
-\noindent % @TODO: Der Beitrag ist super aber....
+\noindent
 While \ac{TPOC} can be easily used in scenes with partially static triangle meshes, it can not be 
 easily applied to voxel scenes. We therefore make use of the base \ac{TPOC} algorithm excluding depth 
 reprojection for this particular evaluation and expand it with a dynamic way to compute best occluders 
@@ -493,18 +493,15 @@ of large, dense geometry and is challenged by smaller details, large empty space
 \end{table}
 
 \noindent
-The average \ac{CPU} time over the course of the unified test animation using \ac{TPOC} is 
-shown in Fig.~\ref{tab:cpu-performance}. It was measured for each scene and combined to a total 
-average value using an AMD Ryzen 9 9950X \ac{CPU}. This was done for each culling configuration to 
-evaluate the difference in runtime performance for the Render-Thread functions of the application. \\
-
-\noindent
-The table shows that the average \ac{CPU} performance does not change significantly between the different 
-culling configurations. The small changes that are visible in measurements are attributed to the \ac{GPU} 
-performance differences presented below. Because of the \ac{GPU}-driven nature of \ac{TPOC}, which 
-results in a low memory bandwidth between \ac{CPU} and \ac{GPU}, these changes are rather small. Most of 
-the work is executed on the \ac{GPU} and the \ac{CPU} implementations do not change considerably between 
-the \ac{TPOC-PON} and the \ac{TPOC-PM} configuration. \\
+The average \ac{CPU} time over the course of the unified test animation using \ac{TPOC} is shown in 
+Fig.~\ref{tab:cpu-performance}. It was measured for each culling configuration to evaluate the difference 
+in runtime performance for the Render-Thread functions of the application. The table shows that the average 
+\ac{CPU} performance does not change significantly between the different culling configurations. The small 
+changes that are visible in measurements are attributed to the \ac{GPU} performance differences presented 
+below. Because of the \ac{GPU}-driven nature of \ac{TPOC}, which results in a low memory bandwidth between 
+\ac{CPU} and \ac{GPU}, these changes are rather small. Most of the work is executed on the \ac{GPU} and the 
+\ac{CPU} implementations do not change considerably between the \ac{TPOC-PON} and the \ac{TPOC-PM} 
+configuration. \\
 
 
 \subsection{GPU Performance} \label{subsec-gpu-performance}
@@ -672,6 +669,7 @@ and \emph{Stanford Bunny}, Patrick Min for \emph{binvox}.
 \bibitem{b6} S. Laine and T. Karras, ``Efficient sparse voxel octrees – analysis, extensions, and implementation,'' in I3D '10: Proceedings of the 2010 ACM SIGGRAPH symposium on Interactive 3D Graphics and Games, pp. 55-63, February 2010
 \bibitem{b7} Stanford Computer Graphics Laboratory, ``The Stanford 3D Scanning Repository,'' https://graphics.stanford.edu/data/3Dscanrep/, 2023
 \bibitem{b8} S.Laine and T. Karras, ``Two Methods for Fast Ray-Cast Ambient Occlusion,'' in Eurographics Symposium on Rendering 2010,  https://sketchfab.com/3d-models/hairball-db894e830ad94216ae6188396d707aff, 2011
+\bibitem{b9} C. Crassin, F. Neyret, M. Sainz, S. Green and E. Eisemann, ``Interactive Indirect Illumination Using Voxel Cone Tracing,'' in Computer Graphics Forum (Proceedings of Pacific Graphics 2011), Volume 30, Number 7, 2011
 \end{thebibliography}
 \vspace{12pt}
 \end{document}
