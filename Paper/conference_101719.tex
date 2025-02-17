@@ -101,7 +101,7 @@ Real-time voxel rendering usually has two distinct fields of application: real-t
 raytracing and the traditional rasterized rendering approach. While the former is 
 popular due to the uniform nature of voxels and the ability to easily cast rays using 
 a regular voxel grid, the latter has been used in real-time applications for volumetric 
-representations of scenes and simple physics or similar dynamic interactions \cite{b9}. \\
+representations of scenes and simple physics or similar dynamic interactions \cite{b9, b10}. \\
 
 \noindent
 Over the last decades, ray tracing has been subject to a lot of innovation, especially in  
@@ -112,15 +112,15 @@ and global illumination. However, the rasterized approach to voxel rendering  ha
 very present in the entertainment industry, although the rasterized rendering pipeline has 
 been upgraded significantly over the last decade. A central overhaul is the mesh shading 
 pipeline, which has been introduced to \ac{GPU}s in 2018. It features a new way of preprocessing 
-vertices using a more general compute architecture, which allows for more efficient \ac{GPU} 
-computations. \\
+vertices using a more general compute architecture that allows for more efficient \ac{GPU} 
+computations \cite{b11}. \\
 
 \noindent
 Recent games made use of \ac{HZB} in combination with the mesh shading pipeline to efficiently 
 cull mesh instances and even invisible parts of meshes. While the original algorithm by Greene 
 et al. \cite{b1} was intended to be used on the \ac{CPU}, modern applications of \ac{HZB} are 
 implemented as \ac{GPU}-driven occlusion culling techniques, which have been a driving factor 
-for the recent increase in geometrical density. The approach is heavily reliant on the presence 
+for the recent increase in geometrical density \cite{b12, b13}. The approach is heavily reliant on the presence 
 of large, static occluder geometry, which makes it inefficient to be used in voxelized scenes 
 in the form it has been so far. \\
 
@@ -645,6 +645,8 @@ compute the best occluders for the first eight child nodes in the hierarchy in p
 afterwards. \\
 % @TODO: - Command Buffers?     - Chunking scene data and paralellizing the work even more!
 
+% Test different configurations varying the threadgroup size, chunk sizes and so on.
+% Test the scaling of the algorithm when faced with higher resolution scenes.
 
 \noindent
 Finally, the spatial data structure can potentially be used to implicitly encode the voxel position. This way, 
@@ -669,7 +671,11 @@ and \emph{Stanford Bunny}, Patrick Min for \emph{binvox}.
 \bibitem{b6} S. Laine and T. Karras, ``Efficient sparse voxel octrees – analysis, extensions, and implementation,'' in I3D '10: Proceedings of the 2010 ACM SIGGRAPH symposium on Interactive 3D Graphics and Games, pp. 55-63, February 2010
 \bibitem{b7} Stanford Computer Graphics Laboratory, ``The Stanford 3D Scanning Repository,'' https://graphics.stanford.edu/data/3Dscanrep/, 2023
 \bibitem{b8} S.Laine and T. Karras, ``Two Methods for Fast Ray-Cast Ambient Occlusion,'' in Eurographics Symposium on Rendering 2010,  https://sketchfab.com/3d-models/hairball-db894e830ad94216ae6188396d707aff, 2011
-\bibitem{b9} C. Crassin, F. Neyret, M. Sainz, S. Green and E. Eisemann, ``Interactive Indirect Illumination Using Voxel Cone Tracing,'' in Computer Graphics Forum (Proceedings of Pacific Graphics 2011), Volume 30, Number 7, 2011
+\bibitem{b9} C. Crassin, F. Neyret, M. Sainz, S. Green, and E. Eisemann, ``Interactive Indirect Illumination Using Voxel Cone Tracing,'' in Computer Graphics Forum (Proceedings of Pacific Graphics 2011), Volume 30, Number 7, 2011
+\bibitem{b10} C. Crassin, F. Neyret, S. Lefebvre, and E. Eisemann ``Gigavoxels,'' in ACM Symposium on Interactive 3D and Games, pp. 15-22., 2009
+\bibitem{b11} B. Kuth, M. Oberberger, F. Kawala, S. Reitter, S. Michel, M. Chajdas, Q. Meyer, ``Towards Practical Meshlet Compression,'' in Vision, Modeling, and Visualization (2024), pp. 1-8, 2024
+\bibitem{b12} B. Karis, R. Stubbe, and G. Wihlidal, ``A Deep Dive into Nanite Virtualized Geometry,'' in ACM SIGGRAPH 2021 Courses, Advances in Real-Time Rendering in Games, Part 1, https://advances.realtimerendering.com/s2021/index.html (accessed 17-February-2025)
+\bibitem{b13} Remedy Entertainment, ``How Northlight makes Alan Wake 2 shine,'' https://www.remedygames.com/article/how-northlight-makes-alan-wake-2-shine (accessed 17-February-2025)
 \end{thebibliography}
 \vspace{12pt}
 \end{document}
