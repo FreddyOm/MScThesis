@@ -448,6 +448,11 @@ nodes, as well as by applying multi-threaded computations, e.g., computing each 
 
 \subsection{Culling Efficiency} \label{subsec-culling-efficiency}
 
+\noindent
+Table \ref{tab:culling-efficiency} shows the average culling efficiency for each tested scene measured using 
+various camera angles. The table indicates an overall better culling performance when using the \ac{TPOC-PM} 
+occlusion culling as compared to the \ac{TPOC-PON} configuration.
+
 \begin{table}[htbp]
     \begin{center}
         \begin{tabular}{|c|cc|cc|}
@@ -470,32 +475,14 @@ nodes, as well as by applying multi-threaded computations, e.g., computing each 
 \end{table}
 
 \noindent
-Table \ref{tab:culling-efficiency} shows the average culling efficiency for each tested scene measured using 
-various camera angles. The table indicates an overall better culling performance when using the \ac{TPOC-PM} 
-occlusion culling as compared to the \ac{TPOC-PON} configuration. The \ac{TPOC-PM} configuration culled 
-an average of $12.2 \%$ more voxels and always resulted in fewer voxels computed by the rasterizer and the 
-pixel shader. The measurements also suggest that larger scenes with more voxels lead to a higher culling 
-efficiency. This seems plausible, as a higher voxel number tends to result in a higher number of best occluders 
-for a static amount of voxels per octree node. As the \emph{Hairball} scene shows, \ac{TPOC} works in favor 
-of large, dense geometry and is challenged by smaller details, large empty spaces, and holes.
+The \ac{TPOC-PM} configuration culled an average of $12.2 \%$ more voxels and always resulted in fewer 
+voxels computed by the rasterizer and the pixel shader. The measurements also suggest that larger scenes 
+with more voxels lead to a higher culling efficiency. This seems plausible, as a higher voxel number 
+tends to result in a higher number of best occluders for a static amount of voxels per octree node. As 
+the \emph{Hairball} scene shows, \ac{TPOC} works in favor of large, dense geometry and is challenged by 
+smaller details, large empty spaces, and holes.
 
 \subsection{CPU Performance} \label{subsec-cou-performance}
-
-\begin{table}[htbp]
-        \begin{center}
-        \begin{tabular}{|c|c|c|c|}
-            \hline
-            \textbf{}&\multicolumn{3}{|c|}{\textbf{Avg. \ac{CPU} Performance - $256^3$}} \\
-            \cline{2-4} 
-            \textbf{Thread} & \textbf{\textit{No Culling (ms)}} & \textbf{\textit{\ac{TPOC-PON} (ms)}} & \textbf{\textit{\ac{TPOC-PM} (ms)}}  \\
-            \hline
-            Render-Thread      &  0.1165   & 0.1135    &  0.1122   \\
-            \hline
-        \end{tabular}
-    \end{center}
-    \caption{Average \ac{CPU} performance using different occlusion culling configurations.}
-    \label{tab:cpu-performance}
-\end{table}
 
 \noindent
 The average \ac{CPU} time over the course of the unified test animation using \ac{TPOC} is shown in 
@@ -508,6 +495,21 @@ below. Because of the \ac{GPU}-driven nature of \ac{TPOC}, which results in a lo
 \ac{CPU} implementations do not change considerably between the \ac{TPOC-PON} and the \ac{TPOC-PM} 
 configuration. \\
 
+\begin{table}[htbp]
+    \begin{center}
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        \textbf{}&\multicolumn{3}{|c|}{\textbf{Avg. \ac{CPU} Performance - $256^3$}} \\
+        \cline{2-4} 
+        \textbf{Thread} & \textbf{\textit{No Culling (ms)}} & \textbf{\textit{\ac{TPOC-PON} (ms)}} & \textbf{\textit{\ac{TPOC-PM} (ms)}}  \\
+        \hline
+        Render-Thread      &  0.1165   & 0.1135    &  0.1122   \\
+        \hline
+    \end{tabular}
+\end{center}
+\caption{Average \ac{CPU} performance using different occlusion culling configurations.}
+\label{tab:cpu-performance}
+\end{table}
 
 \subsection{GPU Performance} \label{subsec-gpu-performance}
 
