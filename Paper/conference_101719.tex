@@ -414,7 +414,6 @@ The time measured for the best occluder selection is listed in Table \ref{tab:be
 All measured scenes had a dimension of $256^3$.
 
 \begin{table}[htbp]
-    \caption{Measurements of best occluder query.}
     \begin{center}
         \begin{tabular}{|c|c|c|c|}
             \hline
@@ -431,6 +430,7 @@ All measured scenes had a dimension of $256^3$.
         \end{tabular}
     \label{tab:best-occluder-query}
     \end{center}
+    \caption{Measurements of best occluder query.}
 \end{table}
 
 \noindent
@@ -449,8 +449,6 @@ nodes, as well as by applying multi-threaded computations, e.g., computing each 
 \subsection{Culling Efficiency} \label{subsec-culling-efficiency}
 
 \begin{table}[htbp]
-    \caption{Culling efficiency for each of the tested scenes. The average amount was measured using a 
-    unified camera animation to take different camera angles into account. Higher is better.}
     \begin{center}
         \begin{tabular}{|c|cc|cc|}
             \hline
@@ -467,6 +465,8 @@ nodes, as well as by applying multi-threaded computations, e.g., computing each 
         \end{tabular}
     \label{tab:culling-efficiency}
     \end{center}
+    \caption{Culling efficiency for each of the tested scenes. The average amount was measured using a 
+    unified camera animation to take different camera angles into account. Higher is better.}
 \end{table}
 
 \noindent
@@ -482,8 +482,7 @@ of large, dense geometry and is challenged by smaller details, large empty space
 \subsection{CPU Performance} \label{subsec-cou-performance}
 
 \begin{table}[htbp]
-    \caption{Average \ac{CPU} performance using different occlusion culling configurations.}
-    \begin{center}
+        \begin{center}
         \begin{tabular}{|c|c|c|c|}
             \hline
             \textbf{}&\multicolumn{3}{|c|}{\textbf{Avg. \ac{CPU} Performance - $256^3$}} \\
@@ -495,6 +494,7 @@ of large, dense geometry and is challenged by smaller details, large empty space
         \end{tabular}
     \label{tab:cpu-performance}
     \end{center}
+    \caption{Average \ac{CPU} performance using different occlusion culling configurations.}
 \end{table}
 
 \noindent
