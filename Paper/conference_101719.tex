@@ -149,15 +149,15 @@ We have implemented and tested the algorithm in two different configurations:
 \subsection{Voxel Scene Representations} \label{subsec-voxel-scn-rep}
 
 \noindent
-Laine and Karras \cite{b6} analyze and implement a variation of the base Sparse Voxel Octree
-approach for efficiently ray tracing voxel models. In their work, contours are used to
-approximate octree nodes within a \ac{SVO}. If the octree node is found
-to be approximated good enough, the subdivision to deeper levels in the octree node is
-terminated. This way, \ac{SVO}s can be significantly reduced in size, which benefits the memory 
-footprint of the application and aims to increase real-time raytracing performance. Laine and 
-Karras show that the use of contours can increase the ray casting performance by approximately 
-$77\%$. Using an additional optimization technique for approximating the ray casting starting 
-porition, they were able to further increase casting performance by another $12\%$.  \\
+Laine and Karras \cite{b6} present a variation of the base \ac{SVO} approach for efficiently 
+ray tracing voxel models. In their work, contours are used to approximate octree nodes within 
+a \ac{SVO}. If the octree node is found to be approximated good enough, the subdivision to 
+deeper levels in the octree node is terminated. This way, \ac{SVO}s can be significantly 
+reduced in size, which benefits the memory footprint of the application and aims to increase 
+real-time raytracing performance. Laine and Karras show that the use of contours can increase 
+the ray casting performance by approximately $77\%$. Using an additional optimization technique 
+for approximating the ray casting starting porition, they were able to further increase casting 
+performance by another $12\%$.  \\
 
 \noindent
 Kämpe et al. \cite{b2} propose the use of their high-resolution sparse voxel \ac{DAG}. 
