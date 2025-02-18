@@ -211,7 +211,7 @@ interiors. First, artist-picked best occluders are drawn to the depth buffer in 
 Then, projected bounding boxes can be used to test the visibility of smaller objects in the scene. 
 A hierarchical z-buffer is used to accelerate this testing, as proposed by Greene et al. \cite{b1}. 
 They further optimize the runtime performance of their implementation by using depth reprojection 
-to leverage the temporal consistency of the depth buffer \cite{b14}. \\
+to leverage the temporal consistency of the depth buffer \cite{b4, b14}. \\
 
 \noindent
 While \ac{TPOC} can be easily used in scenes with partially static triangle meshes, it can not be 
