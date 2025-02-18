@@ -648,10 +648,13 @@ larger scenes while also providing reasonable budget for other \ac{CPU} operatio
 occluders could potentially be optimized further by introducing multi-threading. One approach might be to 
 compute the best occluders for the first eight child nodes in the hierarchy in parallel and to combine the results 
 afterwards. \\
-% @TODO: - Command Buffers?     - Chunking scene data and paralellizing the work even more!
 
-% Test different configurations varying the threadgroup size, chunk sizes and so on.
-% Test the scaling of the algorithm when faced with higher resolution scenes.
+\noindent
+Furthermore, higher resolution scenes could be tested and compared to the results presented here. An increase in 
+voxel resolution most likely means an adaption of the data structures and the shader invocation due to hardware 
+limitations like a maximum number of threadgroups. In this context, chunking the scene data and experimenting with 
+various shader dispatch configurations could provide useful insights into the capabilities and limitations of 
+\ac{TPOC} for a multitude of different use cases. \\
 
 \noindent
 Finally, the spatial data structure can potentially be used to implicitly encode the voxel position. This way, 
