@@ -211,7 +211,7 @@ interiors. First, artist-picked best occluders are drawn to the depth buffer in 
 Then, projected bounding boxes can be used to test the visibility of smaller objects in the scene. 
 A hierarchical z-buffer is used to accelerate this testing, as proposed by Greene et al. \cite{b1}. 
 They further optimize the runtime performance of their implementation by using depth reprojection 
-to leverage the temporal consistency of the depth buffer. \\
+to leverage the temporal consistency of the depth buffer \cite{b14}. \\
 
 \noindent
 While \ac{TPOC} can be easily used in scenes with partially static triangle meshes, it can not be 
@@ -674,13 +674,14 @@ and \emph{Stanford Bunny}, Patrick Min for \emph{binvox}.
 \bibitem{b9} C. Crassin, F. Neyret, M. Sainz, S. Green, and E. Eisemann, ``Interactive Indirect Illumination Using Voxel Cone Tracing,'' in Computer Graphics Forum (Proceedings of Pacific Graphics 2011), Volume 30, Number 7, 2011
 \bibitem{b10} C. Crassin, F. Neyret, S. Lefebvre, and E. Eisemann ``Gigavoxels,'' in ACM Symposium on Interactive 3D and Games, pp. 15-22., 2009
 \bibitem{b11} B. Kuth, M. Oberberger, F. Kawala, S. Reitter, S. Michel, M. Chajdas, Q. Meyer, ``Towards Practical Meshlet Compression,'' in Vision, Modeling, and Visualization (2024), pp. 1-8, 2024
-\bibitem{b1} N. Greene, M. Kass, and G. Miller, ``Hierarchical Z-Buffer Visibility,'' in SIGGRAPH 1993: Proceedings of the 20th Annual Conference on Computer Graphics and Interactive Techniques, ACM, pp. 231–238, Aug. 1993.
+\bibitem{b1} N. Greene, M. Kass, and G. Miller, ``Hierarchical Z-Buffer Visibility,'' in SIGGRAPH 1993: Proceedings of the 20th Annual Conference on Computer Graphics and Interactive Techniques, ACM, pp. 231-238, August 1993
 \bibitem{b12} B. Karis, R. Stubbe, and G. Wihlidal, ``A Deep Dive into Nanite Virtualized Geometry,'' in ACM SIGGRAPH 2021 Courses, Advances in Real-Time Rendering in Games, Part 1, https://advances.realtimerendering.com/s2021/index.html (accessed 17-February-2025)
 \bibitem{b13} Remedy Entertainment, ``How Northlight makes Alan Wake 2 shine,'' https://www.remedygames.com/article/how-northlight-makes-alan-wake-2-shine (accessed 17-February-2025)
 \bibitem{b6} S. Laine and T. Karras, ``Efficient sparse voxel octrees – analysis, extensions, and implementation,'' in I3D '10: Proceedings of the 2010 ACM SIGGRAPH symposium on Interactive 3D Graphics and Games, pp. 55-63, February 2010
 \bibitem{b2} V. Kämpe, E. Sintorn, and U. Assarsson, ``High resolution sparse voxel dags,'' in Transactions on Graphics vol. 34(4), ACM, July 2013
 \bibitem{b3} J. Hasselgren, M. Andersson, and T. Akenine-Möller, ``Masked software occlusion culling,'' in Eurographics / ACM SIGGRAPH Symposium on High Performance Graphics, 2016
-\bibitem{b4} U. Haar and S. Aaltonen, ``GPU-Driven Rendering Pipelines,'' in SIGGRAPH 2015: Advances in Real-Time Rendering in Games, 2015
+\bibitem{b4} S. Aaltonen, and U. Haar, ``GPU-Driven Rendering Pipelines,'' in SIGGRAPH 2015: Advances in Real-Time Rendering in Games, 2015
+\bibitem{b14} S. Coorg, and S. Teller, ``Real-time occlusion culling for models with large occluders,'' in Proceedings of the Symposium on Interactive 3D Graphics, pp. 83-90, ACM Press, April 1997
 \bibitem{b5} F. S. Nooruddin and G. Turk, ``Simplification and Repair of Polygonal Models Using Volumetric Techniques,'' in IEEE Transactions on Visualization and Computer Graphics, vol. 9(2) pp. 191-205, 2003
 \bibitem{b7} Stanford Computer Graphics Laboratory, ``The Stanford 3D Scanning Repository,'' https://graphics.stanford.edu/data/3Dscanrep/, 2023 (accessed 17-February-2025)
 \bibitem{b8} S.Laine and T. Karras, ``Two Methods for Fast Ray-Cast Ambient Occlusion,'' in Eurographics Symposium on Rendering 2010,  https://sketchfab.com/3d-models/hairball-db894e830ad94216ae6188396d707aff, 2011 (accessed 17-February-2025)
