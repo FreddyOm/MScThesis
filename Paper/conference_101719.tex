@@ -215,10 +215,10 @@ to leverage the temporal consistency of the depth buffer \cite{b14}. \\
 
 \noindent
 While \ac{TPOC} can be easily used in scenes with partially static triangle meshes, it can not be 
-easily applied to voxel scenes. We therefore make use of the base \ac{TPOC} algorithm excluding depth 
-reprojection for this particular evaluation and expand it with a dynamic way to compute best occluders 
-in large voxel scenes. Similar to Aaltonen et al., we use a \ac{GPU}-driven approach to \ac{TPOC} and 
-make use of the mesh shading pipeline for more granular culling.
+easily applied to voxel scenes due to their uniform size. We therefore make use of the base \ac{TPOC} 
+algorithm excluding depth reprojection for this particular evaluation and expand it with a dynamic 
+way to compute best occluders in large voxel scenes. Similar to Aaltonen et al., we use a 
+\ac{GPU}-driven approach to \ac{TPOC} and make use of the mesh shading pipeline for more granular culling.
 
 
 \section{Two Pass Occlusion Culling} \label{sec-hierarchical-z-buffering}
