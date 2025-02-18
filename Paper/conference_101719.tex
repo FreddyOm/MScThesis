@@ -350,7 +350,7 @@ voxel might be completely or partially visible. Conversely, as long as all sampl
 the camera than the minimum \emph{z} value, the voxel can safely be assumed to be occluded. This 
 sampling starts using the highest mip level and continues down the mip map chain until the voxel is 
 found to be fully occluded or until the hierarchy is fully traversed and the voxel is found to be 
-visible. 
+visible. The complete rendering loop is shown in Fig.~\ref{fig:rendering-loop}.
 
 \section{Evaluation} \label{sec-evaluation}
 
