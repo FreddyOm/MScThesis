@@ -107,14 +107,14 @@
     amount of the algorithm relies on GPU-driven computations, which allow for millions of voxels 
     to be drawn efficiently. The HZB algorithm has recently gained popularity due to its ability 
     to efficiently cull occluded geometry using a GPU-driven approach. This algorithm has not been 
-    available in its original form for dynamic voxel-based scenes. Our TPOC implementation uses an 
-    octree to efficiently schedule voxel data with respect to their spatial characteristics and 
-    replaces full octree nodes with larger geometry for fast computation of the HZB. This not only 
-    allows the application of HZB to a dynamic voxel scene, but also results in increased performance 
-    up to 90\% compared to a rendering pipeline without occlusion culling. We show that the use of 
-    the mesh shading pipeline in combination with a sparse voxel octree (SVO) can adapt the HZB to 
-    efficiently occlude a significant number of voxels, resulting in an overall performance increase 
-    of up to 42\% as compared to a per-octree-node culling approach.
+    available in its original form for dynamic voxel-based scenes. Our TPOC implementation uses a 
+    sparse voxel octree (SVO) to efficiently schedule voxel data with respect to their spatial 
+    characteristics and replaces full octree nodes with larger geometry for fast computation of the 
+    HZB. This not only allows the application of HZB on a dynamic voxel scene, but also results in 
+    increased performance of up to 90\% compared to a rendering pipeline without occlusion culling. 
+    Furthermore, we show that the use of the mesh shading pipeline can adapt the HZB to efficiently 
+    occlude a significant number of voxels, resulting in an overall performance increase of up to 
+    42\% compared to a per-octree-node culling approach.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -155,10 +155,10 @@ voxelized scenes in the form it has been so far. \\
 In this paper, we present a technique to dynamically approximate volumetric voxel scenes, and 
 show that the use of the mesh shading pipeline in combination with a \ac{SVO} can adapt the 
 \ac{HZB} to efficiently occlude a significant number of voxels, which results in an overall 
-performance increase. The term volumetric voxel scene refers to a scene that not only 
-approximates the surface by using voxels but also includes a voxel-based volume that might be 
-exposed or altered during runtime. A great amount of the algorithm relies on \ac{GPU}-driven 
-computations, which allow for millions of voxels to be drawn efficiently. \\
+performance increase. In this context, we focus on scenes that not only approximate the 
+surface by using voxels but also include a voxel-based volume that might be exposed or altered 
+during runtime. A great amount of the algorithm relies on \ac{GPU}-driven computations, which 
+allow for millions of voxels to be drawn efficiently. \\
 
 \noindent
 Our technique is based on the assumption that a vast amount of voxels within and behind a given 
@@ -246,7 +246,7 @@ to leverage the temporal consistency of the depth buffer \cite{b4, b14}. \\
 \noindent
 While \ac{TPOC} can be easily used in scenes with partially static triangle meshes, it can not be 
 easily applied to voxel scenes due to their uniform size. We therefore make use of the base \ac{TPOC} 
-algorithm excluding depth reprojection for this particular evaluation and expand it with a dynamic 
+algorithm, excluding depth reprojection for this particular evaluation, and expand it with a dynamic 
 way to compute best occluders in large voxel scenes. Similar to Aaltonen et al., we use a 
 \ac{GPU}-driven approach to \ac{TPOC} and make use of the mesh shading pipeline for more granular culling.
 
@@ -377,10 +377,9 @@ coordinates, the four corners of the bounding boxes are sampled from the \ac{HZB
 resulting depth values are compared against the minimum \emph{z} value. If either of the 
 \ac{HZB} pyramid samples is further away from the camera than the minimum \emph{z} value, the current 
 voxel might be completely or partially visible. Conversely, as long as all samples are nearer to 
-the camera than the minimum \emph{z} value, the voxel can safely be assumed to be occluded. This 
-sampling starts using the highest mip level and continues down the mip map chain until the voxel is 
-found to be fully occluded or until the hierarchy is fully traversed and the voxel is found to be 
-visible. The complete rendering loop is shown in Fig.~\ref{fig:rendering-loop}.
+the camera than the minimum \emph{z} value, the voxel can safely be assumed to be occluded. The 
+correct mip map level for sampling is calculated so that the bounding box of the voxel is best 
+approximated by one texel. The complete rendering loop is shown in Fig.~\ref{fig:rendering-loop}.
 
 \section{Evaluation} \label{sec-evaluation}
 
@@ -459,7 +458,7 @@ All measured scenes had a dimension of $256^3$.
             \hline
         \end{tabular}
     \end{center}
-    \caption{Measurements of best occluder query.}
+    \caption{Measurements of best occluder query. Lower is better.}
     \label{tab:best-occluder-query}
 \end{table}
 
@@ -480,8 +479,13 @@ nodes, as well as by applying multi-threaded computations, e.g., computing each 
 
 \noindent
 Table \ref{tab:culling-efficiency} shows the average culling efficiency for each tested scene measured using 
-various camera angles. The table indicates an overall better culling performance when using the \ac{TPOC-PM} 
-occlusion culling as compared to the \ac{TPOC-PON} configuration.
+various camera angles. The table indicates an overall better culling performance when using \ac{TPOC-PM} as 
+compared to the \ac{TPOC-PON} configuration. The \ac{TPOC-PM} configuration culled an average of $12.2 \%$ 
+more voxels and always resulted in fewer voxels computed by the rasterizer and the pixel shader. The 
+measurements also suggest that larger scenes with more voxels lead to a higher culling efficiency. This seems 
+plausible, as a higher voxel count tends to result in a higher number of best occluders when using a static 
+maximum number of voxels per octree node. As the \emph{Hairball} scene shows, our \ac{TPOC} implementation 
+works in favor of large, dense geometry and is challenged by smaller details, large empty spaces, and holes.
 
 \begin{table}[htbp]
     \begin{center}
@@ -504,26 +508,18 @@ occlusion culling as compared to the \ac{TPOC-PON} configuration.
     \label{tab:culling-efficiency}
 \end{table}
 
-\noindent
-The \ac{TPOC-PM} configuration culled an average of $12.2 \%$ more voxels and always resulted in fewer 
-voxels computed by the rasterizer and the pixel shader. The measurements also suggest that larger scenes 
-with more voxels lead to a higher culling efficiency. This seems plausible, as a higher voxel number 
-tends to result in a higher number of best occluders for a static amount of voxels per octree node. As 
-the \emph{Hairball} scene shows, \ac{TPOC} works in favor of large, dense geometry and is challenged by 
-smaller details, large empty spaces, and holes.
-
 \subsection{CPU Performance} \label{subsec-cou-performance}
 
 \noindent
 The average \ac{CPU} time over the course of the unified test animation using \ac{TPOC} is shown in 
-table~\ref{tab:cpu-performance}. It was measured for each culling configuration to evaluate the difference 
-in runtime performance for the Render-Thread functions of the application. The table shows that the average 
-\ac{CPU} performance does not change significantly between the different culling configurations. The small 
-changes that are visible in measurements are attributed to the \ac{GPU} performance differences presented 
-below. Because of the \ac{GPU}-driven nature of \ac{TPOC}, which results in a low memory bandwidth between 
-\ac{CPU} and \ac{GPU}, these changes are rather small. Most of the work is executed on the \ac{GPU} and the 
-\ac{CPU} implementations do not change considerably between the \ac{TPOC-PON} and the \ac{TPOC-PM} 
-configuration. \\
+table~\ref{tab:cpu-performance}. It was measured over multiple frames for each culling configuration 
+to evaluate the difference in runtime performance for the render thread functions of the application. 
+The table shows that the average \ac{CPU} performance does not change significantly between the 
+different culling configurations. The small changes that are visible in measurements are attributed 
+to the \ac{GPU} performance differences presented below. Because of the \ac{GPU}-driven nature of 
+\ac{TPOC}, which results in a low memory bandwidth between \ac{CPU} and \ac{GPU}, these changes are 
+expected to be small. Most of the work is executed on the \ac{GPU} and the \ac{CPU} implementations 
+do not change considerably between the \ac{TPOC-PON} and the \ac{TPOC-PM} configuration. \\
 
 \begin{table}[htbp]
     \begin{center}
@@ -537,7 +533,7 @@ configuration. \\
         \hline
     \end{tabular}
 \end{center}
-\caption{Average \ac{CPU} performance using different occlusion culling configurations.}
+\caption{Average \ac{CPU} performance using different occlusion culling configurations. Lower is better.}
 \label{tab:cpu-performance}
 \end{table}
 
@@ -590,17 +586,16 @@ for different scenes, as the amount of best occluders changes from one scene to 
 \noindent
 The most significant differences in performance originate from the main draw pass, which includes the task shader, 
 the mesh shader, the rasterizer, and the pixel shader. The culling of voxels leads to a lower computational 
-load on those pipeline stages, which in turn considerably reduces the overall render time. The data shows that the 
-performance gains outweigh the overhead introduced by the occlusion culling in all tested cases.  
+load on those pipeline stages, which in turn reduces the overall render time. The data show that the performance 
+gains outweigh the overhead introduced by the occlusion culling in all tested cases.
 
 \subsection{Overdraw} \label{subsec-overdraw}
 
 \noindent
 Analyzing the overdraw for each scene helps to understand where unnecessary pixel shader 
 invocations occur. We tested different angles for each scene and recorded overdraw of individual 
-pixels using no occlusion culling, the \ac{TPOC-PON}, and the per-meshlet occlusion 
-culling configuration. Fig.~\ref{fig:overdraw} shows an exemplary overdraw visualization for the 
-\emph{Bunny} scene. \\
+pixels using no occlusion culling, the \ac{TPOC-PON}, and the \ac{TPOC-PM} configuration. 
+Fig.~\ref{fig:overdraw} shows an exemplary overdraw visualization for the \emph{Bunny} scene. \\
 
 \begin{figure}
     \begin{subfigure}{60px}
@@ -642,15 +637,15 @@ optimized in terms of overdraw when using \ac{TPOC-PM}. \\
 
 \noindent
 Different angles lead to less overdraw and lower differences between all configurations. Nevertheless, 
-in all cases the \ac{TPOC-PM} configuration was able to reduce overdraw up to $84 \%$ as compared to 
-a pipeline without culling.
+in all cases the \ac{TPOC-PM} configuration was able to reduce overdraw by up to $84 \%$ compared with 
+a pipeline without culling and by up to $47 \%$ compared with \ac{TPOC-PON}.
 
 \section{Conclusion} \label{sec-conclusion}
 
 \noindent
 We have shown that the \ac{HZB} algorithm can be adapted for efficient and dynamic use in rasterized, voxel-based 
 volumetric rendering. An approach has been presented that makes use of an octree data structure to approximate 
-the scenes invisible voxel data and subsequently uses this data to efficiently draw the best occluders for occlusion 
+the scenes invisible voxel data and subsequently uses the data to efficiently draw the best occluders for occlusion 
 culling. \\
 
 \noindent
@@ -692,7 +687,7 @@ various shader dispatch configurations could provide useful insights into the ca
 Finally, the spatial data structure can potentially be used to implicitly encode the voxel position. This way, 
 a separate buffer would be made redundant, and the bandwidth as well as the capabilities for dynamically updating 
 the data could be improved further. Implementing and testing different ways of storing the data would be another 
-direction for future work.
+subject for future work.
 
 \section*{Acknowledgment} \label{section-acknowledgment}
 
