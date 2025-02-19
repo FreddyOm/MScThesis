@@ -18,6 +18,8 @@
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 
+%\def\doubleblind{0}
+
 \begin{acronym}[SPS] % longest acronym in [...] for spacing
     \acro{AVX}{advanced vector extensions}
     \acro{CPU}{central processing unit}
@@ -40,34 +42,59 @@
 \title{Two-Pass Occlusion Culling for Dynamic Voxel Scenes based on Hierarchical Z-Buffering\\}
 
 \author{
-    
-    \IEEEauthorblockN{1\textsuperscript{st} Frederik Omlor}
-    \IEEEauthorblockA{\textit{Department of Computer Science} \\
-    \textit{Media University Stuttgart}\\
-    Stuttgart, Germany \\
-    freddyomlor@gmail.com}
-    *Corresponding author
-    ~\\
-    \and
-    \IEEEauthorblockN{2\textsuperscript{nd} Stefan Radicke}
-    \IEEEauthorblockA{\textit{Department of Computer Science} \\
-    \textit{Media University Stuttgart}\\
-    Stuttgart, Germany \\
-    radicke@hdm-stuttgart.de}
-    ~\\
-    \and
-    \IEEEauthorblockN{3\textsuperscript{rd} Andreas Stiegler}
-    \IEEEauthorblockA{\textit{Research and Development} \\
-    \textit{Strichpunkt Design}\\
-    Stuttgart, Germany \\
-    a.stiegler@sp.design}
-    ~\\
-    \and[\hfill\mbox{}\par\mbox{}\hfill]
-    \IEEEauthorblockN{4\textsuperscript{th} Wilhelm Lorin Atzberger}
-    \IEEEauthorblockA{\textit{Senior Graphics Engineer} \\
-    \textit{Unity Technologies}\\
-    Copenhagen, Denmark \\
-    lorin.atzberger@gmail.com}
+    \ifx\doubleblind\undefined
+        \IEEEauthorblockN{1\textsuperscript{st} Frederik Omlor}
+        \IEEEauthorblockA{\textit{Department of Computer Science} \\
+        \textit{Media University Stuttgart}\\
+        Stuttgart, Germany \\
+        freddyomlor@gmail.com}
+        *Corresponding author
+        ~\\
+        \and
+        \IEEEauthorblockN{2\textsuperscript{nd} Stefan Radicke}
+        \IEEEauthorblockA{\textit{Department of Computer Science} \\
+        \textit{Media University Stuttgart}\\
+        Stuttgart, Germany \\
+        radicke@hdm-stuttgart.de}
+        ~\\
+        \and
+        \IEEEauthorblockN{3\textsuperscript{rd} Andreas Stiegler}
+        \IEEEauthorblockA{\textit{Research and Development} \\
+        \textit{Strichpunkt Design}\\
+        Stuttgart, Germany \\
+        a.stiegler@sp.design}
+        ~\\
+        \and[\hfill\mbox{}\par\mbox{}\hfill]
+        \IEEEauthorblockN{4\textsuperscript{th} Wilhelm Lorin Atzberger}
+        \IEEEauthorblockA{\textit{Senior Graphics Engineer} \\
+        \textit{Unity Technologies}\\
+        Copenhagen, Denmark \\
+        lorin.atzberger@gmail.com}
+    \else
+        \IEEEauthorblockN{1\textsuperscript{st} Author}
+        \IEEEauthorblockA{\textit{Department of Computer Science} \\
+        \textit{Media University Stuttgart}\\
+        Stuttgart, Germany}
+        *Corresponding author
+        ~\\
+        \and
+        \IEEEauthorblockN{2\textsuperscript{nd} Author}
+        \IEEEauthorblockA{\textit{Department of Computer Science} \\
+        \textit{Media University Stuttgart}\\
+        Stuttgart, Germany}
+        ~\\
+        \and
+        \IEEEauthorblockN{3\textsuperscript{rd} Author}
+        \IEEEauthorblockA{\textit{Research and Development} \\
+        \textit{Strichpunkt Design}\\
+        Stuttgart, Germany}
+        ~\\
+        \and[\hfill\mbox{}\par\mbox{}\hfill]
+        \IEEEauthorblockN{4\textsuperscript{th} Author}
+        \IEEEauthorblockA{\textit{Senior Graphics Engineer} \\
+        \textit{Unity Technologies}\\
+        Copenhagen, Denmark}
+    \fi
 }
 
 \maketitle
@@ -187,8 +214,11 @@ an empty one in the beginning and populating it as more meshes are drawn. The bu
 also maintains a mip map chain that is updated when the full-resolution depth buffer is updated. 
 Each time a mesh is rendered to the depth buffer, it is checked against the depth hierarchy, 
 starting with the coarsest mip level. This way, near and big objects are likely to occlude small, 
-far objects, resulting in an efficient way to reject invisible meshes. \ac{HZB} is the 
-fundamental basis of the \ac{TPOC} algorithm we present here.\\
+far objects, resulting in an efficient way to reject invisible meshes. In their work, they tested 
+their algorithm using ray tracing on a very high resolution scene. Using \ac{HZB}, ``the entire
+process took 6.45 seconds. Rendering this model using traditional Z buffering [...] took 
+approximately one hour and fifteen minutes.'' \cite{b1} \ac{HZB} is the fundamental basis of the 
+\ac{TPOC} algorithm we present here. \\
 
 \noindent
 Hasselgren et al. \cite{b3} present a way of implementing occlusion culling relying on hardware 
