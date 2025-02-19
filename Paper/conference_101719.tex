@@ -135,21 +135,21 @@ Over the last decades, ray tracing has been subject to a lot of innovation, espe
 real-time applications for entertainment purposes, i.e., games. Hardware manufacturers have 
 been adding more support for specific raytracing compute units, and the software side of 
 \ac{GPU}s has been upgraded to support features like ray-traced ambient occlusion, shadows, 
-and global illumination. However, the rasterized approach to voxel rendering  has not been 
-very present in the entertainment industry, although the rasterized rendering pipeline has 
-been upgraded significantly over the last decade. A central overhaul is the mesh shading 
-pipeline, which has been introduced to \ac{GPU}s in 2018. It features a new way of preprocessing 
-vertices using a more general compute architecture that allows for more efficient \ac{GPU} 
-computations \cite{b11}. \\
+and global illumination \cite{b18}. However, the rasterized approach to voxel rendering has 
+not been very present in the entertainment industry, although the rasterized rendering 
+pipeline has been upgraded significantly over the last decade. A central overhaul is the 
+mesh shading pipeline, which has been introduced to \ac{GPU}s in 2018 \cite{b17}. It features 
+a new way of preprocessing vertices using a more general compute architecture that allows 
+for more efficient \ac{GPU} computations \cite{b11}. \\
 
 \noindent
 Recent games made use of \ac{HZB} in combination with the mesh shading pipeline to efficiently 
 cull mesh instances and even invisible parts of meshes. While the original algorithm by Greene 
 et al. \cite{b1} was intended to be used on the \ac{CPU}, modern applications of \ac{HZB} are 
 implemented as \ac{GPU}-driven occlusion culling techniques, which have been a driving factor 
-for the recent increase in geometrical density \cite{b12, b13}. The approach is heavily reliant on the presence 
-of large, static occluder geometry, which makes it inefficient to be used in voxelized scenes 
-in the form it has been so far. \\
+for the recent increase in geometrical density \cite{b12, b13}. The approach is heavily reliant 
+on the presence of large, static occluder geometry, which makes it inefficient to be used in 
+voxelized scenes in the form it has been so far. \\
 
 \noindent
 In this paper, we present a technique to dynamically approximate volumetric voxel scenes, and 
@@ -163,7 +163,7 @@ computations, which allow for millions of voxels to be drawn efficiently. \\
 \noindent
 Our technique is based on the assumption that a vast amount of voxels within and behind a given 
 part of the scene is occluded by some other voxels in the same scene. The technique approximates 
-the non-visible volume within a voxel scene and uses it as an occluder for \ac{GPU}-based \ac{HZB}. 
+the nonvisible volume within a voxel scene and uses it as an occluder for \ac{GPU}-based \ac{HZB}. 
 We have implemented and tested the algorithm in two different configurations:
 
 \begin{itemize}
@@ -217,7 +217,7 @@ starting with the coarsest mip level. This way, near and big objects are likely 
 far objects, resulting in an efficient way to reject invisible meshes. In their work, they tested 
 their algorithm using ray tracing on a very high resolution scene. Using \ac{HZB}, ``the entire
 process took 6.45 seconds. Rendering this model using traditional Z buffering [...] took 
-approximately one hour and fifteen minutes.'' \cite{b1} \ac{HZB} is the fundamental basis of the 
+approximately one hour and fifteen minutes'' \cite{b1}. \ac{HZB} is the fundamental basis of the 
 \ac{TPOC} algorithm we present here. \\
 
 \noindent
@@ -306,7 +306,7 @@ geometry. Rendering them during a depth prepass enables the occlusion of smaller
 In voxel rendering, this is not applicable as is, since the individual meshes, i.e., the voxels, are all 
 of uniform size. Additionally, the best occluders might need to be altered during runtime, since 
 volumetric voxel representations often allow run-time manipulation of the voxel data. A predetermination 
-of the best occluders is thus not possible as it is for static, non-voxel triangle meshes. \\
+of the best occluders is thus not possible as it is for static, nonvoxel triangle meshes. \\
 
 \noindent   % @TODO: Check sentence "even though the measurements did not include ..."
 We have implemented a dynamic way of selecting the best occluder geometry for the depth prepass, even 
@@ -402,12 +402,12 @@ visible. The complete rendering loop is shown in Fig.~\ref{fig:rendering-loop}.
     \end{subfigure}
     \begin{subfigure}{100px}
         \includegraphics[width=100px]{images/model-terrain.jpg}
-        \caption{Terrain}
+        \caption{Terrain \cite{b15}}
         \parbox{\linewidth}{\centering\footnotesize 953,362 voxels,\\ 6976 best occluders}
     \end{subfigure}
     \begin{subfigure}{100px}
         \includegraphics[width=100px]{images/model-hairball.jpg}
-        \caption{Hairball \cite{b8}}
+        \caption{Hairball \cite{b8, b16}}
         \parbox{\linewidth}{\centering\footnotesize 1,652,435 voxels,\\ 5056 best occluders}
     \end{subfigure}
     
@@ -698,25 +698,29 @@ direction for future work.
 
 \noindent
 Nvidia Research for \emph{Hairball}, the Stanford 3D Scanning Repository for \emph{Lucy} 
-and \emph{Stanford Bunny}, Patrick Min for \emph{binvox}.
+and \emph{Stanford Bunny}, Patrick Min for \emph{binvox} and Ketra Games for \emph{Terrain}.
 
 
 
 \begin{thebibliography}{00}
 \bibitem{b9} C. Crassin, F. Neyret, M. Sainz, S. Green, and E. Eisemann, ``Interactive Indirect Illumination Using Voxel Cone Tracing,'' in Computer Graphics Forum (Proceedings of Pacific Graphics 2011), Volume 30, Number 7, 2011
 \bibitem{b10} C. Crassin, F. Neyret, S. Lefebvre, and E. Eisemann ``Gigavoxels,'' in ACM Symposium on Interactive 3D and Games, pp. 15-22., 2009
+\bibitem{b18} NVIDIA, ``NVIDIA ADA GPU ARCHITECTURE'', nvidia.com, https://images.nvidia.com/aem-dam/Solutions/geforce/ada/nvidia-ada-gpu-architecture.pdf, 2023 (accessed Feb. 19, 2025)
+\bibitem{b17} C. Kubisch, ``Introduction to Turing Mesh Shaders,'' nvidia.com, https://developer.nvidia.com/blog/introduction-turing-mesh-shaders/, 2018, (accessed Feb. 19, 2025)
 \bibitem{b11} B. Kuth, M. Oberberger, F. Kawala, S. Reitter, S. Michel, M. Chajdas, Q. Meyer, ``Towards Practical Meshlet Compression,'' in Vision, Modeling, and Visualization (2024), pp. 1-8, 2024
 \bibitem{b1} N. Greene, M. Kass, and G. Miller, ``Hierarchical Z-Buffer Visibility,'' in SIGGRAPH 1993: Proceedings of the 20th Annual Conference on Computer Graphics and Interactive Techniques, ACM, pp. 231-238, August 1993
-\bibitem{b12} B. Karis, R. Stubbe, and G. Wihlidal, ``A Deep Dive into Nanite Virtualized Geometry,'' in ACM SIGGRAPH 2021 Courses, Advances in Real-Time Rendering in Games, Part 1, https://advances.realtimerendering.com/s2021/index.html (accessed 17-February-2025)
-\bibitem{b13} Remedy Entertainment, ``How Northlight makes Alan Wake 2 shine,'' https://www.remedygames.com/article/how-northlight-makes-alan-wake-2-shine (accessed 17-February-2025)
+\bibitem{b12} B. Karis, R. Stubbe, and G. Wihlidal, ``A Deep Dive into Nanite Virtualized Geometry,'' realtimerendering.com, in ACM SIGGRAPH 2021 Courses, Advances in Real-Time Rendering in Games, Part 1, https://advances.realtimerendering.com/s2021/index.html (accessed Feb. 17, 2025)
+\bibitem{b13} Remedy Entertainment, ``How Northlight makes Alan Wake 2 shine,'' remedygames.com, https://www.remedygames.com/article/how-northlight-makes-alan-wake-2-shine (accessed Feb. 17, 2025)
 \bibitem{b6} S. Laine and T. Karras, ``Efficient sparse voxel octrees – analysis, extensions, and implementation,'' in I3D '10: Proceedings of the 2010 ACM SIGGRAPH symposium on Interactive 3D Graphics and Games, pp. 55-63, February 2010
 \bibitem{b2} V. Kämpe, E. Sintorn, and U. Assarsson, ``High resolution sparse voxel dags,'' in Transactions on Graphics vol. 34(4), ACM, July 2013
 \bibitem{b3} J. Hasselgren, M. Andersson, and T. Akenine-Möller, ``Masked software occlusion culling,'' in Eurographics / ACM SIGGRAPH Symposium on High Performance Graphics, 2016
 \bibitem{b4} S. Aaltonen, and U. Haar, ``GPU-Driven Rendering Pipelines,'' in SIGGRAPH 2015: Advances in Real-Time Rendering in Games, 2015
 \bibitem{b14} S. Coorg, and S. Teller, ``Real-time occlusion culling for models with large occluders,'' in Proceedings of the Symposium on Interactive 3D Graphics, pp. 83-90, ACM Press, April 1997
 \bibitem{b5} F. S. Nooruddin and G. Turk, ``Simplification and Repair of Polygonal Models Using Volumetric Techniques,'' in IEEE Transactions on Visualization and Computer Graphics, vol. 9(2) pp. 191-205, 2003
-\bibitem{b7} Stanford Computer Graphics Laboratory, ``The Stanford 3D Scanning Repository,'' https://graphics.stanford.edu/data/3Dscanrep/, 2023 (accessed 17-February-2025)
-\bibitem{b8} S.Laine and T. Karras, ``Two Methods for Fast Ray-Cast Ambient Occlusion,'' in Eurographics Symposium on Rendering 2010,  https://sketchfab.com/3d-models/hairball-db894e830ad94216ae6188396d707aff, 2011 (accessed 17-February-2025)
+\bibitem{b7} Stanford Computer Graphics Laboratory, ``The Stanford 3D Scanning Repository,'' stanford.edu, https://graphics.stanford.edu/data/3Dscanrep/, 2023 (accessed Feb. 17, 2025)
+\bibitem{b15} Ketra Games, ``Creating Terrain from Heightmaps - Unity Game Development Tutorial,'' kreta-games.com, https://www.ketra-games.com/2021/08/creating-terrain-from-heightmaps-unity-game-tutorial.html, 2021 (accessed Feb. 17, 2025)
+\bibitem{b8} S.Laine and T. Karras, ``Two Methods for Fast Ray-Cast Ambient Occlusion,'' in Eurographics Symposium on Rendering, 2010
+\bibitem{b16} Sketchfab, ``Hairball,'' sketchfab.com,  https://sketchfab.com/3d-models/hairball-db894e830ad94216ae6188396d707aff, 2011 (accessed Feb. 17, 2025)
 \end{thebibliography}
 \vspace{12pt}
 \end{document}
